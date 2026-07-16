@@ -18,6 +18,8 @@ object Dimensions {
     val DividerSnapGuideLength = 32.dp
     val DividerSnapGuideThickness = 3.dp
     val AppIconSize = 32.dp
+    val SnapshotLabelMinWidth = 96.dp
+    val SnapshotLabelMinHeight = 56.dp
     val AppRowMinHeight = 72.dp
     val SelectedCellContentBottomPadding = 72.dp
     val LargeCellWidth = 600.dp
