@@ -14,6 +14,8 @@ class WorkspaceDesignerViewModel : ViewModel() {
     val canUndo: Boolean get() = stateHolder.canUndo
     val canRedo: Boolean get() = stateHolder.canRedo
 
+    fun loadCanvas(canvas: WorkspaceCanvas) = stateHolder.loadCanvas(canvas)
+
     fun selectCell(cellId: String) = stateHolder.selectCell(cellId)
 
     fun assignApp(cellId: String, app: AssignedApp) = stateHolder.assignApp(cellId, app)

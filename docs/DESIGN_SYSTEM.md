@@ -74,6 +74,14 @@ Visual feedback khi kéo divider dùng các token
 `DividerSnapGuideLength` và `DividerSnapGuideThickness`. Fade ngắn dùng
 `DesignerAnimation.FastDurationMillis`; hit area vẫn giữ nguyên 64dp.
 
+## Workspace Library Grid
+
+Workspace Library dùng `GridCells.Adaptive` với
+`Dimensions.WorkspaceCardMinWidth = 280dp`. Card giữ chiều cao tối thiểu
+`Dimensions.WorkspaceCardMinHeight = 336dp` và khoảng cách lưới dùng
+`Spacing.WorkspaceGrid = 16dp`. Số cột do chiều rộng khả dụng theo dp quyết định;
+không giới hạn cứng theo thiết bị và không thu nhỏ touch target dưới 56dp.
+
 ## Design Token Rules
 
 1. UI mới phải dùng token thay cho literal `Dp`, elevation, shape, z-index và aspect ratio lặp lại.

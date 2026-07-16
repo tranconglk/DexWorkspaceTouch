@@ -17,12 +17,18 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Button
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -38,9 +44,39 @@ import com.trancong.dexworkspacetouch.workspace.designer.ui.layout.fitSize
 @Composable
 fun LayoutDesignerScreen(
     state: WorkspaceDesignerViewModel,
+    isNewWorkspace: Boolean,
     onBack: () -> Unit,
     onOpenAppPicker: (String) -> Unit,
+    onSave: (String?) -> Unit,
 ) {
+    var showNameDialog by rememberSaveable { mutableStateOf(false) }
+    var workspaceName by rememberSaveable { mutableStateOf("") }
+    if (showNameDialog) {
+        AlertDialog(
+            onDismissRequest = { showNameDialog = false },
+            title = { Text("Tên workspace") },
+            text = {
+                TextField(
+                    value = workspaceName,
+                    onValueChange = { workspaceName = it },
+                    label = { Text("Để trống để dùng tên mặc định") },
+                    singleLine = true,
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    showNameDialog = false
+                    onSave(workspaceName)
+                }, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Lưu") }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showNameDialog = false },
+                    modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                ) { Text("Hủy") }
+            },
+        )
+    }
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing.only(
             WindowInsetsSides.Horizontal + WindowInsetsSides.Top,
@@ -64,7 +100,9 @@ fun LayoutDesignerScreen(
                         modifier = Modifier.weight(1f).height(TouchTargets.PrimaryButton),
                     ) { Text("Mở") }
                     Button(
-                        onClick = {},
+                        onClick = {
+                            if (isNewWorkspace) showNameDialog = true else onSave(null)
+                        },
                         modifier = Modifier.weight(1f).height(TouchTargets.PrimaryButton),
                     ) { Text("Lưu") }
                 }

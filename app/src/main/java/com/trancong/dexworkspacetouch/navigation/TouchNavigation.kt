@@ -9,6 +9,7 @@ import com.trancong.dexworkspacetouch.ui.screens.AppPickerScreen
 import com.trancong.dexworkspacetouch.ui.screens.HomeScreen
 import com.trancong.dexworkspacetouch.ui.screens.LayoutDesignerScreen
 import com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerViewModel
+import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryViewModel
 
 private object Routes {
     const val Home = "home"
@@ -20,19 +21,34 @@ private object Routes {
 fun TouchNavigation() {
     val navController = rememberNavController()
     val designerViewModel: WorkspaceDesignerViewModel = viewModel()
+    val libraryViewModel: WorkspaceLibraryViewModel = viewModel()
     NavHost(navController = navController, startDestination = Routes.Home) {
         composable(Routes.Home) {
             HomeScreen(
-                onOpenLayoutDesigner = { navController.navigate(Routes.LayoutDesigner) },
-                onOpenAppPicker = { navController.navigate("${Routes.AppPicker}/missing") },
+                workspaces = libraryViewModel.workspaces,
+                selectedWorkspaceId = libraryViewModel.selectedWorkspaceId,
+                onWorkspaceSelected = libraryViewModel::selectWorkspace,
+                onCreateWorkspace = {
+                    designerViewModel.loadCanvas(libraryViewModel.createWorkspace())
+                    navController.navigate(Routes.LayoutDesigner)
+                },
+                onEditWorkspace = { workspaceId ->
+                    designerViewModel.loadCanvas(libraryViewModel.beginEditingWorkspace(workspaceId))
+                    navController.navigate(Routes.LayoutDesigner)
+                },
             )
         }
         composable(Routes.LayoutDesigner) {
             LayoutDesignerScreen(
                 state = designerViewModel,
+                isNewWorkspace = libraryViewModel.isCreatingWorkspace,
                 onBack = navController::navigateUp,
                 onOpenAppPicker = { cellId ->
                     navController.navigate("${Routes.AppPicker}/$cellId")
+                },
+                onSave = { name ->
+                    libraryViewModel.saveWorkspace(designerViewModel.canvas, name)
+                    navController.navigateUp()
                 },
             )
         }

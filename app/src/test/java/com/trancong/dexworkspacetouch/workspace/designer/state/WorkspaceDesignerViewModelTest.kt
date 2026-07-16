@@ -2,6 +2,7 @@ package com.trancong.dexworkspacetouch.workspace.designer.state
 
 import com.trancong.dexworkspacetouch.workspace.designer.model.AssignedApp
 import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
+import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.designer.ui.layout.fitSize
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertSame
@@ -9,6 +10,18 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class WorkspaceDesignerViewModelTest {
+    @Test fun loadingWorkspaceReplacesCanvasAndClearsTransientState() {
+        val viewModel = selectedViewModel()
+        viewModel.assignApp("cell", chrome)
+
+        viewModel.loadCanvas(WorkspaceCanvas.singleCell())
+
+        assertEquals(WorkspaceCanvas.singleCell(), viewModel.canvas)
+        assertEquals(null, viewModel.selectedCellId)
+        assertEquals(false, viewModel.canUndo)
+        assertEquals(false, viewModel.canRedo)
+    }
+
     @Test fun assignedAppRemainsInViewModelState() {
         val viewModel = selectedViewModel()
         viewModel.assignApp("cell", chrome)

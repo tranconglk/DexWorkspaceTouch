@@ -20,9 +20,15 @@ fun WorkspaceSnapshot(
     canvas: WorkspaceCanvas,
     modifier: Modifier = Modifier,
     showLabels: Boolean = true,
+    includeAccessibilitySummary: Boolean = true,
 ) {
     val shape = DesignerShapes.Workspace
     val summary = canvas.accessibilitySummary()
+    val accessibilityModifier = if (includeAccessibilitySummary) {
+        Modifier.clearAndSetSemantics { contentDescription = summary }
+    } else {
+        Modifier.clearAndSetSemantics { }
+    }
     Layout(
         content = {
             canvas.cells.forEach { cell ->
@@ -34,7 +40,7 @@ fun WorkspaceSnapshot(
             .clip(shape)
             .background(DesignerColors.WorkspaceBackground)
             .border(Dimensions.WorkspaceBorderWidth, DesignerColors.Divider, shape)
-            .clearAndSetSemantics { contentDescription = summary },
+            .then(accessibilityModifier),
     ) { measurables, constraints ->
         val width = constraints.maxWidth.coerceAtLeast(1)
         val height = constraints.maxHeight.coerceAtLeast(1)

@@ -20,6 +20,8 @@ object Dimensions {
     val AppIconSize = 32.dp
     val SnapshotLabelMinWidth = 96.dp
     val SnapshotLabelMinHeight = 56.dp
+    val WorkspaceCardMinWidth = 280.dp
+    val WorkspaceCardMinHeight = 336.dp
     val AppRowMinHeight = 72.dp
     val SelectedCellContentBottomPadding = 72.dp
     val LargeCellWidth = 600.dp

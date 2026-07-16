@@ -30,6 +30,15 @@ class WorkspaceDesignerStateHolder(
     val canUndo: Boolean get() = undoHistory.isNotEmpty()
     val canRedo: Boolean get() = redoHistory.isNotEmpty()
 
+    fun loadCanvas(canvas: WorkspaceCanvas) {
+        this.canvas = canvas
+        selectedCellId = null
+        selectedDividerId = null
+        undoHistory = emptyList()
+        redoHistory = emptyList()
+        dividerResizeSession = null
+    }
+
     fun selectCell(cellId: String) {
         require(canvas.cells.any { it.id == cellId }) { "Cell '$cellId' does not exist" }
         selectedCellId = cellId
