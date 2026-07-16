@@ -35,7 +35,7 @@ fun WorkspaceCellView(
     modifier: Modifier = Modifier,
 ) {
     val description = cell.app?.let { "${it.label}. Chạm để chọn ô." }
-        ?: "Ô trống. Chạm để chọn ô."
+        ?: "Ô trống. Chạm để chọn ứng dụng."
     val border = if (selected) {
         BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
     } else {
@@ -72,7 +72,7 @@ fun WorkspaceCellView(
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Text(
-                    text = "Chạm để chọn ô",
+                    text = "Chạm để chọn ứng dụng",
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                 )

@@ -65,6 +65,19 @@ fun WorkspaceCanvasView(
 
 @Preview(showBackground = true, widthDp = 640, heightDp = 440)
 @Composable
+private fun SingleCellCanvasPreview() {
+    MaterialTheme {
+        WorkspaceCanvasView(
+            canvas = WorkspaceCanvasPreviewData.singleCellCanvas(),
+            selectedCellId = null,
+            onCellSelected = {},
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 640, heightDp = 440)
+@Composable
 private fun TwoCellCanvasPreview() {
     MaterialTheme {
         WorkspaceCanvasView(
