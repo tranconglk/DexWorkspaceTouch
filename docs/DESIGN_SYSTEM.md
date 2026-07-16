@@ -55,6 +55,18 @@ Workspace dùng `Dimensions.WorkspaceAspectRatio = 16 / 10`. Canvas phải dùng
 
 Cell ratio hợp lệ dùng `Dimensions.MinCellRatio = 0.2` và `Dimensions.MaxCellRatio = 0.8` ở lớp UI. Domain tiếp tục sở hữu validation riêng và không phụ thuộc design token.
 
+## Divider Snap
+
+Gesture kéo divider dùng `Dimensions.DividerSnapThreshold = 0.03` và các điểm snap chuẩn hóa:
+
+- 25%
+- 33⅓%
+- 50%
+- 66⅔%
+- 75%
+
+Snap chỉ áp dụng cho gesture drag. Các nút giảm/tăng 5% và reset 50% không đi qua Snap Engine.
+
 ## Design Token Rules
 
 1. UI mới phải dùng token thay cho literal `Dp`, elevation, shape, z-index và aspect ratio lặp lại.

@@ -22,10 +22,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -39,6 +44,7 @@ import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import com.trancong.dexworkspacetouch.ui.design.ZLayers
 import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceDivider
+import com.trancong.dexworkspacetouch.workspace.designer.model.snapRatio
 import kotlin.math.roundToInt
 
 @Composable
@@ -71,12 +77,16 @@ fun WorkspaceDividerView(
     val currentOnDragRatio by rememberUpdatedState(onDragRatio)
     val currentOnDragEnd by rememberUpdatedState(onDragEnd)
     val currentOnDragCancel by rememberUpdatedState(onDragCancel)
+    val hapticFeedback = LocalHapticFeedback.current
+    val currentHapticFeedback by rememberUpdatedState(hapticFeedback)
+    var displayedSnapPoint by remember(divider.id) { mutableStateOf<Float?>(null) }
     Box(
         modifier = modifier
             .zIndex(ZLayers.Divider)
             .pointerInput(divider.id, divider.direction) {
                 var startPointerCoordinate = 0f
                 var accumulatedDrag = 0f
+                var activeSnapPoint: Float? = null
                 detectDragGestures(
                     onDragStart = {
                         val activeDivider = currentDivider
@@ -85,10 +95,18 @@ fun WorkspaceDividerView(
                             SplitDirection.HORIZONTAL -> activeDivider.position * currentCanvasHeight
                         }
                         accumulatedDrag = 0f
+                        activeSnapPoint = null
+                        displayedSnapPoint = null
                         currentOnDragStart()
                     },
-                    onDragEnd = { currentOnDragEnd() },
-                    onDragCancel = { currentOnDragCancel() },
+                    onDragEnd = {
+                        displayedSnapPoint = null
+                        currentOnDragEnd()
+                    },
+                    onDragCancel = {
+                        displayedSnapPoint = null
+                        currentOnDragCancel()
+                    },
                 ) { change, dragAmount ->
                     change.consume()
                     val activeDivider = currentDivider
@@ -96,27 +114,38 @@ fun WorkspaceDividerView(
                         SplitDirection.VERTICAL -> dragAmount.x
                         SplitDirection.HORIZONTAL -> dragAmount.y
                     }
-                    currentOnDragRatio(
-                        pointerToDividerRatio(
-                            direction = activeDivider.direction,
-                            pointerX = if (activeDivider.direction == SplitDirection.VERTICAL) {
-                                startPointerCoordinate + accumulatedDrag
-                            } else {
-                                0f
-                            },
-                            pointerY = if (activeDivider.direction == SplitDirection.HORIZONTAL) {
-                                startPointerCoordinate + accumulatedDrag
-                            } else {
-                                0f
-                            },
-                            canvasWidth = currentCanvasWidth.coerceAtLeast(1f),
-                            canvasHeight = currentCanvasHeight.coerceAtLeast(1f),
-                            parentStart = activeDivider.parentStart,
-                            parentEnd = activeDivider.parentEnd,
-                            minRatio = Dimensions.MinCellRatio,
-                            maxRatio = Dimensions.MaxCellRatio,
-                        ),
+                    val rawRatio = pointerToDividerRatio(
+                        direction = activeDivider.direction,
+                        pointerX = if (activeDivider.direction == SplitDirection.VERTICAL) {
+                            startPointerCoordinate + accumulatedDrag
+                        } else {
+                            0f
+                        },
+                        pointerY = if (activeDivider.direction == SplitDirection.HORIZONTAL) {
+                            startPointerCoordinate + accumulatedDrag
+                        } else {
+                            0f
+                        },
+                        canvasWidth = currentCanvasWidth.coerceAtLeast(1f),
+                        canvasHeight = currentCanvasHeight.coerceAtLeast(1f),
+                        parentStart = activeDivider.parentStart,
+                        parentEnd = activeDivider.parentEnd,
+                        minRatio = Dimensions.MinCellRatio,
+                        maxRatio = Dimensions.MaxCellRatio,
                     )
+                    val snapResult = snapRatio(
+                        rawRatio = rawRatio,
+                        snapPoints = Dimensions.DividerSnapPoints,
+                        threshold = Dimensions.DividerSnapThreshold,
+                    )
+                    if (snapResult.snapPoint != activeSnapPoint) {
+                        if (snapResult.snapPoint != null) {
+                            currentHapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        }
+                        activeSnapPoint = snapResult.snapPoint
+                    }
+                    displayedSnapPoint = snapResult.snapPoint
+                    currentOnDragRatio(snapResult.ratio)
                 }
             },
         contentAlignment = Alignment.Center,
@@ -152,6 +181,7 @@ fun WorkspaceDividerView(
                 onIncrease = onIncrease,
                 onReset = onReset,
                 onClearSelection = onClearSelection,
+                snapped = displayedSnapPoint != null,
                 modifier = Modifier.fillMaxSize(),
             )
         }
@@ -165,6 +195,7 @@ private fun DividerActionOverlay(
     onIncrease: () -> Unit,
     onReset: () -> Unit,
     onClearSelection: () -> Unit,
+    snapped: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -177,14 +208,14 @@ private fun DividerActionOverlay(
                 modifier = Modifier.fillMaxSize().padding(Spacing.XS).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(Spacing.XS, Alignment.CenterVertically),
             ) {
-                DividerButtons(divider, onDecrease, onIncrease, onReset, onClearSelection)
+                DividerButtons(divider, onDecrease, onIncrease, onReset, onClearSelection, snapped)
             }
             SplitDirection.HORIZONTAL -> Row(
                 modifier = Modifier.fillMaxSize().padding(Spacing.XS).horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(Spacing.XS, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                DividerButtons(divider, onDecrease, onIncrease, onReset, onClearSelection)
+                DividerButtons(divider, onDecrease, onIncrease, onReset, onClearSelection, snapped)
             }
         }
     }
@@ -197,10 +228,12 @@ private fun DividerButtons(
     onIncrease: () -> Unit,
     onReset: () -> Unit,
     onClearSelection: () -> Unit,
+    snapped: Boolean,
 ) {
     DividerButton("−", divider.ratio > MIN_RATIO, onDecrease)
     DividerButton("+", divider.ratio < MAX_RATIO, onIncrease)
-    DividerButton("${(divider.ratio * 100f).roundToInt()}%", true, onReset)
+    val snapIndicator = if (snapped) " ✓" else ""
+    DividerButton("${(divider.ratio * 100f).roundToInt()}%$snapIndicator", true, onReset)
     DividerButton("Bỏ chọn", true, onClearSelection)
 }
 

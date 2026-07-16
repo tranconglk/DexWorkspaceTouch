@@ -6,6 +6,8 @@ object Dimensions {
     const val WorkspaceAspectRatio = 16f / 10f
     const val MinCellRatio = 0.2f
     const val MaxCellRatio = 0.8f
+    const val DividerSnapThreshold = 0.03f
+    val DividerSnapPoints = listOf(0.25f, 1f / 3f, 0.5f, 2f / 3f, 0.75f)
 
     val WorkspaceBorderWidth = 2.dp
     val CellBorderWidth = 1.dp

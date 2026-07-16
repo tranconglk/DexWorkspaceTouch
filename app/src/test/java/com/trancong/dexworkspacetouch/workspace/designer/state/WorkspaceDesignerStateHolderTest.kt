@@ -7,6 +7,7 @@ import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasValidator
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCell
 import com.trancong.dexworkspacetouch.workspace.designer.model.dividers
+import com.trancong.dexworkspacetouch.workspace.designer.model.snapRatio
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertFalse
@@ -14,6 +15,26 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class WorkspaceDesignerStateHolderTest {
+    @Test
+    fun repeatedUpdatesAroundOneSnapPointStillCreateOneHistoryEntry() {
+        val state = dividerState()
+        val original = state.canvas
+        val dividerId = original.dividers().single().id
+        val snapPoints = listOf(0.25f, 1f / 3f, 0.5f, 2f / 3f, 0.75f)
+
+        state.beginDividerResize(dividerId)
+        listOf(0.64f, 0.65f, 0.67f, 0.68f).forEach { rawRatio ->
+            state.updateDividerResize(snapRatio(rawRatio, snapPoints, 0.03f).ratio)
+        }
+        val snappedCanvas = state.canvas
+
+        assertTrue(state.commitDividerResize())
+        assertTrue(state.undo())
+        assertEquals(original, state.canvas)
+        assertFalse(state.canUndo)
+        assertTrue(state.redo())
+        assertEquals(snappedCanvas, state.canvas)
+    }
     @Test
     fun dividerDragWithManyUpdatesCreatesOneHistoryEntryAndSupportsRedo() {
         val state = dividerState()
@@ -79,7 +100,7 @@ class WorkspaceDesignerStateHolderTest {
         val dividerId = state.canvas.dividers().single().id
 
         state.beginDividerResize(dividerId)
-        state.updateDividerResize(0.6f)
+        state.updateDividerResize(snapRatio(0.74f, SNAP_POINTS, 0.03f).ratio)
         state.commitDividerResize()
 
         assertEquals(app, state.canvas.cells.first().app)
@@ -94,7 +115,7 @@ class WorkspaceDesignerStateHolderTest {
         val dividerId = nested.dividers().single { it.direction == SplitDirection.VERTICAL }.id
 
         state.beginDividerResize(dividerId)
-        state.updateDividerResize(0.65f)
+        state.updateDividerResize(snapRatio(0.65f, SNAP_POINTS, 0.03f).ratio)
 
         assertTrue(WorkspaceCanvasValidator().validate(state.canvas).isEmpty())
         assertTrue(state.commitDividerResize())
@@ -307,5 +328,9 @@ class WorkspaceDesignerStateHolderTest {
         val canvas = com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasEditor()
             .splitCell(source, "cell", SplitDirection.VERTICAL)
         return WorkspaceDesignerStateHolder(canvas)
+    }
+
+    private companion object {
+        val SNAP_POINTS = listOf(0.25f, 1f / 3f, 0.5f, 2f / 3f, 0.75f)
     }
 }
