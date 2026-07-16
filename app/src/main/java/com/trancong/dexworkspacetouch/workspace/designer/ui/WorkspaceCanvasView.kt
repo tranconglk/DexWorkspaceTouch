@@ -10,22 +10,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
+import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceDivider
+import com.trancong.dexworkspacetouch.workspace.designer.model.dividers
+import kotlin.math.roundToInt
 
 @Composable
 fun WorkspaceCanvasView(
     canvas: WorkspaceCanvas,
     selectedCellId: String?,
+    selectedDividerId: String?,
     onCellSelected: (String) -> Unit,
+    onDividerSelected: (String) -> Unit,
+    onDividerRatioChanged: (String, Float) -> Unit,
+    onClearDividerSelection: () -> Unit,
     onChooseApp: (String) -> Unit,
     onSplit: (SplitDirection) -> Unit,
     onClearSelection: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val canvasShape = RoundedCornerShape(16.dp)
+    val dividers = canvas.dividers()
+    val dividerHitSize = with(LocalDensity.current) { 64.dp.roundToPx() }
     Layout(
         content = {
             canvas.cells.forEach { cell ->
@@ -37,6 +47,21 @@ fun WorkspaceCanvasView(
                     onChooseApp = { onChooseApp(cell.id) },
                     onSplit = onSplit,
                     onClearSelection = onClearSelection,
+                )
+            }
+            dividers.forEach { divider ->
+                WorkspaceDividerView(
+                    divider = divider,
+                    selected = divider.id == selectedDividerId,
+                    onClick = { onDividerSelected(divider.id) },
+                    onDecrease = {
+                        onDividerRatioChanged(divider.id, divider.ratio.stepBy(-RATIO_STEP))
+                    },
+                    onIncrease = {
+                        onDividerRatioChanged(divider.id, divider.ratio.stepBy(RATIO_STEP))
+                    },
+                    onReset = { onDividerRatioChanged(divider.id, 0.5f) },
+                    onClearSelection = onClearDividerSelection,
                 )
             }
         },
@@ -51,7 +76,7 @@ fun WorkspaceCanvasView(
         val placements = canvas.cells.map { cell ->
             cell.bounds.toComposePlacement(canvasWidth.toFloat(), canvasHeight.toFloat())
         }
-        val placeables = measurables.mapIndexed { index, measurable ->
+        val cellPlaceables = measurables.take(canvas.cells.size).mapIndexed { index, measurable ->
             val placement = placements[index]
             measurable.measure(
                 constraints.copy(
@@ -62,9 +87,27 @@ fun WorkspaceCanvasView(
                 ),
             )
         }
+        val dividerPlacements = dividers.map { divider ->
+            divider.toPlacement(canvasWidth, canvasHeight, dividerHitSize)
+        }
+        val dividerPlaceables = measurables.drop(canvas.cells.size).mapIndexed { index, measurable ->
+            val placement = dividerPlacements[index]
+            measurable.measure(
+                constraints.copy(
+                    minWidth = placement.width,
+                    maxWidth = placement.width,
+                    minHeight = placement.height,
+                    maxHeight = placement.height,
+                ),
+            )
+        }
         layout(canvasWidth, canvasHeight) {
-            placeables.forEachIndexed { index, placeable ->
+            cellPlaceables.forEachIndexed { index, placeable ->
                 val placement = placements[index]
+                placeable.placeRelative(placement.x, placement.y)
+            }
+            dividerPlaceables.forEachIndexed { index, placeable ->
+                val placement = dividerPlacements[index]
                 placeable.placeRelative(placement.x, placement.y)
             }
         }
@@ -78,7 +121,11 @@ private fun SingleCellCanvasPreview() {
         WorkspaceCanvasView(
             canvas = WorkspaceCanvasPreviewData.singleCellCanvas(),
             selectedCellId = null,
+            selectedDividerId = null,
             onCellSelected = {},
+            onDividerSelected = {},
+            onDividerRatioChanged = { _, _ -> },
+            onClearDividerSelection = {},
             onChooseApp = {},
             onSplit = {},
             onClearSelection = {},
@@ -94,7 +141,11 @@ private fun TwoCellCanvasPreview() {
         WorkspaceCanvasView(
             canvas = WorkspaceCanvasPreviewData.twoVerticalCellsCanvas(),
             selectedCellId = null,
+            selectedDividerId = null,
             onCellSelected = {},
+            onDividerSelected = {},
+            onDividerRatioChanged = { _, _ -> },
+            onClearDividerSelection = {},
             onChooseApp = {},
             onSplit = {},
             onClearSelection = {},
@@ -110,7 +161,11 @@ private fun ThreeCellSelectedCanvasPreview() {
         WorkspaceCanvasView(
             canvas = WorkspaceCanvasPreviewData.threeCellsCanvas(),
             selectedCellId = "top-right",
+            selectedDividerId = null,
             onCellSelected = {},
+            onDividerSelected = {},
+            onDividerRatioChanged = { _, _ -> },
+            onClearDividerSelection = {},
             onChooseApp = {},
             onSplit = {},
             onClearSelection = {},
@@ -118,3 +173,33 @@ private fun ThreeCellSelectedCanvasPreview() {
         )
     }
 }
+
+private fun WorkspaceDivider.toPlacement(
+    canvasWidth: Int,
+    canvasHeight: Int,
+    requestedHitSize: Int,
+): ComposePlacement = when (direction) {
+    SplitDirection.VERTICAL -> {
+        val hitSize = requestedHitSize.coerceAtMost(canvasWidth).coerceAtLeast(1)
+        val y = (start * canvasHeight).roundToInt().coerceIn(0, canvasHeight - 1)
+        val bottom = (end * canvasHeight).roundToInt().coerceIn(y + 1, canvasHeight)
+        val x = (position * canvasWidth).roundToInt()
+            .minus(hitSize / 2)
+            .coerceIn(0, canvasWidth - hitSize)
+        ComposePlacement(x, y, hitSize, bottom - y)
+    }
+    SplitDirection.HORIZONTAL -> {
+        val hitSize = requestedHitSize.coerceAtMost(canvasHeight).coerceAtLeast(1)
+        val x = (start * canvasWidth).roundToInt().coerceIn(0, canvasWidth - 1)
+        val right = (end * canvasWidth).roundToInt().coerceIn(x + 1, canvasWidth)
+        val y = (position * canvasHeight).roundToInt()
+            .minus(hitSize / 2)
+            .coerceIn(0, canvasHeight - hitSize)
+        ComposePlacement(x, y, right - x, hitSize)
+    }
+}
+
+private fun Float.stepBy(delta: Float): Float =
+    (((this * 100f).roundToInt() + (delta * 100f).roundToInt()) / 100f).coerceIn(0.2f, 0.8f)
+
+private const val RATIO_STEP = 0.05f

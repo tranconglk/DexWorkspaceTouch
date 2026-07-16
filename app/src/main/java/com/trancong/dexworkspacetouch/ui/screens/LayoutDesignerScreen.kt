@@ -102,7 +102,11 @@ fun LayoutDesignerScreen(
                         WorkspaceCanvasView(
                             canvas = state.canvas,
                             selectedCellId = state.selectedCellId,
+                            selectedDividerId = state.selectedDividerId,
                             onCellSelected = state::selectCell,
+                            onDividerSelected = state::selectDivider,
+                            onDividerRatioChanged = state::resizeDivider,
+                            onClearDividerSelection = state::clearDividerSelection,
                             onChooseApp = onOpenAppPicker,
                             onSplit = { state.splitSelectedCell(it) },
                             onClearSelection = state::clearSelection,

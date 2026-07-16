@@ -10,6 +10,7 @@ class WorkspaceDesignerViewModel : ViewModel() {
 
     val canvas: WorkspaceCanvas get() = stateHolder.canvas
     val selectedCellId: String? get() = stateHolder.selectedCellId
+    val selectedDividerId: String? get() = stateHolder.selectedDividerId
     val canUndo: Boolean get() = stateHolder.canUndo
     val canRedo: Boolean get() = stateHolder.canRedo
 
@@ -18,6 +19,13 @@ class WorkspaceDesignerViewModel : ViewModel() {
     fun assignApp(cellId: String, app: AssignedApp) = stateHolder.assignApp(cellId, app)
 
     fun clearSelection() = stateHolder.clearSelection()
+
+    fun selectDivider(dividerId: String) = stateHolder.selectDivider(dividerId)
+
+    fun clearDividerSelection() = stateHolder.clearDividerSelection()
+
+    fun resizeDivider(dividerId: String, ratio: Float): Boolean =
+        stateHolder.resizeDivider(dividerId, ratio)
 
     fun splitSelectedCell(direction: SplitDirection): SplitResult =
         stateHolder.splitSelectedCell(direction)

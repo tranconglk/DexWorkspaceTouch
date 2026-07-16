@@ -28,6 +28,51 @@ class WorkspaceCanvasEditor(
         return result
     }
 
+    fun resizeDivider(
+        canvas: WorkspaceCanvas,
+        dividerId: String,
+        ratio: Float,
+    ): WorkspaceCanvas {
+        require(ratio in MIN_RATIO..MAX_RATIO) { "ratio must be in 0.2f..0.8f" }
+        require(validator.validate(canvas).isEmpty()) { "canvas must be valid before resizing" }
+        val divider = canvas.dividers().firstOrNull { it.id == dividerId }
+            ?: throw IllegalArgumentException("Divider '$dividerId' does not exist")
+
+        val cellsById = canvas.cells.associateBy(WorkspaceCell::id)
+        val outerStart: Float
+        val outerEnd: Float
+        when (divider.direction) {
+            SplitDirection.VERTICAL -> {
+                outerStart = divider.firstCellIds.minOf { cellsById.getValue(it).bounds.left }
+                outerEnd = divider.secondCellIds.maxOf { cellsById.getValue(it).bounds.right }
+            }
+            SplitDirection.HORIZONTAL -> {
+                outerStart = divider.firstCellIds.minOf { cellsById.getValue(it).bounds.top }
+                outerEnd = divider.secondCellIds.maxOf { cellsById.getValue(it).bounds.bottom }
+            }
+        }
+        val position = outerStart + (outerEnd - outerStart) * ratio
+        val result = WorkspaceCanvas(canvas.cells.map { cell ->
+            when {
+                cell.id in divider.firstCellIds -> cell.copy(
+                    bounds = when (divider.direction) {
+                        SplitDirection.VERTICAL -> cell.bounds.copy(right = position)
+                        SplitDirection.HORIZONTAL -> cell.bounds.copy(bottom = position)
+                    },
+                )
+                cell.id in divider.secondCellIds -> cell.copy(
+                    bounds = when (divider.direction) {
+                        SplitDirection.VERTICAL -> cell.bounds.copy(left = position)
+                        SplitDirection.HORIZONTAL -> cell.bounds.copy(top = position)
+                    },
+                )
+                else -> cell
+            }
+        })
+        check(validator.validate(result).isEmpty()) { "resize produced an invalid canvas" }
+        return result
+    }
+
     private fun NormalizedBounds.split(
         direction: SplitDirection,
         ratio: Float,

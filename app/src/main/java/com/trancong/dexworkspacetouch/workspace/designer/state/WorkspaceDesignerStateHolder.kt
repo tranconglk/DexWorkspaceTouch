@@ -8,6 +8,7 @@ import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasEditor
 import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.assignApp
+import com.trancong.dexworkspacetouch.workspace.designer.model.dividers
 
 class WorkspaceDesignerStateHolder(
     initialCanvas: WorkspaceCanvas,
@@ -19,6 +20,9 @@ class WorkspaceDesignerStateHolder(
     var selectedCellId by mutableStateOf<String?>(null)
         private set
 
+    var selectedDividerId by mutableStateOf<String?>(null)
+        private set
+
     private var undoHistory by mutableStateOf<List<WorkspaceCanvas>>(emptyList())
     private var redoHistory by mutableStateOf<List<WorkspaceCanvas>>(emptyList())
 
@@ -28,15 +32,35 @@ class WorkspaceDesignerStateHolder(
     fun selectCell(cellId: String) {
         require(canvas.cells.any { it.id == cellId }) { "Cell '$cellId' does not exist" }
         selectedCellId = cellId
+        selectedDividerId = null
     }
 
     fun assignApp(cellId: String, app: AssignedApp) {
         updateCanvas(canvas.assignApp(cellId, app))
         selectedCellId = cellId
+        selectedDividerId = null
     }
 
     fun clearSelection() {
         selectedCellId = null
+        selectedDividerId = null
+    }
+
+    fun selectDivider(dividerId: String) {
+        require(canvas.dividers().any { it.id == dividerId }) { "Divider '$dividerId' does not exist" }
+        selectedDividerId = dividerId
+        selectedCellId = null
+    }
+
+    fun clearDividerSelection() {
+        selectedDividerId = null
+    }
+
+    fun resizeDivider(dividerId: String, ratio: Float): Boolean {
+        val changed = updateCanvas(editor.resizeDivider(canvas, dividerId, ratio))
+        selectedDividerId = dividerId
+        selectedCellId = null
+        return changed
     }
 
     fun splitSelectedCell(direction: SplitDirection): SplitResult {
@@ -56,6 +80,7 @@ class WorkspaceDesignerStateHolder(
         updateCanvas(updatedCanvas)
         val firstCellId = canvas.cells[sourceIndex].id
         selectedCellId = firstCellId
+        selectedDividerId = null
         return SplitResult.Success(firstCellId)
     }
 
@@ -96,6 +121,9 @@ class WorkspaceDesignerStateHolder(
     private fun reconcileSelection() {
         selectedCellId = selectedCellId?.takeIf { selectedId ->
             canvas.cells.any { it.id == selectedId }
+        }
+        selectedDividerId = selectedDividerId?.takeIf { selectedId ->
+            canvas.dividers().any { it.id == selectedId }
         }
     }
 

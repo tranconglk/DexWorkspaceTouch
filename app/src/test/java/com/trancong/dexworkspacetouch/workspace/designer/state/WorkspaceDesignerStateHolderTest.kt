@@ -6,6 +6,7 @@ import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasValidator
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCell
+import com.trancong.dexworkspacetouch.workspace.designer.model.dividers
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertFalse
@@ -13,6 +14,34 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class WorkspaceDesignerStateHolderTest {
+    @Test
+    fun dividerResizeParticipatesInUndoAndRedoHistory() {
+        val state = selectedSingleCellState()
+        state.splitSelectedCell(SplitDirection.VERTICAL)
+        val dividerId = state.canvas.dividers().single().id
+        state.selectDivider(dividerId)
+
+        assertTrue(state.resizeDivider(dividerId, 0.55f))
+        assertEquals(0.55f, state.canvas.dividers().single().ratio, 0.0001f)
+        assertEquals(dividerId, state.selectedDividerId)
+        assertTrue(state.undo())
+        assertEquals(0.5f, state.canvas.dividers().single().ratio, 0.0001f)
+        assertTrue(state.redo())
+        assertEquals(0.55f, state.canvas.dividers().single().ratio, 0.0001f)
+    }
+
+    @Test
+    fun selectingDividerClearsCellSelectionAndCanBeCleared() {
+        val state = selectedSingleCellState()
+        state.splitSelectedCell(SplitDirection.VERTICAL)
+        val dividerId = state.canvas.dividers().single().id
+
+        state.selectDivider(dividerId)
+        assertEquals(null, state.selectedCellId)
+        assertEquals(dividerId, state.selectedDividerId)
+        state.clearDividerSelection()
+        assertEquals(null, state.selectedDividerId)
+    }
     @Test fun splitsSelectedCellHorizontally() {
         val state = selectedSingleCellState()
         assertTrue(state.splitSelectedCell(SplitDirection.HORIZONTAL) is SplitResult.Success)
