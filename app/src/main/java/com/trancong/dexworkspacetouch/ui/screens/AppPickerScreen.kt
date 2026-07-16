@@ -4,16 +4,21 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -39,14 +44,34 @@ fun AppPickerScreen(
     onBack: () -> Unit,
     onAppSelected: (String, AssignedApp) -> Unit,
 ) {
-    if (cellId == null) {
-        InvalidAppPickerRoute(onBack = onBack)
-        return
-    }
+    Scaffold(contentWindowInsets = WindowInsets.safeDrawing) { innerPadding ->
+        if (cellId == null) {
+            InvalidAppPickerRoute(
+                onBack = onBack,
+                modifier = Modifier.padding(innerPadding),
+            )
+            return@Scaffold
+        }
 
+        AppPickerContent(
+            cellId = cellId,
+            onBack = onBack,
+            onAppSelected = onAppSelected,
+            modifier = Modifier.padding(innerPadding),
+        )
+    }
+}
+
+@Composable
+private fun AppPickerContent(
+    cellId: String,
+    onBack: () -> Unit,
+    onAppSelected: (String, AssignedApp) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     var query by rememberSaveable { mutableStateOf("") }
     val apps = DemoApps.search(query)
-    Column(Modifier.fillMaxSize().padding(horizontal = 24.dp)) {
+    Column(modifier.fillMaxSize().imePadding().padding(horizontal = 24.dp)) {
         TextButton(
             onClick = onBack,
             modifier = Modifier.heightIn(min = 56.dp),
@@ -65,10 +90,14 @@ fun AppPickerScreen(
         )
         if (apps.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Không tìm thấy ứng dụng phù hợp")
+                Text("Không tìm thấy ứng dụng phù hợp.")
             }
         } else {
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(bottom = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
                 items(apps, key = DemoApp::packageName) { app ->
                     DemoAppItem(
                         app = app,
@@ -104,12 +133,12 @@ private fun DemoAppItem(app: DemoApp, onClick: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Surface(
-                modifier = Modifier.size(52.dp),
+                modifier = Modifier.size(32.dp),
                 shape = CircleShape,
                 color = MaterialTheme.colorScheme.primaryContainer,
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text(app.label.take(1), style = MaterialTheme.typography.titleLarge)
+                    Text(app.label.take(1), style = MaterialTheme.typography.titleMedium)
                 }
             }
             Text(app.label, style = MaterialTheme.typography.titleMedium)
@@ -118,9 +147,12 @@ private fun DemoAppItem(app: DemoApp, onClick: () -> Unit) {
 }
 
 @Composable
-private fun InvalidAppPickerRoute(onBack: () -> Unit) {
+private fun InvalidAppPickerRoute(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
+        modifier = modifier.fillMaxSize().padding(24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

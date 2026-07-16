@@ -120,6 +120,14 @@ class WorkspaceDesignerStateHolderTest {
         assertEquals(original, state.canvas)
     }
 
+    @Test fun assigningAppKeepsRequestedCellSelected() {
+        val state = selectedSingleCellState()
+        state.assignApp("cell", assignedApp("Chrome", 1))
+
+        assertEquals("cell", state.selectedCellId)
+        assertEquals("Chrome", state.canvas.cells.single().app?.label)
+    }
+
     @Test fun redoRestoresUndoneChange() {
         val state = selectedSingleCellState()
         state.assignApp("cell", assignedApp("Chrome", 1))

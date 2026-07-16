@@ -1,15 +1,14 @@
 package com.trancong.dexworkspacetouch.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.trancong.dexworkspacetouch.ui.screens.AppPickerScreen
 import com.trancong.dexworkspacetouch.ui.screens.HomeScreen
 import com.trancong.dexworkspacetouch.ui.screens.LayoutDesignerScreen
-import com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerStateHolder
-import com.trancong.dexworkspacetouch.workspace.designer.ui.WorkspaceCanvasPreviewData
+import com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerViewModel
 
 private object Routes {
     const val Home = "home"
@@ -20,9 +19,7 @@ private object Routes {
 @Composable
 fun TouchNavigation() {
     val navController = rememberNavController()
-    val designerState = remember {
-        WorkspaceDesignerStateHolder(WorkspaceCanvasPreviewData.threeCellsCanvas())
-    }
+    val designerViewModel: WorkspaceDesignerViewModel = viewModel()
     NavHost(navController = navController, startDestination = Routes.Home) {
         composable(Routes.Home) {
             HomeScreen(
@@ -32,7 +29,7 @@ fun TouchNavigation() {
         }
         composable(Routes.LayoutDesigner) {
             LayoutDesignerScreen(
-                state = designerState,
+                state = designerViewModel,
                 onBack = navController::navigateUp,
                 onOpenAppPicker = { cellId ->
                     navController.navigate("${Routes.AppPicker}/$cellId")
@@ -42,13 +39,13 @@ fun TouchNavigation() {
         composable("${Routes.AppPicker}/{cellId}") { backStackEntry ->
             val requestedCellId = backStackEntry.arguments?.getString("cellId")
             val validCellId = requestedCellId?.takeIf { cellId ->
-                designerState.canvas.cells.any { it.id == cellId }
+                designerViewModel.canvas.cells.any { it.id == cellId }
             }
             AppPickerScreen(
                 cellId = validCellId,
                 onBack = navController::navigateUp,
                 onAppSelected = { cellId, app ->
-                    designerState.assignApp(cellId, app)
+                    designerViewModel.assignApp(cellId, app)
                     navController.navigateUp()
                 },
             )

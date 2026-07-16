@@ -3,8 +3,10 @@ package com.trancong.dexworkspacetouch.workspace.designer.ui
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -25,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.trancong.dexworkspacetouch.workspace.designer.model.AssignedApp
 import com.trancong.dexworkspacetouch.workspace.designer.model.NormalizedBounds
+import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCell
 
 @Composable
@@ -32,10 +35,14 @@ fun WorkspaceCellView(
     cell: WorkspaceCell,
     selected: Boolean,
     onClick: () -> Unit,
+    cellCount: Int,
+    onChooseApp: () -> Unit,
+    onSplit: (SplitDirection) -> Unit,
+    onClearSelection: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val description = cell.app?.let { "${it.label}. Chạm để chọn ô." }
-        ?: "Ô trống. Chạm để chọn ứng dụng."
+        ?: "Ô trống. Chạm để chọn ô."
     val border = if (selected) {
         BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
     } else {
@@ -45,7 +52,7 @@ fun WorkspaceCellView(
     Card(
         modifier = modifier
             .clip(RoundedCornerShape(6.dp))
-            .semantics(mergeDescendants = true) {
+            .semantics(mergeDescendants = false) {
                 contentDescription = description
                 if (selected) stateDescription = "Đang được chọn"
             }
@@ -60,28 +67,52 @@ fun WorkspaceCellView(
             },
         ),
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            if (cell.app == null) {
-                Text(
-                    text = "+",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                Text(
-                    text = "Chạm để chọn ứng dụng",
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                )
-            } else {
-                Text(
-                    text = cell.app.label,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center,
+        Box(Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        start = 12.dp,
+                        top = 12.dp,
+                        end = 12.dp,
+                        bottom = if (selected) 72.dp else 12.dp,
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                if (cell.app == null) {
+                    Text(
+                        text = "+",
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    Text(
+                        text = "Chạm để chọn ứng dụng",
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                    )
+                } else {
+                    Text(
+                        text = cell.app.label,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+            if (selected) {
+                val maximumReached = cellCount >= 4
+                val canSplitHorizontal = !maximumReached && cell.bounds.height / 2f >= 0.2f
+                val canSplitVertical = !maximumReached && cell.bounds.width / 2f >= 0.2f
+                WorkspaceCellActionOverlay(
+                    cell = cell,
+                    canSplitHorizontal = canSplitHorizontal,
+                    canSplitVertical = canSplitVertical,
+                    onChooseApp = onChooseApp,
+                    onSplitHorizontal = { onSplit(SplitDirection.HORIZONTAL) },
+                    onSplitVertical = { onSplit(SplitDirection.VERTICAL) },
+                    onClearSelection = onClearSelection,
+                    modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth(),
                 )
             }
         }
@@ -96,6 +127,10 @@ private fun EmptyWorkspaceCellPreview() {
             cell = WorkspaceCell("empty", NormalizedBounds.FullCanvas),
             selected = false,
             onClick = {},
+            cellCount = 1,
+            onChooseApp = {},
+            onSplit = {},
+            onClearSelection = {},
             modifier = Modifier.fillMaxSize(),
         )
     }
@@ -113,6 +148,10 @@ private fun AssignedWorkspaceCellPreview() {
             ),
             selected = true,
             onClick = {},
+            cellCount = 1,
+            onChooseApp = {},
+            onSplit = {},
+            onClearSelection = {},
             modifier = Modifier.fillMaxSize(),
         )
     }

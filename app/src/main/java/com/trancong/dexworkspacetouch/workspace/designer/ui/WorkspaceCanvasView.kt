@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 
 @Composable
@@ -19,6 +20,9 @@ fun WorkspaceCanvasView(
     canvas: WorkspaceCanvas,
     selectedCellId: String?,
     onCellSelected: (String) -> Unit,
+    onChooseApp: (String) -> Unit,
+    onSplit: (SplitDirection) -> Unit,
+    onClearSelection: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val canvasShape = RoundedCornerShape(16.dp)
@@ -29,6 +33,10 @@ fun WorkspaceCanvasView(
                     cell = cell,
                     selected = cell.id == selectedCellId,
                     onClick = { onCellSelected(cell.id) },
+                    cellCount = canvas.cells.size,
+                    onChooseApp = { onChooseApp(cell.id) },
+                    onSplit = onSplit,
+                    onClearSelection = onClearSelection,
                 )
             }
         },
@@ -71,6 +79,9 @@ private fun SingleCellCanvasPreview() {
             canvas = WorkspaceCanvasPreviewData.singleCellCanvas(),
             selectedCellId = null,
             onCellSelected = {},
+            onChooseApp = {},
+            onSplit = {},
+            onClearSelection = {},
             modifier = Modifier.fillMaxWidth(),
         )
     }
@@ -84,6 +95,9 @@ private fun TwoCellCanvasPreview() {
             canvas = WorkspaceCanvasPreviewData.twoVerticalCellsCanvas(),
             selectedCellId = null,
             onCellSelected = {},
+            onChooseApp = {},
+            onSplit = {},
+            onClearSelection = {},
             modifier = Modifier.fillMaxWidth(),
         )
     }
@@ -97,6 +111,9 @@ private fun ThreeCellSelectedCanvasPreview() {
             canvas = WorkspaceCanvasPreviewData.threeCellsCanvas(),
             selectedCellId = "top-right",
             onCellSelected = {},
+            onChooseApp = {},
+            onSplit = {},
+            onClearSelection = {},
             modifier = Modifier.fillMaxWidth(),
         )
     }
