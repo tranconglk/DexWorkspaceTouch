@@ -26,6 +26,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.trancong.dexworkspacetouch.ui.design.DesignerElevation
+import com.trancong.dexworkspacetouch.ui.design.Dimensions
+import com.trancong.dexworkspacetouch.ui.design.InteractionZones
+import com.trancong.dexworkspacetouch.ui.design.Spacing
+import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerViewModel
 import com.trancong.dexworkspacetouch.workspace.designer.ui.WorkspaceCanvasView
 import com.trancong.dexworkspacetouch.workspace.designer.ui.layout.fitSize
@@ -45,19 +50,22 @@ fun LayoutDesignerScreen(
                 modifier = Modifier.windowInsetsPadding(
                     WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom),
                 ),
-                tonalElevation = 3.dp,
+                tonalElevation = DesignerElevation.BottomBar,
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth().padding(
+                        horizontal = Spacing.L,
+                        vertical = InteractionZones.DeadZone,
+                    ),
+                    horizontalArrangement = Arrangement.spacedBy(InteractionZones.DeadZone),
                 ) {
                     OutlinedButton(
                         onClick = {},
-                        modifier = Modifier.weight(1f).height(64.dp),
+                        modifier = Modifier.weight(1f).height(TouchTargets.PrimaryButton),
                     ) { Text("Mở") }
                     Button(
                         onClick = {},
-                        modifier = Modifier.weight(1f).height(64.dp),
+                        modifier = Modifier.weight(1f).height(TouchTargets.PrimaryButton),
                     ) { Text("Lưu") }
                 }
             }
@@ -67,34 +75,34 @@ fun LayoutDesignerScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = Spacing.L),
         ) {
             TextButton(onClick = onBack) { Text("Quay lại") }
             Text("Thiết kế workspace")
             Row(
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth().padding(top = Spacing.S),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.S),
             ) {
                 OutlinedButton(
                     onClick = { state.undo() },
                     enabled = state.canUndo,
-                    modifier = Modifier.weight(1f).heightIn(min = 56.dp),
+                    modifier = Modifier.weight(1f).heightIn(min = TouchTargets.SecondaryButton),
                 ) { Text("↶ Undo") }
                 OutlinedButton(
                     onClick = { state.redo() },
                     enabled = state.canRedo,
-                    modifier = Modifier.weight(1f).heightIn(min = 56.dp),
+                    modifier = Modifier.weight(1f).heightIn(min = TouchTargets.SecondaryButton),
                 ) { Text("↷ Redo") }
             }
             BoxWithConstraints(
-                modifier = Modifier.fillMaxWidth().weight(1f).padding(vertical = 12.dp),
+                modifier = Modifier.fillMaxWidth().weight(1f).padding(vertical = InteractionZones.DeadZone),
                 contentAlignment = Alignment.Center,
             ) {
                 if (maxWidth > 0.dp && maxHeight > 0.dp) {
                     val fittedSize = fitSize(
                         availableWidth = maxWidth.value,
                         availableHeight = maxHeight.value,
-                        aspectRatio = CANVAS_ASPECT_RATIO,
+                        aspectRatio = Dimensions.WorkspaceAspectRatio,
                     )
                     Box(
                         modifier = Modifier.size(fittedSize.width.dp, fittedSize.height.dp),
@@ -118,5 +126,3 @@ fun LayoutDesignerScreen(
         }
     }
 }
-
-private const val CANVAS_ASPECT_RATIO = 16f / 10f

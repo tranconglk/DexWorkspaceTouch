@@ -5,6 +5,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,7 +25,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import com.trancong.dexworkspacetouch.ui.design.DesignerColors
+import com.trancong.dexworkspacetouch.ui.design.DesignerElevation
+import com.trancong.dexworkspacetouch.ui.design.Dimensions
+import com.trancong.dexworkspacetouch.ui.design.Spacing
+import com.trancong.dexworkspacetouch.ui.design.TouchTargets
+import com.trancong.dexworkspacetouch.ui.design.ZLayers
 import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceDivider
 import kotlin.math.roundToInt
@@ -41,9 +47,10 @@ fun WorkspaceDividerView(
     onClearSelection: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val lineColor = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+    val lineColor = if (selected) DesignerColors.Selection else DesignerColors.Divider
     Box(
         modifier = modifier
+            .zIndex(ZLayers.Divider)
             .semantics(mergeDescendants = false) {
                 contentDescription = "Vách ngăn ${(divider.ratio * 100f).roundToInt()} phần trăm"
             }
@@ -53,8 +60,8 @@ fun WorkspaceDividerView(
         Box(
             Modifier.then(
                 when (divider.direction) {
-                    SplitDirection.VERTICAL -> Modifier.width(3.dp).fillMaxHeight()
-                    SplitDirection.HORIZONTAL -> Modifier.fillMaxWidth().height(3.dp)
+                    SplitDirection.VERTICAL -> Modifier.width(Dimensions.DividerLineWidth).fillMaxHeight()
+                    SplitDirection.HORIZONTAL -> Modifier.fillMaxWidth().height(Dimensions.DividerLineWidth)
                 },
             ).align(Alignment.Center),
         ) {
@@ -84,19 +91,19 @@ private fun DividerActionOverlay(
 ) {
     Surface(
         modifier = modifier,
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0f),
-        tonalElevation = 4.dp,
+        color = DesignerColors.ActionOverlayBackground.copy(alpha = 0f),
+        tonalElevation = DesignerElevation.DividerOverlay,
     ) {
         when (divider.direction) {
             SplitDirection.VERTICAL -> Column(
-                modifier = Modifier.fillMaxSize().padding(4.dp).verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
+                modifier = Modifier.fillMaxSize().padding(Spacing.XS).verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(Spacing.XS, Alignment.CenterVertically),
             ) {
                 DividerButtons(divider, onDecrease, onIncrease, onReset, onClearSelection)
             }
             SplitDirection.HORIZONTAL -> Row(
-                modifier = Modifier.fillMaxSize().padding(4.dp).horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                modifier = Modifier.fillMaxSize().padding(Spacing.XS).horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.XS, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 DividerButtons(divider, onDecrease, onIncrease, onReset, onClearSelection)
@@ -124,12 +131,12 @@ private fun DividerButton(label: String, enabled: Boolean, onClick: () -> Unit) 
     OutlinedButton(
         onClick = onClick,
         enabled = enabled,
-        modifier = Modifier.heightIn(min = 56.dp),
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),
+        modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+        contentPadding = PaddingValues(horizontal = Spacing.S),
     ) {
         Text(label)
     }
 }
 
-private const val MIN_RATIO = 0.2f
-private const val MAX_RATIO = 0.8f
+private const val MIN_RATIO = Dimensions.MinCellRatio
+private const val MAX_RATIO = Dimensions.MaxCellRatio

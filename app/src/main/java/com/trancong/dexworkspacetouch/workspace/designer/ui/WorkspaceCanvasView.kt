@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,9 +11,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import com.trancong.dexworkspacetouch.ui.design.DesignerColors
+import com.trancong.dexworkspacetouch.ui.design.DesignerShapes
+import com.trancong.dexworkspacetouch.ui.design.Dimensions
+import com.trancong.dexworkspacetouch.ui.design.InteractionZones
+import com.trancong.dexworkspacetouch.ui.design.TouchTargets
+import com.trancong.dexworkspacetouch.ui.design.ZLayers
 import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
+import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCell
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceDivider
 import com.trancong.dexworkspacetouch.workspace.designer.model.dividers
 import kotlin.math.roundToInt
@@ -33,9 +39,14 @@ fun WorkspaceCanvasView(
     onClearSelection: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val canvasShape = RoundedCornerShape(16.dp)
+    val canvasShape = DesignerShapes.Workspace
     val dividers = canvas.dividers()
-    val dividerHitSize = with(LocalDensity.current) { 64.dp.roundToPx() }
+    val selectedCell = selectedCellId?.let { selectedId ->
+        canvas.cells.firstOrNull { it.id == selectedId }
+    }
+    val dividerHitSize = with(LocalDensity.current) { InteractionZones.DividerHitArea.roundToPx() }
+    val actionBaseInset = with(LocalDensity.current) { InteractionZones.SafeActionInset.roundToPx() }
+    val minimumActionSize = with(LocalDensity.current) { TouchTargets.SecondaryButton.roundToPx() }
     Layout(
         content = {
             canvas.cells.forEach { cell ->
@@ -43,10 +54,7 @@ fun WorkspaceCanvasView(
                     cell = cell,
                     selected = cell.id == selectedCellId,
                     onClick = { onCellSelected(cell.id) },
-                    cellCount = canvas.cells.size,
-                    onChooseApp = { onChooseApp(cell.id) },
-                    onSplit = onSplit,
-                    onClearSelection = onClearSelection,
+                    modifier = Modifier.zIndex(ZLayers.Cell),
                 )
             }
             dividers.forEach { divider ->
@@ -64,12 +72,27 @@ fun WorkspaceCanvasView(
                     onClearSelection = onClearDividerSelection,
                 )
             }
+            selectedCell?.let { cell ->
+                val maximumReached = canvas.cells.size >= 4
+                WorkspaceCellActionOverlay(
+                    cell = cell,
+                    canSplitHorizontal = !maximumReached &&
+                        cell.bounds.height / 2f >= Dimensions.MinCellRatio,
+                    canSplitVertical = !maximumReached &&
+                        cell.bounds.width / 2f >= Dimensions.MinCellRatio,
+                    onChooseApp = { onChooseApp(cell.id) },
+                    onSplitHorizontal = { onSplit(SplitDirection.HORIZONTAL) },
+                    onSplitVertical = { onSplit(SplitDirection.VERTICAL) },
+                    onClearSelection = onClearSelection,
+                    modifier = Modifier.zIndex(ZLayers.ActionOverlay),
+                )
+            }
         },
         modifier = modifier
-            .aspectRatio(16f / 10f)
+            .aspectRatio(Dimensions.WorkspaceAspectRatio)
             .clip(canvasShape)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .border(2.dp, MaterialTheme.colorScheme.outline, canvasShape),
+            .background(DesignerColors.WorkspaceBackground)
+            .border(Dimensions.WorkspaceBorderWidth, DesignerColors.Divider, canvasShape),
     ) { measurables, constraints ->
         val canvasWidth = constraints.maxWidth.coerceAtLeast(1)
         val canvasHeight = constraints.maxHeight.coerceAtLeast(1)
@@ -90,14 +113,40 @@ fun WorkspaceCanvasView(
         val dividerPlacements = dividers.map { divider ->
             divider.toPlacement(canvasWidth, canvasHeight, dividerHitSize)
         }
-        val dividerPlaceables = measurables.drop(canvas.cells.size).mapIndexed { index, measurable ->
-            val placement = dividerPlacements[index]
-            measurable.measure(
+        val dividerPlaceables = measurables
+            .drop(canvas.cells.size)
+            .take(dividers.size)
+            .mapIndexed { index, measurable ->
+                val placement = dividerPlacements[index]
+                measurable.measure(
+                    constraints.copy(
+                        minWidth = placement.width,
+                        maxWidth = placement.width,
+                        minHeight = placement.height,
+                        maxHeight = placement.height,
+                    ),
+                )
+            }
+        val actionArea = selectedCell?.let { cell ->
+            val cellPlacement = placements[canvas.cells.indexOf(cell)]
+            workspaceActionSafeArea(
+                cell = cellPlacement,
+                baseInset = actionBaseInset,
+                dividerClearance = dividerHitSize / 2,
+                minimumContentSize = minimumActionSize,
+                dividerOnLeft = dividers.touchesVerticalEdge(cell, cell.bounds.left),
+                dividerOnTop = dividers.touchesHorizontalEdge(cell, cell.bounds.top),
+                dividerOnRight = dividers.touchesVerticalEdge(cell, cell.bounds.right),
+                dividerOnBottom = dividers.touchesHorizontalEdge(cell, cell.bounds.bottom),
+            )
+        }
+        val actionPlaceable = actionArea?.let { area ->
+            measurables.last().measure(
                 constraints.copy(
-                    minWidth = placement.width,
-                    maxWidth = placement.width,
-                    minHeight = placement.height,
-                    maxHeight = placement.height,
+                    minWidth = area.width,
+                    maxWidth = area.width,
+                    minHeight = 0,
+                    maxHeight = area.height,
                 ),
             )
         }
@@ -109,6 +158,12 @@ fun WorkspaceCanvasView(
             dividerPlaceables.forEachIndexed { index, placeable ->
                 val placement = dividerPlacements[index]
                 placeable.placeRelative(placement.x, placement.y)
+            }
+            if (actionArea != null && actionPlaceable != null) {
+                actionPlaceable.placeRelative(
+                    actionArea.x,
+                    actionArea.y + actionArea.height - actionPlaceable.height,
+                )
             }
         }
     }
@@ -200,6 +255,27 @@ private fun WorkspaceDivider.toPlacement(
 }
 
 private fun Float.stepBy(delta: Float): Float =
-    (((this * 100f).roundToInt() + (delta * 100f).roundToInt()) / 100f).coerceIn(0.2f, 0.8f)
+    (((this * 100f).roundToInt() + (delta * 100f).roundToInt()) / 100f)
+        .coerceIn(Dimensions.MinCellRatio, Dimensions.MaxCellRatio)
 
 private const val RATIO_STEP = 0.05f
+
+private fun List<WorkspaceDivider>.touchesVerticalEdge(
+    cell: WorkspaceCell,
+    edge: Float,
+): Boolean = any { divider ->
+    divider.direction == SplitDirection.VERTICAL &&
+        divider.position == edge &&
+        divider.start < cell.bounds.bottom &&
+        divider.end > cell.bounds.top
+}
+
+private fun List<WorkspaceDivider>.touchesHorizontalEdge(
+    cell: WorkspaceCell,
+    edge: Float,
+): Boolean = any { divider ->
+    divider.direction == SplitDirection.HORIZONTAL &&
+        divider.position == edge &&
+        divider.start < cell.bounds.right &&
+        divider.end > cell.bounds.left
+}

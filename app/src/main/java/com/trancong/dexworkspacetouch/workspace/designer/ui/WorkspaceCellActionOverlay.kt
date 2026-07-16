@@ -1,6 +1,8 @@
 package com.trancong.dexworkspacetouch.workspace.designer.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -25,7 +27,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
+import com.trancong.dexworkspacetouch.ui.design.DesignerColors
+import com.trancong.dexworkspacetouch.ui.design.DesignerElevation
+import com.trancong.dexworkspacetouch.ui.design.Dimensions
+import com.trancong.dexworkspacetouch.ui.design.InteractionZones
+import com.trancong.dexworkspacetouch.ui.design.Spacing
+import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCell
 
 @Composable
@@ -42,15 +49,20 @@ fun WorkspaceCellActionOverlay(
     var showSplitChoices by remember(cell.id) { mutableStateOf(false) }
     var showActionSheet by remember(cell.id) { mutableStateOf(false) }
     val chooseLabel = if (cell.app == null) "Chọn ứng dụng" else "Đổi ứng dụng"
+    val overlayInteractionSource = remember { MutableInteractionSource() }
 
     Surface(
-        modifier = modifier,
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f),
-        tonalElevation = 3.dp,
+        modifier = modifier.clickable(
+            interactionSource = overlayInteractionSource,
+            indication = null,
+            onClick = {},
+        ),
+        color = DesignerColors.ActionOverlayBackground.copy(alpha = 0.94f),
+        tonalElevation = DesignerElevation.ActionOverlay,
     ) {
-        BoxWithConstraints(modifier = Modifier.fillMaxWidth().padding(4.dp)) {
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth().padding(Spacing.XS)) {
             when {
-                maxWidth >= LARGE_CELL_WIDTH && maxHeight >= LARGE_CELL_HEIGHT -> {
+                maxWidth >= Dimensions.LargeCellWidth && maxHeight >= Dimensions.LargeCellHeight -> {
                     FullActionRow(
                         chooseLabel = chooseLabel,
                         canSplitHorizontal = canSplitHorizontal,
@@ -62,7 +74,7 @@ fun WorkspaceCellActionOverlay(
                     )
                 }
 
-                maxWidth >= MEDIUM_CELL_WIDTH && maxHeight >= MEDIUM_CELL_HEIGHT -> {
+                maxWidth >= Dimensions.MediumCellWidth && maxHeight >= Dimensions.MediumCellHeight -> {
                     MediumActionRow(
                         chooseLabel = chooseLabel,
                         showSplitChoices = showSplitChoices,
@@ -80,7 +92,7 @@ fun WorkspaceCellActionOverlay(
                 else -> {
                     Button(
                         onClick = { showActionSheet = true },
-                        modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp),
+                        modifier = Modifier.fillMaxWidth().heightIn(min = TouchTargets.SecondaryButton),
                     ) {
                         Text("Thao tác")
                     }
@@ -127,7 +139,7 @@ private fun FullActionRow(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(InteractionZones.ActionPadding),
     ) {
         ChooseAppButton(chooseLabel, onChooseApp)
         ActionButton("Chia ngang", canSplitHorizontal, onSplitHorizontal)
@@ -151,7 +163,7 @@ private fun MediumActionRow(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(InteractionZones.ActionPadding),
     ) {
         if (showSplitChoices) {
             ActionButton("Chia ngang", canSplitHorizontal, onSplitHorizontal)
@@ -182,13 +194,17 @@ private fun CellActionSheet(
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 24.dp, bottom = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth().padding(
+                start = Spacing.L,
+                end = Spacing.L,
+                bottom = Spacing.L,
+            ),
+            verticalArrangement = Arrangement.spacedBy(InteractionZones.ActionPadding),
         ) {
             Text("Thao tác ô", style = MaterialTheme.typography.titleLarge)
             Button(
                 onClick = onChooseApp,
-                modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp),
+                modifier = Modifier.fillMaxWidth().heightIn(min = TouchTargets.SecondaryButton),
             ) { Text(chooseLabel) }
             ActionButton("Chia ngang", canSplitHorizontal, onSplitHorizontal, Modifier.fillMaxWidth())
             ActionButton("Chia dọc", canSplitVertical, onSplitVertical, Modifier.fillMaxWidth())
@@ -202,7 +218,7 @@ private fun ChooseAppButton(label: String, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         modifier = Modifier
-            .heightIn(min = 56.dp)
+            .heightIn(min = TouchTargets.SecondaryButton)
             .semantics { contentDescription = "$label cho ô đang chọn" },
     ) { Text(label) }
 }
@@ -217,11 +233,6 @@ private fun ActionButton(
     OutlinedButton(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier.heightIn(min = 56.dp),
+        modifier = modifier.heightIn(min = TouchTargets.SecondaryButton),
     ) { Text(label) }
 }
-
-private val LARGE_CELL_WIDTH = 600.dp
-private val LARGE_CELL_HEIGHT = 120.dp
-private val MEDIUM_CELL_WIDTH = 280.dp
-private val MEDIUM_CELL_HEIGHT = 72.dp

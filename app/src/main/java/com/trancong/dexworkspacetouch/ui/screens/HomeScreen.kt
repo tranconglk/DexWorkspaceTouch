@@ -18,7 +18,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.trancong.dexworkspacetouch.ui.design.Spacing
+import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 
 @Composable
 fun HomeScreen(onOpenLayoutDesigner: () -> Unit, onOpenAppPicker: () -> Unit) {
@@ -28,20 +29,20 @@ fun HomeScreen(onOpenLayoutDesigner: () -> Unit, onOpenAppPicker: () -> Unit) {
                 .fillMaxSize()
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                .padding(Spacing.L),
+            verticalArrangement = Arrangement.spacedBy(Spacing.M),
         ) {
             Text("DeX Workspace Manager", style = MaterialTheme.typography.headlineMedium)
             Text("Touch-first workspace setup")
             Button(
                 onClick = onOpenLayoutDesigner,
-                modifier = Modifier.fillMaxWidth().height(64.dp),
-                contentPadding = PaddingValues(horizontal = 24.dp),
+                modifier = Modifier.fillMaxWidth().height(TouchTargets.PrimaryButton),
+                contentPadding = PaddingValues(horizontal = Spacing.L),
             ) { Text("Create layout") }
             OutlinedButton(
                 onClick = onOpenAppPicker,
-                modifier = Modifier.fillMaxWidth().height(56.dp),
-                contentPadding = PaddingValues(horizontal = 24.dp),
+                modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
+                contentPadding = PaddingValues(horizontal = Spacing.L),
             ) { Text("Choose apps") }
         }
     }

@@ -33,7 +33,9 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import com.trancong.dexworkspacetouch.ui.design.Dimensions
+import com.trancong.dexworkspacetouch.ui.design.Spacing
+import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.DemoApp
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.DemoApps
 import com.trancong.dexworkspacetouch.workspace.designer.model.AssignedApp
@@ -71,10 +73,10 @@ private fun AppPickerContent(
 ) {
     var query by rememberSaveable { mutableStateOf("") }
     val apps = DemoApps.search(query)
-    Column(modifier.fillMaxSize().imePadding().padding(horizontal = 24.dp)) {
+    Column(modifier.fillMaxSize().imePadding().padding(horizontal = Spacing.L)) {
         TextButton(
             onClick = onBack,
-            modifier = Modifier.heightIn(min = 56.dp),
+            modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
         ) { Text("Quay lại") }
         Text(
             text = "Chọn ứng dụng",
@@ -86,7 +88,7 @@ private fun AppPickerContent(
             onValueChange = { query = it },
             label = { Text("Tìm ứng dụng") },
             singleLine = true,
-            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+            modifier = Modifier.fillMaxWidth().padding(vertical = Spacing.M),
         )
         if (apps.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -95,8 +97,8 @@ private fun AppPickerContent(
         } else {
             LazyColumn(
                 modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(bottom = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(bottom = Spacing.L),
+                verticalArrangement = Arrangement.spacedBy(Spacing.S),
             ) {
                 items(apps, key = DemoApp::packageName) { app ->
                     DemoAppItem(
@@ -119,7 +121,7 @@ private fun DemoAppItem(app: DemoApp, onClick: () -> Unit) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 72.dp)
+            .heightIn(min = Dimensions.AppRowMinHeight)
             .semantics(mergeDescendants = true) {
                 contentDescription = "Chọn ứng dụng ${app.label}"
             }
@@ -128,12 +130,12 @@ private fun DemoAppItem(app: DemoApp, onClick: () -> Unit) {
         color = MaterialTheme.colorScheme.surfaceContainer,
     ) {
         androidx.compose.foundation.layout.Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            modifier = Modifier.padding(horizontal = Spacing.M, vertical = Spacing.S),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.M),
         ) {
             Surface(
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(Dimensions.AppIconSize),
                 shape = CircleShape,
                 color = MaterialTheme.colorScheme.primaryContainer,
             ) {
@@ -152,14 +154,14 @@ private fun InvalidAppPickerRoute(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxSize().padding(24.dp),
+        modifier = modifier.fillMaxSize().padding(Spacing.L),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text("Không thể xác định ô cần gán ứng dụng")
         TextButton(
             onClick = onBack,
-            modifier = Modifier.heightIn(min = 56.dp),
+            modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
         ) { Text("Quay lại") }
     }
 }
