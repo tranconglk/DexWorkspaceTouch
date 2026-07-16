@@ -13,6 +13,10 @@ object Dimensions {
     val CellBorderWidth = 1.dp
     val SelectionBorderWidth = 3.dp
     val DividerLineWidth = 3.dp
+    val DividerDragHandleLength = 48.dp
+    val DividerDragHandleThickness = 8.dp
+    val DividerSnapGuideLength = 32.dp
+    val DividerSnapGuideThickness = 3.dp
     val AppIconSize = 32.dp
     val AppRowMinHeight = 72.dp
     val SelectedCellContentBottomPadding = 72.dp

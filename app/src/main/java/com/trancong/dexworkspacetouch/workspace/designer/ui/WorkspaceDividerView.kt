@@ -1,5 +1,10 @@
 package com.trancong.dexworkspacetouch.workspace.designer.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.horizontalScroll
@@ -38,6 +43,8 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.zIndex
 import com.trancong.dexworkspacetouch.ui.design.DesignerColors
 import com.trancong.dexworkspacetouch.ui.design.DesignerElevation
+import com.trancong.dexworkspacetouch.ui.design.DesignerAnimation
+import com.trancong.dexworkspacetouch.ui.design.DesignerShapes
 import com.trancong.dexworkspacetouch.ui.design.Dimensions
 import com.trancong.dexworkspacetouch.ui.design.Spacing
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
@@ -64,7 +71,12 @@ fun WorkspaceDividerView(
     onDragCancel: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val lineColor = if (selected) DesignerColors.Selection else DesignerColors.Divider
+    var dragging by remember(divider.id) { mutableStateOf(false) }
+    val lineColor by animateColorAsState(
+        targetValue = if (selected || dragging) DesignerColors.Selection else DesignerColors.Divider,
+        animationSpec = tween(DesignerAnimation.FastDurationMillis),
+        label = "dividerLineColor",
+    )
     val percentage = (divider.ratio * 100f).roundToInt()
     val directionLabel = when (divider.direction) {
         SplitDirection.VERTICAL -> "dọc"
@@ -97,14 +109,17 @@ fun WorkspaceDividerView(
                         accumulatedDrag = 0f
                         activeSnapPoint = null
                         displayedSnapPoint = null
+                        dragging = true
                         currentOnDragStart()
                     },
                     onDragEnd = {
                         displayedSnapPoint = null
+                        dragging = false
                         currentOnDragEnd()
                     },
                     onDragCancel = {
                         displayedSnapPoint = null
+                        dragging = false
                         currentOnDragCancel()
                     },
                 ) { change, dragAmount ->
@@ -174,7 +189,18 @@ fun WorkspaceDividerView(
                 ),
             ) {}
         }
-        if (selected) {
+        AnimatedVisibility(
+            visible = dragging,
+            enter = fadeIn(tween(DesignerAnimation.FastDurationMillis)),
+            exit = fadeOut(tween(DesignerAnimation.FastDurationMillis)),
+        ) {
+            DividerDragFeedback(
+                direction = divider.direction,
+                percentage = percentage,
+                snapped = displayedSnapPoint != null,
+            )
+        }
+        if (selected && !dragging) {
             DividerActionOverlay(
                 divider = divider,
                 onDecrease = onDecrease,
@@ -183,6 +209,56 @@ fun WorkspaceDividerView(
                 onClearSelection = onClearSelection,
                 snapped = displayedSnapPoint != null,
                 modifier = Modifier.fillMaxSize(),
+            )
+        }
+    }
+}
+
+@Composable
+private fun DividerDragFeedback(
+    direction: SplitDirection,
+    percentage: Int,
+    snapped: Boolean,
+) {
+    Box(contentAlignment = Alignment.Center) {
+        Surface(
+            color = DesignerColors.Selection,
+            shape = DesignerShapes.DividerFeedback,
+            modifier = when (direction) {
+                SplitDirection.VERTICAL -> Modifier
+                    .width(Dimensions.DividerDragHandleThickness)
+                    .height(Dimensions.DividerDragHandleLength)
+                SplitDirection.HORIZONTAL -> Modifier
+                    .width(Dimensions.DividerDragHandleLength)
+                    .height(Dimensions.DividerDragHandleThickness)
+            },
+        ) {}
+        AnimatedVisibility(
+            visible = snapped,
+            enter = fadeIn(tween(DesignerAnimation.FastDurationMillis)),
+            exit = fadeOut(tween(DesignerAnimation.FastDurationMillis)),
+        ) {
+            Surface(
+                color = DesignerColors.Selection,
+                shape = DesignerShapes.DividerFeedback,
+                modifier = when (direction) {
+                    SplitDirection.VERTICAL -> Modifier
+                        .width(Dimensions.DividerSnapGuideLength)
+                        .height(Dimensions.DividerSnapGuideThickness)
+                    SplitDirection.HORIZONTAL -> Modifier
+                        .width(Dimensions.DividerSnapGuideThickness)
+                        .height(Dimensions.DividerSnapGuideLength)
+                },
+            ) {}
+        }
+        Surface(
+            color = DesignerColors.ActionOverlayBackground,
+            shape = DesignerShapes.DividerFeedback,
+        ) {
+            Text(
+                text = "$percentage%${if (snapped) " ✓" else ""}",
+                color = DesignerColors.Selection,
+                modifier = Modifier.padding(horizontal = Spacing.S, vertical = Spacing.XS),
             )
         }
     }

@@ -67,6 +67,13 @@ Gesture kéo divider dùng `Dimensions.DividerSnapThreshold = 0.03` và các đi
 
 Snap chỉ áp dụng cho gesture drag. Các nút giảm/tăng 5% và reset 50% không đi qua Snap Engine.
 
+### Divider feedback
+
+Visual feedback khi kéo divider dùng các token
+`Dimensions.DividerDragHandleLength`, `DividerDragHandleThickness`,
+`DividerSnapGuideLength` và `DividerSnapGuideThickness`. Fade ngắn dùng
+`DesignerAnimation.FastDurationMillis`; hit area vẫn giữ nguyên 64dp.
+
 ## Design Token Rules
 
 1. UI mới phải dùng token thay cho literal `Dp`, elevation, shape, z-index và aspect ratio lặp lại.

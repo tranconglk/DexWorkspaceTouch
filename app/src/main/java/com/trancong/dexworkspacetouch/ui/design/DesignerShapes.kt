@@ -6,4 +6,5 @@ import androidx.compose.ui.unit.dp
 object DesignerShapes {
     val Workspace = RoundedCornerShape(16.dp)
     val Cell = RoundedCornerShape(6.dp)
+    val DividerFeedback = RoundedCornerShape(percent = 50)
 }
