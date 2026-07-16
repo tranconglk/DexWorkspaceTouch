@@ -1,6 +1,7 @@
 package com.trancong.dexworkspacetouch.workspace.designer.model
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -25,5 +26,11 @@ class WorkspaceCanvasTest {
             WorkspaceCell("b", NormalizedBounds(0.5f, 0f, 1f, 1f)),
         ))
         assertTrue(validator.validate(canvas).any { it is CanvasValidationIssue.OverlappingCells })
+    }
+
+    @Test fun blankCellIdIsRejected() {
+        assertThrows(IllegalArgumentException::class.java) {
+            WorkspaceCell(" ", NormalizedBounds.FullCanvas)
+        }
     }
 }

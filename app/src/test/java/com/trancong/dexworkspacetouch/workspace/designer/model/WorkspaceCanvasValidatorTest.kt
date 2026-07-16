@@ -35,4 +35,27 @@ class WorkspaceCanvasValidatorTest {
         ))
         assertTrue(validator.validate(canvas).any { it is CanvasValidationIssue.DuplicateCellId })
     }
+
+    @Test fun emptyCanvasReturnsEmptyCanvasIssue() {
+        val issues = validator.validate(WorkspaceCanvas(emptyList()))
+        assertTrue(issues.any { it is CanvasValidationIssue.EmptyCanvas })
+    }
+
+    @Test fun invalidBoundsReturnsInvalidBoundsIssue() {
+        val bounds = NormalizedBounds.FullCanvas.copy()
+        NormalizedBounds::class.java.getDeclaredField("right").apply {
+            isAccessible = true
+            setFloat(bounds, 0f)
+        }
+        val issues = validator.validate(WorkspaceCanvas(listOf(WorkspaceCell("invalid", bounds))))
+        assertTrue(issues.any { it is CanvasValidationIssue.InvalidBounds })
+    }
+
+    @Test fun cellsSharingOnlyAnEdgeDoNotOverlap() {
+        val canvas = WorkspaceCanvas(listOf(
+            WorkspaceCell("left", NormalizedBounds(0f, 0f, 0.5f, 1f)),
+            WorkspaceCell("right", NormalizedBounds(0.5f, 0f, 1f, 1f)),
+        ))
+        assertTrue(validator.validate(canvas).none { it is CanvasValidationIssue.OverlappingCells })
+    }
 }

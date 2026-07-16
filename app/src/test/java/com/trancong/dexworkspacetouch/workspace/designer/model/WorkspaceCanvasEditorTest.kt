@@ -3,6 +3,7 @@ package com.trancong.dexworkspacetouch.workspace.designer.model
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class WorkspaceCanvasEditorTest {
@@ -61,5 +62,14 @@ class WorkspaceCanvasEditorTest {
         val unrelated = first.cells[1]
         val second = editor.splitCell(first, "cell_a", SplitDirection.HORIZONTAL)
         assertEquals(unrelated, second.cells[2])
+    }
+
+    @Test fun canvasRemainsValidAfterMultipleSplits() {
+        val twoCells = editor.splitCell(WorkspaceCanvas.singleCell(), "cell", SplitDirection.VERTICAL)
+        val threeCells = editor.splitCell(twoCells, "cell_a", SplitDirection.HORIZONTAL)
+        val fourCells = editor.splitCell(threeCells, "cell_b", SplitDirection.HORIZONTAL)
+
+        assertEquals(4, fourCells.cells.size)
+        assertTrue(WorkspaceCanvasValidator().validate(fourCells).isEmpty())
     }
 }
