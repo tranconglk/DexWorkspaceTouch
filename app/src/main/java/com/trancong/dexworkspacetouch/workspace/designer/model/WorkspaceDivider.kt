@@ -6,6 +6,8 @@ data class WorkspaceDivider(
     val position: Float,
     val start: Float,
     val end: Float,
+    val parentStart: Float,
+    val parentEnd: Float,
     val ratio: Float,
     internal val firstCellIds: Set<String>,
     internal val secondCellIds: Set<String>,
@@ -14,6 +16,10 @@ data class WorkspaceDivider(
         require(id.isNotBlank()) { "Divider id must not be blank" }
         require(position in 0f..1f) { "Divider position must be normalized" }
         require(start in 0f..<end && end in 0f..1f) { "Divider span must be normalized" }
+        require(parentStart in 0f..<parentEnd && parentEnd in 0f..1f) {
+            "Divider parent span must be normalized"
+        }
+        require(position in parentStart..parentEnd) { "Divider must be inside its parent span" }
         require(ratio in 0f..1f) { "Divider ratio must be normalized" }
         require(firstCellIds.isNotEmpty() && secondCellIds.isNotEmpty()) {
             "Divider must have cells on both sides"

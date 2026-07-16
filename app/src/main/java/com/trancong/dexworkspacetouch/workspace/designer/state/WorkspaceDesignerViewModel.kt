@@ -27,6 +27,14 @@ class WorkspaceDesignerViewModel : ViewModel() {
     fun resizeDivider(dividerId: String, ratio: Float): Boolean =
         stateHolder.resizeDivider(dividerId, ratio)
 
+    fun beginDividerResize(dividerId: String) = stateHolder.beginDividerResize(dividerId)
+
+    fun updateDividerResize(ratio: Float) = stateHolder.updateDividerResize(ratio)
+
+    fun commitDividerResize(): Boolean = stateHolder.commitDividerResize()
+
+    fun cancelDividerResize() = stateHolder.cancelDividerResize()
+
     fun splitSelectedCell(direction: SplitDirection): SplitResult =
         stateHolder.splitSelectedCell(direction)
 

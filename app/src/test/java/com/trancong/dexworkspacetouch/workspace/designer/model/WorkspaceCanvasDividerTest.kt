@@ -34,6 +34,17 @@ class WorkspaceCanvasDividerTest {
     }
 
     @Test
+    fun `nested divider exposes its actual parent span`() {
+        val firstSplit = editor.splitCell(WorkspaceCanvas.singleCell(), "cell", SplitDirection.VERTICAL)
+        val nested = editor.splitCell(firstSplit, "cell_b", SplitDirection.VERTICAL)
+        val nestedDivider = nested.dividers().single { it.firstCellIds == setOf("cell_b_a") }
+
+        assertEquals(0.5f, nestedDivider.parentStart)
+        assertEquals(1f, nestedDivider.parentEnd)
+        assertEquals(0.5f, nestedDivider.ratio)
+    }
+
+    @Test
     fun `resize vertical divider updates both sides`() {
         val canvas = editor.splitCell(WorkspaceCanvas.singleCell(), "cell", SplitDirection.VERTICAL)
         val resized = editor.resizeDivider(canvas, canvas.dividers().single().id, 0.3f)

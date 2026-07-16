@@ -25,6 +25,7 @@ class WorkspaceDesignerStateHolder(
 
     private var undoHistory by mutableStateOf<List<WorkspaceCanvas>>(emptyList())
     private var redoHistory by mutableStateOf<List<WorkspaceCanvas>>(emptyList())
+    private var dividerResizeSession: DividerResizeSession? = null
 
     val canUndo: Boolean get() = undoHistory.isNotEmpty()
     val canRedo: Boolean get() = redoHistory.isNotEmpty()
@@ -61,6 +62,39 @@ class WorkspaceDesignerStateHolder(
         selectedDividerId = dividerId
         selectedCellId = null
         return changed
+    }
+
+    fun beginDividerResize(dividerId: String) {
+        check(dividerResizeSession == null) { "A divider resize is already active" }
+        require(canvas.dividers().any { it.id == dividerId }) { "Divider '$dividerId' does not exist" }
+        dividerResizeSession = DividerResizeSession(dividerId, canvas)
+        selectedDividerId = dividerId
+        selectedCellId = null
+    }
+
+    fun updateDividerResize(ratio: Float) {
+        val session = checkNotNull(dividerResizeSession) { "No divider resize is active" }
+        val clampedRatio = ratio.coerceIn(MIN_DIVIDER_RATIO, MAX_DIVIDER_RATIO)
+        canvas = editor.resizeDivider(canvas, session.dividerId, clampedRatio)
+        selectedDividerId = session.dividerId
+        selectedCellId = null
+    }
+
+    fun commitDividerResize(): Boolean {
+        val session = checkNotNull(dividerResizeSession) { "No divider resize is active" }
+        dividerResizeSession = null
+        if (canvas == session.originalCanvas) return false
+        undoHistory = appendLimited(undoHistory, session.originalCanvas)
+        redoHistory = emptyList()
+        return true
+    }
+
+    fun cancelDividerResize() {
+        val session = checkNotNull(dividerResizeSession) { "No divider resize is active" }
+        canvas = session.originalCanvas
+        dividerResizeSession = null
+        selectedDividerId = session.dividerId
+        selectedCellId = null
     }
 
     fun splitSelectedCell(direction: SplitDirection): SplitResult {
@@ -131,5 +165,12 @@ class WorkspaceDesignerStateHolder(
         const val MAX_CELLS = 4
         const val MIN_CHILD_SIZE = 0.2f
         const val MAX_HISTORY = 20
+        const val MIN_DIVIDER_RATIO = 0.2f
+        const val MAX_DIVIDER_RATIO = 0.8f
     }
+
+    private data class DividerResizeSession(
+        val dividerId: String,
+        val originalCanvas: WorkspaceCanvas,
+    )
 }

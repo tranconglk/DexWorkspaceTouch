@@ -15,6 +15,91 @@ import org.junit.Test
 
 class WorkspaceDesignerStateHolderTest {
     @Test
+    fun dividerDragWithManyUpdatesCreatesOneHistoryEntryAndSupportsRedo() {
+        val state = dividerState()
+        val original = state.canvas
+        val dividerId = original.dividers().single().id
+
+        state.beginDividerResize(dividerId)
+        state.updateDividerResize(0.55f)
+        state.updateDividerResize(0.6f)
+        state.updateDividerResize(0.65f)
+        val resized = state.canvas
+
+        assertTrue(state.commitDividerResize())
+        assertTrue(state.undo())
+        assertEquals(original, state.canvas)
+        assertFalse(state.canUndo)
+        assertTrue(state.redo())
+        assertEquals(resized, state.canvas)
+    }
+
+    @Test
+    fun cancellingDividerDragRestoresCanvasWithoutHistoryEntry() {
+        val state = dividerState()
+        val original = state.canvas
+        val dividerId = original.dividers().single().id
+
+        state.beginDividerResize(dividerId)
+        state.updateDividerResize(0.7f)
+        state.cancelDividerResize()
+
+        assertEquals(original, state.canvas)
+        assertFalse(state.canUndo)
+    }
+
+    @Test
+    fun committingUnchangedDividerDragDoesNotAddHistory() {
+        val state = dividerState()
+        val dividerId = state.canvas.dividers().single().id
+
+        state.beginDividerResize(dividerId)
+
+        assertFalse(state.commitDividerResize())
+        assertFalse(state.canUndo)
+    }
+
+    @Test
+    fun liveDividerDragClampsBelowAndAboveEditorLimits() {
+        val state = dividerState()
+        val dividerId = state.canvas.dividers().single().id
+
+        state.beginDividerResize(dividerId)
+        state.updateDividerResize(-1f)
+        assertEquals(0.2f, state.canvas.dividers().single().ratio, 0.0001f)
+        state.updateDividerResize(2f)
+        assertEquals(0.8f, state.canvas.dividers().single().ratio, 0.0001f)
+        state.cancelDividerResize()
+    }
+
+    @Test
+    fun dividerDragPreservesAssignedApp() {
+        val app = assignedApp("Chrome", 1)
+        val state = dividerState(app)
+        val dividerId = state.canvas.dividers().single().id
+
+        state.beginDividerResize(dividerId)
+        state.updateDividerResize(0.6f)
+        state.commitDividerResize()
+
+        assertEquals(app, state.canvas.cells.first().app)
+    }
+
+    @Test
+    fun nestedDividerLiveResizeRemainsValidWithoutGapOrOverlap() {
+        val editor = com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasEditor()
+        val vertical = editor.splitCell(WorkspaceCanvas.singleCell(), "cell", SplitDirection.VERTICAL)
+        val nested = editor.splitCell(vertical, "cell_b", SplitDirection.HORIZONTAL)
+        val state = WorkspaceDesignerStateHolder(nested)
+        val dividerId = nested.dividers().single { it.direction == SplitDirection.VERTICAL }.id
+
+        state.beginDividerResize(dividerId)
+        state.updateDividerResize(0.65f)
+
+        assertTrue(WorkspaceCanvasValidator().validate(state.canvas).isEmpty())
+        assertTrue(state.commitDividerResize())
+    }
+    @Test
     fun dividerResizeParticipatesInUndoAndRedoHistory() {
         val state = selectedSingleCellState()
         state.splitSelectedCell(SplitDirection.VERTICAL)
@@ -210,4 +295,17 @@ class WorkspaceDesignerStateHolderTest {
 
     private fun selectedSingleCellState(): WorkspaceDesignerStateHolder =
         WorkspaceDesignerStateHolder(WorkspaceCanvas.singleCell()).also { it.selectCell("cell") }
+
+    private fun dividerState(app: AssignedApp? = null): WorkspaceDesignerStateHolder {
+        val source = WorkspaceCanvas(
+            listOf(com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCell(
+                id = "cell",
+                bounds = NormalizedBounds.FullCanvas,
+                app = app,
+            )),
+        )
+        val canvas = com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasEditor()
+            .splitCell(source, "cell", SplitDirection.VERTICAL)
+        return WorkspaceDesignerStateHolder(canvas)
+    }
 }

@@ -6,11 +6,17 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.zIndex
 import com.trancong.dexworkspacetouch.ui.design.DesignerColors
 import com.trancong.dexworkspacetouch.ui.design.DesignerShapes
@@ -33,6 +39,10 @@ fun WorkspaceCanvasView(
     onCellSelected: (String) -> Unit,
     onDividerSelected: (String) -> Unit,
     onDividerRatioChanged: (String, Float) -> Unit,
+    onDividerDragStart: (String) -> Unit,
+    onDividerDragRatio: (Float) -> Unit,
+    onDividerDragEnd: () -> Unit,
+    onDividerDragCancel: () -> Unit,
     onClearDividerSelection: () -> Unit,
     onChooseApp: (String) -> Unit,
     onSplit: (SplitDirection) -> Unit,
@@ -47,6 +57,7 @@ fun WorkspaceCanvasView(
     val dividerHitSize = with(LocalDensity.current) { InteractionZones.DividerHitArea.roundToPx() }
     val actionBaseInset = with(LocalDensity.current) { InteractionZones.SafeActionInset.roundToPx() }
     val minimumActionSize = with(LocalDensity.current) { TouchTargets.SecondaryButton.roundToPx() }
+    var canvasSize by remember { mutableStateOf(IntSize.Zero) }
     Layout(
         content = {
             canvas.cells.forEach { cell ->
@@ -70,6 +81,12 @@ fun WorkspaceCanvasView(
                     },
                     onReset = { onDividerRatioChanged(divider.id, 0.5f) },
                     onClearSelection = onClearDividerSelection,
+                    canvasWidthPx = canvasSize.width.toFloat(),
+                    canvasHeightPx = canvasSize.height.toFloat(),
+                    onDragStart = { onDividerDragStart(divider.id) },
+                    onDragRatio = onDividerDragRatio,
+                    onDragEnd = onDividerDragEnd,
+                    onDragCancel = onDividerDragCancel,
                 )
             }
             selectedCell?.let { cell ->
@@ -89,6 +106,7 @@ fun WorkspaceCanvasView(
             }
         },
         modifier = modifier
+            .onSizeChanged { canvasSize = it }
             .aspectRatio(Dimensions.WorkspaceAspectRatio)
             .clip(canvasShape)
             .background(DesignerColors.WorkspaceBackground)
@@ -180,6 +198,10 @@ private fun SingleCellCanvasPreview() {
             onCellSelected = {},
             onDividerSelected = {},
             onDividerRatioChanged = { _, _ -> },
+            onDividerDragStart = {},
+            onDividerDragRatio = {},
+            onDividerDragEnd = {},
+            onDividerDragCancel = {},
             onClearDividerSelection = {},
             onChooseApp = {},
             onSplit = {},
@@ -200,6 +222,10 @@ private fun TwoCellCanvasPreview() {
             onCellSelected = {},
             onDividerSelected = {},
             onDividerRatioChanged = { _, _ -> },
+            onDividerDragStart = {},
+            onDividerDragRatio = {},
+            onDividerDragEnd = {},
+            onDividerDragCancel = {},
             onClearDividerSelection = {},
             onChooseApp = {},
             onSplit = {},
@@ -220,6 +246,10 @@ private fun ThreeCellSelectedCanvasPreview() {
             onCellSelected = {},
             onDividerSelected = {},
             onDividerRatioChanged = { _, _ -> },
+            onDividerDragStart = {},
+            onDividerDragRatio = {},
+            onDividerDragEnd = {},
+            onDividerDragCancel = {},
             onClearDividerSelection = {},
             onChooseApp = {},
             onSplit = {},

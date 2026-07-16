@@ -111,6 +111,8 @@ private fun List<DividerSegment>.toDivider(cells: List<WorkspaceCell>): Workspac
         position = position,
         start = minOf(DividerSegment::start),
         end = maxOf(DividerSegment::end),
+        parentStart = outerStart,
+        parentEnd = outerEnd,
         ratio = (position - outerStart) / (outerEnd - outerStart),
         firstCellIds = firstIds,
         secondCellIds = secondIds,
