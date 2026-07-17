@@ -1,13 +1,22 @@
 package com.trancong.dexworkspacetouch.workspace.apppicker.infrastructure
 
 import android.content.Intent
+import android.content.ComponentName
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Build
+import android.graphics.drawable.Drawable
+import com.trancong.dexworkspacetouch.workspace.apppicker.model.AppIdentity
 
 class PackageManagerAdapter(
     private val packageManager: PackageManager,
 ) {
+    fun loadIcon(identity: AppIdentity): Drawable = if (identity.activityName != null) {
+        packageManager.getActivityIcon(ComponentName(identity.packageName, identity.activityName))
+    } else {
+        packageManager.getApplicationIcon(identity.packageName)
+    }
+
     fun getLauncherActivities(): List<LauncherActivityRecord> {
         val launcherIntent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
         val activities = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

@@ -12,7 +12,9 @@ import com.trancong.dexworkspacetouch.ui.screens.HomeScreen
 import com.trancong.dexworkspacetouch.ui.screens.LayoutDesignerScreen
 import com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerViewModel
 import com.trancong.dexworkspacetouch.workspace.apppicker.infrastructure.AndroidInstalledAppDataSource
+import com.trancong.dexworkspacetouch.workspace.apppicker.infrastructure.PackageManagerAppIconLoader
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.DefaultInstalledAppCatalog
+import com.trancong.dexworkspacetouch.workspace.apppicker.model.toIdentity
 import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppPickerViewModel
 import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryViewModel
 
@@ -71,13 +73,23 @@ fun TouchNavigation() {
                     AndroidInstalledAppDataSource.create(applicationContext),
                 )
             }
-            val appPickerViewModel: AppPickerViewModel = viewModel(
-                factory = AppPickerViewModel.factory(installedAppCatalog),
-            )
             val requestedCellId = backStackEntry.arguments?.getString("cellId")
             val validCellId = requestedCellId?.takeIf { cellId ->
                 designerViewModel.canvas.cells.any { it.id == cellId }
             }
+            val selectedIdentity = validCellId
+                ?.let { cellId -> designerViewModel.canvas.cells.first { it.id == cellId }.app }
+                ?.toIdentity()
+            val appIconLoader = remember(applicationContext) {
+                PackageManagerAppIconLoader.create(applicationContext)
+            }
+            val appPickerViewModel: AppPickerViewModel = viewModel(
+                factory = AppPickerViewModel.factory(
+                    catalog = installedAppCatalog,
+                    iconLoader = appIconLoader,
+                    selectedIdentity = selectedIdentity,
+                ),
+            )
             AppPickerScreen(
                 cellId = validCellId,
                 state = appPickerViewModel,

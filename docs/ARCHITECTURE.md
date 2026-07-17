@@ -70,6 +70,9 @@ Không tạo package `util`, `helpers`, `common` hoặc `misc` chung chung.
 - `PackageManagerAdapter` và `AndroidInstalledAppDataSource` thuộc
   Infrastructure. Chỉ Infrastructure biết Android `PackageManager`; UI nhận
   state từ `AppPickerViewModel`.
+- `PackageManagerAppIconLoader` tải icon theo `AppIdentity` trên IO dispatcher.
+  Kết quả được giữ trong LRU cache RAM giới hạn 96 entry; domain không chứa
+  `Drawable`, `Bitmap` hoặc Compose image type.
 - UI label/icon phải được resolve từ catalog; domain không tự truy cập catalog
   hoặc `PackageManager`.
 

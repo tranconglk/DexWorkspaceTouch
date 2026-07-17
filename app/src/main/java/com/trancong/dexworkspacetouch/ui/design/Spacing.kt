@@ -11,4 +11,5 @@ object Spacing {
     val XL = 32.dp
     val XXL = 48.dp
     val WorkspaceGrid = 16.dp
+    val AppPickerGrid = 16.dp
 }

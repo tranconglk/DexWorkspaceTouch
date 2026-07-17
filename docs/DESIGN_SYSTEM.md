@@ -86,6 +86,18 @@ Selected card từ `Dimensions.WorkspaceCardWideActionsWidth = 420dp` trở lên
 hiển thị trực tiếp hành động Đổi tên/Xóa. Card nhỏ hơn dùng nút Quản lý 56dp
 để mở bottom sheet; không dùng menu ba chấm hoặc icon-only action.
 
+## App Picker Grid
+
+App Picker dùng `GridCells.Adaptive` với
+`Dimensions.AppPickerItemMinWidth = 280dp` và item cao tối thiểu
+`Dimensions.AppPickerItemMinHeight = 168dp`. Icon dùng
+`Dimensions.AppPickerIconSize = 64dp`, khoảng cách grid dùng
+`Spacing.AppPickerGrid = 16dp`, và filter action cao tối thiểu
+`TouchTargets.AppFilterMinHeight = 56dp`.
+
+Số cột do chiều rộng cửa sổ theo dp quyết định; không ép số cột hoặc giảm touch
+target để đạt mật độ cao hơn.
+
 ## Design Token Rules
 
 1. UI mới phải dùng token thay cho literal `Dp`, elevation, shape, z-index và aspect ratio lặp lại.

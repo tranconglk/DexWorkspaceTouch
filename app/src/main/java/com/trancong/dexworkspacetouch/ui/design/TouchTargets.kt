@@ -7,4 +7,5 @@ object TouchTargets {
     val SecondaryButton = 56.dp
     val DividerHitArea = 64.dp
     val MinimumInteractive = 48.dp
+    val AppFilterMinHeight = 56.dp
 }
