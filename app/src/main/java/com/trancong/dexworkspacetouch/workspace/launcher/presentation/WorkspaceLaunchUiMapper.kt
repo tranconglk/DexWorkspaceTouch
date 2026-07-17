@@ -7,6 +7,7 @@ import com.trancong.dexworkspacetouch.workspace.launcher.model.WorkspaceLaunchRe
 
 fun LaunchReadiness.userMessage(): String = when (this) {
     LaunchReadiness.EmptyWorkspace -> "Workspace chưa có ứng dụng."
+    is LaunchReadiness.TooManyTargets -> "Workspace hỗ trợ tối đa $maximum ứng dụng."
     is LaunchReadiness.EmptyCells -> "Workspace còn ô chưa chọn ứng dụng."
     is LaunchReadiness.MissingApplications -> "Một số ứng dụng không còn trên thiết bị."
     is LaunchReadiness.NonLaunchableApplications -> "Một số ứng dụng không thể mở."

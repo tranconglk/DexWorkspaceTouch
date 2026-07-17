@@ -4,6 +4,7 @@ import com.trancong.dexworkspacetouch.workspace.designer.model.AssignedApp
 import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.designer.ui.layout.fitSize
+import com.trancong.dexworkspacetouch.workspace.templates.WorkspaceTemplateCatalog
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
@@ -87,6 +88,20 @@ class WorkspaceDesignerViewModelTest {
         assertEquals(chrome, viewModel.canvas.cells.single().app)
         assertEquals("cell", viewModel.selectedCellId)
     }
+
+    @Test fun splitAtFiveCellsReturnsLimitWithoutChangingHistoryOrSelection() {
+        val viewModel = WorkspaceDesignerViewModel()
+        val fiveCells = WorkspaceTemplateCatalog.default().find("three-top-two-bottom")!!.factory()
+        viewModel.loadCanvas(fiveCells)
+        val selected = fiveCells.cells.first().id
+        viewModel.selectCell(selected)
+
+        assertEquals(SplitResult.MaximumCellsReached, viewModel.splitSelectedCell(SplitDirection.VERTICAL))
+        assertEquals(fiveCells, viewModel.canvas)
+        assertEquals(selected, viewModel.selectedCellId)
+        assertEquals(false, viewModel.canUndo)
+    }
+
 
     private fun selectedViewModel() = WorkspaceDesignerViewModel().also { it.selectCell("cell") }
 

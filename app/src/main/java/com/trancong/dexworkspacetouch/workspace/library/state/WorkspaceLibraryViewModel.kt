@@ -82,9 +82,9 @@ class WorkspaceLibraryViewModel(
     fun selectedWorkspace(): WorkspaceLibraryItem? =
         workspaces.firstOrNull { it.id == selectedWorkspaceId }
 
-    fun createWorkspace(): WorkspaceCanvas {
+    fun createWorkspace(initialCanvas: WorkspaceCanvas = WorkspaceCanvas.singleCell()): WorkspaceCanvas {
         editingWorkspaceId = null
-        return WorkspaceCanvas.singleCell()
+        return initialCanvas
     }
 
     fun beginEditingWorkspace(id: String): WorkspaceCanvas {

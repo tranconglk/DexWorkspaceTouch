@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
         <activity
+            android:name=".debugbenchmark.WorkspaceLibraryBenchmarkActivity"
+            android:exported="true"
+            android:label="Workspace Library Benchmark"
+            android:theme="@style/Theme.DexWorkspaceTouch" />
+        <activity
             android:name=".debuglaunch.SingleAppLaunchDebugActivity"
             android:exported="true"
             android:label="@string/single_app_launch_debug_label"

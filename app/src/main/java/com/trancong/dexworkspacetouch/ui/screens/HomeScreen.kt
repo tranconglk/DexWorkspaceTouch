@@ -43,6 +43,9 @@ import com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceLibraryCard
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchStatusDialog
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchUiState
 import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryPersistenceError
+import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
+import com.trancong.dexworkspacetouch.workspace.templates.WorkspaceTemplateCatalog
+import com.trancong.dexworkspacetouch.workspace.templates.ui.WorkspaceTemplatePickerDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,7 +54,7 @@ fun HomeScreen(
     selectedWorkspaceId: String?,
     editingWorkspaceId: String?,
     onWorkspaceSelected: (String) -> Unit,
-    onCreateWorkspace: () -> Unit,
+    onCreateWorkspace: (WorkspaceCanvas) -> Unit,
     onEditWorkspace: (String) -> Unit,
     onRenameWorkspace: (String, String) -> Unit,
     onDeleteWorkspace: (String) -> Unit,
@@ -70,6 +73,22 @@ fun HomeScreen(
     var renameWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
     var renameText by rememberSaveable { mutableStateOf("") }
     var deleteWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
+    var showTemplatePicker by rememberSaveable { mutableStateOf(false) }
+    var selectedTemplateId by rememberSaveable { mutableStateOf<String?>(null) }
+    val templateCatalog = remember { WorkspaceTemplateCatalog.default() }
+
+    if (showTemplatePicker) {
+        WorkspaceTemplatePickerDialog(
+            catalog = templateCatalog,
+            selectedTemplateId = selectedTemplateId,
+            onTemplateSelected = { templateId, canvas ->
+                selectedTemplateId = templateId
+                showTemplatePicker = false
+                onCreateWorkspace(canvas)
+            },
+            onDismiss = { showTemplatePicker = false },
+        )
+    }
 
     WorkspaceLaunchStatusDialog(
         state = launchState,
@@ -221,7 +240,7 @@ fun HomeScreen(
             item(span = { GridItemSpan(maxLineSpan) }) { Text("Workspace Library") }
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Button(
-                    onClick = onCreateWorkspace,
+                    onClick = { showTemplatePicker = true },
                     enabled = !libraryIsLoading,
                     modifier = Modifier.fillMaxWidth().height(TouchTargets.PrimaryButton),
                 ) { Text("Tạo bố cục mới") }

@@ -8,6 +8,13 @@ sealed interface LaunchReadiness {
 
     data object EmptyWorkspace : LaunchReadiness
 
+    data class TooManyTargets(val actual: Int, val maximum: Int) : LaunchReadiness {
+        init {
+            require(actual > maximum) { "actual must exceed maximum" }
+            require(maximum > 0) { "maximum must be positive" }
+        }
+    }
+
     data class EmptyCells(val cellIds: List<String>) : LaunchReadiness {
         init {
             require(cellIds.isNotEmpty()) { "cellIds must not be empty" }

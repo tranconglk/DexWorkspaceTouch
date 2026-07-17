@@ -8,6 +8,8 @@ import com.trancong.dexworkspacetouch.workspace.persistence.domain.WorkspacePers
 import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspaceRepository
 import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspacePersistenceIssue
 import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspaceRepositorySnapshot
+import com.trancong.dexworkspacetouch.debugbenchmark.WorkspaceBenchmarkDataGenerator
+import com.trancong.dexworkspacetouch.workspace.templates.WorkspaceTemplateCatalog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
@@ -69,6 +71,15 @@ class WorkspaceLibraryViewModelTest {
         val state = viewModel(repository)
         assertEquals(WorkspaceCanvas.singleCell(), state.createWorkspace())
         assertEquals(0, repository.insertCalls)
+    }
+
+    @Test fun `template canvas remains an unpersisted draft until save`() {
+        val repository = FakeRepository()
+        val state = viewModel(repository)
+        val templateCanvas = WorkspaceTemplateCatalog.default().find("three-top-two-bottom")!!.factory()
+        assertEquals(templateCanvas, state.createWorkspace(templateCanvas))
+        assertEquals(0, repository.insertCalls)
+        assertTrue(repository.current.isEmpty())
     }
 
     @Test fun `save new workspace inserts domain with generated id and timestamps`() {
@@ -233,6 +244,19 @@ class WorkspaceLibraryViewModelTest {
         state.createWorkspace()
         state.saveWorkspace(canvas, "New")
         assertEquals(51, repository.current.first { it.id == "new" }.modifiedSequence)
+    }
+
+    @Test fun `selection rename delete and default name remain correct with five hundred workspaces`() {
+        val repository = FakeRepository(WorkspaceBenchmarkDataGenerator.generate(500))
+        val state = viewModel(repository, ids = QueueIds("new-501"))
+        state.selectWorkspace("benchmark-0400")
+        state.renameWorkspace("benchmark-0400", "Renamed 400")
+        assertEquals("Renamed 400", repository.current.first { it.id == "benchmark-0400" }.name)
+        state.deleteWorkspace("benchmark-0400")
+        assertNull(state.selectedWorkspaceId)
+        state.createWorkspace()
+        assertEquals("Workspace 501", state.saveWorkspace(canvas).name)
+        assertEquals(500, repository.current.size)
     }
 
     private fun viewModel(

@@ -24,6 +24,13 @@ object Dimensions {
     val SnapshotLabelMinWidth = 96.dp
     val SnapshotLabelMinHeight = 56.dp
     val WorkspaceCardMinWidth = 280.dp
+    val TemplateCardMinWidth = 260.dp
+    val TemplatePreviewHeight = 104.dp
+    const val TemplateDialogWidthFraction = 0.88f
+    val TemplateDialogMaxWidth = 1440.dp
+    const val TemplateDialogMaxHeightFraction = 0.84f
+    val TemplateDialogHeaderHeight = 72.dp
+    val TemplateFourColumnMinWidth = 1200.dp
     val WorkspaceCardMinHeight = 336.dp
     val WorkspaceCardWideActionsWidth = 420.dp
     val AppRowMinHeight = 72.dp

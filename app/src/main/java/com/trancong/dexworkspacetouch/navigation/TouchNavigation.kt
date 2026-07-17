@@ -61,8 +61,8 @@ fun TouchNavigation(activity: Activity) {
                 selectedWorkspaceId = libraryViewModel.selectedWorkspaceId,
                 editingWorkspaceId = libraryViewModel.editingWorkspaceId,
                 onWorkspaceSelected = libraryViewModel::selectWorkspace,
-                onCreateWorkspace = {
-                    designerViewModel.loadCanvas(libraryViewModel.createWorkspace())
+                onCreateWorkspace = { templateCanvas ->
+                    designerViewModel.loadCanvas(libraryViewModel.createWorkspace(templateCanvas))
                     navController.navigate(Routes.LayoutDesigner)
                 },
                 onEditWorkspace = { workspaceId ->

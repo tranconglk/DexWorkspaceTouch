@@ -20,6 +20,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -29,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -38,8 +41,11 @@ import com.trancong.dexworkspacetouch.ui.design.InteractionZones
 import com.trancong.dexworkspacetouch.ui.design.Spacing
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerViewModel
+import com.trancong.dexworkspacetouch.workspace.designer.state.SplitResult
+import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceLimits
 import com.trancong.dexworkspacetouch.workspace.designer.ui.WorkspaceCanvasView
 import com.trancong.dexworkspacetouch.workspace.designer.ui.layout.fitSize
+import kotlinx.coroutines.launch
 
 @Composable
 fun LayoutDesignerScreen(
@@ -51,6 +57,8 @@ fun LayoutDesignerScreen(
 ) {
     var showNameDialog by rememberSaveable { mutableStateOf(false) }
     var workspaceName by rememberSaveable { mutableStateOf("") }
+    val snackbarHostState = androidx.compose.runtime.remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
     if (showNameDialog) {
         AlertDialog(
             onDismissRequest = { showNameDialog = false },
@@ -78,6 +86,7 @@ fun LayoutDesignerScreen(
         )
     }
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         contentWindowInsets = WindowInsets.safeDrawing.only(
             WindowInsetsSides.Horizontal + WindowInsetsSides.Top,
         ),
@@ -132,6 +141,12 @@ fun LayoutDesignerScreen(
                     modifier = Modifier.weight(1f).heightIn(min = TouchTargets.SecondaryButton),
                 ) { Text("↷ Redo") }
             }
+            if (state.selectedCellId != null && state.canvas.cells.size >= WorkspaceLimits.MaxCells) {
+                Text(
+                    text = "Workspace hỗ trợ tối đa ${WorkspaceLimits.MaxCells} ô.",
+                    modifier = Modifier.padding(top = Spacing.S),
+                )
+            }
             BoxWithConstraints(
                 modifier = Modifier.fillMaxWidth().weight(1f).padding(vertical = InteractionZones.DeadZone),
                 contentAlignment = Alignment.Center,
@@ -158,7 +173,15 @@ fun LayoutDesignerScreen(
                             onDividerDragCancel = state::cancelDividerResize,
                             onClearDividerSelection = state::clearDividerSelection,
                             onChooseApp = onOpenAppPicker,
-                            onSplit = { state.splitSelectedCell(it) },
+                            onSplit = { direction ->
+                                if (state.splitSelectedCell(direction) == SplitResult.MaximumCellsReached) {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            "Workspace hỗ trợ tối đa ${WorkspaceLimits.MaxCells} ô.",
+                                        )
+                                    }
+                                }
+                            },
                             onClearSelection = state::clearSelection,
                             modifier = Modifier.fillMaxSize(),
                         )

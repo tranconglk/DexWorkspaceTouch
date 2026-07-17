@@ -7,6 +7,7 @@ import com.trancong.dexworkspacetouch.workspace.apppicker.model.toIdentity
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasValidator
 import com.trancong.dexworkspacetouch.workspace.designer.model.CanvasValidationIssue
+import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceLimits
 import com.trancong.dexworkspacetouch.workspace.launcher.model.AppLaunchTarget
 import com.trancong.dexworkspacetouch.workspace.launcher.model.LaunchApplicationIssue
 import com.trancong.dexworkspacetouch.workspace.launcher.model.LaunchReadiness
@@ -27,6 +28,9 @@ class WorkspaceLaunchRequestFactory(
             return LaunchReadiness.EmptyWorkspace
         }
         if (validationIssues.isNotEmpty()) return LaunchReadiness.InvalidCanvas(validationIssues)
+        if (canvas.cells.size > WorkspaceLimits.MaxCells) {
+            return LaunchReadiness.TooManyTargets(canvas.cells.size, WorkspaceLimits.MaxCells)
+        }
 
         val emptyCellIds = canvas.cells.filter { it.app == null }.map { it.id }
         if (emptyCellIds.isNotEmpty()) return LaunchReadiness.EmptyCells(emptyCellIds)

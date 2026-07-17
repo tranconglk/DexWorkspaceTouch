@@ -31,3 +31,9 @@ Phần tử nhìn thấy và vùng chạm là hai khái niệm riêng. Divider 3
 - Action overlay phải nằm trên divider trong z-order.
 - Không làm mất hit area divider bên ngoài vùng action.
 - Với cell nhỏ, dùng một affordance lớn “Thao tác” và chuyển action đầy đủ vào bottom sheet.
+
+## Template selection
+
+Template Picker dùng dialog lớn căn giữa, không dính đáy cửa sổ. Màn lớn ưu tiên
+3–4 cột; card giữ gọn nhưng toàn bộ card vẫn là touch target. Header luôn nhìn thấy,
+grid cuộn độc lập và padding safe-drawing bảo đảm hàng cuối không bị taskbar che.

@@ -82,6 +82,7 @@ private fun StatusDialog(
 private fun LaunchReadiness.applicationDetails(): List<String> = when (this) {
     is LaunchReadiness.MissingApplications -> items.map { it.identity.packageName }
     is LaunchReadiness.NonLaunchableApplications -> items.map { it.identity.packageName }
+    is LaunchReadiness.TooManyTargets -> emptyList()
     else -> emptyList()
 }
 

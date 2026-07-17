@@ -239,3 +239,66 @@ WorkspaceLibraryViewModel (Room Flow source of truth)
   emission. Failed writes retain the previous persisted row.
 - JSON decoding rejects unknown or duplicate fields, trailing input, non-finite numbers, payloads
   over 1,000,000 characters, and nesting deeper than 64 containers.
+
+### Library scale baseline
+
+- The supported planning target is 500 workspaces, each containing one to four cells. Room currently
+  reads and sorts full rows, including `canvasJson`, and the repository decodes every row before its
+  first snapshot emission. LazyVerticalGrid still composes only visible cards using stable String IDs;
+  snapshots receive decoded canvases and do no JSON or icon loading in composition.
+- On the Note 8 legacy DeX target, the measured 500-row debug baseline was: database open 42 ms,
+  raw first emission 41 ms, decode 139 ms, repository emission 71 ms, render-ready 1,242 ms,
+  persisted row lookup for edit 3 ms, and approximately 51.3 MB heap after a full automated scroll.
+  The 500-row run completed without OOM or crash.
+- On the S23 Ultra DeX target at 1920x1200 and 160 dpi (six adaptive columns), the measured 500-row
+  debug baseline was: database open 32 ms, raw first emission 13 ms, decode 142 ms, repository
+  emission 94 ms, render-ready 898 ms, persisted row lookup for edit 1 ms, and approximately 141.4 MB
+  heap after the automated full scroll. The run completed without OOM, crash, or state reset. The
+  higher post-scroll debug heap is monitored as a scale guardrail; it does not currently justify a
+  production cache or paging layer, both of which would add retention and complexity.
+- These measurements do not justify a version-2 index, projection, cache, or paging dependency.
+  Full-row decoding is the largest persistence-side scaling cost but remains below the UI render and
+  scroll cost at the current target. Any schema optimization requires a new measured regression and a
+  separately approved migration.
+- Benchmark data, its separate database, Activity, and logging exist only in the debug source set.
+  No production database is seeded. Device measurements, particularly on legacy DeX, remain the final
+  acceptance criterion rather than strict timing assertions in JVM tests.
+
+## Golden regression architecture
+
+- Golden regression uses three layers: deterministic JVM workflow tests, file-backed Room Android
+  integration tests, and a physical DeX checklist. Focused unit tests remain in place for diagnosis.
+- JVM fixtures contain only stable fake identities and immutable canvases; reusable fakes live only in
+  test source. No JVM workflow calls PackageManager, real time, UUID, delay, or Android launch APIs.
+- Room close/reopen behavior is verified with a disposable file database rather than relying only on
+  in-memory tests. S23 Ultra and Note 8 remain mandatory for window/taskbar and actual launch behavior.
+
+## Template layer
+
+```text
+WorkspaceTemplateCatalog
+→ WorkspaceTemplate.factory()
+→ WorkspaceCanvasEditor
+→ immutable WorkspaceCanvas draft
+→ Designer
+→ Save
+→ Room
+```
+
+- Templates are pure Kotlin domain definitions containing stable metadata and a deterministic canvas
+  factory. They contain no Compose, Android, Room, JSON, bitmap, or installed-app dependency.
+- The default catalog is immutable and constructed explicitly at the Home composition boundary; it is
+  not a singleton and templates are not persisted.
+- Home previews each temporary canvas through the existing `WorkspaceSnapshot`. Selecting a card
+  creates only a Designer working draft; Room remains unchanged until the existing Save action.
+- All layouts are derived through `WorkspaceCanvasEditor` splits so bounds validation and deterministic
+  IDs stay shared with Designer domain behavior.
+## Workspace limit and template selection
+
+`WorkspaceLimits.MaxCells = 5` là contract Kotlin dùng chung cho editor, template
+catalog, Designer UI và launch readiness. Dữ liệu cũ trên 5 cell vẫn được deserialize
+và giữ nguyên; readiness từ chối launch thay vì coi row là corrupted.
+
+Template Picker là centered adaptive dialog, không phải bottom sheet. Dialog dùng
+safe-drawing inset, header cố định và grid cuộn độc lập. Quick Split đã bị loại bỏ;
+Designer chỉ còn split ngang/dọc với một history entry cho mỗi thao tác.

@@ -157,6 +157,25 @@ class WorkspaceLaunchRequestFactoryTest {
         )
     }
 
+    @Test fun `five targets are ready`() {
+        val app = assigned("com.app", "Main", "App")
+        val result = factory(installed("com.app", "Main", "App")).create(
+            "workspace", "Five", stripedCanvas(5, app),
+        )
+
+        assertTrue(result is LaunchReadiness.Ready)
+        assertEquals(5, (result as LaunchReadiness.Ready).request.targets.size)
+    }
+
+    @Test fun `six targets return typed limit failure before launch`() {
+        val app = assigned("com.app", "Main", "App")
+        val result = factory(installed("com.app", "Main", "App")).create(
+            "workspace", "Six", stripedCanvas(6, app),
+        )
+
+        assertEquals(LaunchReadiness.TooManyTargets(actual = 6, maximum = 5), result)
+    }
+
     private fun factory(vararg apps: InstalledApp) =
         WorkspaceLaunchRequestFactory(ListInstalledAppCatalog(apps.toList()))
 
@@ -173,4 +192,19 @@ class WorkspaceLaunchRequestFactoryTest {
     ) = WorkspaceCell(id, bounds, app)
 
     private fun canvas(vararg cells: WorkspaceCell) = WorkspaceCanvas(cells.toList())
+
+    private fun stripedCanvas(count: Int, app: AssignedApp) = WorkspaceCanvas(
+        List(count) { index ->
+            WorkspaceCell(
+                id = "cell-$index",
+                bounds = NormalizedBounds(
+                    left = index.toFloat() / count,
+                    top = 0f,
+                    right = (index + 1).toFloat() / count,
+                    bottom = 1f,
+                ),
+                app = app,
+            )
+        },
+    )
 }

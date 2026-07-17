@@ -194,7 +194,8 @@ class WorkspaceDesignerStateHolderTest {
             WorkspaceCell("one", NormalizedBounds(0f, 0f, 0.5f, 0.5f)),
             WorkspaceCell("two", NormalizedBounds(0.5f, 0f, 1f, 0.5f)),
             WorkspaceCell("three", NormalizedBounds(0f, 0.5f, 0.5f, 1f)),
-            WorkspaceCell("four", NormalizedBounds(0.5f, 0.5f, 1f, 1f)),
+            WorkspaceCell("four", NormalizedBounds(0.5f, 0.5f, 1f, 0.75f)),
+            WorkspaceCell("five", NormalizedBounds(0.5f, 0.75f, 1f, 1f)),
         )
         val state = WorkspaceDesignerStateHolder(WorkspaceCanvas(cells))
         state.selectCell("one")

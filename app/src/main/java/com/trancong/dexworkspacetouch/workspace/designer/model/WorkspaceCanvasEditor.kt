@@ -11,6 +11,9 @@ class WorkspaceCanvasEditor(
     ): WorkspaceCanvas {
         require(ratio in MIN_RATIO..MAX_RATIO) { "ratio must be in 0.2f..0.8f" }
         require(validator.validate(canvas).isEmpty()) { "canvas must be valid before splitting" }
+        require(canvas.cells.size < WorkspaceLimits.MaxCells) {
+            "workspace supports at most ${WorkspaceLimits.MaxCells} cells"
+        }
 
         val splitIndex = canvas.cells.indexOfFirst { it.id == cellId }
         require(splitIndex >= 0) { "Cell '$cellId' does not exist" }

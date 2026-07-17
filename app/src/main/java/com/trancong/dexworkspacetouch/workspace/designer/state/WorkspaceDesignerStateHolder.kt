@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import com.trancong.dexworkspacetouch.workspace.designer.model.AssignedApp
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasEditor
+import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceLimits
 import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.assignApp
 import com.trancong.dexworkspacetouch.workspace.designer.model.dividers
@@ -110,7 +111,7 @@ class WorkspaceDesignerStateHolder(
         val cellId = selectedCellId ?: return SplitResult.NoSelection
         val cell = canvas.cells.firstOrNull { it.id == cellId }
             ?: return SplitResult.CellNotFound
-        if (canvas.cells.size >= MAX_CELLS) return SplitResult.MaximumCellsReached
+        if (canvas.cells.size >= WorkspaceLimits.MaxCells) return SplitResult.MaximumCellsReached
 
         val splitSize = when (direction) {
             SplitDirection.HORIZONTAL -> cell.bounds.height / 2f
@@ -171,7 +172,6 @@ class WorkspaceDesignerStateHolder(
     }
 
     private companion object {
-        const val MAX_CELLS = 4
         const val MIN_CHILD_SIZE = 0.2f
         const val MAX_HISTORY = 20
         const val MIN_DIVIDER_RATIO = 0.2f

@@ -106,3 +106,11 @@ target để đạt mật độ cao hơn.
 4. Domain, state và ViewModel không được import package `ui.design`.
 5. Token animation chỉ định thời lượng; việc thêm animation cần một task hành vi riêng.
 6. Thay token không được làm thay đổi pixel, layout, state hoặc interaction hiện có nếu task chỉ là refactor design system.
+
+## Template Picker Dialog
+
+Template Picker dùng centered dialog rộng 88% vùng safe, cao tối đa 84% và rộng tối
+đa 1440dp. Từ 1200dp content width, grid cố định bốn cột; dưới breakpoint đó
+dùng card adaptive tối thiểu 260dp. Preview cao 104dp và
+`Spacing.TemplateGrid = 16dp`. Trên DeX 1920×1200 mục tiêu là bốn cột; cửa sổ hẹp
+tự giảm còn 1–3 cột. Header tối thiểu 72dp đứng yên trong khi grid cuộn độc lập.

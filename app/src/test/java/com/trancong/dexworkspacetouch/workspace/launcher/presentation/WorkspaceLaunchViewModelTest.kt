@@ -52,6 +52,10 @@ class WorkspaceLaunchViewModelTest {
         ),
     )
 
+    @Test fun `too many targets does not invoke launcher`() = assertReadinessStops(
+        LaunchReadiness.TooManyTargets(actual = 6, maximum = 5),
+    )
+
     @Test fun `success maps to completed state`() {
         val viewModel = launchWith(success)
         assertTrue((viewModel.state as WorkspaceLaunchUiState.Completed).result is WorkspaceLaunchResult.Success)

@@ -28,6 +28,7 @@ import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCell
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceDivider
+import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceLimits
 import com.trancong.dexworkspacetouch.workspace.designer.model.dividers
 import kotlin.math.roundToInt
 
@@ -90,7 +91,7 @@ fun WorkspaceCanvasView(
                 )
             }
             selectedCell?.let { cell ->
-                val maximumReached = canvas.cells.size >= 4
+                val maximumReached = canvas.cells.size >= WorkspaceLimits.MaxCells
                 WorkspaceCellActionOverlay(
                     cell = cell,
                     canSplitHorizontal = !maximumReached &&

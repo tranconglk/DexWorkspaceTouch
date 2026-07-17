@@ -1,5 +1,38 @@
 # Architecture Decisions
 
+## ADR-019 — Workspace templates are non-persistent domain objects
+
+- A template is immutable metadata plus a pure factory for `WorkspaceCanvas`.
+- Factories compose existing `WorkspaceCanvasEditor` split operations rather than storing JSON or
+  duplicating normalized-bounds algorithms.
+- The catalog is explicitly constructed and immutable; no global singleton, reflection, Room row,
+  download, or custom-template persistence is introduced.
+- Template selection creates a Designer draft. Only the normal Save workflow writes a workspace to
+  Room, keeping templates independent from user data and schema migrations.
+
+## ADR-018 — Golden regression suite uses three layers
+
+- JVM workflow tests are authoritative for deterministic application logic and use shared fixtures
+  and fakes from test source only.
+- File-backed Android instrumentation is authoritative for Room/SQLite close-reopen behavior.
+- Physical S23 Ultra and Note 8 legacy-ROM runs are authoritative for DeX display, taskbar, windowing,
+  process restart, and real application launch; emulator coverage cannot replace them.
+- Compose screenshot infrastructure is not introduced without a stable cross-density baseline.
+- The short manual checklist explicitly records gaps that cannot be claimed as automated end-to-end.
+
+## ADR-017 — Workspace Library scaling policy
+
+- The current scale target is 500 workspaces with one to five cells each.
+- Optimization follows measured need: remove unnecessary decoding/work first, then allocation and
+  recomposition, then consider an indexed projection/cache; paging is not added while 500 items remain
+  usable on the legacy Note 8 DeX target.
+- The version-1 query intentionally remains unchanged. Adding its multi-column sort index or a summary
+  projection would require a database migration and is not justified by the current device baseline.
+- Deterministic debug data and a separate debug database provide repeatable 100/250/500 measurements
+  without seeding or mutating the production Library database.
+- Device measurements are authoritative. JVM performance tests verify scale correctness but avoid
+  brittle absolute-time thresholds.
+
 ## ADR-016 — Persistence isolates unreadable rows
 
 Decision:
@@ -243,3 +276,18 @@ Quyết định:
 Hệ quả:
 Library phục hồi sau process restart, launch luôn nhận canvas đã persisted, và persistence
 failure không crash UI. Save là asynchronous; Room emission xác nhận danh sách hiển thị.
+## ADR-020 — Workspace giới hạn tối đa 5 cell theo khả năng sử dụng DeX đã xác minh
+
+Quyết định:
+
+- `WorkspaceLimits.MaxCells = 5` được enforce ở domain editor, template catalog,
+  Designer UI và launch readiness.
+- Split ngang/dọc bị khóa trước mutation khi canvas đã có 5 cell; failure không tạo history.
+- Catalog không hỗ trợ template 6 ô. Mẫu 5 ô dùng ba ô hàng trên và hai ô hàng dưới.
+- Quick Split bị loại bỏ để giảm độ phức tạp và tránh preset vượt khả năng sử dụng DeX.
+- Row cũ trên 5 cell vẫn được giữ và deserialize; launch readiness trả typed failure,
+  không gọi Android launcher và không coi row là corrupted.
+
+Lý do:
+Giới hạn năm cửa sổ phản ánh phạm vi đã xác minh trên thiết bị, đồng thời đặt guard
+cuối trước Android infrastructure mà không thay đổi Room schema hay launch sequencing.

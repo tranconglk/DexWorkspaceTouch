@@ -53,6 +53,22 @@ class RoomWorkspaceRepositoryTest {
         assertTrue(dao.exists("future"))
     }
 
+    @Test fun `one corrupted row among five hundred preserves all valid rows`() = runBlocking {
+        val serializer = DeterministicWorkspaceCanvasJsonSerializer()
+        repeat(500) { index ->
+            dao.putRaw(
+                workspace.toEntity(serializer).copy(
+                    id = "row-${index.toString().padStart(3, '0')}",
+                    canvasJson = if (index == 249) "malformed" else serializer.encode(workspace.canvas),
+                ),
+            )
+        }
+        val snapshot = repository.observeSnapshot().first()
+        assertEquals(499, snapshot.workspaces.size)
+        assertEquals(listOf(WorkspacePersistenceIssue.CorruptedRow("row-249")), snapshot.issues)
+        assertEquals(500, dao.count())
+    }
+
     @Test fun `insert and get by id`() = runBlocking {
         repository.insert(workspace)
         assertEquals(workspace, repository.getById(workspace.id))
