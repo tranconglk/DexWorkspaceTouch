@@ -4,7 +4,7 @@ import org.junit.Assert.assertThrows
 import org.junit.Test
 
 class AssignedAppTest {
-    @Test fun blankFieldsAreRejected() {
+    @Test fun blankRequiredFieldsAreRejected() {
         assertThrows(IllegalArgumentException::class.java) {
             AssignedApp("", "com.example.MainActivity", "Example")
         }
@@ -14,5 +14,9 @@ class AssignedAppTest {
         assertThrows(IllegalArgumentException::class.java) {
             AssignedApp("com.example", "com.example.MainActivity", "\t")
         }
+    }
+
+    @Test fun nullActivityIsAcceptedDuringIdentityMigration() {
+        AssignedApp("com.example", null, "Example")
     }
 }

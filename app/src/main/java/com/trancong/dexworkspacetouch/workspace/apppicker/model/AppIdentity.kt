@@ -1,15 +1,15 @@
-package com.trancong.dexworkspacetouch.workspace.designer.model
+package com.trancong.dexworkspacetouch.workspace.apppicker.model
 
-data class AssignedApp(
+data class AppIdentity(
     val packageName: String,
     val activityName: String?,
-    val label: String,
 ) {
     init {
         require(packageName.isNotBlank()) { "packageName must not be blank" }
         require(activityName == null || activityName.isNotBlank()) {
             "activityName must be null or non-blank"
         }
-        require(label.isNotBlank()) { "label must not be blank" }
     }
 }
+
+fun AppIdentity.toStableKey(): String = "$packageName#${activityName.orEmpty()}"

@@ -23,10 +23,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
@@ -36,13 +32,16 @@ import androidx.compose.ui.text.font.FontWeight
 import com.trancong.dexworkspacetouch.ui.design.Dimensions
 import com.trancong.dexworkspacetouch.ui.design.Spacing
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
-import com.trancong.dexworkspacetouch.workspace.apppicker.model.DemoApp
-import com.trancong.dexworkspacetouch.workspace.apppicker.model.DemoApps
+import com.trancong.dexworkspacetouch.workspace.apppicker.model.InstalledApp
+import com.trancong.dexworkspacetouch.workspace.apppicker.model.toAssignedApp
+import com.trancong.dexworkspacetouch.workspace.apppicker.model.toStableKey
+import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppPickerViewModel
 import com.trancong.dexworkspacetouch.workspace.designer.model.AssignedApp
 
 @Composable
 fun AppPickerScreen(
     cellId: String?,
+    state: AppPickerViewModel,
     onBack: () -> Unit,
     onAppSelected: (String, AssignedApp) -> Unit,
 ) {
@@ -57,6 +56,7 @@ fun AppPickerScreen(
 
         AppPickerContent(
             cellId = cellId,
+            state = state,
             onBack = onBack,
             onAppSelected = onAppSelected,
             modifier = Modifier.padding(innerPadding),
@@ -67,12 +67,12 @@ fun AppPickerScreen(
 @Composable
 private fun AppPickerContent(
     cellId: String,
+    state: AppPickerViewModel,
     onBack: () -> Unit,
     onAppSelected: (String, AssignedApp) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var query by rememberSaveable { mutableStateOf("") }
-    val apps = DemoApps.search(query)
+    val apps = state.filteredApps
     Column(modifier.fillMaxSize().imePadding().padding(horizontal = Spacing.L)) {
         TextButton(
             onClick = onBack,
@@ -84,13 +84,17 @@ private fun AppPickerContent(
             fontWeight = FontWeight.SemiBold,
         )
         OutlinedTextField(
-            value = query,
-            onValueChange = { query = it },
+            value = state.query,
+            onValueChange = state::updateQuery,
             label = { Text("Tìm ứng dụng") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth().padding(vertical = Spacing.M),
         )
-        if (apps.isEmpty()) {
+        if (state.state.loadFailed) {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("Không thể đọc danh sách ứng dụng.")
+            }
+        } else if (apps.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text("Không tìm thấy ứng dụng phù hợp.")
             }
@@ -100,13 +104,13 @@ private fun AppPickerContent(
                 contentPadding = PaddingValues(bottom = Spacing.L),
                 verticalArrangement = Arrangement.spacedBy(Spacing.S),
             ) {
-                items(apps, key = DemoApp::packageName) { app ->
-                    DemoAppItem(
+                items(apps, key = { app -> app.identity.toStableKey() }) { app ->
+                    InstalledAppItem(
                         app = app,
                         onClick = {
                             onAppSelected(
                                 cellId,
-                                AssignedApp(app.packageName, app.activityName, app.label),
+                                app.toAssignedApp(),
                             )
                         },
                     )
@@ -117,7 +121,7 @@ private fun AppPickerContent(
 }
 
 @Composable
-private fun DemoAppItem(app: DemoApp, onClick: () -> Unit) {
+private fun InstalledAppItem(app: InstalledApp, onClick: () -> Unit) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()

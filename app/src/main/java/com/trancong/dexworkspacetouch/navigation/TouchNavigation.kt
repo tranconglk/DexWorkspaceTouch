@@ -1,6 +1,8 @@
 package com.trancong.dexworkspacetouch.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -9,6 +11,9 @@ import com.trancong.dexworkspacetouch.ui.screens.AppPickerScreen
 import com.trancong.dexworkspacetouch.ui.screens.HomeScreen
 import com.trancong.dexworkspacetouch.ui.screens.LayoutDesignerScreen
 import com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerViewModel
+import com.trancong.dexworkspacetouch.workspace.apppicker.infrastructure.AndroidInstalledAppDataSource
+import com.trancong.dexworkspacetouch.workspace.apppicker.model.DefaultInstalledAppCatalog
+import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppPickerViewModel
 import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryViewModel
 
 private object Routes {
@@ -60,12 +65,22 @@ fun TouchNavigation() {
             )
         }
         composable("${Routes.AppPicker}/{cellId}") { backStackEntry ->
+            val applicationContext = LocalContext.current.applicationContext
+            val installedAppCatalog = remember(applicationContext) {
+                DefaultInstalledAppCatalog(
+                    AndroidInstalledAppDataSource.create(applicationContext),
+                )
+            }
+            val appPickerViewModel: AppPickerViewModel = viewModel(
+                factory = AppPickerViewModel.factory(installedAppCatalog),
+            )
             val requestedCellId = backStackEntry.arguments?.getString("cellId")
             val validCellId = requestedCellId?.takeIf { cellId ->
                 designerViewModel.canvas.cells.any { it.id == cellId }
             }
             AppPickerScreen(
                 cellId = validCellId,
+                state = appPickerViewModel,
                 onBack = navController::navigateUp,
                 onAppSelected = { cellId, app ->
                     designerViewModel.assignApp(cellId, app)
