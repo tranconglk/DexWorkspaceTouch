@@ -76,6 +76,63 @@ Không tạo package `util`, `helpers`, `common` hoặc `misc` chung chung.
 - UI label/icon phải được resolve từ catalog; domain không tự truy cập catalog
   hoặc `PackageManager`.
 
+## Launch Bounds Pipeline
+
+```text
+Foreground Activity
+→ ActivityDisplayWorkAreaProvider
+→ DisplayWorkAreaSnapshot
+→ DisplayWorkArea
+
+NormalizedBounds + DisplayWorkArea
+→ LaunchBoundsCalculator
+→ PixelBounds
+→ Android Rect mapper
+→ Rect
+```
+
+- `DisplayWorkArea` là snapshot lấy từ foreground launch host ngay trước launch sequence.
+  Model giữ kích thước display và cả bốn inset left/top/right/bottom; không biết
+  `DisplayMetrics` hoặc `WindowInsets`.
+- `LaunchBoundsCalculator` thuần Kotlin. Calculator dùng usable area sau inset,
+  `roundToInt`, margin pixel hướng vào trong và clamp hoàn toàn trong usable rectangle.
+- Margin launch là platform config, không phải UI spacing. Android adapter đổi 8dp mặc định
+  sang px theo density của host/display; calculator chỉ nhận pixel.
+- Không hard-code chiều cao taskbar, model thiết bị hoặc vị trí taskbar.
+- Chỉ Android Rect mapper ở infrastructure được biết `android.graphics.Rect`.
+- Provider mô tả usable area của toàn external display, không phải host Activity window.
+  Trên API 30+, maximum WindowMetrics cung cấp display bounds còn current WindowMetrics chỉ
+  dùng để phân biệt diagnostics windowed/maximized. Trên API 28–29, host display metrics
+  được kết hợp với root WindowInsets đã sẵn sàng.
+- Insets dùng system bars và display cutout, gộp theo từng cạnh; IME không thuộc launch work
+  area. Không có insets hoặc Activity/display không hợp lệ thì provider trả unavailable.
+- Display ID và density đến từ foreground Activity/display. Display ID chỉ thuộc platform
+  snapshot, không đi vào `WorkspaceLaunchRequest`.
+
+## Single-target Android Launch
+
+```text
+ForegroundLaunchHost
+→ ActivitySingleAppLaunchPlatform
+→ fresh DisplayWorkAreaSnapshot
+→ PackageManagerAdapter exact component verification
+→ AndroidSingleAppLauncher
+→ LaunchBoundsCalculator
+→ PixelBounds.toAndroidRect
+→ ActivityOptions.setLaunchBounds
+→ foreground Activity.startActivity
+```
+
+- Host được scope theo Activity do caller cung cấp; không Application cache, singleton hoặc
+  ViewModel Activity reference.
+- Intent là explicit launcher intent với `NEW_TASK | MULTIPLE_TASK`. Không extra, animation
+  tùy chỉnh hoặc `setLaunchDisplayId` trong production path.
+- Platform kiểm tra lại display ID ngay trước start. Nếu host/display thay đổi thì trả
+  `DISPLAY_UNAVAILABLE`, không tự chọn display khác.
+- Start chạy trên Main dispatcher. `CancellationException` luôn được truyền tiếp.
+- `AndroidSingleAppLauncher` chỉ xử lý một target. Sequencing, delay, duplicate coordination
+  và workspace result aggregation thuộc pha sau.
+
 ## Phần đóng băng
 
 Chưa port trong giai đoạn Designer MVP:

@@ -11,6 +11,48 @@ import com.trancong.dexworkspacetouch.workspace.apppicker.model.AppIdentity
 class PackageManagerAdapter(
     private val packageManager: PackageManager,
 ) {
+    fun verifyPackageExists(packageName: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0L))
+        } else {
+            @Suppress("DEPRECATION")
+            packageManager.getPackageInfo(packageName, 0)
+        }
+    }
+
+    fun verifyActivityExists(identity: AppIdentity) {
+        val activityName = requireNotNull(identity.activityName) {
+            "activityName is required for launch verification"
+        }
+        val component = ComponentName(identity.packageName, activityName)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            packageManager.getActivityInfo(component, PackageManager.ComponentInfoFlags.of(0L))
+        } else {
+            @Suppress("DEPRECATION")
+            packageManager.getActivityInfo(component, 0)
+        }
+    }
+
+    fun canResolveLauncherActivity(identity: AppIdentity): Boolean {
+        val activityName = identity.activityName ?: return false
+        val intent = Intent(Intent.ACTION_MAIN).apply {
+            addCategory(Intent.CATEGORY_LAUNCHER)
+            component = ComponentName(identity.packageName, activityName)
+        }
+        val resolved = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            packageManager.resolveActivity(
+                intent,
+                PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_ALL.toLong()),
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            packageManager.resolveActivity(intent, PackageManager.MATCH_ALL)
+        } ?: return false
+        return resolved.activityInfo?.let {
+            it.packageName == identity.packageName && it.name == activityName
+        } == true
+    }
+
     fun loadIcon(identity: AppIdentity): Drawable = if (identity.activityName != null) {
         packageManager.getActivityIcon(ComponentName(identity.packageName, identity.activityName))
     } else {

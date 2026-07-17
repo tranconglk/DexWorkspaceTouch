@@ -76,3 +76,44 @@ Chuyển bounds sang pixel, chọn display và tạo `Intent` thuộc infrastruc
 identity được phép xuất hiện ở nhiều target vì Designer hiện không cấm; Android
 implementation sau này có trách nhiệm báo hạn chế về nhiều instance, không được âm thầm
 bỏ target trùng.
+
+## ADR-009 — Launch bounds dùng work area có bốn inset
+
+Quyết định:
+Launch bounds được tính từ snapshot work area gồm kích thước display và bốn inset
+left/top/right/bottom. Calculator thuần Kotlin chuyển `NormalizedBounds` thành pixel bằng
+usable rectangle, rounding deterministic và margin platform hướng vào trong.
+
+Lý do:
+
+- DeX taskbar và system bars có thể thay đổi kích thước hoặc cạnh hiển thị.
+- Windowed và maximized có thể báo vùng làm việc khác nhau.
+- Tránh cửa sổ ứng dụng bị taskbar/system UI che.
+- Không phụ thuộc model thiết bị hay magic taskbar height.
+
+Hệ quả:
+Foreground launch host phải cung cấp snapshot inset mới trước launch sequence. Calculator
+trả typed failure nếu margin hoặc rounding làm vùng không còn kích thước dương. Việc đọc
+Android `WindowInsets` và map `PixelBounds` sang `Rect` thuộc infrastructure, không thuộc
+canvas hoặc launch contract.
+
+## ADR-010 — Work area lấy từ foreground external-display host
+
+Quyết định:
+Android work-area provider nhận foreground Activity đang gắn với external display và đọc lại
+display, WindowMetrics, WindowInsets cùng density mỗi lần tạo snapshot. Provider không tự tìm
+hoặc chuyển sang display khác.
+
+Lý do:
+
+- Dialog, diagnostics và launch sau này dùng cùng display host.
+- Tránh Application Context không đại diện đúng external-display resources/insets.
+- Ownership Activity và lifecycle rõ ràng, không cần singleton cache.
+- Insets/display có thể thay đổi giữa hai lần launch nên không cache snapshot.
+- Maximum WindowMetrics tránh giới hạn workspace theo host window khi Activity đang windowed.
+
+Hệ quả:
+Activity chưa attached, đang kết thúc, display default/OFF/removed hoặc insets chưa sẵn sàng
+đều trả unavailable thay vì đoán. API 28–29 vẫn cần device verification vì public API không có
+maximum WindowMetrics. `DisplayWorkAreaSnapshot.displayId` chỉ thuộc platform adapter và không
+được đưa vào domain launch request.
