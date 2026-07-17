@@ -11,10 +11,92 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
+import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class WorkspaceLibraryViewModelTest {
+    @Test fun renameWorkspaceTrimsNameAndKeepsIdentityCanvasAndSelection() {
+        val state = savedState()
+        val original = state.workspaces.single()
+        state.selectWorkspace(original.id)
+
+        val renamed = state.renameWorkspace(original.id, "  Renamed  ")
+
+        assertEquals("Renamed", renamed.name)
+        assertEquals(original.id, renamed.id)
+        assertSame(original.canvas, renamed.canvas)
+        assertEquals(original.modifiedSequence + 1, renamed.modifiedSequence)
+        assertEquals(original.id, state.selectedWorkspaceId)
+        assertEquals(1, state.workspaces.size)
+    }
+
+    @Test fun renameRejectsBlankName() {
+        val state = savedState()
+        assertThrows(IllegalArgumentException::class.java) {
+            state.renameWorkspace(state.workspaces.single().id, "   ")
+        }
+    }
+
+    @Test fun renameRejectsMissingWorkspace() {
+        assertThrows(IllegalArgumentException::class.java) {
+            viewModel().renameWorkspace("missing", "Name")
+        }
+    }
+
+    @Test fun deleteWorkspaceRemovesOnlyTargetAndClearsItsSelection() {
+        val state = viewModel()
+        state.createWorkspace()
+        val first = state.saveWorkspace(canvas, "First")
+        state.finishEditing()
+        state.createWorkspace()
+        val second = state.saveWorkspace(canvas.assignApp("cell", app), "Second")
+        state.finishEditing()
+        state.selectWorkspace(first.id)
+
+        state.deleteWorkspace(first.id)
+
+        assertEquals(listOf(second), state.workspaces)
+        assertNull(state.selectedWorkspaceId)
+        assertEquals(app, state.workspaces.single().canvas.cells.single().app)
+    }
+
+    @Test fun deleteDoesNotClearDifferentSelection() {
+        val state = viewModel()
+        state.createWorkspace()
+        val first = state.saveWorkspace(canvas, "First")
+        state.finishEditing()
+        state.createWorkspace()
+        val second = state.saveWorkspace(canvas, "Second")
+        state.finishEditing()
+        state.selectWorkspace(second.id)
+
+        state.deleteWorkspace(first.id)
+
+        assertEquals(second.id, state.selectedWorkspaceId)
+    }
+
+    @Test fun deleteRejectsMissingOrCurrentlyEditedWorkspace() {
+        val state = savedState()
+        val editedId = state.workspaces.single().id
+        assertThrows(IllegalStateException::class.java) { state.deleteWorkspace(editedId) }
+        assertThrows(IllegalArgumentException::class.java) { state.deleteWorkspace("missing") }
+    }
+
+    @Test fun deletedIdsAndDefaultNamesAreNeverReused() {
+        val state = viewModel()
+        state.createWorkspace()
+        val first = state.saveWorkspace(canvas)
+        state.finishEditing()
+        state.deleteWorkspace(first.id)
+
+        state.createWorkspace()
+        val second = state.saveWorkspace(canvas)
+
+        assertEquals("workspace-2", second.id)
+        assertEquals("Workspace 2", second.name)
+    }
+
     @Test fun libraryStartsEmpty() {
         assertTrue(viewModel().workspaces.isEmpty())
     }

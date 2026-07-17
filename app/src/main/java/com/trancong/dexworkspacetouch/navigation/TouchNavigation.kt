@@ -27,6 +27,7 @@ fun TouchNavigation() {
             HomeScreen(
                 workspaces = libraryViewModel.workspaces,
                 selectedWorkspaceId = libraryViewModel.selectedWorkspaceId,
+                editingWorkspaceId = libraryViewModel.editingWorkspaceId,
                 onWorkspaceSelected = libraryViewModel::selectWorkspace,
                 onCreateWorkspace = {
                     designerViewModel.loadCanvas(libraryViewModel.createWorkspace())
@@ -36,18 +37,24 @@ fun TouchNavigation() {
                     designerViewModel.loadCanvas(libraryViewModel.beginEditingWorkspace(workspaceId))
                     navController.navigate(Routes.LayoutDesigner)
                 },
+                onRenameWorkspace = { id, name -> libraryViewModel.renameWorkspace(id, name) },
+                onDeleteWorkspace = libraryViewModel::deleteWorkspace,
             )
         }
         composable(Routes.LayoutDesigner) {
             LayoutDesignerScreen(
                 state = designerViewModel,
                 isNewWorkspace = libraryViewModel.isCreatingWorkspace,
-                onBack = navController::navigateUp,
+                onBack = {
+                    libraryViewModel.finishEditing()
+                    navController.navigateUp()
+                },
                 onOpenAppPicker = { cellId ->
                     navController.navigate("${Routes.AppPicker}/$cellId")
                 },
                 onSave = { name ->
                     libraryViewModel.saveWorkspace(designerViewModel.canvas, name)
+                    libraryViewModel.finishEditing()
                     navController.navigateUp()
                 },
             )

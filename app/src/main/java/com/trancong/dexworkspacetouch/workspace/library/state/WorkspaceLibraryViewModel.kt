@@ -32,6 +32,10 @@ class WorkspaceLibraryViewModel : ViewModel() {
         selectedWorkspaceId = null
     }
 
+    fun finishEditing() {
+        editingWorkspaceId = null
+    }
+
     fun selectedWorkspace(): WorkspaceLibraryItem? =
         workspaces.firstOrNull { it.id == selectedWorkspaceId }
 
@@ -46,6 +50,27 @@ class WorkspaceLibraryViewModel : ViewModel() {
         selectedWorkspaceId = id
         editingWorkspaceId = id
         return workspace.canvas
+    }
+
+    fun renameWorkspace(id: String, newName: String): WorkspaceLibraryItem {
+        val workspace = requireWorkspace(id)
+        val trimmedName = newName.trim()
+        require(trimmedName.isNotEmpty()) { "Workspace name must not be blank" }
+        val renamed = workspace.copy(
+            name = trimmedName,
+            modifiedSequence = nextModifiedSequence++,
+        )
+        workspaces = workspaces
+            .map { current -> if (current.id == id) renamed else current }
+            .sortedByDescending { it.modifiedSequence }
+        return renamed
+    }
+
+    fun deleteWorkspace(id: String) {
+        requireWorkspace(id)
+        check(editingWorkspaceId != id) { "Workspace '$id' is currently being edited" }
+        workspaces = workspaces.filterNot { it.id == id }
+        if (selectedWorkspaceId == id) selectedWorkspaceId = null
     }
 
     fun saveWorkspace(canvas: WorkspaceCanvas, requestedName: String? = null): WorkspaceLibraryItem {
@@ -75,4 +100,8 @@ class WorkspaceLibraryViewModel : ViewModel() {
     }
 
     private fun defaultName(): String = "Workspace ${nextDefaultName++}"
+
+    private fun requireWorkspace(id: String): WorkspaceLibraryItem =
+        workspaces.firstOrNull { it.id == id }
+            ?: throw IllegalArgumentException("Workspace '$id' does not exist")
 }

@@ -24,9 +24,12 @@ private fun WorkspaceLibraryPreview() {
         HomeScreen(
             workspaces = previewWorkspaces,
             selectedWorkspaceId = "workspace-2",
+            editingWorkspaceId = null,
             onWorkspaceSelected = {},
             onCreateWorkspace = {},
             onEditWorkspace = {},
+            onRenameWorkspace = { _, _ -> },
+            onDeleteWorkspace = {},
         )
     }
 }

@@ -82,6 +82,10 @@ Workspace Library dùng `GridCells.Adaptive` với
 `Spacing.WorkspaceGrid = 16dp`. Số cột do chiều rộng khả dụng theo dp quyết định;
 không giới hạn cứng theo thiết bị và không thu nhỏ touch target dưới 56dp.
 
+Selected card từ `Dimensions.WorkspaceCardWideActionsWidth = 420dp` trở lên
+hiển thị trực tiếp hành động Đổi tên/Xóa. Card nhỏ hơn dùng nút Quản lý 56dp
+để mở bottom sheet; không dùng menu ba chấm hoặc icon-only action.
+
 ## Design Token Rules
 
 1. UI mới phải dùng token thay cho literal `Dp`, elevation, shape, z-index và aspect ratio lặp lại.

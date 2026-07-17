@@ -2,6 +2,7 @@ package com.trancong.dexworkspacetouch.workspace.library.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +39,10 @@ fun WorkspaceLibraryCard(
     onSelect: () -> Unit,
     onOpen: () -> Unit,
     onEdit: () -> Unit,
+    onRename: () -> Unit,
+    onDelete: () -> Unit,
+    onManage: () -> Unit,
+    canDelete: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -77,18 +83,59 @@ fun WorkspaceLibraryCard(
                 Text("${workspace.appCount} ứng dụng", style = MaterialTheme.typography.bodySmall)
                 Text("Cập nhật #${workspace.modifiedSequence}", style = MaterialTheme.typography.bodySmall)
             }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.S),
-            ) {
-                OutlinedButton(
-                    onClick = onOpen,
-                    modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton),
-                ) { Text("Mở") }
-                Button(
-                    onClick = onEdit,
-                    modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton),
-                ) { Text("Sửa") }
+            BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                val showDirectManagementActions = maxWidth >= Dimensions.WorkspaceCardWideActionsWidth
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.S)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.S),
+                    ) {
+                        OutlinedButton(
+                            onClick = onOpen,
+                            modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton),
+                        ) { Text("Mở") }
+                        Button(
+                            onClick = onEdit,
+                            modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton),
+                        ) { Text("Sửa") }
+                    }
+                    if (selected) {
+                        if (showDirectManagementActions) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(Spacing.S),
+                            ) {
+                                OutlinedButton(
+                                    onClick = onRename,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .height(TouchTargets.SecondaryButton)
+                                        .semantics {
+                                            contentDescription = "Đổi tên workspace ${workspace.name}."
+                                        },
+                                ) { Text("Đổi tên") }
+                                OutlinedButton(
+                                    onClick = onDelete,
+                                    enabled = canDelete,
+                                    colors = ButtonDefaults.outlinedButtonColors(
+                                        contentColor = MaterialTheme.colorScheme.error,
+                                    ),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .height(TouchTargets.SecondaryButton)
+                                        .semantics {
+                                            contentDescription = "Xóa workspace ${workspace.name}."
+                                        },
+                                ) { Text("Xóa") }
+                            }
+                        } else {
+                            OutlinedButton(
+                                onClick = onManage,
+                                modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
+                            ) { Text("Quản lý") }
+                        }
+                    }
+                }
             }
         }
     }
