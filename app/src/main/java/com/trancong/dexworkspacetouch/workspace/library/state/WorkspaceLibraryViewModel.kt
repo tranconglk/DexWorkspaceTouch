@@ -4,24 +4,61 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryItem
+import com.trancong.dexworkspacetouch.workspace.library.model.toLibraryItem
+import com.trancong.dexworkspacetouch.workspace.library.model.toDomainWorkspace
+import com.trancong.dexworkspacetouch.workspace.persistence.domain.Workspace
+import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspaceRepository
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
+import kotlin.math.max
 
-class WorkspaceLibraryViewModel : ViewModel() {
+class WorkspaceLibraryViewModel(
+    private val repository: WorkspaceRepository,
+    private val clock: WorkspaceClock = SystemWorkspaceClock,
+    private val idGenerator: WorkspaceIdGenerator = UuidWorkspaceIdGenerator,
+    private val suppliedScope: CoroutineScope? = null,
+) : ViewModel() {
     var workspaces by mutableStateOf<List<WorkspaceLibraryItem>>(emptyList())
         private set
-
     var selectedWorkspaceId by mutableStateOf<String?>(null)
         private set
-
     var editingWorkspaceId by mutableStateOf<String?>(null)
         private set
+    var isLoading by mutableStateOf(true)
+        private set
+    var persistenceError by mutableStateOf<WorkspaceLibraryPersistenceError?>(null)
+        private set
 
-    private var nextId = 1
-    private var nextDefaultName = 1
+    private val scope: CoroutineScope get() = suppliedScope ?: viewModelScope
+    private var observedDomains: List<Workspace> = emptyList()
+    private var observationJob: Job? = null
+    private var mutationJob: Job? = null
     private var nextModifiedSequence = 1L
+    private var pendingSave: WorkspaceLibraryItem? = null
+    private val issuedDefaultNameNumbers = mutableSetOf<Int>()
 
     val isCreatingWorkspace: Boolean get() = editingWorkspaceId == null
+
+    init {
+        observeLibrary()
+    }
+
+    fun retryLoad() {
+        persistenceError = null
+        isLoading = true
+        observeLibrary()
+    }
+
+    fun dismissPersistenceError() {
+        persistenceError = null
+    }
 
     fun selectWorkspace(id: String) {
         require(workspaces.any { it.id == id }) { "Workspace '$id' does not exist" }
@@ -45,63 +82,161 @@ class WorkspaceLibraryViewModel : ViewModel() {
     }
 
     fun beginEditingWorkspace(id: String): WorkspaceCanvas {
-        val workspace = workspaces.firstOrNull { it.id == id }
-            ?: throw IllegalArgumentException("Workspace '$id' does not exist")
+        val workspace = requireWorkspace(id)
         selectedWorkspaceId = id
         editingWorkspaceId = id
         return workspace.canvas
     }
 
     fun renameWorkspace(id: String, newName: String): WorkspaceLibraryItem {
-        val workspace = requireWorkspace(id)
+        val existing = requireDomain(id)
         val trimmedName = newName.trim()
         require(trimmedName.isNotEmpty()) { "Workspace name must not be blank" }
-        val renamed = workspace.copy(
+        val renamed = existing.toLibraryItem().copy(
             name = trimmedName,
-            modifiedSequence = nextModifiedSequence++,
+            modifiedSequence = takeModifiedSequence(),
+        ).toDomainWorkspace(
+            schemaVersion = existing.schemaVersion,
+            createdAtEpochMillis = existing.createdAtEpochMillis,
+            updatedAtEpochMillis = nextUpdatedAt(existing),
         )
-        workspaces = workspaces
-            .map { current -> if (current.id == id) renamed else current }
-            .sortedByDescending { it.modifiedSequence }
-        return renamed
+        runMutation(WorkspaceLibraryPersistenceOperation.RENAME) { repository.update(renamed) }
+        return renamed.toLibraryItem()
     }
 
     fun deleteWorkspace(id: String) {
-        requireWorkspace(id)
+        requireDomain(id)
         check(editingWorkspaceId != id) { "Workspace '$id' is currently being edited" }
-        workspaces = workspaces.filterNot { it.id == id }
-        if (selectedWorkspaceId == id) selectedWorkspaceId = null
+        runMutation(WorkspaceLibraryPersistenceOperation.DELETE) { repository.deleteById(id) }
     }
 
     fun saveWorkspace(canvas: WorkspaceCanvas, requestedName: String? = null): WorkspaceLibraryItem {
+        if (mutationJob?.isActive == true && pendingSave != null) return requireNotNull(pendingSave)
         val editingId = editingWorkspaceId
-        val existing = editingId?.let { id -> workspaces.firstOrNull { it.id == id } }
+        val existing = editingId?.let(::domainOrNull)
+        val now = nonNegativeNow()
         val saved = if (existing == null) {
             WorkspaceLibraryItem(
-                id = "workspace-${nextId++}",
+                id = uniqueId(),
                 name = requestedName?.trim()?.takeIf(String::isNotEmpty) ?: defaultName(),
                 canvas = canvas,
-                modifiedSequence = nextModifiedSequence++,
-            ).also { item -> workspaces = (workspaces + item).sortedByDescending { it.modifiedSequence } }
+                modifiedSequence = takeModifiedSequence(),
+            ).toDomainWorkspace(
+                schemaVersion = CURRENT_SCHEMA_VERSION,
+                createdAtEpochMillis = now,
+                updatedAtEpochMillis = now,
+            )
         } else {
-            existing.copy(
+            existing.toLibraryItem().copy(
                 name = requestedName?.trim()?.takeIf(String::isNotEmpty) ?: existing.name,
                 canvas = canvas,
-                modifiedSequence = nextModifiedSequence++,
-            ).also { item ->
-                workspaces = workspaces
-                    .map { current -> if (current.id == item.id) item else current }
-                    .sortedByDescending { it.modifiedSequence }
-            }
+                modifiedSequence = takeModifiedSequence(),
+            ).toDomainWorkspace(
+                schemaVersion = existing.schemaVersion,
+                createdAtEpochMillis = existing.createdAtEpochMillis,
+                updatedAtEpochMillis = nextUpdatedAt(existing),
+            )
         }
-        selectedWorkspaceId = saved.id
-        editingWorkspaceId = saved.id
-        return saved
+        val item = saved.toLibraryItem()
+        pendingSave = item
+        selectedWorkspaceId = item.id
+        editingWorkspaceId = item.id
+        runMutation(WorkspaceLibraryPersistenceOperation.SAVE) {
+            if (existing == null) repository.insert(saved) else repository.update(saved)
+        }
+        return item
     }
 
-    private fun defaultName(): String = "Workspace ${nextDefaultName++}"
+    private fun observeLibrary() {
+        observationJob?.cancel()
+        observationJob = scope.launch {
+            repository.observeAll()
+                .catch { error ->
+                    if (error is CancellationException) throw error
+                    isLoading = false
+                    persistenceError = WorkspaceLibraryPersistenceError(
+                        WorkspaceLibraryPersistenceOperation.LOAD,
+                    )
+                }
+                .collect { domains ->
+                    observedDomains = domains
+                    workspaces = domains.map(Workspace::toLibraryItem)
+                    val highWaterMark = domains.maxOfOrNull(Workspace::modifiedSequence) ?: 0L
+                    nextModifiedSequence = max(nextModifiedSequence, highWaterMark + 1)
+                    domains.mapNotNullTo(issuedDefaultNameNumbers) { workspace ->
+                        DEFAULT_NAME_PATTERN.matchEntire(workspace.name)
+                            ?.groupValues?.get(1)?.toIntOrNull()
+                    }
+                    if (selectedWorkspaceId !in domains.map(Workspace::id)) selectedWorkspaceId = null
+                    isLoading = false
+                    if (persistenceError?.operation == WorkspaceLibraryPersistenceOperation.LOAD) {
+                        persistenceError = null
+                    }
+                }
+        }
+    }
 
-    private fun requireWorkspace(id: String): WorkspaceLibraryItem =
-        workspaces.firstOrNull { it.id == id }
-            ?: throw IllegalArgumentException("Workspace '$id' does not exist")
+    private fun runMutation(
+        operation: WorkspaceLibraryPersistenceOperation,
+        block: suspend () -> Unit,
+    ) {
+        if (mutationJob?.isActive == true) return
+        persistenceError = null
+        mutationJob = scope.launch {
+            try {
+                block()
+            } catch (error: CancellationException) {
+                throw error
+            } catch (_: Exception) {
+                persistenceError = WorkspaceLibraryPersistenceError(operation)
+            } finally {
+                pendingSave = null
+            }
+        }
+    }
+
+    private fun uniqueId(): String {
+        repeat(MAX_ID_ATTEMPTS) {
+            val id = idGenerator.newId()
+            require(id.isNotBlank()) { "Generated workspace ID must not be blank" }
+            if (observedDomains.none { it.id == id }) return id
+        }
+        throw IllegalStateException("Unable to generate a unique workspace ID")
+    }
+
+    private fun defaultName(): String {
+        val used = observedDomains.mapNotNull { workspace ->
+            DEFAULT_NAME_PATTERN.matchEntire(workspace.name)?.groupValues?.get(1)?.toIntOrNull()
+        }.toSet() + issuedDefaultNameNumbers
+        val number = generateSequence(1, Int::inc).first { it !in used }
+        issuedDefaultNameNumbers += number
+        return "Workspace $number"
+    }
+
+    private fun takeModifiedSequence(): Long = nextModifiedSequence++
+    private fun nonNegativeNow(): Long = clock.nowEpochMillis().coerceAtLeast(0L)
+    private fun nextUpdatedAt(existing: Workspace): Long = max(
+        nonNegativeNow(),
+        max(existing.createdAtEpochMillis, existing.updatedAtEpochMillis + 1),
+    )
+
+    private fun requireWorkspace(id: String): WorkspaceLibraryItem = requireDomain(id).toLibraryItem()
+    private fun requireDomain(id: String): Workspace = domainOrNull(id)
+        ?: throw IllegalArgumentException("Workspace '$id' does not exist")
+    private fun domainOrNull(id: String): Workspace? = observedDomains.firstOrNull { it.id == id }
+
+    companion object {
+        const val CURRENT_SCHEMA_VERSION = 1
+        private const val MAX_ID_ATTEMPTS = 100
+        private val DEFAULT_NAME_PATTERN = Regex("Workspace ([1-9][0-9]*)")
+
+        fun factory(repository: WorkspaceRepository): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    require(modelClass.isAssignableFrom(WorkspaceLibraryViewModel::class.java))
+                    return WorkspaceLibraryViewModel(repository) as T
+                }
+            }
+    }
 }

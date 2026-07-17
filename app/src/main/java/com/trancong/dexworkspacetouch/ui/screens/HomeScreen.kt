@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -41,6 +42,7 @@ import com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryIt
 import com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceLibraryCard
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchStatusDialog
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchUiState
+import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryPersistenceError
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,6 +55,10 @@ fun HomeScreen(
     onEditWorkspace: (String) -> Unit,
     onRenameWorkspace: (String, String) -> Unit,
     onDeleteWorkspace: (String) -> Unit,
+    libraryIsLoading: Boolean,
+    persistenceError: WorkspaceLibraryPersistenceError?,
+    onRetryLibrary: () -> Unit,
+    onDismissPersistenceError: () -> Unit,
     launchState: WorkspaceLaunchUiState,
     onLaunchWorkspace: (WorkspaceLibraryItem) -> Unit,
     onCancelLaunch: () -> Unit,
@@ -68,6 +74,27 @@ fun HomeScreen(
         onCancel = onCancelLaunch,
         onDismiss = onDismissLaunchResult,
     )
+
+    persistenceError?.let { error ->
+        AlertDialog(
+            onDismissRequest = onDismissPersistenceError,
+            title = { Text(error.userMessage) },
+            confirmButton = {
+                TextButton(
+                    onClick = if (
+                        error.operation == com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryPersistenceOperation.LOAD
+                    ) onRetryLibrary else onDismissPersistenceError,
+                    modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                ) {
+                    Text(
+                        if (
+                            error.operation == com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryPersistenceOperation.LOAD
+                        ) "Thử lại" else "Đã hiểu",
+                    )
+                }
+            },
+        )
+    }
 
     fun showRename(workspace: WorkspaceLibraryItem) {
         managedWorkspaceId = null
@@ -193,10 +220,21 @@ fun HomeScreen(
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Button(
                     onClick = onCreateWorkspace,
+                    enabled = !libraryIsLoading,
                     modifier = Modifier.fillMaxWidth().height(TouchTargets.PrimaryButton),
                 ) { Text("Tạo bố cục mới") }
             }
-            if (workspaces.isEmpty()) {
+            if (libraryIsLoading) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+                    ) {
+                        CircularProgressIndicator()
+                        Text("Đang đọc danh sách workspace...")
+                    }
+                }
+            } else if (workspaces.isEmpty()) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     Text("Chưa có workspace. Hãy tạo bố cục đầu tiên.")
                 }

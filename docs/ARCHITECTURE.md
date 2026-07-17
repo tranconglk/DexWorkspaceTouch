@@ -212,18 +212,20 @@ WorkspaceLibraryCard
 ## Workspace Persistence Foundation
 
 ```text
-WorkspaceLibraryViewModel (RAM, until M5-001B)
+WorkspaceLibraryViewModel (Room Flow source of truth)
 → WorkspaceRepository
 → RoomWorkspaceRepository
 → WorkspaceDao
 → Room / workspaces
 ```
 
-- M5-001A only establishes the persistence boundary. The current Library remains RAM-backed and
-  no UI, Designer, App Picker, or Launch Engine source of truth changes in this phase.
+- M5-001B wires the Library runtime to Room. `WorkspaceLibraryViewModel` observes repository Flow;
+  UI receives only `WorkspaceLibraryItem` and loading/friendly persistence-error state.
 - Pure Kotlin `Workspace` is separate from `WorkspaceEntity`; Room types never cross the repository.
 - A workspace is one database row. `WorkspaceCanvas` uses deterministic JSON in `canvasJson`, while
   identity, timestamps, schema version, and modified sequence remain normal columns.
 - `WorkspaceCanvasSerializer` is reusable by later import/export work, but M5-001A adds no transfer
   feature. Malformed data and unsupported schemas fail with typed persistence exceptions.
-- M5-001B will migrate `WorkspaceLibraryViewModel` to the repository and define RAM-to-Room behavior.
+- New/edit Designer canvases remain immutable working copies. Create does not insert until Save;
+  Back/cancel does not update Room. Migration from the former RAM workflow is deferred to M5-001C.
+- The application-scoped database graph uses application context and owns no UI/Activity reference.

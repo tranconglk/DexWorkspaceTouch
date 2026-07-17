@@ -201,3 +201,23 @@ UI/domain với Room. Serializer có thể được tái sử dụng cho import/
 Trade-off:
 Không tối ưu cho query theo từng cell hoặc package app. Chỉ tách bảng/index khi có nhu cầu
 query thật và migration được thiết kế rõ ràng.
+
+## ADR-015 — Workspace Library dùng Room làm source of truth
+
+Quyết định:
+
+- `WorkspaceLibraryViewModel` observe `WorkspaceRepository.observeAll()`; Room Flow là runtime
+  source of truth và ViewModel không tự sort hay duy trì bản sao danh sách khác.
+- Draft tạo mới và immutable edit working copy chỉ ghi repository khi Save. Back/cancel không
+  update database.
+- UI chỉ biết `WorkspaceLibraryItem`, loading và persistence error thân thiện; UI không biết
+  Room, DAO, Entity hoặc raw exception.
+- Production database/repository được tạo một lần trong application-scoped container nhỏ
+  bằng application context, không destructive migration.
+- ID dùng UUID; default name dùng issued-number policy không dựa vào count. Timestamp dùng
+  clock abstraction; update/rename giữ created time và tăng updated time/modified sequence.
+- Không migrate RAM data cũ trong M5-001B; M5-001C sẽ quyết định migration/seed policy.
+
+Hệ quả:
+Library phục hồi sau process restart, launch luôn nhận canvas đã persisted, và persistence
+failure không crash UI. Save là asynchronous; Room emission xác nhận danh sách hiển thị.

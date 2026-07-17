@@ -21,6 +21,7 @@ import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryVi
 import com.trancong.dexworkspacetouch.platform.launch.android.AndroidWorkspaceLaunchRuntime
 import com.trancong.dexworkspacetouch.workspace.launcher.WorkspaceLaunchRequestFactory
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModel
+import com.trancong.dexworkspacetouch.DexWorkspaceTouchApplication
 
 private object Routes {
     const val Home = "home"
@@ -32,7 +33,10 @@ private object Routes {
 fun TouchNavigation(activity: Activity) {
     val navController = rememberNavController()
     val designerViewModel: WorkspaceDesignerViewModel = viewModel()
-    val libraryViewModel: WorkspaceLibraryViewModel = viewModel()
+    val application = activity.application as DexWorkspaceTouchApplication
+    val libraryViewModel: WorkspaceLibraryViewModel = viewModel(
+        factory = WorkspaceLibraryViewModel.factory(application.workspaceRepository),
+    )
     val applicationContext = activity.applicationContext
     val installedAppCatalog = remember(applicationContext) {
         DefaultInstalledAppCatalog(AndroidInstalledAppDataSource.create(applicationContext))
@@ -66,6 +70,10 @@ fun TouchNavigation(activity: Activity) {
                 },
                 onRenameWorkspace = { id, name -> libraryViewModel.renameWorkspace(id, name) },
                 onDeleteWorkspace = libraryViewModel::deleteWorkspace,
+                libraryIsLoading = libraryViewModel.isLoading,
+                persistenceError = libraryViewModel.persistenceError,
+                onRetryLibrary = libraryViewModel::retryLoad,
+                onDismissPersistenceError = libraryViewModel::dismissPersistenceError,
                 launchState = launchViewModel.state,
                 onLaunchWorkspace = { workspace ->
                     launchViewModel.launchWorkspace(workspace, launchRuntime, launchHostToken)
