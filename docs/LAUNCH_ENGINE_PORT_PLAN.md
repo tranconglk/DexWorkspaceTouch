@@ -348,6 +348,59 @@ launch vẫn chưa triển khai**.
   taskbar visible/hidden/auto-hide, disconnect và đổi resolution.
 - Chưa verify package/activity, chưa tạo Intent/ActivityOptions và chưa gọi `startActivity`.
 
+#### E3-006B.1 — Stable taskbar inset resolution
+
+Kết quả thiết bị dẫn tới hai nguyên nhân code-level:
+
+- S23 Ultra windowed đúng nhưng fullscreen bị che vì API 30+ chỉ dùng
+  `maximumWindowMetrics.windowInsets.getInsets(systemBars)`. Giá trị này phụ thuộc visibility;
+  fullscreen có thể trả bottom 0 dù vùng taskbar ổn định vẫn cần được bảo vệ.
+- Note8 windowed bị che nhưng fullscreen đúng vì full-display real metrics được kết hợp với
+  `rootWindowInsets.systemWindowInset*` của host. Freeform host không chạm taskbar nên system
+  inset có thể bằng 0; stable inset trước đây bị bỏ qua.
+
+Policy mới dùng `WorkAreaInsetResolver` thuần Kotlin:
+
+- API 30+: chỉ chọn candidate cùng maximum-metrics coordinate space, hợp nhất visible
+  system bars, ignoring-visibility system bars và display cutout bằng max từng cạnh.
+- API 28–29: hợp nhất root system, root stable và display cutout trên full-display bounds.
+  Display metrics, visible frame và host bounds được giữ làm diagnostics nhưng không được
+  dùng nếu thuộc host-window coordinate space.
+- Candidate lệch coordinate space, inset âm/quá nửa display hoặc usable area không dương bị
+  loại. Không còn candidate đáng tin thì provider trả null.
+- Snapshot ghi toàn bộ candidate cùng `selectedInsetSource`. Provider không tự log mỗi lần
+  đọc; debug harness log khi người dùng chụp thông số hoặc ngay trước debug launch.
+
+Device validation cần ghi cho từng case: raw bounds, mọi candidate, selected source, final
+usable bounds, final Rect và việc app có bị taskbar che hay không:
+
+- S23 Ultra: windowed/fullscreen với taskbar visible, auto-hide và hiện lại.
+- Note8 API 28/29: windowed/fullscreen với taskbar visible và auto-hide nếu có.
+
+#### E3-006B.2 — Legacy display-metrics fallback
+
+API 28–29 bổ sung `DISPLAY_METRICS_DELTA` từ chính external `Display`: reference bounds lấy từ
+`getRealMetrics()`, usable width/height lấy từ `getMetrics()`. Vì API legacy không cung cấp origin
+cho metrics, candidate chỉ suy ra right/bottom delta và chỉ chấp nhận khi real bounds bắt đầu tại
+0,0. Không có taskbar constant hoặc nhánh theo model thiết bị.
+
+Validation thuần Kotlin yêu cầu mọi kích thước dương, metrics không lớn hơn real metrics, mỗi delta
+không quá nửa display và usable area còn dương. Khi host đang windowed, metrics gần bằng cả width
+và height của host (tolerance tỷ lệ 2% display) bị phân loại là host-window-sized và không được dùng
+làm desktop work area. Nếu root không có inset dương và metrics candidate bị từ chối, provider trả
+unavailable thay vì đoán.
+
+Resolver áp dụng ưu tiên theo từng cạnh: root system/stable/cutout dương được chọn trước;
+`DISPLAY_METRICS_DELTA` chỉ là fallback cho cạnh root bằng 0. Điều này tránh lấy max mù giữa hai
+nguồn cùng mô tả taskbar, đồng thời vẫn cho phép kết hợp cutout ở cạnh trên với metrics taskbar ở
+cạnh dưới. Thứ tự input quyết định tie giữa các nguồn root nên kết quả deterministic. Nhánh API
+30+ không tạo metrics-delta candidate và giữ nguyên policy maximum window metrics hiện có.
+
+Debug harness hiển thị trực tiếp real metrics, display metrics, bốn delta, từng root candidate,
+selected source, final work area và final PixelBounds. Matrix Note8 windowed/fullscreen vẫn cần được
+chụp trên thiết bị Hades v3 để xác nhận `getMetrics()` ổn định theo desktop và bottom delta thực sự
+trùng vùng taskbar luôn hiển thị.
+
 ### E3-006C — Single-target Android launcher
 
 Trạng thái: **đã hoàn thành single-target Android launcher; multi-app sequencing vẫn chưa
@@ -395,15 +448,131 @@ Instrumentation cần xác nhận Intent flags/component/category, ActivityOptio
 display routing và exception behavior thực tế. Android stub local JVM không được xem là bằng
 chứng cho Intent/ActivityOptions.
 
+#### E3-006C.2 — Note8 windowed launch diagnostics
+
+Trạng thái hiện tại: **chưa xác nhận nguyên nhân và chưa đổi production display-routing policy**.
+Thiết bị Note8 Hades v3 không có trong phiên build này nên chưa có bằng chứng để phân biệt app
+off-screen, launch sang sai display, hoặc app đã launch nhưng nằm sau debug host.
+
+Debug-only harness cung cấp A/B:
+
+- `INHERITED`: production path hiện tại, chỉ gọi `setLaunchBounds(rect)`.
+- `EXPLICIT`: thêm public API `setLaunchDisplayId(snapshot.displayId)`.
+- Tùy chọn đóng debug Activity 750 ms sau success để kiểm tra z-order/focus. Delay này không có
+  trong production launcher.
+
+Trước launch, harness hiển thị host/snapshot display ID, inset source, real/display metrics, host
+bounds, final work area, PixelBounds và kết quả kiểm tra Rect nằm trọn trong usable area. Sau launch
+harness ghi routing mode, requested display ID, result và final Rect. Production launcher cũng thực
+hiện bounds sanity; Rect vượt trái/phải/trên/dưới hoặc không dương trả `LAUNCH_REJECTED`, không gửi
+Intent, và Android platform log snapshot/candidates để chẩn đoán.
+
+Chỉ sau khi matrix Note8 chứng minh inherited thất bại, explicit thành công ở windowed và cả hai
+không regression ở fullscreen mới được cân nhắc policy explicit cho toàn API 28–29 external display.
+API 30+ giữ inherited. Policy tương lai phải dựa trên API/capability, không dùng `Build.MODEL`.
+
+Matrix còn chờ thiết bị:
+
+- [ ] Windowed + inherited.
+- [ ] Windowed + explicit display ID.
+- [ ] Windowed + inherited rồi đóng harness.
+- [ ] Fullscreen + inherited.
+- [ ] Fullscreen + explicit display ID.
+
+#### E3-006B.3 — Legacy fullscreen work-area reference
+
+Note8 hardware chạy Hades v3/Note9 ROM đã xác nhận lỗi windowed xảy ra trước `startActivity`:
+legacy provider trả unavailable, nên đây chưa phải display-routing hoặc z-order failure.
+
+Nhánh API 28–29 giờ ghi typed evaluation cho root system, root stable, display cutout,
+display-metrics delta và fullscreen reference. Diagnostics tồn tại cả khi không tạo được snapshot,
+bao gồm host/real/app-metrics display ID. `getRealMetrics()` và `getMetrics()` đều được gọi trực
+tiếp trên cùng external `Display`; mismatch display ID trả unavailable.
+
+Rule host-sized chỉ reject metrics delta khi đồng thời width và height gần host và host nhỏ đáng
+kể so với real display. Một chiều gần host không đủ bằng chứng. Candidate vẫn phải nằm trong real
+display, tạo usable area dương và không có inset vô lý.
+
+Debug composition root giữ `LegacyDisplayWorkAreaReferenceStore` trong debug ViewModel. Store không
+giữ Activity, không dùng disk/singleton, và chỉ nhận snapshot maximized có measured inset từ nguồn
+trusted. Reference được key bằng display ID và real dimensions; mismatch hoặc disconnect clear
+reference. Khi direct candidate unavailable trên API 28–29, cùng reference có thể tạo snapshot với
+source `LEGACY_FULLSCREEN_REFERENCE`. API 30+ không dùng fallback này.
+
+Workflow xác minh:
+
+1. Mở harness fullscreen, chụp snapshot và bấm “Lưu vùng làm việc hiện tại làm tham chiếu”.
+2. Chuyển host sang windowed, bấm “Chụp lại thông số”.
+3. Xác nhận selected source direct hoặc `LEGACY_FULLSCREEN_REFERENCE`, PixelBounds nằm trong usable
+   area, rồi launch app.
+4. Resize nhiều lần và ngắt/kết nối DeX để xác nhận identity invalidation.
+
+Kết quả vật lý full-screen → windowed sau thay đổi vẫn cần thao tác trên thiết bị; build/JVM test
+không được xem là bằng chứng rằng taskbar bounds và launch thực tế đã PASS.
+
+#### E3-006B.4 — Automatic legacy reference lifecycle
+
+API 28–29 provider tự auto-capture mỗi direct resolution có measured inset và selected source
+`ROOT_SYSTEM_INSETS`, `ROOT_STABLE_INSETS` hoặc `DISPLAY_METRICS_DELTA`. Fallback-derived snapshot,
+rejected candidate và host-window bounds không được ghi ngược lại store.
+
+Reference key gồm display ID, real width/height và density; value giữ work area, original source,
+capture mode (`AUTO_CAPTURED`/`MANUAL`) và sequence RAM cho diagnostics. Display mất/default/OFF,
+ID hoặc resolution đổi, hay density lệch quá 2% sẽ clear/reject. Store nằm trong Activity-scoped
+debug ViewModel cho harness và không giữ Activity; production composition root sau này phải sở hữu
+store với lifecycle tương đương. API 30+ resolver không capture hoặc fallback.
+
+Luồng legacy: direct → auto-capture/update → dùng direct. Nếu direct unavailable: resolve reference
+cùng identity → `LEGACY_FULLSCREEN_REFERENCE`; không match thì unavailable. Process restart ở
+windowed không có reference và cần phóng to một lần. Đây là limitation chủ ý, không có disk
+persistence và không tự ép fullscreen.
+
+Device validation trên Note 8 hardware chạy Hades v3/Note9 ROM, API legacy, Desktop display ID 2:
+
+- Fullscreen: real `1920×1080`, display metrics `1920×1028`, root system/stable bottom `52`,
+  selected `ROOT_SYSTEM_INSETS`, usable `1920×1028`; reference được auto-capture.
+- Windowed host `598,131–1609,861`: root system/stable đều 0, `getMetrics()` co theo host thành
+  `1011×730`, selected `LEGACY_FULLSCREEN_REFERENCE`, usable vẫn `1920×1028`.
+- Inherited launch Chrome thành công trên display 2 với Rect `8,8–1912,1020`; taskbar không che
+  bounds. Không dùng manual save và không cần explicit display routing cho case này.
+
 ### E3-006D — Multi-app sequencing and result mapping
 
-- Tổng hợp success/partial/failure.
-- Chốt stop policy khi display mất và cancellation contract.
-- Hoàn thiện logging/test failure matrix.
+Status: implemented, not connected to Workspace Library.
+
+- `AndroidWorkspaceLauncher` sorts ascending by unique `order`, keeps duplicate identities, and
+  delegates each target through the `SingleAppLauncher` seam implemented by
+  `AndroidSingleAppLauncher`.
+- `LaunchSequencingPolicy.delayBetweenTargetsMs` accepts `0..5000`; 400 ms is a compatibility
+  default, not a claimed optimum. Run a later 0/100/250/400 ms device sweep.
+- Suspending delay occurs only between targets. There is no initial, final, or post-stop delay.
+- Per-app failures continue. `DISPLAY_UNAVAILABLE` stops immediately and marks every pending
+  target with the same typed reason without another platform call.
+- `ensureActive()` runs before each target and after each launch. Cancellation from launch or
+  delay is rethrown and never produces a synthetic partial result.
+- Aggregation maps all success to `Success`, mixed outcomes to `PartialSuccess`, and zero success
+  to `Failure`, preserving deterministic target order in both result lists.
+- JVM coverage includes 20 scenarios for ordering/delay, all continue reasons, partial/all-fail,
+  display stop/propagation, duplicate identity, cancellation points, order, and policy bounds.
+
+After E3-006E integration, run a multi-app matrix on Note8 Hades v3/Note9 ROM and S23 Ultra,
+including duplicate targets, mid-sequence display disconnect, delay sweep, and partial failure.
 
 ### E3-006E — Library “Mở” integration
 
-- Tạo readiness từ selected `WorkspaceLibraryItem`.
-- Scope Android launcher theo Activity/navigation lifecycle.
-- Nút “Mở” gọi launcher thật và render typed readiness/result.
-- Retest Note8 Hades v3 và S23 Ultra; không giả vờ launch khi host không ở DeX.
+Status: implemented; physical multi-app matrix remains to be executed.
+
+- `TouchNavigation` builds the production Activity-scoped graph from the current `MainActivity`.
+- `WorkspaceLaunchViewModel` performs typed readiness, enforces one global sequence, retains UI
+  state and the non-Activity legacy reference store across configuration changes.
+- The Activity runtime is passed only to an invocation and is never stored in ViewModel state.
+  Root disposal cancels an active old-host sequence deliberately.
+- Home no longer uses the placeholder Snackbar. It shows checking/launching progress, supports
+  explicit cancellation, and maps success/partial/failure without raw platform exceptions.
+- API 28–29 with no direct/trusted work area shows the fullscreen-bootstrap guidance. API 30+
+  receives the normal unavailable message instead.
+- All workspace Open buttons are disabled while the single global sequence is active.
+
+Still required on devices: the S23 Ultra and Note8 Hades v3 matrix listed in the task, including
+2/3/4 apps, windowed/fullscreen, taskbar, removed app, display disconnect, process restart without
+legacy reference, and final-bounds/work-area-source logging.

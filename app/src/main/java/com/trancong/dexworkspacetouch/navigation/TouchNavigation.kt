@@ -1,8 +1,9 @@
 package com.trancong.dexworkspacetouch.navigation
 
+import android.app.Activity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,6 +18,9 @@ import com.trancong.dexworkspacetouch.workspace.apppicker.model.DefaultInstalled
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.toIdentity
 import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppPickerViewModel
 import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryViewModel
+import com.trancong.dexworkspacetouch.platform.launch.android.AndroidWorkspaceLaunchRuntime
+import com.trancong.dexworkspacetouch.workspace.launcher.WorkspaceLaunchRequestFactory
+import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModel
 
 private object Routes {
     const val Home = "home"
@@ -25,10 +29,26 @@ private object Routes {
 }
 
 @Composable
-fun TouchNavigation() {
+fun TouchNavigation(activity: Activity) {
     val navController = rememberNavController()
     val designerViewModel: WorkspaceDesignerViewModel = viewModel()
     val libraryViewModel: WorkspaceLibraryViewModel = viewModel()
+    val applicationContext = activity.applicationContext
+    val installedAppCatalog = remember(applicationContext) {
+        DefaultInstalledAppCatalog(AndroidInstalledAppDataSource.create(applicationContext))
+    }
+    val launchViewModel: WorkspaceLaunchViewModel = viewModel(
+        factory = WorkspaceLaunchViewModel.factory(
+            WorkspaceLaunchRequestFactory(installedAppCatalog),
+        ),
+    )
+    val launchHostToken = remember(activity) { Any() }
+    val launchRuntime = remember(activity, launchViewModel.legacyReferenceStore) {
+        AndroidWorkspaceLaunchRuntime(activity, launchViewModel.legacyReferenceStore)
+    }
+    DisposableEffect(launchRuntime) {
+        onDispose { launchViewModel.onHostDisposed(launchHostToken) }
+    }
     NavHost(navController = navController, startDestination = Routes.Home) {
         composable(Routes.Home) {
             HomeScreen(
@@ -46,6 +66,12 @@ fun TouchNavigation() {
                 },
                 onRenameWorkspace = { id, name -> libraryViewModel.renameWorkspace(id, name) },
                 onDeleteWorkspace = libraryViewModel::deleteWorkspace,
+                launchState = launchViewModel.state,
+                onLaunchWorkspace = { workspace ->
+                    launchViewModel.launchWorkspace(workspace, launchRuntime, launchHostToken)
+                },
+                onCancelLaunch = launchViewModel::cancelLaunch,
+                onDismissLaunchResult = launchViewModel::dismissResult,
             )
         }
         composable(Routes.LayoutDesigner) {
@@ -67,12 +93,6 @@ fun TouchNavigation() {
             )
         }
         composable("${Routes.AppPicker}/{cellId}") { backStackEntry ->
-            val applicationContext = LocalContext.current.applicationContext
-            val installedAppCatalog = remember(applicationContext) {
-                DefaultInstalledAppCatalog(
-                    AndroidInstalledAppDataSource.create(applicationContext),
-                )
-            }
             val requestedCellId = backStackEntry.arguments?.getString("cellId")
             val validCellId = requestedCellId?.takeIf { cellId ->
                 designerViewModel.canvas.cells.any { it.id == cellId }

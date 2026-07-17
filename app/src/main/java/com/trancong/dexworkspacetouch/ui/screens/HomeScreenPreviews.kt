@@ -5,6 +5,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.trancong.dexworkspacetouch.ui.theme.DexWorkspaceTouchTheme
 import com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryItem
 import com.trancong.dexworkspacetouch.workspace.snapshot.ui.WorkspaceSnapshotDemoData
+import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchUiState
 
 @Preview(showBackground = true, widthDp = 720, heightDp = 900)
 @Composable
@@ -30,6 +31,10 @@ private fun WorkspaceLibraryPreview() {
             onEditWorkspace = {},
             onRenameWorkspace = { _, _ -> },
             onDeleteWorkspace = {},
+            launchState = WorkspaceLaunchUiState.Idle,
+            onLaunchWorkspace = {},
+            onCancelLaunch = {},
+            onDismissLaunchResult = {},
         )
     }
 }

@@ -104,6 +104,13 @@ NormalizedBounds + DisplayWorkArea
   Trên API 30+, maximum WindowMetrics cung cấp display bounds còn current WindowMetrics chỉ
   dùng để phân biệt diagnostics windowed/maximized. Trên API 28–29, host display metrics
   được kết hợp với root WindowInsets đã sẵn sàng.
+- Trên API 28–29, Activity-scoped `LegacyDisplayWorkAreaReferenceStore` tự ghi direct trusted
+  snapshot và có thể phục hồi cùng work area khi freeform host không trả display-space inset.
+  Reference key gồm display ID, real dimensions và density; không giữ Activity, không singleton,
+  không lưu disk. Direct luôn thắng fallback, và API 30+ không dùng store.
+- Nếu process khởi động lần đầu ở windowed mà chưa có direct trusted snapshot, provider trả
+  unavailable. Presentation cần hướng dẫn người dùng phóng to ứng dụng một lần để bootstrap;
+  infrastructure không bịa work area hoặc tự ép fullscreen.
 - Insets dùng system bars và display cutout, gộp theo từng cạnh; IME không thuộc launch work
   area. Không có insets hoặc Activity/display không hợp lệ thì provider trả unavailable.
 - Display ID và density đến từ foreground Activity/display. Display ID chỉ thuộc platform
@@ -132,6 +139,23 @@ ForegroundLaunchHost
 - Start chạy trên Main dispatcher. `CancellationException` luôn được truyền tiếp.
 - `AndroidSingleAppLauncher` chỉ xử lý một target. Sequencing, delay, duplicate coordination
   và workspace result aggregation thuộc pha sau.
+
+## Multi-target Android Launch
+
+```text
+WorkspaceLaunchRequest
+→ AndroidWorkspaceLauncher
+→ AndroidSingleAppLauncher
+→ WorkspaceLaunchResult
+```
+
+- `AndroidWorkspaceLauncher` sorts by target `order`, launches sequentially, uses a suspending
+  delay only between targets, and aggregates typed success/partial/failure results.
+- Per-app failures continue the sequence. `DISPLAY_UNAVAILABLE` stops it and marks every pending
+  target unavailable without invoking the platform again.
+- The coordinator stays in the caller context and never changes dispatcher. Cancellation from a
+  launch or delay is rethrown, so no synthetic aggregate result is returned.
+- Duplicate identities remain separate targets and preserve their individual ordered results.
 
 ## Phần đóng băng
 
@@ -165,3 +189,22 @@ WorkspaceCanvas
 - Designer hiện cho phép cùng một ứng dụng ở nhiều cell. Request giữ nguyên mọi target;
   platform implementation sau này phải báo kết quả rõ ràng nếu ứng dụng không hỗ trợ
   nhiều instance.
+
+## Workspace Library Launch Integration
+
+```text
+WorkspaceLibraryCard
+→ WorkspaceLaunchViewModel
+→ WorkspaceLaunchRequestFactory
+→ AndroidWorkspaceLaunchRuntime (Activity-scoped)
+→ AndroidWorkspaceLauncher
+→ WorkspaceLaunchUiState
+```
+
+- Navigation root owns the production graph. The ViewModel owns only typed UI state, its coroutine,
+  and the pure-RAM legacy reference store; it never owns Activity, Intent, Rect, or Android errors.
+- The installed-app catalog is shared by readiness and App Picker from application context.
+- Activity recreation creates a new runtime. Disposal cancels work using the old host deliberately;
+  recomposition alone neither recreates nor restarts a sequence.
+- Readiness and environment validation happen before the first target. A phone/default-display host
+  is rejected rather than used as fallback.

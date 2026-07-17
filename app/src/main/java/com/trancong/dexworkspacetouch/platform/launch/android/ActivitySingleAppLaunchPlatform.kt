@@ -22,6 +22,7 @@ class ActivitySingleAppLaunchPlatform(
     private val packageManagerAdapter: PackageManagerAdapter,
     private val workAreaProviderFactory: (Activity) -> DisplayWorkAreaProvider =
         ::ActivityDisplayWorkAreaProvider,
+    private val displayRoutingMode: LaunchDisplayRoutingMode = LaunchDisplayRoutingMode.INHERITED,
 ) : SingleAppLaunchPlatform {
     override fun currentSnapshot(): DisplayWorkAreaSnapshot? {
         val activity = launchHost.activityOrNull() ?: return null
@@ -55,6 +56,13 @@ class ActivitySingleAppLaunchPlatform(
         }
     }
 
+    override fun reportRejectedBounds(snapshot: DisplayWorkAreaSnapshot, bounds: PixelBounds) {
+        Log.w(
+            LOG_TAG,
+            "Rejected off-work-area bounds=$bounds\n${snapshot.diagnosticMessage()}",
+        )
+    }
+
     override suspend fun start(
         target: AppLaunchTarget,
         bounds: PixelBounds,
@@ -75,11 +83,15 @@ class ActivitySingleAppLaunchPlatform(
                 addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
             }
             val rect = bounds.toAndroidRect()
-            val options = ActivityOptions.makeBasic().setLaunchBounds(rect)
+            val options = ActivityOptions.makeBasic().setLaunchBounds(rect).apply {
+                if (displayRoutingMode == LaunchDisplayRoutingMode.EXPLICIT) {
+                    setLaunchDisplayId(expectedDisplayId)
+                }
+            }
             Log.d(
                 LOG_TAG,
                 "Launching ${target.identity.packageName}/$activityName " +
-                    "on displayId=$expectedDisplayId bounds=$rect",
+                    "routing=$displayRoutingMode expectedDisplayId=$expectedDisplayId bounds=$rect",
             )
             activity.startActivity(intent, options.toBundle())
             PlatformStartResult.SUCCESS
@@ -106,4 +118,9 @@ class ActivitySingleAppLaunchPlatform(
     private companion object {
         const val LOG_TAG = "DexSingleAppLaunch"
     }
+}
+
+enum class LaunchDisplayRoutingMode {
+    INHERITED,
+    EXPLICIT,
 }

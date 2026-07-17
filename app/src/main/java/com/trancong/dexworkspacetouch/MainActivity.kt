@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DexWorkspaceTouchTheme {
-                TouchNavigation()
+                TouchNavigation(activity = this)
             }
         }
     }

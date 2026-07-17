@@ -7,6 +7,8 @@ data class DisplayWorkAreaSnapshot(
     val hostWindowBounds: DiagnosticPixelBounds,
     val density: Float,
     val hostWindowMode: HostWindowMode,
+    val insetCandidates: List<WorkAreaInsetCandidate> = emptyList(),
+    val selectedInsetSource: WorkAreaInsetSource = WorkAreaInsetSource.COMBINED,
 ) {
     init {
         require(displayId >= 0) { "displayId must not be negative" }
@@ -31,6 +33,12 @@ data class DisplayWorkAreaSnapshot(
         append(", usable=").append(workArea.usableWidth).append('x').append(workArea.usableHeight)
         append(", density=").append(density)
         append(", hostWindowMode=").append(hostWindowMode)
+        append(", selectedInsetSource=").append(selectedInsetSource)
+        append(", candidates=")
+        append(insetCandidates.joinToString(prefix = "[", postfix = "]") { candidate ->
+            "${candidate.label}:${candidate.source}:${candidate.coordinateSpace}:" +
+                "${candidate.referenceBounds}:${candidate.insets}"
+        })
     }
 }
 

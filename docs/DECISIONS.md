@@ -117,3 +117,66 @@ Activity chưa attached, đang kết thúc, display default/OFF/removed hoặc i
 đều trả unavailable thay vì đoán. API 28–29 vẫn cần device verification vì public API không có
 maximum WindowMetrics. `DisplayWorkAreaSnapshot.displayId` chỉ thuộc platform adapter và không
 được đưa vào domain launch request.
+
+## ADR-012 — Launch tuần tự và partial success
+
+Quyết định:
+
+- Launch target tuần tự theo `AppLaunchTarget.order`; identity trùng không bị loại.
+- Delay giữa target được cấu hình qua `LaunchSequencingPolicy`, mặc định 400 ms.
+- Lỗi riêng của app tiếp tục sequence để cho phép partial success.
+- `DISPLAY_UNAVAILABLE` dừng sequence; target hiện tại và mọi target còn lại đều
+  nhận typed failure này.
+- `CancellationException` luôn rethrow; không map sang `UNKNOWN` hoặc trả partial result.
+
+Lý do:
+Launch tuần tự giữ hành vi tương thích với implementation đã kiểm chứng và cho
+phép báo cáo chính xác từng target. Display loss là failure cấp host nên không
+còn cơ sở tin cậy để launch tiếp. Structured cancellation phải được bảo toàn.
+
+Hệ quả:
+400 ms chỉ là compatibility default, chưa phải giá trị tối ưu; cần device sweep sau
+integration. Caller bị cancel sau khi một số target đã launch sẽ không nhận
+`WorkspaceLaunchResult`; coroutine vẫn bị cancel đúng contract.
+
+## ADR-011 — Legacy DeX work-area reference
+
+Quyết định:
+API 28–29 được phép tái sử dụng trusted full-display work area trong RAM khi freeform host trên
+cùng external display không cung cấp display-space insets. Direct candidate luôn được ưu tiên;
+reference chỉ là fallback.
+
+Lý do:
+
+- Samsung DeX cũ không luôn expose taskbar qua root insets trong freeform window.
+- Work area của desktop không phụ thuộc kích thước host window.
+- Tránh hard-code taskbar height, device model hoặc fallback rectangle.
+
+Reference chỉ được auto-capture từ `ROOT_SYSTEM_INSETS`, `ROOT_STABLE_INSETS` hoặc
+`DISPLAY_METRICS_DELTA` đã accepted. Key gồm display ID, real dimensions và density. Display
+disconnect, ID/resolution đổi hoặc density đổi đáng kể làm reference bị xóa hoặc từ chối.
+
+Giới hạn:
+
+- Reference chỉ tồn tại trong RAM và không sống qua process death.
+- Lần đầu process mở ở windowed có thể chưa có trusted candidate. Provider trả unavailable và UI
+  hướng dẫn phóng to ứng dụng một lần; không tự ép fullscreen.
+- API 30+ không capture hoặc resolve legacy reference.
+
+## ADR-013 — Launch từ Workspace Library qua typed readiness/result
+
+Quyết định:
+
+- `WorkspaceLaunchRequestFactory` luôn chạy trước Android infrastructure launch.
+- UI chỉ gửi `WorkspaceLibraryItem` và render typed state; UI không tạo `Intent` hoặc `Rect`.
+- Toàn ứng dụng chỉ có một launch sequence tại một thời điểm.
+- Activity-scoped runtime không được lưu trong ViewModel. Activity dispose sẽ cancel sequence
+  đang dùng host cũ thay vì giữ Activity đã destroy.
+- API 28–29 không có direct/trusted work area hiển thị hướng dẫn phóng to một lần;
+  không force fullscreen và không dùng model thiết bị.
+- Raw Android exception và technical message không đi ra UI.
+
+Hệ quả:
+Launch state và legacy reference RAM sống qua resize/configuration change trong
+`WorkspaceLaunchViewModel`, nhưng launcher luôn được tạo lại từ foreground Activity. UI có
+trạng thái checking, launching, completed, readiness error, environment error và cancelled rõ ràng.

@@ -22,8 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -31,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -42,7 +39,8 @@ import com.trancong.dexworkspacetouch.ui.design.Spacing
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryItem
 import com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceLibraryCard
-import kotlinx.coroutines.launch
+import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchStatusDialog
+import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,13 +53,21 @@ fun HomeScreen(
     onEditWorkspace: (String) -> Unit,
     onRenameWorkspace: (String, String) -> Unit,
     onDeleteWorkspace: (String) -> Unit,
+    launchState: WorkspaceLaunchUiState,
+    onLaunchWorkspace: (WorkspaceLibraryItem) -> Unit,
+    onCancelLaunch: () -> Unit,
+    onDismissLaunchResult: () -> Unit,
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
     var managedWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
     var renameWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
     var renameText by rememberSaveable { mutableStateOf("") }
     var deleteWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
+
+    WorkspaceLaunchStatusDialog(
+        state = launchState,
+        onCancel = onCancelLaunch,
+        onDismiss = onDismissLaunchResult,
+    )
 
     fun showRename(workspace: WorkspaceLibraryItem) {
         managedWorkspaceId = null
@@ -172,7 +178,6 @@ fun HomeScreen(
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
-        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
         LazyVerticalGrid(
             columns = GridCells.Adaptive(Dimensions.WorkspaceCardMinWidth),
@@ -201,18 +206,14 @@ fun HomeScreen(
                         workspace = workspace,
                         selected = workspace.id == selectedWorkspaceId,
                         onSelect = { onWorkspaceSelected(workspace.id) },
-                        onOpen = {
-                            coroutineScope.launch {
-                                snackbarHostState.showSnackbar(
-                                    "Chức năng mở workspace sẽ được tích hợp sau.",
-                                )
-                            }
-                        },
+                        onOpen = { onLaunchWorkspace(workspace) },
                         onEdit = { onEditWorkspace(workspace.id) },
                         onRename = { showRename(workspace) },
                         onDelete = { deleteWorkspaceId = workspace.id },
                         onManage = { managedWorkspaceId = workspace.id },
                         canDelete = editingWorkspaceId != workspace.id,
+                        openEnabled = launchState !is WorkspaceLaunchUiState.Checking &&
+                            launchState !is WorkspaceLaunchUiState.Launching,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

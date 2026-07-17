@@ -21,6 +21,7 @@ class DisplayWorkAreaSnapshotTest {
         assertTrue(snapshot.diagnosticMessage().contains("insets=[10,20,30,40]"))
         assertTrue(snapshot.diagnosticMessage().contains("usable=1880x1140"))
         assertTrue(snapshot.diagnosticMessage().contains("hostWindowMode=WINDOWED"))
+        assertTrue(snapshot.diagnosticMessage().contains("selectedInsetSource=COMBINED"))
     }
 
     @Test(expected = IllegalArgumentException::class)

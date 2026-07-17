@@ -10,6 +10,8 @@ interface SingleAppLaunchPlatform {
 
     fun verifyComponent(identity: AppIdentity): ComponentVerificationResult
 
+    fun reportRejectedBounds(snapshot: DisplayWorkAreaSnapshot, bounds: PixelBounds) = Unit
+
     suspend fun start(
         target: AppLaunchTarget,
         bounds: PixelBounds,

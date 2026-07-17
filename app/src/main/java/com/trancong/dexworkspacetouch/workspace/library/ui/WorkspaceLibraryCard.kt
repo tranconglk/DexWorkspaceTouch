@@ -44,6 +44,7 @@ fun WorkspaceLibraryCard(
     onManage: () -> Unit,
     canDelete: Boolean,
     modifier: Modifier = Modifier,
+    openEnabled: Boolean = true,
 ) {
     Card(
         onClick = onSelect,
@@ -92,6 +93,7 @@ fun WorkspaceLibraryCard(
                     ) {
                         OutlinedButton(
                             onClick = onOpen,
+                            enabled = openEnabled,
                             modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton),
                         ) { Text("Mở") }
                         Button(

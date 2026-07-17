@@ -3,6 +3,7 @@ package com.trancong.dexworkspacetouch.platform.launch.android
 import com.trancong.dexworkspacetouch.platform.launch.bounds.BoundsCalculationResult
 import com.trancong.dexworkspacetouch.platform.launch.bounds.LaunchBoundsCalculator
 import com.trancong.dexworkspacetouch.platform.launch.bounds.LaunchBoundsConfig
+import com.trancong.dexworkspacetouch.platform.launch.bounds.LaunchBoundsSanity
 import com.trancong.dexworkspacetouch.platform.launch.bounds.launchMarginPx
 import com.trancong.dexworkspacetouch.workspace.launcher.model.AppLaunchFailure
 import com.trancong.dexworkspacetouch.workspace.launcher.model.AppLaunchFailureReason
@@ -13,8 +14,8 @@ import kotlinx.coroutines.CancellationException
 class AndroidSingleAppLauncher(
     private val platform: SingleAppLaunchPlatform,
     private val boundsConfig: LaunchBoundsConfig = LaunchBoundsConfig(),
-) {
-    suspend fun launch(target: AppLaunchTarget): SingleAppLaunchResult {
+) : SingleAppLauncher {
+    override suspend fun launch(target: AppLaunchTarget): SingleAppLaunchResult {
         val snapshot = platform.currentSnapshot()
             ?: return target.failure(AppLaunchFailureReason.DISPLAY_UNAVAILABLE)
 
@@ -42,6 +43,10 @@ class AndroidSingleAppLauncher(
             is BoundsCalculationResult.Failure -> {
                 return target.failure(AppLaunchFailureReason.LAUNCH_REJECTED)
             }
+        }
+        if (!LaunchBoundsSanity.isWithinWorkArea(pixelBounds, snapshot.workArea)) {
+            platform.reportRejectedBounds(snapshot, pixelBounds)
+            return target.failure(AppLaunchFailureReason.LAUNCH_REJECTED)
         }
 
         val startResult = try {
