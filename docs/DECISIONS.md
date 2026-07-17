@@ -180,3 +180,24 @@ Hệ quả:
 Launch state và legacy reference RAM sống qua resize/configuration change trong
 `WorkspaceLaunchViewModel`, nhưng launcher luôn được tạo lại từ foreground Activity. UI có
 trạng thái checking, launching, completed, readiness error, environment error và cancelled rõ ràng.
+
+## ADR-014 — Workspace persistence dùng Room với JSON canvas
+
+Quyết định:
+
+- Database version 1 có một bảng `workspaces`.
+- `WorkspaceCanvas` được serialize deterministic vào cột `canvasJson`; không tách cell/app
+  thành nhiều bảng trong version đầu.
+- Domain `Workspace` không có Room/Android annotation và tách biệt với `WorkspaceEntity`.
+- `WorkspaceRepository` là boundary; UI không nhận Entity, DAO hoặc Room exception.
+- Serializer custom JSON thuần Kotlin giữ field order, cell order, app identity, nullable activity
+  và label; schema không hỗ trợ hoặc JSON lỗi trả typed persistence failure.
+
+Lý do:
+Cấu trúc một bảng đơn giản cho version đầu, giảm migration complexity và không coupling
+UI/domain với Room. Serializer có thể được tái sử dụng cho import/export sau này mà không
+đưa Android JSON API vào domain.
+
+Trade-off:
+Không tối ưu cho query theo từng cell hoặc package app. Chỉ tách bảng/index khi có nhu cầu
+query thật và migration được thiết kế rõ ràng.
