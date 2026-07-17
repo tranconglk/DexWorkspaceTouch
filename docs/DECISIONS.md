@@ -57,3 +57,22 @@ Migration:
 E3-001 giữ `AssignedApp.label` như cầu nối presentation tạm thời để không phá
 Designer/Snapshot demo. E3-003 sẽ chuyển UI sang catalog resolution rồi thu gọn
 `AssignedApp` còn identity.
+
+## ADR-008 — Launch contract độc lập Android
+
+Quyết định:
+Domain mô tả mục tiêu launch bằng `AppIdentity`, normalized bounds và thứ tự cell.
+Readiness và kết quả launch là các contract typed, không chứa Android type hoặc exception.
+
+Lý do:
+
+- Có thể kiểm thử hoàn toàn bằng JVM.
+- Giữ Launch Engine tách khỏi Workspace Designer và UI.
+- Một request áp dụng được cho nhiều kích thước và độ phân giải cửa sổ.
+- Android implementation có thể thay đổi mà không làm thay đổi canvas domain.
+
+Hệ quả:
+Chuyển bounds sang pixel, chọn display và tạo `Intent` thuộc infrastructure. Cùng một
+identity được phép xuất hiện ở nhiều target vì Designer hiện không cấm; Android
+implementation sau này có trách nhiệm báo hạn chế về nhiều instance, không được âm thầm
+bỏ target trùng.

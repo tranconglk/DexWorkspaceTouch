@@ -85,3 +85,26 @@ Chưa port trong giai đoạn Designer MVP:
 - Shortcut.
 - Room.
 - Backup/import/export.
+
+## Launch Contract
+
+Luồng chuẩn bị và thực thi launch được tách thành các bước:
+
+```text
+WorkspaceCanvas
+→ WorkspaceLaunchRequestFactory
+→ LaunchReadiness
+→ WorkspaceLauncher
+→ WorkspaceLaunchResult
+```
+
+- `WorkspaceLaunchRequestFactory` validate canvas, kiểm tra cell trống và resolve
+  `AssignedApp` qua `InstalledAppCatalog`. Factory không gọi `PackageManager`.
+- `AppLaunchTarget` chỉ giữ `AppIdentity`, thứ tự cell deterministic và bounds chuẩn hóa
+  `0f..1f`. Label và icon không thuộc launch request.
+- Việc chuyển normalized bounds sang pixel thuộc Android launch implementation sau này.
+- UI không tạo `Intent`; domain không biết `Context`, Android `Rect`, display ID hoặc
+  Samsung DeX API.
+- Designer hiện cho phép cùng một ứng dụng ở nhiều cell. Request giữ nguyên mọi target;
+  platform implementation sau này phải báo kết quả rõ ràng nếu ứng dụng không hỗ trợ
+  nhiều instance.
