@@ -1,5 +1,27 @@
 # Architecture Decisions
 
+## ADR-016 — Persistence isolates unreadable rows
+
+Decision:
+
+- Every Room row is decoded independently. One malformed row never hides other valid workspaces.
+- Corrupted JSON and unsupported future schemas are typed persistence issues. Raw JSON, SQLite
+  errors, and stack traces never cross the repository/UI boundary.
+- Unreadable rows remain unchanged. The app does not delete them, replace them with empty canvases,
+  or overwrite future-schema data it cannot understand.
+- Future-schema workspaces are unavailable for edit and launch. Deletion by stable row ID remains a
+  repository operation for a future explicit recovery UI.
+- Room remains the source of truth; UI lists change only after a committed Flow emission.
+
+Consequences:
+Valid workspaces remain usable during partial corruption. Recovery/export tooling is outside this
+task, and database version remains 1 without destructive migration or reset.
+
+Default names use `max(N) + 1` over persisted `Workspace N` names plus numbers issued in the current
+process. This is deterministic across restart while rows exist. Without a settings table or DataStore,
+a highest-numbered name deleted before process death can be reused after restart; this limitation is
+accepted to avoid persistence outside the workspace table.
+
 ## ADR-001 — Dùng Normalized Bounds
 
 Quyết định:

@@ -6,6 +6,8 @@ import com.trancong.dexworkspacetouch.workspace.designer.model.assignApp
 import com.trancong.dexworkspacetouch.workspace.persistence.domain.Workspace
 import com.trancong.dexworkspacetouch.workspace.persistence.domain.WorkspacePersistenceException
 import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspaceRepository
+import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspacePersistenceIssue
+import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspaceRepositorySnapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
@@ -13,6 +15,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.awaitCancellation
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -49,6 +52,16 @@ class WorkspaceLibraryViewModelTest {
         state.retryLoad()
         assertFalse(state.isLoading)
         assertNull(state.persistenceError)
+    }
+
+    @Test fun `partial persistence issue keeps valid workspaces usable`() {
+        val repository = FakeRepository(listOf(workspace("valid", "Valid", 1))).apply {
+            issues = listOf(WorkspacePersistenceIssue.CorruptedRow("bad"))
+        }
+        val state = viewModel(repository)
+        assertEquals(listOf("valid"), state.workspaces.map { it.id })
+        assertEquals(repository.issues, state.persistenceIssues)
+        assertFalse(state.isLoading)
     }
 
     @Test fun `create draft does not insert before save`() {
@@ -139,13 +152,20 @@ class WorkspaceLibraryViewModelTest {
         val repository = FakeRepository(listOf(workspace("old", "Workspace 2", 8)))
         val state = viewModel(repository, ids = QueueIds("one", "two", "three"))
         state.createWorkspace()
-        assertEquals("Workspace 1", state.saveWorkspace(canvas).name)
+        assertEquals("Workspace 3", state.saveWorkspace(canvas).name)
         state.finishEditing()
         state.deleteWorkspace("one")
         state.createWorkspace()
         val second = state.saveWorkspace(canvas)
-        assertEquals("Workspace 3", second.name)
+        assertEquals("Workspace 4", second.name)
         assertEquals(10, repository.current.first { it.id == "two" }.modifiedSequence)
+    }
+
+    @Test fun `default name derives from persisted maximum after recreation`() {
+        val repository = FakeRepository(listOf(workspace("old", "Workspace 7", 1)))
+        val recreated = viewModel(repository, ids = QueueIds("new"))
+        recreated.createWorkspace()
+        assertEquals("Workspace 8", recreated.saveWorkspace(canvas).name)
     }
 
     @Test fun `duplicate id maps to save error without crashing`() {
@@ -166,6 +186,26 @@ class WorkspaceLibraryViewModelTest {
         assertEquals(1, repository.insertCalls)
         repository.insertGate?.complete(Unit)
         assertEquals(1, repository.current.size)
+    }
+
+    @Test fun `save success callback waits for repository commit`() {
+        val repository = FakeRepository().apply { insertGate = CompletableDeferred() }
+        val state = viewModel(repository, ids = QueueIds("id"))
+        var persisted = false
+        state.createWorkspace()
+        state.saveWorkspace(canvas, "Name") { persisted = true }
+        assertFalse(persisted)
+        repository.insertGate?.complete(Unit)
+        assertTrue(persisted)
+    }
+
+    @Test fun `failed save does not report persistence success`() {
+        val repository = FakeRepository().apply { failMutations = true }
+        val state = viewModel(repository, ids = QueueIds("id"))
+        var persisted = false
+        state.createWorkspace()
+        state.saveWorkspace(canvas, "Name") { persisted = true }
+        assertFalse(persisted)
     }
 
     @Test fun `persistence failures map to operation-specific UI state`() {
@@ -215,12 +255,18 @@ class WorkspaceLibraryViewModelTest {
         var insertGate: CompletableDeferred<Unit>? = null
         var insertCalls = 0
         var updateCalls = 0
+        var issues: List<WorkspacePersistenceIssue> = emptyList()
         val current: List<Workspace> get() = state.value
 
         override fun observeAll(): Flow<List<Workspace>> = when {
             failObserve -> flow { throw WorkspacePersistenceException.DatabaseFailure("load") }
             holdObserve -> flow { awaitCancellation() }
             else -> state
+        }
+        override fun observeSnapshot(): Flow<WorkspaceRepositorySnapshot> = when {
+            failObserve -> flow { throw WorkspacePersistenceException.DatabaseFailure("load") }
+            holdObserve -> flow { awaitCancellation() }
+            else -> state.map { WorkspaceRepositorySnapshot(it, issues) }
         }
         override suspend fun getById(id: String) = current.firstOrNull { it.id == id }
         override suspend fun insert(workspace: Workspace) {

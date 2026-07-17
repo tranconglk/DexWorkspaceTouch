@@ -77,6 +77,39 @@ class WorkspaceCanvasSerializerTest {
         }
     }
 
+    @Test fun `unknown fields are rejected`() {
+        val json = """{"cells":[],"future":true}"""
+        assertThrows(WorkspacePersistenceException.SerializationFailure::class.java) {
+            serializer.decode(json, 1)
+        }
+    }
+
+    @Test fun `duplicate fields and trailing input are rejected`() {
+        assertThrows(WorkspacePersistenceException.SerializationFailure::class.java) {
+            serializer.decode("""{"cells":[],"cells":[]}""", 1)
+        }
+        assertThrows(WorkspacePersistenceException.SerializationFailure::class.java) {
+            serializer.decode("""{"cells":[]} trailing""", 1)
+        }
+    }
+
+    @Test fun `non finite numbers are rejected`() {
+        val json = """{"cells":[{"id":"cell","bounds":{"left":0,"top":0,"right":1e999,"bottom":1},"app":null}]}"""
+        assertThrows(WorkspacePersistenceException.SerializationFailure::class.java) {
+            serializer.decode(json, 1)
+        }
+    }
+
+    @Test fun `oversized and deeply nested payloads fail with typed error`() {
+        assertThrows(WorkspacePersistenceException.SerializationFailure::class.java) {
+            serializer.decode(" ".repeat(1_000_001), 1)
+        }
+        val deeplyNested = "[".repeat(65) + "null" + "]".repeat(65)
+        assertThrows(WorkspacePersistenceException.SerializationFailure::class.java) {
+            serializer.decode(deeplyNested, 1)
+        }
+    }
+
     private fun roundTrip(canvas: WorkspaceCanvas) {
         assertEquals(canvas, serializer.decode(serializer.encode(canvas), 1))
     }

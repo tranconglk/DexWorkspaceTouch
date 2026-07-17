@@ -5,6 +5,7 @@ import com.trancong.dexworkspacetouch.workspace.persistence.domain.Workspace
 import com.trancong.dexworkspacetouch.workspace.persistence.domain.WorkspacePersistenceException
 import com.trancong.dexworkspacetouch.workspace.persistence.room.WorkspaceDao
 import com.trancong.dexworkspacetouch.workspace.persistence.room.WorkspaceEntity
+import com.trancong.dexworkspacetouch.workspace.persistence.room.toEntity
 import com.trancong.dexworkspacetouch.workspace.persistence.serialization.DeterministicWorkspaceCanvasJsonSerializer
 import com.trancong.dexworkspacetouch.workspace.persistence.serialization.WorkspaceCanvasSerializer
 import kotlinx.coroutines.flow.Flow
@@ -25,6 +26,31 @@ class RoomWorkspaceRepositoryTest {
     @Test fun `observe maps entities to domain`() = runBlocking {
         repository.insert(workspace)
         assertEquals(listOf(workspace), repository.observeAll().first())
+    }
+
+    @Test fun `malformed row is isolated and reported without hiding valid row`() = runBlocking {
+        dao.putRaw(workspace.toEntity(DeterministicWorkspaceCanvasJsonSerializer()))
+        dao.putRaw(workspace.toEntity(DeterministicWorkspaceCanvasJsonSerializer()).copy(id = "bad", canvasJson = "{"))
+
+        val snapshot = repository.observeSnapshot().first()
+
+        assertEquals(listOf("id"), snapshot.workspaces.map { it.id })
+        assertEquals(listOf(WorkspacePersistenceIssue.CorruptedRow("bad")), snapshot.issues)
+        assertEquals(2, dao.count())
+    }
+
+    @Test fun `unsupported schema is retained and reported without hiding valid row`() = runBlocking {
+        dao.putRaw(workspace.toEntity(DeterministicWorkspaceCanvasJsonSerializer()))
+        dao.putRaw(
+            workspace.toEntity(DeterministicWorkspaceCanvasJsonSerializer())
+                .copy(id = "future", schemaVersion = 2),
+        )
+
+        val snapshot = repository.observeSnapshot().first()
+
+        assertEquals(listOf("id"), snapshot.workspaces.map { it.id })
+        assertEquals(listOf(WorkspacePersistenceIssue.UnsupportedSchema("future", 2)), snapshot.issues)
+        assertTrue(dao.exists("future"))
     }
 
     @Test fun `insert and get by id`() = runBlocking {
@@ -74,6 +100,15 @@ class RoomWorkspaceRepositoryTest {
         }
     }
 
+    @Test fun `failed update preserves previous row`() = runBlocking {
+        repository.insert(workspace)
+        val failing = RoomWorkspaceRepository(dao, FailingSerializer)
+        assertThrows(WorkspacePersistenceException.SerializationFailure::class.java) {
+            runBlocking { failing.update(workspace.copy(name = "Should not persist")) }
+        }
+        assertEquals(workspace, repository.getById(workspace.id))
+    }
+
     private class FakeWorkspaceDao : WorkspaceDao {
         private val state = MutableStateFlow<List<WorkspaceEntity>>(emptyList())
         override fun observeAll(): Flow<List<WorkspaceEntity>> = state
@@ -94,6 +129,7 @@ class RoomWorkspaceRepositoryTest {
         }
         override suspend fun exists(id: String) = state.value.any { it.id == id }
         override suspend fun count() = state.value.size
+        fun putRaw(entity: WorkspaceEntity) { state.value += entity }
     }
 
     private object FailingSerializer : WorkspaceCanvasSerializer {

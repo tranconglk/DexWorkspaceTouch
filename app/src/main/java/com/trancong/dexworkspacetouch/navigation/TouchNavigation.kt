@@ -22,6 +22,7 @@ import com.trancong.dexworkspacetouch.platform.launch.android.AndroidWorkspaceLa
 import com.trancong.dexworkspacetouch.workspace.launcher.WorkspaceLaunchRequestFactory
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModel
 import com.trancong.dexworkspacetouch.DexWorkspaceTouchApplication
+import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspacePersistenceIssue
 
 private object Routes {
     const val Home = "home"
@@ -72,6 +73,12 @@ fun TouchNavigation(activity: Activity) {
                 onDeleteWorkspace = libraryViewModel::deleteWorkspace,
                 libraryIsLoading = libraryViewModel.isLoading,
                 persistenceError = libraryViewModel.persistenceError,
+                hasCorruptedWorkspaces = libraryViewModel.persistenceIssues.any {
+                    it is WorkspacePersistenceIssue.CorruptedRow
+                },
+                hasUnsupportedWorkspaces = libraryViewModel.persistenceIssues.any {
+                    it is WorkspacePersistenceIssue.UnsupportedSchema
+                },
                 onRetryLibrary = libraryViewModel::retryLoad,
                 onDismissPersistenceError = libraryViewModel::dismissPersistenceError,
                 launchState = launchViewModel.state,
@@ -94,9 +101,10 @@ fun TouchNavigation(activity: Activity) {
                     navController.navigate("${Routes.AppPicker}/$cellId")
                 },
                 onSave = { name ->
-                    libraryViewModel.saveWorkspace(designerViewModel.canvas, name)
-                    libraryViewModel.finishEditing()
-                    navController.navigateUp()
+                    libraryViewModel.saveWorkspace(designerViewModel.canvas, name) {
+                        libraryViewModel.finishEditing()
+                        navController.navigateUp()
+                    }
                 },
             )
         }

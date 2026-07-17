@@ -41,11 +41,17 @@ class DeterministicWorkspaceCanvasJsonSerializer(
         if (schemaVersion != SUPPORTED_SCHEMA_VERSION) {
             throw WorkspacePersistenceException.UnsupportedSchema(schemaVersion)
         }
+        if (json.length > MAX_JSON_CHARS) {
+            throw WorkspacePersistenceException.SerializationFailure("Workspace canvas JSON is too large")
+        }
         return try {
             val root = JsonParser(json).parse().objectValue("root")
+            root.requireOnlyKeys("root", setOf("cells"))
             val cells = root.required("cells").arrayValue("cells").mapIndexed { index, raw ->
                 val value = raw.objectValue("cells[$index]")
+                value.requireOnlyKeys("cells[$index]", setOf("id", "bounds", "app"))
                 val bounds = value.required("bounds").objectValue("bounds")
+                bounds.requireOnlyKeys("bounds", setOf("left", "top", "right", "bottom"))
                 WorkspaceCell(
                     id = value.required("id").stringValue("id"),
                     bounds = NormalizedBounds(
@@ -56,6 +62,7 @@ class DeterministicWorkspaceCanvasJsonSerializer(
                     ),
                     app = value.requiredNullable("app")?.let { rawApp ->
                         val app = rawApp.objectValue("app")
+                        app.requireOnlyKeys("app", setOf("packageName", "activityName", "label"))
                         AssignedApp(
                             packageName = app.required("packageName").stringValue("packageName"),
                             activityName = app.requiredNullable("activityName")?.stringValue("activityName"),
@@ -105,7 +112,15 @@ class DeterministicWorkspaceCanvasJsonSerializer(
         return append('"')
     }
 
-    private companion object { const val SUPPORTED_SCHEMA_VERSION = 1 }
+    private companion object {
+        const val SUPPORTED_SCHEMA_VERSION = 1
+        const val MAX_JSON_CHARS = 1_000_000
+    }
+}
+
+private fun Map<String, Any?>.requireOnlyKeys(name: String, allowed: Set<String>) {
+    val unknown = keys.firstOrNull { it !in allowed }
+    if (unknown != null) malformed("Unknown '$unknown' in '$name'")
 }
 
 private fun Map<String, Any?>.required(name: String): Any =
@@ -136,6 +151,7 @@ private fun malformed(message: String): Nothing =
 
 private class JsonParser(private val source: String) {
     private var position = 0
+    private var depth = 0
 
     fun parse(): Any? {
         skipWhitespace()
@@ -157,6 +173,8 @@ private class JsonParser(private val source: String) {
     }
 
     private fun readObject(): Map<String, Any?> {
+        enterContainer()
+        try {
         take('{')
         skipWhitespace()
         val result = linkedMapOf<String, Any?>()
@@ -171,9 +189,14 @@ private class JsonParser(private val source: String) {
             if (consume('}')) return result
             take(','); skipWhitespace()
         }
+        } finally {
+            depth--
+        }
     }
 
     private fun readArray(): List<Any?> {
+        enterContainer()
+        try {
         take('['); skipWhitespace()
         val result = mutableListOf<Any?>()
         if (consume(']')) return result
@@ -182,6 +205,14 @@ private class JsonParser(private val source: String) {
             if (consume(']')) return result
             take(','); skipWhitespace()
         }
+        } finally {
+            depth--
+        }
+    }
+
+    private fun enterContainer() {
+        depth++
+        if (depth > MAX_DEPTH) fail("JSON nesting is too deep")
     }
 
     private fun readString(): String {
@@ -250,4 +281,6 @@ private class JsonParser(private val source: String) {
     private fun peek(): Char = peekOrNull() ?: fail("Unexpected end of input")
     private fun peekOrNull(): Char? = source.getOrNull(position)
     private fun fail(message: String): Nothing = malformed("$message at position $position")
+
+    private companion object { const val MAX_DEPTH = 64 }
 }

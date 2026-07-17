@@ -12,11 +12,14 @@ import com.trancong.dexworkspacetouch.workspace.library.model.toLibraryItem
 import com.trancong.dexworkspacetouch.workspace.library.model.toDomainWorkspace
 import com.trancong.dexworkspacetouch.workspace.persistence.domain.Workspace
 import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspaceRepository
+import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspacePersistenceIssue
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.math.max
 
 class WorkspaceLibraryViewModel(
@@ -35,6 +38,8 @@ class WorkspaceLibraryViewModel(
         private set
     var persistenceError by mutableStateOf<WorkspaceLibraryPersistenceError?>(null)
         private set
+    var persistenceIssues by mutableStateOf<List<WorkspacePersistenceIssue>>(emptyList())
+        private set
 
     private val scope: CoroutineScope get() = suppliedScope ?: viewModelScope
     private var observedDomains: List<Workspace> = emptyList()
@@ -42,6 +47,7 @@ class WorkspaceLibraryViewModel(
     private var mutationJob: Job? = null
     private var nextModifiedSequence = 1L
     private var pendingSave: WorkspaceLibraryItem? = null
+    private val writeMutex = Mutex()
     private val issuedDefaultNameNumbers = mutableSetOf<Int>()
 
     val isCreatingWorkspace: Boolean get() = editingWorkspaceId == null
@@ -110,7 +116,11 @@ class WorkspaceLibraryViewModel(
         runMutation(WorkspaceLibraryPersistenceOperation.DELETE) { repository.deleteById(id) }
     }
 
-    fun saveWorkspace(canvas: WorkspaceCanvas, requestedName: String? = null): WorkspaceLibraryItem {
+    fun saveWorkspace(
+        canvas: WorkspaceCanvas,
+        requestedName: String? = null,
+        onPersisted: () -> Unit = {},
+    ): WorkspaceLibraryItem {
         if (mutationJob?.isActive == true && pendingSave != null) return requireNotNull(pendingSave)
         val editingId = editingWorkspaceId
         val existing = editingId?.let(::domainOrNull)
@@ -141,7 +151,7 @@ class WorkspaceLibraryViewModel(
         pendingSave = item
         selectedWorkspaceId = item.id
         editingWorkspaceId = item.id
-        runMutation(WorkspaceLibraryPersistenceOperation.SAVE) {
+        runMutation(WorkspaceLibraryPersistenceOperation.SAVE, onSuccess = onPersisted) {
             if (existing == null) repository.insert(saved) else repository.update(saved)
         }
         return item
@@ -150,7 +160,7 @@ class WorkspaceLibraryViewModel(
     private fun observeLibrary() {
         observationJob?.cancel()
         observationJob = scope.launch {
-            repository.observeAll()
+            repository.observeSnapshot()
                 .catch { error ->
                     if (error is CancellationException) throw error
                     isLoading = false
@@ -158,8 +168,10 @@ class WorkspaceLibraryViewModel(
                         WorkspaceLibraryPersistenceOperation.LOAD,
                     )
                 }
-                .collect { domains ->
+                .collect { snapshot ->
+                    val domains = snapshot.workspaces
                     observedDomains = domains
+                    persistenceIssues = snapshot.issues
                     workspaces = domains.map(Workspace::toLibraryItem)
                     val highWaterMark = domains.maxOfOrNull(Workspace::modifiedSequence) ?: 0L
                     nextModifiedSequence = max(nextModifiedSequence, highWaterMark + 1)
@@ -178,13 +190,14 @@ class WorkspaceLibraryViewModel(
 
     private fun runMutation(
         operation: WorkspaceLibraryPersistenceOperation,
+        onSuccess: () -> Unit = {},
         block: suspend () -> Unit,
     ) {
-        if (mutationJob?.isActive == true) return
         persistenceError = null
         mutationJob = scope.launch {
             try {
-                block()
+                writeMutex.withLock { block() }
+                onSuccess()
             } catch (error: CancellationException) {
                 throw error
             } catch (_: Exception) {
@@ -208,7 +221,7 @@ class WorkspaceLibraryViewModel(
         val used = observedDomains.mapNotNull { workspace ->
             DEFAULT_NAME_PATTERN.matchEntire(workspace.name)?.groupValues?.get(1)?.toIntOrNull()
         }.toSet() + issuedDefaultNameNumbers
-        val number = generateSequence(1, Int::inc).first { it !in used }
+        val number = (used.maxOrNull() ?: 0) + 1
         issuedDefaultNameNumbers += number
         return "Workspace $number"
     }

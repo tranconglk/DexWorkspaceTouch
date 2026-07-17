@@ -33,6 +33,8 @@ private fun WorkspaceLibraryPreview() {
             onDeleteWorkspace = {},
             libraryIsLoading = false,
             persistenceError = null,
+            hasCorruptedWorkspaces = false,
+            hasUnsupportedWorkspaces = false,
             onRetryLibrary = {},
             onDismissPersistenceError = {},
             launchState = WorkspaceLaunchUiState.Idle,

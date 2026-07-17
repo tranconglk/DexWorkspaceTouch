@@ -229,3 +229,13 @@ WorkspaceLibraryViewModel (Room Flow source of truth)
 - New/edit Designer canvases remain immutable working copies. Create does not insert until Save;
   Back/cancel does not update Room. Migration from the former RAM workflow is deferred to M5-001C.
 - The application-scoped database graph uses application context and owns no UI/Activity reference.
+- Repository observation maps each Room row independently into a `WorkspaceRepositorySnapshot`.
+  Malformed JSON and unsupported future schemas become typed per-row issues; valid rows remain
+  available and unreadable rows are neither deleted nor replaced with empty canvases.
+- Schema version 1 is the only decodable version. Future-version rows may be deleted by ID, but are
+  excluded from edit and launch so unknown data cannot be overwritten.
+- Insert/update/delete are single-row Room statements. Updates require exactly one affected row;
+  serialization completes before the DAO call, and Library state changes after the committed Room
+  emission. Failed writes retain the previous persisted row.
+- JSON decoding rejects unknown or duplicate fields, trailing input, non-finite numbers, payloads
+  over 1,000,000 characters, and nesting deeper than 64 containers.

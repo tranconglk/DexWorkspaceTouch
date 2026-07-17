@@ -57,6 +57,8 @@ fun HomeScreen(
     onDeleteWorkspace: (String) -> Unit,
     libraryIsLoading: Boolean,
     persistenceError: WorkspaceLibraryPersistenceError?,
+    hasCorruptedWorkspaces: Boolean,
+    hasUnsupportedWorkspaces: Boolean,
     onRetryLibrary: () -> Unit,
     onDismissPersistenceError: () -> Unit,
     launchState: WorkspaceLaunchUiState,
@@ -223,6 +225,16 @@ fun HomeScreen(
                     enabled = !libraryIsLoading,
                     modifier = Modifier.fillMaxWidth().height(TouchTargets.PrimaryButton),
                 ) { Text("Tạo bố cục mới") }
+            }
+            if (!libraryIsLoading && hasCorruptedWorkspaces) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Text("Không thể đọc một số workspace.")
+                }
+            }
+            if (!libraryIsLoading && hasUnsupportedWorkspaces) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Text("Một workspace được tạo bằng phiên bản mới hơn và chưa thể mở.")
+                }
             }
             if (libraryIsLoading) {
                 item(span = { GridItemSpan(maxLineSpan) }) {

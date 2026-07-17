@@ -16,8 +16,25 @@ class RoomWorkspaceRepository(
     private val dao: WorkspaceDao,
     private val serializer: WorkspaceCanvasSerializer,
 ) : WorkspaceRepository {
-    override fun observeAll(): Flow<List<Workspace>> = dao.observeAll()
-        .map { entities -> entities.map { it.toDomain(serializer) } }
+    override fun observeAll(): Flow<List<Workspace>> = observeSnapshot().map { it.workspaces }
+
+    override fun observeSnapshot(): Flow<WorkspaceRepositorySnapshot> = dao.observeAll()
+        .map { entities ->
+            val workspaces = mutableListOf<Workspace>()
+            val issues = mutableListOf<WorkspacePersistenceIssue>()
+            entities.forEach { entity ->
+                try {
+                    workspaces += entity.toDomain(serializer)
+                } catch (error: WorkspacePersistenceException.UnsupportedSchema) {
+                    issues += WorkspacePersistenceIssue.UnsupportedSchema(entity.id, error.schemaVersion)
+                } catch (_: WorkspacePersistenceException.SerializationFailure) {
+                    issues += WorkspacePersistenceIssue.CorruptedRow(entity.id)
+                } catch (_: IllegalArgumentException) {
+                    issues += WorkspacePersistenceIssue.CorruptedRow(entity.id)
+                }
+            }
+            WorkspaceRepositorySnapshot(workspaces, issues)
+        }
         .catch { error -> throw mapFailure("observe workspaces", error) }
 
     override suspend fun getById(id: String): Workspace? = databaseCall("read workspace '$id'") {

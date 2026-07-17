@@ -54,6 +54,7 @@ class WorkspaceDaoTest {
             assertThrows(WorkspaceRowNotFoundException::class.java) {
                 runBlocking { dao.update(entity("missing", "Name", 1, 10)) }
             }
+            assertEquals("After", dao.getById("id")?.name)
         }
     }
 
