@@ -287,6 +287,17 @@ Quyết định:
 - Quick Split bị loại bỏ để giảm độ phức tạp và tránh preset vượt khả năng sử dụng DeX.
 - Row cũ trên 5 cell vẫn được giữ và deserialize; launch readiness trả typed failure,
   không gọi Android launcher và không coi row là corrupted.
+- Catalog chỉ dùng topology/tỷ lệ canonical, không liệt kê mọi tỷ lệ divider. Signature
+  dựa trên cell count và bounds có tolerance, không dựa tên hoặc ID.
+- Mirror trái/phải và trên/dưới là khác nhau khi hướng sử dụng khác; topology có bounds
+  tương đương chỉ xuất hiện một lần. Catalog được tinh gọn còn 16 mẫu có giá trị sử dụng
+  cao trong ba category, ưu tiên chọn nhanh thay vì liệt kê mọi topology có thể tạo.
+- Template dialog dùng đúng 3 cột trên content width lớn, 2 cột ở mức trung bình và
+  1 cột ở cửa sổ hẹp. Kích thước được clamp sau safe inset/margin để không bị cắt.
+- Trên Samsung DeX windowed, host dưới large breakpoint dùng platform dialog width để
+  tránh custom dialog đo theo desktop rồi bị clip bởi host; maximized vẫn dùng custom width.
+- Cơ bản và Chia trái/phải mở mặc định; Chia trên/dưới thu gọn. Section header là touch
+  target toàn hàng. Card chỉ hiển thị preview 16:10 và tên, không hiển thị mô tả phụ.
 
 Lý do:
 Giới hạn năm cửa sổ phản ánh phạm vi đã xác minh trên thiết bị, đồng thời đặt guard

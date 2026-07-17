@@ -110,7 +110,14 @@ target để đạt mật độ cao hơn.
 ## Template Picker Dialog
 
 Template Picker dùng centered dialog rộng 88% vùng safe, cao tối đa 84% và rộng tối
-đa 1440dp. Từ 1200dp content width, grid cố định bốn cột; dưới breakpoint đó
-dùng card adaptive tối thiểu 260dp. Preview cao 104dp và
-`Spacing.TemplateGrid = 16dp`. Trên DeX 1920×1200 mục tiêu là bốn cột; cửa sổ hẹp
-tự giảm còn 1–3 cột. Header tối thiểu 72dp đứng yên trong khi grid cuộn độc lập.
+đa 1440dp. Margin ngoài `Spacing.L` được trừ trước khi helper tính kích thước nên
+surface, shape và shadow luôn nằm trong constraints an toàn.
+Host windowed dưới large breakpoint dùng platform dialog width; host lớn/maximized
+dùng custom width để tận dụng vùng DeX mà không đo vượt host.
+
+Grid policy chỉ có ba mức: content width từ 1000dp dùng 3 cột, từ 620dp dùng 2 cột,
+còn lại dùng 1 cột. Không có nhánh 4 cột. Preview dùng `WorkspaceAspectRatio = 16:10`
+và tự tính chiều cao từ chiều rộng card, không có fixed-height token. Khoảng cách dùng
+`Spacing.TemplateGrid = 16dp`; dialog header tối thiểu 72dp đứng yên trong khi một outer
+list duy nhất cuộn các section. Section header tối thiểu 56dp và title card dành tối thiểu
+48dp để giữ chiều cao hàng ổn định.

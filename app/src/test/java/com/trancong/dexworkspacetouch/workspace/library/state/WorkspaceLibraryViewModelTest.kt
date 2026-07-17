@@ -76,7 +76,7 @@ class WorkspaceLibraryViewModelTest {
     @Test fun `template canvas remains an unpersisted draft until save`() {
         val repository = FakeRepository()
         val state = viewModel(repository)
-        val templateCanvas = WorkspaceTemplateCatalog.default().find("three-top-two-bottom")!!.factory()
+        val templateCanvas = WorkspaceTemplateCatalog.default().find("top-large-four-bottom")!!.factory()
         assertEquals(templateCanvas, state.createWorkspace(templateCanvas))
         assertEquals(0, repository.insertCalls)
         assertTrue(repository.current.isEmpty())

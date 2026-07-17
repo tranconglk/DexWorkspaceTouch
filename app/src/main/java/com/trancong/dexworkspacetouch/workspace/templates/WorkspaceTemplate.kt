@@ -4,10 +4,8 @@ import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 
 enum class WorkspaceTemplateCategory {
     BASIC,
-    COLUMNS,
-    ROWS,
-    GRID,
-    SIDEBAR,
+    LEFT_RIGHT,
+    TOP_BOTTOM,
 }
 
 class WorkspaceTemplate internal constructor(

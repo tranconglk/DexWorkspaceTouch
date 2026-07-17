@@ -34,6 +34,11 @@ Phần tử nhìn thấy và vùng chạm là hai khái niệm riêng. Divider 3
 
 ## Template selection
 
-Template Picker dùng dialog lớn căn giữa, không dính đáy cửa sổ. Màn lớn ưu tiên
-3–4 cột; card giữ gọn nhưng toàn bộ card vẫn là touch target. Header luôn nhìn thấy,
-grid cuộn độc lập và padding safe-drawing bảo đảm hàng cuối không bị taskbar che.
+Template Picker dùng dialog lớn căn giữa, không dính đáy cửa sổ. Màn DeX lớn dùng
+đúng 3 cột, cửa sổ trung bình 2 và cửa sổ hẹp 1 cột. Card giữ gọn nhưng toàn bộ card
+vẫn là touch target. Header luôn nhìn thấy; chỉ danh sách section cuộn. Safe-drawing
+inset cộng margin ngoài bảo đảm hàng cuối, shape và shadow không bị taskbar/cạnh cắt.
+
+Template hiển thị theo thứ tự Cơ bản, Chia trái / phải, Chia trên / dưới; không dùng tab
+hoặc nested scroll. Hai nhóm đầu mở mặc định để chọn nhanh, nhóm Trên/Dưới thu gọn.
+Header section là một touch target 56dp; card chỉ gồm preview 16:10 và tên.

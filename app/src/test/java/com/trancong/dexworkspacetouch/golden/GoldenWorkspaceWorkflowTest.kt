@@ -18,6 +18,7 @@ import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceL
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.summaryMessage
 import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryViewModel
 import com.trancong.dexworkspacetouch.workspace.templates.WorkspaceTemplateCatalog
+import com.trancong.dexworkspacetouch.workspace.templates.WorkspaceTemplateCategory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -30,31 +31,34 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class GoldenWorkspaceWorkflowTest {
-    @Test fun `five-cell template assign save recreation and readiness stay within limit`() {
-        val repository = FakeWorkspaceRepository()
-        val library = library(repository)
-        val template = WorkspaceTemplateCatalog.default().find("three-top-two-bottom")!!.factory()
-        val designer = WorkspaceDesignerStateHolder(template)
-        template.cells.forEachIndexed { index, cell ->
-            designer.assignApp(
-                cell.id,
-                if (index % 2 == 0) GoldenWorkspaceFixtures.mapsAssigned else GoldenWorkspaceFixtures.musicAssigned,
-            )
-        }
-        designer.selectCell(designer.canvas.cells.first().id)
-        assertEquals(
-            com.trancong.dexworkspacetouch.workspace.designer.state.SplitResult.MaximumCellsReached,
-            designer.splitSelectedCell(SplitDirection.VERTICAL),
+    @Test fun `template from every rendered category assigns saves recreates and is ready within five cells`() {
+        val catalog = WorkspaceTemplateCatalog.default()
+        val representatives = mapOf(
+            WorkspaceTemplateCategory.BASIC to "four-grid",
+            WorkspaceTemplateCategory.LEFT_RIGHT to "left-large-grid-right",
+            WorkspaceTemplateCategory.TOP_BOTTOM to "top-large-four-bottom",
         )
-        library.saveWorkspace(designer.canvas, "Five Cell Golden")
+        representatives.forEach { (category, id) ->
+            val repository = FakeWorkspaceRepository()
+            val library = library(repository)
+            val template = catalog.find(id)!!
+            assertEquals(category, template.category)
+            val designer = WorkspaceDesignerStateHolder(template.factory())
+            designer.canvas.cells.forEachIndexed { index, cell ->
+                designer.assignApp(
+                    cell.id,
+                    if (index % 2 == 0) GoldenWorkspaceFixtures.mapsAssigned else GoldenWorkspaceFixtures.musicAssigned,
+                )
+            }
+            library.saveWorkspace(designer.canvas, "Golden ${category.name}")
 
-        val recreated = library(repository)
-        val saved = recreated.workspaces.single()
-        assertEquals(5, saved.canvas.cells.size)
-        val readiness = WorkspaceLaunchRequestFactory(
-            FakeInstalledAppCatalog(GoldenWorkspaceFixtures.installedApps),
-        ).create(saved.id, saved.name, saved.canvas)
-        assertTrue(readiness is LaunchReadiness.Ready)
+            val saved = library(repository).workspaces.single()
+            assertTrue(saved.canvas.cells.size in 1..5)
+            val readiness = WorkspaceLaunchRequestFactory(
+                FakeInstalledAppCatalog(GoldenWorkspaceFixtures.installedApps),
+            ).create(saved.id, saved.name, saved.canvas)
+            assertTrue(readiness is LaunchReadiness.Ready)
+        }
     }
 
     @Test fun `create split assign save and process recreation preserve final canvas`() {

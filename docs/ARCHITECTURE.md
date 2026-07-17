@@ -300,5 +300,15 @@ catalog, Designer UI và launch readiness. Dữ liệu cũ trên 5 cell vẫn đ
 và giữ nguyên; readiness từ chối launch thay vì coi row là corrupted.
 
 Template Picker là centered adaptive dialog, không phải bottom sheet. Dialog dùng
-safe-drawing inset, header cố định và grid cuộn độc lập. Quick Split đã bị loại bỏ;
-Designer chỉ còn split ngang/dọc với một history entry cho mỗi thao tác.
+safe-drawing inset, explicit outer margin và helper thuần Kotlin để clamp kích thước
+theo safe constraints. Header cố định; một `LazyColumn` duy nhất cuộn ba category,
+mỗi section có header mở/thu gọn và grid hàng không-scroll 3/2/1 cột.
+
+Samsung DeX windowed có thể đo custom dialog window theo desktop thay vì host. Vì vậy
+host dưới large breakpoint dùng platform dialog width; host lớn/maximized dùng custom
+width. Grid luôn quyết định cột từ constraints thực bên trong dialog.
+
+Catalog mặc định được tinh gọn còn 16 topology canonical có giá trị sử dụng cao: 6 Cơ bản,
+6 Trái/Phải và 4 Trên/Dưới. `canonicalTemplateSignature()` bỏ qua ID/order và so bounds theo tolerance;
+catalog từ chối duplicate nhưng giữ mirror có hướng sử dụng khác. Quick Split đã bị
+loại bỏ; Designer chỉ còn split ngang/dọc với một history entry cho mỗi thao tác.

@@ -91,7 +91,7 @@ class WorkspaceDesignerViewModelTest {
 
     @Test fun splitAtFiveCellsReturnsLimitWithoutChangingHistoryOrSelection() {
         val viewModel = WorkspaceDesignerViewModel()
-        val fiveCells = WorkspaceTemplateCatalog.default().find("three-top-two-bottom")!!.factory()
+        val fiveCells = WorkspaceTemplateCatalog.default().find("top-large-four-bottom")!!.factory()
         viewModel.loadCanvas(fiveCells)
         val selected = fiveCells.cells.first().id
         viewModel.selectCell(selected)

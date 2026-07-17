@@ -1,8 +1,5 @@
 package com.trancong.dexworkspacetouch.workspace.templates
 
-import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
-import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
-import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasEditor
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceLimits
 
 class WorkspaceTemplateCatalog private constructor(
@@ -12,94 +9,91 @@ class WorkspaceTemplateCatalog private constructor(
 
     init {
         require(allTemplates.isNotEmpty()) { "templates must not be empty" }
-        require(allTemplates.map { it.id }.distinct().size == allTemplates.size) {
+        require(allTemplates.map(WorkspaceTemplate::id).distinct().size == allTemplates.size) {
             "template IDs must be unique"
         }
-        require(allTemplates.all { it.factory().cells.size <= WorkspaceLimits.MaxCells }) {
-            "templates must not exceed ${WorkspaceLimits.MaxCells} cells"
+        val canvases = allTemplates.map { it.factory() }
+        require(canvases.all { it.cells.size in 1..WorkspaceLimits.MaxCells }) {
+            "templates must contain 1..${WorkspaceLimits.MaxCells} cells"
+        }
+        require(canvases.all { canvas -> canvas.cells.all { it.app == null } }) {
+            "templates must not assign applications"
+        }
+        require(canvases.map { it.canonicalTemplateSignature() }.distinct().size == canvases.size) {
+            "template bounds must be canonically unique"
         }
     }
 
     fun find(id: String): WorkspaceTemplate? = allTemplates.firstOrNull { it.id == id }
 
+    fun templatesIn(category: WorkspaceTemplateCategory): List<WorkspaceTemplate> =
+        allTemplates.filter { it.category == category }
+
     companion object {
         fun default(): WorkspaceTemplateCatalog = WorkspaceTemplateCatalog(defaultTemplates())
 
-        private fun defaultTemplates(): List<WorkspaceTemplate> = listOf(
-            template("full-screen", "Toàn màn hình", "Một ô toàn màn hình", WorkspaceTemplateCategory.BASIC) {
-                WorkspaceCanvas.singleCell()
-            },
-            template("two-columns", "2 Cột", "Hai cột bằng nhau", WorkspaceTemplateCategory.COLUMNS) {
-                splitVertical(0.5f)
-            },
-            template("three-columns", "3 Cột", "Ba cột bằng nhau", WorkspaceTemplateCategory.COLUMNS) {
-                threeColumns()
-            },
-            template("four-grid", "4 Ô", "Lưới 2 × 2", WorkspaceTemplateCategory.GRID) {
-                grid2x2()
-            },
-            template("left-sidebar", "Sidebar trái", "Cột trái 30%, nội dung 70%", WorkspaceTemplateCategory.SIDEBAR) {
-                splitVertical(0.3f)
-            },
-            template("right-sidebar", "Sidebar phải", "Nội dung 70%, cột phải 30%", WorkspaceTemplateCategory.SIDEBAR) {
-                splitVertical(0.7f)
-            },
-            template("top-bottom", "Trên / Dưới", "Hai hàng bằng nhau", WorkspaceTemplateCategory.ROWS) {
-                editor().splitCell(WorkspaceCanvas.singleCell(), "cell", SplitDirection.HORIZONTAL)
-            },
-            template("top-two-bottom", "Trên + 2 Dưới", "Một ô trên, hai ô dưới", WorkspaceTemplateCategory.ROWS) {
-                val editor = editor()
-                val rows = editor.splitCell(WorkspaceCanvas.singleCell(), "cell", SplitDirection.HORIZONTAL)
-                editor.splitCell(rows, "cell_b", SplitDirection.VERTICAL)
-            },
-            template("two-top-bottom", "2 Trên + Dưới", "Hai ô trên, một ô dưới", WorkspaceTemplateCategory.ROWS) {
-                val editor = editor()
-                val rows = editor.splitCell(WorkspaceCanvas.singleCell(), "cell", SplitDirection.HORIZONTAL)
-                editor.splitCell(rows, "cell_a", SplitDirection.VERTICAL)
-            },
-            template("three-top-two-bottom", "3 Trên + 2 Dưới", "Ba ô trên, hai ô dưới", WorkspaceTemplateCategory.GRID) {
-                threeTopTwoBottom()
-            },
-        )
+        private fun defaultTemplates(): List<WorkspaceTemplate> {
+            val builder = WorkspaceTemplateCanvasBuilder()
+            return listOf(
+                template("full-screen", "Toàn màn hình", "Một ô toàn màn hình", WorkspaceTemplateCategory.BASIC) {
+                    builder.fullScreen()
+                },
+                template("two-columns", "2 Cột", "Hai cột bằng nhau", WorkspaceTemplateCategory.BASIC) {
+                    builder.columns(2)
+                },
+                template("two-rows", "2 Hàng", "Hai hàng bằng nhau", WorkspaceTemplateCategory.BASIC) {
+                    builder.rows(2)
+                },
+                template("three-columns", "3 Cột", "Ba cột bằng nhau", WorkspaceTemplateCategory.BASIC) {
+                    builder.columns(3)
+                },
+                template("three-rows", "3 Hàng", "Ba hàng bằng nhau", WorkspaceTemplateCategory.BASIC) {
+                    builder.rows(3)
+                },
+                template("four-grid", "Lưới 2×2", "Bốn ô bằng nhau", WorkspaceTemplateCategory.BASIC) {
+                    builder.bothSidesTwoRows()
+                },
+
+                template("left-sidebar", "Sidebar trái", "Trái 30%, phải 70%", WorkspaceTemplateCategory.LEFT_RIGHT) {
+                    builder.sidebar(largeOnLeft = false)
+                },
+                template("right-sidebar", "Sidebar phải", "Trái 70%, phải 30%", WorkspaceTemplateCategory.LEFT_RIGHT) {
+                    builder.sidebar(largeOnLeft = true)
+                },
+                template("left-large-two-right", "Trái lớn + 2 phải", "Một ô lớn trái, hai ô phải", WorkspaceTemplateCategory.LEFT_RIGHT) {
+                    builder.sideWithRows(largeOnLeft = true, rowCount = 2)
+                },
+                template("right-large-two-left", "Phải lớn + 2 trái", "Hai ô trái, một ô lớn phải", WorkspaceTemplateCategory.LEFT_RIGHT) {
+                    builder.sideWithRows(largeOnLeft = false, rowCount = 2)
+                },
+                template("left-large-grid-right", "Trái lớn + lưới phải", "Một ô lớn trái, lưới 2×2 phải", WorkspaceTemplateCategory.LEFT_RIGHT) {
+                    builder.sideWithGrid(largeOnLeft = true)
+                },
+                template("right-large-grid-left", "Phải lớn + lưới trái", "Lưới 2×2 trái, một ô lớn phải", WorkspaceTemplateCategory.LEFT_RIGHT) {
+                    builder.sideWithGrid(largeOnLeft = false)
+                },
+
+                template("top-large-two-bottom", "Trên lớn + 2 dưới", "Một ô lớn trên, hai ô dưới", WorkspaceTemplateCategory.TOP_BOTTOM) {
+                    builder.topWithColumns(largeOnTop = true, columnCount = 2)
+                },
+                template("two-top-bottom-large", "2 trên + dưới lớn", "Hai ô trên, một ô lớn dưới", WorkspaceTemplateCategory.TOP_BOTTOM) {
+                    builder.topWithColumns(largeOnTop = false, columnCount = 2)
+                },
+                template("top-large-four-bottom", "Trên lớn + 4 dưới", "Một ô lớn trên, bốn ô dưới", WorkspaceTemplateCategory.TOP_BOTTOM) {
+                    builder.topWithColumns(largeOnTop = true, columnCount = 4)
+                },
+                template("four-top-bottom-large", "4 trên + dưới lớn", "Bốn ô trên, một ô lớn dưới", WorkspaceTemplateCategory.TOP_BOTTOM) {
+                    builder.topWithColumns(largeOnTop = false, columnCount = 4)
+                },
+            )
+        }
 
         private fun template(
             id: String,
             name: String,
             description: String,
             category: WorkspaceTemplateCategory,
-            factory: () -> WorkspaceCanvas,
+            factory: () -> com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas,
         ) = WorkspaceTemplate(id, name, description, category, id, factory)
-
-        private fun splitVertical(ratio: Float): WorkspaceCanvas = editor().splitCell(
-            WorkspaceCanvas.singleCell(), "cell", SplitDirection.VERTICAL, ratio,
-        )
-
-        private fun threeColumns(): WorkspaceCanvas {
-            val editor = editor()
-            val firstSplit = editor.splitCell(
-                WorkspaceCanvas.singleCell(), "cell", SplitDirection.VERTICAL, 1f / 3f,
-            )
-            return editor.splitCell(firstSplit, "cell_b", SplitDirection.VERTICAL, 0.5f)
-        }
-
-        private fun grid2x2(): WorkspaceCanvas {
-            val editor = editor()
-            val columnsCanvas = splitVertical(0.5f)
-            return columnsCanvas.cells.map { it.id }.fold(columnsCanvas) { canvas, cellId ->
-                editor.splitCell(canvas, cellId, SplitDirection.HORIZONTAL)
-            }
-        }
-
-        private fun threeTopTwoBottom(): WorkspaceCanvas {
-            val editor = editor()
-            val rows = editor.splitCell(
-                WorkspaceCanvas.singleCell(), "cell", SplitDirection.HORIZONTAL,
-            )
-            val topFirst = editor.splitCell(rows, "cell_a", SplitDirection.VERTICAL, 1f / 3f)
-            val topThree = editor.splitCell(topFirst, "cell_a_b", SplitDirection.VERTICAL, 0.5f)
-            return editor.splitCell(topThree, "cell_b", SplitDirection.VERTICAL, 0.5f)
-        }
-
-        private fun editor() = WorkspaceCanvasEditor()
     }
 }
