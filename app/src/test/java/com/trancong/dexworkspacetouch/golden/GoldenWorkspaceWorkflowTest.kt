@@ -7,6 +7,7 @@ import com.trancong.dexworkspacetouch.workspace.apppicker.model.toStableKey
 import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppPickerViewModel
 import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasValidator
+import com.trancong.dexworkspacetouch.workspace.designer.model.dividers
 import com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerStateHolder
 import com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerViewModel
 import com.trancong.dexworkspacetouch.workspace.launcher.WorkspaceLaunchRequestFactory
@@ -85,6 +86,27 @@ class GoldenWorkspaceWorkflowTest {
             FakeInstalledAppCatalog(GoldenWorkspaceFixtures.installedApps),
         ).create(recreated.id, recreated.name, recreated.canvas)
         assertTrue(readiness is LaunchReadiness.Ready)
+    }
+
+    @Test fun `context toolbar callbacks preserve split history divider resize reset and recreation`() {
+        val repository = FakeWorkspaceRepository()
+        val library = library(repository)
+        val designer = WorkspaceDesignerViewModel()
+        designer.selectCell("cell")
+        assertTrue(designer.splitSelectedCell(SplitDirection.VERTICAL) is com.trancong.dexworkspacetouch.workspace.designer.state.SplitResult.Success)
+        val splitCanvas = designer.canvas
+        assertTrue(designer.undo())
+        assertTrue(designer.redo())
+        assertEquals(splitCanvas, designer.canvas)
+
+        val divider = designer.canvas.dividers().single()
+        designer.selectDivider(divider.id)
+        assertTrue(designer.resizeDivider(divider.id, 0.55f))
+        assertEquals(0.55f, (designer.toolbarState.context as com.trancong.dexworkspacetouch.workspace.designer.state.DesignerContextToolbarState.Context.Divider).ratio)
+        assertTrue(designer.resizeDivider(divider.id, 0.5f))
+
+        library.saveWorkspace(designer.canvas, "Toolbar Golden")
+        assertEquals(designer.canvas, library(repository).workspaces.single().canvas)
     }
 
     @Test fun `create split assign save and process recreation preserve final canvas`() {

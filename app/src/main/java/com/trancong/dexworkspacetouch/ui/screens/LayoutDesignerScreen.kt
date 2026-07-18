@@ -44,6 +44,8 @@ import com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesigner
 import com.trancong.dexworkspacetouch.workspace.designer.state.SplitResult
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceLimits
 import com.trancong.dexworkspacetouch.workspace.designer.ui.WorkspaceCanvasView
+import com.trancong.dexworkspacetouch.workspace.designer.ui.DesignerContextToolbar
+import com.trancong.dexworkspacetouch.workspace.designer.state.DesignerContextToolbarState
 import com.trancong.dexworkspacetouch.workspace.designer.ui.layout.fitSize
 import kotlinx.coroutines.launch
 
@@ -126,7 +128,22 @@ fun LayoutDesignerScreen(
         ) {
             TextButton(onClick = onBack) { Text("Quay lại") }
             Text("Thiết kế workspace")
-            DesignerToolbar(state)
+            DesignerContextToolbar(
+                state = state.toolbarState,
+                onUndo = { state.undo() },
+                onRedo = { state.redo() },
+                onSplitHorizontal = {
+                    handleSplit(state, com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection.HORIZONTAL, scope, snackbarHostState)
+                },
+                onSplitVertical = {
+                    handleSplit(state, com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection.VERTICAL, scope, snackbarHostState)
+                },
+                onDecreaseDivider = { resizeSelectedDivider(state, -DIVIDER_STEP) },
+                onIncreaseDivider = { resizeSelectedDivider(state, DIVIDER_STEP) },
+                onResetDivider = { resetSelectedDivider(state) },
+                onClearSelection = state::clearSelection,
+                modifier = Modifier.padding(top = Spacing.S),
+            )
             BoxWithConstraints(
                 modifier = Modifier.fillMaxWidth().weight(1f).padding(vertical = InteractionZones.DeadZone),
                 contentAlignment = Alignment.Center,
@@ -150,22 +167,10 @@ fun LayoutDesignerScreen(
                                 }
                             },
                             onDividerSelected = state::selectDivider,
-                            onDividerRatioChanged = state::resizeDivider,
                             onDividerDragStart = state::beginDividerResize,
                             onDividerDragRatio = state::updateDividerResize,
                             onDividerDragEnd = { state.commitDividerResize() },
                             onDividerDragCancel = state::cancelDividerResize,
-                            onClearDividerSelection = state::clearDividerSelection,
-                            onSplit = { direction ->
-                                if (state.splitSelectedCell(direction) == SplitResult.MaximumCellsReached) {
-                                    scope.launch {
-                                        snackbarHostState.showSnackbar(
-                                            "Workspace hỗ trợ tối đa ${WorkspaceLimits.MaxCells} ô.",
-                                        )
-                                    }
-                                }
-                            },
-                            onClearSelection = state::clearSelection,
                             modifier = Modifier.fillMaxSize(),
                         )
                     }
@@ -175,46 +180,30 @@ fun LayoutDesignerScreen(
     }
 }
 
-@Composable
-private fun DesignerToolbar(state: WorkspaceDesignerViewModel) {
-    BoxWithConstraints(modifier = Modifier.fillMaxWidth().padding(top = Spacing.S)) {
-        val wide = maxWidth >= Dimensions.WorkspaceDesignerToolbarWideWidth
-        if (wide) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.S),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                DesignerHistoryButtons(state, Modifier.weight(2f))
-                Text(
-                    text = state.summary.statusText,
-                    modifier = Modifier.weight(1f).heightIn(min = Dimensions.DesignerStatusMinHeight),
-                )
-            }
-        } else {
-            Column(verticalArrangement = Arrangement.spacedBy(Spacing.XS)) {
-                DesignerHistoryButtons(state, Modifier.fillMaxWidth())
-                Text(
-                    text = state.summary.statusText,
-                    modifier = Modifier.heightIn(min = Dimensions.DesignerStatusMinHeight),
-                )
-            }
+private fun handleSplit(
+    state: WorkspaceDesignerViewModel,
+    direction: com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection,
+    scope: kotlinx.coroutines.CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+) {
+    if (state.splitSelectedCell(direction) == SplitResult.MaximumCellsReached) {
+        scope.launch {
+            snackbarHostState.showSnackbar("Workspace hỗ trợ tối đa ${WorkspaceLimits.MaxCells} ô.")
         }
     }
 }
 
-@Composable
-private fun DesignerHistoryButtons(state: WorkspaceDesignerViewModel, modifier: Modifier) {
-    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(Spacing.S)) {
-        OutlinedButton(
-            onClick = { state.undo() },
-            enabled = state.canUndo,
-            modifier = Modifier.weight(1f).heightIn(min = TouchTargets.SecondaryButton),
-        ) { Text("↶ Undo") }
-        OutlinedButton(
-            onClick = { state.redo() },
-            enabled = state.canRedo,
-            modifier = Modifier.weight(1f).heightIn(min = TouchTargets.SecondaryButton),
-        ) { Text("↷ Redo") }
-    }
+private fun resizeSelectedDivider(state: WorkspaceDesignerViewModel, delta: Float) {
+    val divider = state.toolbarState.context as? DesignerContextToolbarState.Context.Divider ?: return
+    state.resizeDivider(
+        divider.dividerId,
+        (divider.ratio + delta).coerceIn(Dimensions.MinCellRatio, Dimensions.MaxCellRatio),
+    )
 }
+
+private fun resetSelectedDivider(state: WorkspaceDesignerViewModel) {
+    val divider = state.toolbarState.context as? DesignerContextToolbarState.Context.Divider ?: return
+    state.resizeDivider(divider.dividerId, 0.5f)
+}
+
+private const val DIVIDER_STEP = 0.05f

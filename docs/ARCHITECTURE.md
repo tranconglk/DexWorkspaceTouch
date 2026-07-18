@@ -344,3 +344,9 @@ selects the cell and clears divider selection → one-shot navigation callback o
 assignment updates the shared working draft. The ViewModel guard ignores additional activation
 until App Picker closes, so recomposition and resize cannot replay navigation. Room is written
 only by the existing explicit Designer Save workflow.
+
+Selection state (`selectedCellId` / `selectedDividerId`) → pure
+`DesignerContextToolbarState` mapping → `DesignerContextToolbar` → existing ViewModel callbacks.
+The canvas owns hit testing and drag feedback only; structural commands no longer live inside
+cell/divider overlays. Toolbar resize buttons still call the existing 5%/50% divider APIs and
+therefore retain the current immutable history behavior.

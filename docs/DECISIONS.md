@@ -345,3 +345,12 @@ Quyết định:
 - Divider and contextual-action hit targets remain above cell content and consume their gestures.
 - Choose/change-app buttons are removed from the structural overlay.
 - App assignment changes only the working draft and history; persistence still occurs on Save.
+
+## ADR-025 — Designer context toolbar replaces distributed action overlays
+
+- A fixed adaptive toolbar above the canvas maps current selection to context actions.
+- Cell selection exposes split/clear; divider selection exposes ±5%, reset 50%, ratio, and clear.
+- Cell and divider action overlays are removed, leaving content unobstructed and reducing overlap.
+- Wide layout uses one row; narrow layout prioritizes history, then context, then status rows.
+- Toolbar commands delegate to existing ViewModel/state-holder contracts and do not change domain,
+  drag/snap, history, Room, or persistence behavior.

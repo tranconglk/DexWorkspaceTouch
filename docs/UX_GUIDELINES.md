@@ -72,3 +72,11 @@ The structural overlay no longer repeats choose/change-app actions; it contains 
 split, vertical split, and clear selection. Divider and overlay gestures keep higher hit-test
 priority than cell content. At five cells, split actions are visibly disabled and announce the
 maximum. A compact summary shows current cells, the five-cell limit, and assigned-app count.
+
+## Designer context toolbar
+
+The fixed toolbar above the canvas is the only home for structural cell and divider actions.
+Cell content stays unobstructed: tapping it is reserved for selecting/changing its app. No cell
+or selected-divider action overlay is rendered. Wide windows keep history, context actions, and
+status in one row; narrow windows use separate history, context, and status rows while preserving
+56dp targets. Selection itself never creates history.

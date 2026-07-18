@@ -22,13 +22,10 @@ import com.trancong.dexworkspacetouch.ui.design.DesignerColors
 import com.trancong.dexworkspacetouch.ui.design.DesignerShapes
 import com.trancong.dexworkspacetouch.ui.design.Dimensions
 import com.trancong.dexworkspacetouch.ui.design.InteractionZones
-import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import com.trancong.dexworkspacetouch.ui.design.ZLayers
-import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
-import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCell
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceDivider
-import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceLimits
+import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.dividers
 import kotlin.math.roundToInt
 
@@ -39,24 +36,15 @@ fun WorkspaceCanvasView(
     selectedDividerId: String?,
     onCellActivated: (String) -> Unit,
     onDividerSelected: (String) -> Unit,
-    onDividerRatioChanged: (String, Float) -> Unit,
     onDividerDragStart: (String) -> Unit,
     onDividerDragRatio: (Float) -> Unit,
     onDividerDragEnd: () -> Unit,
     onDividerDragCancel: () -> Unit,
-    onClearDividerSelection: () -> Unit,
-    onSplit: (SplitDirection) -> Unit,
-    onClearSelection: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val canvasShape = DesignerShapes.Workspace
     val dividers = canvas.dividers()
-    val selectedCell = selectedCellId?.let { selectedId ->
-        canvas.cells.firstOrNull { it.id == selectedId }
-    }
     val dividerHitSize = with(LocalDensity.current) { InteractionZones.DividerHitArea.roundToPx() }
-    val actionBaseInset = with(LocalDensity.current) { InteractionZones.SafeActionInset.roundToPx() }
-    val minimumActionSize = with(LocalDensity.current) { TouchTargets.SecondaryButton.roundToPx() }
     var canvasSize by remember { mutableStateOf(IntSize.Zero) }
     Layout(
         content = {
@@ -73,35 +61,12 @@ fun WorkspaceCanvasView(
                     divider = divider,
                     selected = divider.id == selectedDividerId,
                     onClick = { onDividerSelected(divider.id) },
-                    onDecrease = {
-                        onDividerRatioChanged(divider.id, divider.ratio.stepBy(-RATIO_STEP))
-                    },
-                    onIncrease = {
-                        onDividerRatioChanged(divider.id, divider.ratio.stepBy(RATIO_STEP))
-                    },
-                    onReset = { onDividerRatioChanged(divider.id, 0.5f) },
-                    onClearSelection = onClearDividerSelection,
                     canvasWidthPx = canvasSize.width.toFloat(),
                     canvasHeightPx = canvasSize.height.toFloat(),
                     onDragStart = { onDividerDragStart(divider.id) },
                     onDragRatio = onDividerDragRatio,
                     onDragEnd = onDividerDragEnd,
                     onDragCancel = onDividerDragCancel,
-                )
-            }
-            selectedCell?.let { cell ->
-                val maximumReached = canvas.cells.size >= WorkspaceLimits.MaxCells
-                WorkspaceCellActionOverlay(
-                    cell = cell,
-                    canSplitHorizontal = !maximumReached &&
-                        cell.bounds.height / 2f >= Dimensions.MinCellRatio,
-                    canSplitVertical = !maximumReached &&
-                        cell.bounds.width / 2f >= Dimensions.MinCellRatio,
-                    maximumCellsReached = maximumReached,
-                    onSplitHorizontal = { onSplit(SplitDirection.HORIZONTAL) },
-                    onSplitVertical = { onSplit(SplitDirection.VERTICAL) },
-                    onClearSelection = onClearSelection,
-                    modifier = Modifier.zIndex(ZLayers.ActionOverlay),
                 )
             }
         },
@@ -145,29 +110,6 @@ fun WorkspaceCanvasView(
                     ),
                 )
             }
-        val actionArea = selectedCell?.let { cell ->
-            val cellPlacement = placements[canvas.cells.indexOf(cell)]
-            workspaceActionSafeArea(
-                cell = cellPlacement,
-                baseInset = actionBaseInset,
-                dividerClearance = dividerHitSize / 2,
-                minimumContentSize = minimumActionSize,
-                dividerOnLeft = dividers.touchesVerticalEdge(cell, cell.bounds.left),
-                dividerOnTop = dividers.touchesHorizontalEdge(cell, cell.bounds.top),
-                dividerOnRight = dividers.touchesVerticalEdge(cell, cell.bounds.right),
-                dividerOnBottom = dividers.touchesHorizontalEdge(cell, cell.bounds.bottom),
-            )
-        }
-        val actionPlaceable = actionArea?.let { area ->
-            measurables.last().measure(
-                constraints.copy(
-                    minWidth = area.width,
-                    maxWidth = area.width,
-                    minHeight = 0,
-                    maxHeight = area.height,
-                ),
-            )
-        }
         layout(canvasWidth, canvasHeight) {
             cellPlaceables.forEachIndexed { index, placeable ->
                 val placement = placements[index]
@@ -176,12 +118,6 @@ fun WorkspaceCanvasView(
             dividerPlaceables.forEachIndexed { index, placeable ->
                 val placement = dividerPlacements[index]
                 placeable.placeRelative(placement.x, placement.y)
-            }
-            if (actionArea != null && actionPlaceable != null) {
-                actionPlaceable.placeRelative(
-                    actionArea.x,
-                    actionArea.y + actionArea.height - actionPlaceable.height,
-                )
             }
         }
     }
@@ -197,14 +133,10 @@ private fun SingleCellCanvasPreview() {
             selectedDividerId = null,
             onCellActivated = {},
             onDividerSelected = {},
-            onDividerRatioChanged = { _, _ -> },
             onDividerDragStart = {},
             onDividerDragRatio = {},
             onDividerDragEnd = {},
             onDividerDragCancel = {},
-            onClearDividerSelection = {},
-            onSplit = {},
-            onClearSelection = {},
             modifier = Modifier.fillMaxWidth(),
         )
     }
@@ -220,14 +152,10 @@ private fun TwoCellCanvasPreview() {
             selectedDividerId = null,
             onCellActivated = {},
             onDividerSelected = {},
-            onDividerRatioChanged = { _, _ -> },
             onDividerDragStart = {},
             onDividerDragRatio = {},
             onDividerDragEnd = {},
             onDividerDragCancel = {},
-            onClearDividerSelection = {},
-            onSplit = {},
-            onClearSelection = {},
             modifier = Modifier.fillMaxWidth(),
         )
     }
@@ -243,14 +171,10 @@ private fun ThreeCellSelectedCanvasPreview() {
             selectedDividerId = null,
             onCellActivated = {},
             onDividerSelected = {},
-            onDividerRatioChanged = { _, _ -> },
             onDividerDragStart = {},
             onDividerDragRatio = {},
             onDividerDragEnd = {},
             onDividerDragCancel = {},
-            onClearDividerSelection = {},
-            onSplit = {},
-            onClearSelection = {},
             modifier = Modifier.fillMaxWidth(),
         )
     }
@@ -279,30 +203,4 @@ private fun WorkspaceDivider.toPlacement(
             .coerceIn(0, canvasHeight - hitSize)
         ComposePlacement(x, y, right - x, hitSize)
     }
-}
-
-private fun Float.stepBy(delta: Float): Float =
-    (((this * 100f).roundToInt() + (delta * 100f).roundToInt()) / 100f)
-        .coerceIn(Dimensions.MinCellRatio, Dimensions.MaxCellRatio)
-
-private const val RATIO_STEP = 0.05f
-
-private fun List<WorkspaceDivider>.touchesVerticalEdge(
-    cell: WorkspaceCell,
-    edge: Float,
-): Boolean = any { divider ->
-    divider.direction == SplitDirection.VERTICAL &&
-        divider.position == edge &&
-        divider.start < cell.bounds.bottom &&
-        divider.end > cell.bounds.top
-}
-
-private fun List<WorkspaceDivider>.touchesHorizontalEdge(
-    cell: WorkspaceCell,
-    edge: Float,
-): Boolean = any { divider ->
-    divider.direction == SplitDirection.HORIZONTAL &&
-        divider.position == edge &&
-        divider.start < cell.bounds.right &&
-        divider.end > cell.bounds.left
 }

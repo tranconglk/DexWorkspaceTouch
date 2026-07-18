@@ -59,10 +59,6 @@ fun WorkspaceDividerView(
     divider: WorkspaceDivider,
     selected: Boolean,
     onClick: () -> Unit,
-    onDecrease: () -> Unit,
-    onIncrease: () -> Unit,
-    onReset: () -> Unit,
-    onClearSelection: () -> Unit,
     canvasWidthPx: Float,
     canvasHeightPx: Float,
     onDragStart: () -> Unit,
@@ -200,17 +196,6 @@ fun WorkspaceDividerView(
                 snapped = displayedSnapPoint != null,
             )
         }
-        if (selected && !dragging) {
-            DividerActionOverlay(
-                divider = divider,
-                onDecrease = onDecrease,
-                onIncrease = onIncrease,
-                onReset = onReset,
-                onClearSelection = onClearSelection,
-                snapped = displayedSnapPoint != null,
-                modifier = Modifier.fillMaxSize(),
-            )
-        }
     }
 }
 
@@ -263,67 +248,3 @@ private fun DividerDragFeedback(
         }
     }
 }
-
-@Composable
-private fun DividerActionOverlay(
-    divider: WorkspaceDivider,
-    onDecrease: () -> Unit,
-    onIncrease: () -> Unit,
-    onReset: () -> Unit,
-    onClearSelection: () -> Unit,
-    snapped: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        modifier = modifier,
-        color = DesignerColors.ActionOverlayBackground.copy(alpha = 0f),
-        tonalElevation = DesignerElevation.DividerOverlay,
-    ) {
-        when (divider.direction) {
-            SplitDirection.VERTICAL -> Column(
-                modifier = Modifier.fillMaxSize().padding(Spacing.XS).verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(Spacing.XS, Alignment.CenterVertically),
-            ) {
-                DividerButtons(divider, onDecrease, onIncrease, onReset, onClearSelection, snapped)
-            }
-            SplitDirection.HORIZONTAL -> Row(
-                modifier = Modifier.fillMaxSize().padding(Spacing.XS).horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.XS, Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                DividerButtons(divider, onDecrease, onIncrease, onReset, onClearSelection, snapped)
-            }
-        }
-    }
-}
-
-@Composable
-private fun DividerButtons(
-    divider: WorkspaceDivider,
-    onDecrease: () -> Unit,
-    onIncrease: () -> Unit,
-    onReset: () -> Unit,
-    onClearSelection: () -> Unit,
-    snapped: Boolean,
-) {
-    DividerButton("−", divider.ratio > MIN_RATIO, onDecrease)
-    DividerButton("+", divider.ratio < MAX_RATIO, onIncrease)
-    val snapIndicator = if (snapped) " ✓" else ""
-    DividerButton("${(divider.ratio * 100f).roundToInt()}%$snapIndicator", true, onReset)
-    DividerButton("Bỏ chọn", true, onClearSelection)
-}
-
-@Composable
-private fun DividerButton(label: String, enabled: Boolean, onClick: () -> Unit) {
-    OutlinedButton(
-        onClick = onClick,
-        enabled = enabled,
-        modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
-        contentPadding = PaddingValues(horizontal = Spacing.S),
-    ) {
-        Text(label)
-    }
-}
-
-private const val MIN_RATIO = Dimensions.MinCellRatio
-private const val MAX_RATIO = Dimensions.MaxCellRatio

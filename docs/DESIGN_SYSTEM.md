@@ -102,8 +102,8 @@ Workspace Library pin dùng `Dimensions.WorkspacePinIconSize = 24dp` trong vùng
 `TouchTargets.SecondaryButton = 56dp`. Nút góc dùng `ZLayers.ActionOverlay`; chuyển
 outline/filled dùng `DesignerAnimation.FastDurationMillis`.
 
-Designer status uses `Dimensions.DesignerStatusMinHeight = 32dp`; the toolbar switches to
-an inline summary at `Dimensions.WorkspaceDesignerToolbarWideWidth = 720dp`. Selected-cell
+Designer status uses `Dimensions.DesignerStatusMinHeight = 32dp`; the context toolbar switches to
+a single-row layout at `Dimensions.WorkspaceDesignerToolbarWideWidth = 1100dp`. Selected-cell
 border and container colors transition with `DesignerAnimation.FastDurationMillis` without
 changing normalized bounds or layout size.
 

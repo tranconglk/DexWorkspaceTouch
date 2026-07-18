@@ -16,6 +16,14 @@ class WorkspaceDesignerViewModel : ViewModel() {
     val canRedo: Boolean get() = stateHolder.canRedo
     val summary: WorkspaceDesignerSummary get() = WorkspaceDesignerSummary.from(canvas)
     val canSplit: Boolean get() = canvas.cells.size < com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceLimits.MaxCells
+    val toolbarState: DesignerContextToolbarState
+        get() = DesignerContextToolbarState.from(
+            canvas = canvas,
+            selectedCellId = selectedCellId,
+            selectedDividerId = selectedDividerId,
+            canUndo = canUndo,
+            canRedo = canRedo,
+        )
 
     fun loadCanvas(canvas: WorkspaceCanvas) {
         appPickerNavigationPending = false
