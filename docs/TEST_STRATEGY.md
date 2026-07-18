@@ -44,3 +44,5 @@
 - Với dữ liệu 100 workspace, cuộn toàn Library trên S23 Ultra và Note 8; theo dõi crash/OOM,
   icon tải lại bất thường và missing-app fallback.
 - Metadata, relative time và snapshot phải giữ đúng sau recreation-style reload.
+- Cross-device backup matrix covers S23 Ultra ↔ Note 8, 100-workspace bundles, malformed/versioned
+  files, restoring the same bundle twice and atomic rollback on a conflicting row.

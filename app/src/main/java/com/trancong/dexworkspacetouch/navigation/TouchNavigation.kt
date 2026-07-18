@@ -41,6 +41,12 @@ import com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferFailur
 import com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferFormat
 import com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferState
 import com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferViewModel
+import com.trancong.dexworkspacetouch.workspace.librarytransfer.AndroidWorkspaceLibraryTransferPlatform
+import com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibraryTransferException
+import com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibraryTransferFailure
+import com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibraryTransferFormat
+import com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibraryTransferState
+import com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibraryTransferViewModel
 import com.trancong.dexworkspacetouch.workspace.snapshot.ui.WorkspaceSnapshot
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import kotlinx.coroutines.launch
@@ -63,6 +69,10 @@ fun TouchNavigation(activity: Activity) {
         factory = WorkspaceTransferViewModel.factory(application.workspaceRepository),
     )
     val transferPlatform = remember(activity) { AndroidWorkspaceTransferPlatform(activity) }
+    val libraryTransferViewModel: WorkspaceLibraryTransferViewModel = viewModel(
+        factory = WorkspaceLibraryTransferViewModel.factory(application.workspaceRepository),
+    )
+    val libraryTransferPlatform = remember(activity) { AndroidWorkspaceLibraryTransferPlatform(activity) }
     val transferScope = rememberCoroutineScope()
     var exportMode by rememberSaveable { mutableStateOf<String?>(null) }
     val saveLauncher = rememberLauncherForActivityResult(
@@ -81,6 +91,26 @@ fun TouchNavigation(activity: Activity) {
             catch (error: com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferException) {
                 transferViewModel.fail(error.failure)
             }
+        }
+    }
+    val librarySaveLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument(WorkspaceLibraryTransferFormat.MimeType),
+    ) { uri ->
+        val ready = libraryTransferViewModel.state as? WorkspaceLibraryTransferState.BackupReady
+        if (uri == null || ready == null) libraryTransferViewModel.consumeBackup() else transferScope.launch {
+            try {
+                libraryTransferPlatform.write(uri, ready.bytes)
+                libraryTransferViewModel.complete("Đã lưu bản sao Library.")
+            } catch (error: kotlinx.coroutines.CancellationException) { throw error }
+            catch (_: Exception) { libraryTransferViewModel.fail(WorkspaceLibraryTransferFailure.WRITE_FAILURE) }
+        }
+    }
+    val libraryRestoreLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) transferScope.launch {
+            try { libraryTransferViewModel.readRestore(libraryTransferPlatform.read(uri)) }
+            catch (error: kotlinx.coroutines.CancellationException) { throw error }
+            catch (error: WorkspaceLibraryTransferException) { libraryTransferViewModel.fail(error.failure) }
+            catch (_: Exception) { libraryTransferViewModel.fail(WorkspaceLibraryTransferFailure.READ_FAILURE) }
         }
     }
     LaunchedEffect(transferViewModel.state, exportMode) {
@@ -131,6 +161,73 @@ fun TouchNavigation(activity: Activity) {
             confirmButton = { TextButton(onClick = transferViewModel::dismissFeedback) { Text("Đã hiểu") } },
         )
         else -> Unit
+    }
+    when (val bundleState = libraryTransferViewModel.state) {
+        WorkspaceLibraryTransferState.PreparingBackup,
+        WorkspaceLibraryTransferState.ReadingRestore,
+        WorkspaceLibraryTransferState.Restoring -> AlertDialog(
+            onDismissRequest = {},
+            title = { Text(when (bundleState) {
+                WorkspaceLibraryTransferState.PreparingBackup -> "Đang chuẩn bị bản sao lưu…"
+                WorkspaceLibraryTransferState.ReadingRestore -> "Đang đọc bản sao lưu…"
+                else -> "Đang khôi phục Library…"
+            }) },
+            confirmButton = {},
+        )
+        is WorkspaceLibraryTransferState.BackupWarning -> AlertDialog(
+            onDismissRequest = libraryTransferViewModel::cancel,
+            title = { Text("Có ${bundleState.skippedCount} workspace không thể đưa vào bản sao lưu.") },
+            text = { Text("Tiếp tục sao lưu ${bundleState.validCount} workspace hợp lệ?") },
+            confirmButton = { TextButton(onClick = libraryTransferViewModel::continueBackup, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Tiếp tục") } },
+            dismissButton = { TextButton(onClick = libraryTransferViewModel::cancel, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Hủy") } },
+        )
+        is WorkspaceLibraryTransferState.BackupReady -> AlertDialog(
+            onDismissRequest = libraryTransferViewModel::consumeBackup,
+            title = { Text("Sao lưu Library") },
+            text = { Text("${bundleState.fileName}\nChọn cách lưu bản sao.") },
+            confirmButton = {
+                TextButton(
+                    onClick = { transferScope.launch {
+                        try { libraryTransferPlatform.share(bundleState); libraryTransferViewModel.consumeBackup() }
+                        catch (error: kotlinx.coroutines.CancellationException) { throw error }
+                        catch (_: Exception) { libraryTransferViewModel.fail(WorkspaceLibraryTransferFailure.WRITE_FAILURE) }
+                    } },
+                    modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                ) { Text("Chia sẻ") }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { librarySaveLauncher.launch(bundleState.fileName) },
+                    modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                ) { Text("Lưu vào tệp") }
+            },
+        )
+        is WorkspaceLibraryTransferState.RestorePreview -> AlertDialog(
+            onDismissRequest = libraryTransferViewModel::cancel,
+            title = { Text("Khôi phục Library") },
+            text = {
+                val preview = bundleState.preview
+                androidx.compose.foundation.layout.Column {
+                    Text("${preview.workspaceCount} workspace • ${preview.totalCellCount} ô • ${preview.totalAssignedAppCount} ứng dụng")
+                    if (preview.sampleWorkspaceNames.isNotEmpty()) Text(preview.sampleWorkspaceNames.joinToString())
+                    if (preview.conflictingNameCount > 0) Text("${preview.conflictingNameCount} tên trùng sẽ được đổi tên.")
+                    Text("Các workspace sẽ được thêm mới, không ghi đè dữ liệu hiện có.")
+                }
+            },
+            confirmButton = { TextButton(onClick = libraryTransferViewModel::confirmRestore, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Khôi phục") } },
+            dismissButton = { TextButton(onClick = libraryTransferViewModel::cancel, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Hủy") } },
+        )
+        is WorkspaceLibraryTransferState.Completed -> AlertDialog(
+            onDismissRequest = libraryTransferViewModel::dismissFeedback,
+            title = { Text(bundleState.message) },
+            confirmButton = { TextButton(onClick = libraryTransferViewModel::dismissFeedback) { Text("Đã hiểu") } },
+        )
+        is WorkspaceLibraryTransferState.Error -> AlertDialog(
+            onDismissRequest = libraryTransferViewModel::dismissFeedback,
+            title = { Text(bundleState.failure.libraryUserMessage()) },
+            confirmButton = { TextButton(onClick = libraryTransferViewModel::dismissFeedback) { Text("Đã hiểu") } },
+        )
+        WorkspaceLibraryTransferState.Idle -> Unit
     }
     val applicationContext = activity.applicationContext
     val installedAppCatalog = remember(applicationContext) {
@@ -199,6 +296,9 @@ fun TouchNavigation(activity: Activity) {
                 onShareWorkspace = { id -> exportMode = "share"; transferViewModel.prepareExport(id) },
                 onSaveWorkspaceToFile = { id -> exportMode = "save"; transferViewModel.prepareExport(id) },
                 onImportWorkspace = { importLauncher.launch("*/*") },
+                onBackupLibrary = libraryTransferViewModel::prepareBackup,
+                onRestoreLibrary = { libraryRestoreLauncher.launch("*/*") },
+                backupLibraryEnabled = libraryViewModel.workspaces.isNotEmpty() && !libraryViewModel.isWriting,
                 appIconLoader = application.appIconLoader,
                 nowEpochMillis = com.trancong.dexworkspacetouch.workspace.library.state.SystemWorkspaceClock.nowEpochMillis(),
             )
@@ -264,4 +364,18 @@ private fun WorkspaceTransferFailure.userMessage(): String = when (this) {
     WorkspaceTransferFailure.WRITE_FAILURE -> "Không thể xuất workspace."
     WorkspaceTransferFailure.READ_FAILURE -> "Không thể đọc file workspace."
     else -> "File workspace không hợp lệ."
+}
+
+private fun WorkspaceLibraryTransferFailure.libraryUserMessage(): String = when (this) {
+    WorkspaceLibraryTransferFailure.UNSUPPORTED_VERSION -> "Bản sao lưu được tạo bởi phiên bản mới hơn."
+    WorkspaceLibraryTransferFailure.UNSUPPORTED_WORKSPACE_SCHEMA -> "Bản sao lưu chứa workspace thuộc phiên bản chưa được hỗ trợ."
+    WorkspaceLibraryTransferFailure.TOO_MANY_WORKSPACES -> "Bản sao lưu có quá nhiều workspace."
+    WorkspaceLibraryTransferFailure.TOO_MANY_CELLS -> "Bản sao lưu có quá nhiều ô."
+    WorkspaceLibraryTransferFailure.FILE_TOO_LARGE -> "File bản sao lưu quá lớn."
+    WorkspaceLibraryTransferFailure.INVALID_WORKSPACE -> "Bản sao lưu có dữ liệu workspace không hợp lệ."
+    WorkspaceLibraryTransferFailure.EMPTY_LIBRARY -> "Chưa có workspace để sao lưu."
+    WorkspaceLibraryTransferFailure.READ_FAILURE -> "Không thể đọc bản sao lưu Library."
+    WorkspaceLibraryTransferFailure.WRITE_FAILURE -> "Không thể ghi bản sao lưu hoặc khôi phục Library."
+    WorkspaceLibraryTransferFailure.ID_GENERATION_FAILURE -> "Không thể tạo ID mới cho workspace."
+    WorkspaceLibraryTransferFailure.INVALID_FORMAT -> "File bản sao lưu không hợp lệ."
 }

@@ -377,3 +377,6 @@ Workspace → versioned WorkspaceTransferSerializer → FileProvider/Sharesheet 
 
 The transfer envelope reuses the deterministic canvas serializer. Android `Uri`, streams and
 `ContentResolver` remain at the platform boundary and never enter the transfer domain model.
+- Library backup pipeline: latest repository snapshot → deterministic `.dwtbundle` serializer →
+  FileProvider/SAF → restore preview → batch name/ID policy → atomic Room transaction.
+- Bundle restore validates the complete payload before writing and always creates new local rows.

@@ -53,3 +53,6 @@
 - [ ] Library 100 workspace cuộn hết trên S23 Ultra và Note 8, không OOM/crash.
 - [ ] App đã gỡ dùng fallback ổn định; icon cache hit/eviction đúng giới hạn 64.
 - [ ] Card hiển thị đúng “x ô • y ứng dụng”, relative time và giữ nguyên sau recreation.
+- [ ] Backup Library → clear test database → restore preserves every canvas/app and resets all pins.
+- [ ] Restore the same bundle twice creates new IDs/names without overwrite.
+- [ ] Malformed, future-version and oversized bundles preview/restore nothing.

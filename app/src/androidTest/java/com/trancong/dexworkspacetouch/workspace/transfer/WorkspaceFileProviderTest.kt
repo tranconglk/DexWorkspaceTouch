@@ -18,4 +18,12 @@ class WorkspaceFileProviderTest {
         context.contentResolver.openInputStream(uri)!!.use { assertEquals("{}", it.reader().readText()) }
         assertTrue(file.delete())
     }
+
+    @Test fun libraryBundleUriIsReadableThroughFileProvider() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val directory = File(context.cacheDir, "exports/library").apply { mkdirs() }
+        val file = File(directory, "backup.dwtbundle").apply { writeText("bundle") }
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+        assertEquals("bundle", context.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() })
+    }
 }

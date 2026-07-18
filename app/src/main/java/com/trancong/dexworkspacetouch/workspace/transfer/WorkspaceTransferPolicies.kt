@@ -4,12 +4,12 @@ object WorkspaceImportNamePolicy {
     private val suffix = Regex("\\s*\\(Đã nhập(?: [0-9]+)?\\)$", RegexOption.IGNORE_CASE)
     fun nextName(sourceName: String, existingNames: Collection<String>): String {
         val base = sourceName.trim().replace(suffix, "").trim().ifEmpty { "Workspace" }
-        val used = existingNames.map { it.trim().lowercase() }.toSet()
-        if (base.lowercase() !in used) return base
+        val used = existingNames.map { it.trim().lowercase(java.util.Locale.ROOT) }.toSet()
+        if (base.lowercase(java.util.Locale.ROOT) !in used) return base
         val first = "$base (Đã nhập)"
-        if (first.lowercase() !in used) return first
+        if (first.lowercase(java.util.Locale.ROOT) !in used) return first
         var number = 2
-        while ("$base (Đã nhập $number)".lowercase() in used) number++
+        while ("$base (Đã nhập $number)".lowercase(java.util.Locale.ROOT) in used) number++
         return "$base (Đã nhập $number)"
     }
 }

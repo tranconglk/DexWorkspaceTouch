@@ -77,6 +77,20 @@ class WorkspaceDaoTest {
         assertEquals("First", dao.getById("id")?.name)
     }
 
+    @Test fun batchInsertIsAtomicWhenOneIdConflicts() = runBlocking {
+        dao.insert(entity("existing", "Existing", 1, 10))
+        assertThrows(Exception::class.java) {
+            runBlocking {
+                dao.insertAllAtomically(listOf(
+                    entity("new", "New", 2, 20),
+                    entity("existing", "Conflict", 3, 30),
+                ))
+            }
+        }
+        assertFalse(dao.exists("new"))
+        assertEquals("Existing", dao.getById("existing")?.name)
+    }
+
     @Test fun setPinnedPreservesWorkspaceMetadata() = runBlocking {
         val original = entity("id", "Name", 7, 20)
         dao.insert(original)

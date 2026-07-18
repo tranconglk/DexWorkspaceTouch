@@ -147,6 +147,11 @@ class RoomWorkspaceRepositoryTest {
             check(state.value.none { it.id == entity.id })
             state.value += entity
         }
+        override suspend fun insertRows(entities: List<WorkspaceEntity>) {
+            check(entities.map { it.id }.distinct().size == entities.size)
+            check(entities.none { candidate -> state.value.any { it.id == candidate.id } })
+            state.value += entities
+        }
         override suspend fun updateRows(entity: WorkspaceEntity): Int {
             if (state.value.none { it.id == entity.id }) return 0
             state.value = state.value.map { if (it.id == entity.id) entity else it }

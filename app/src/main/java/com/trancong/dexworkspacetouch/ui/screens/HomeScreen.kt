@@ -103,6 +103,9 @@ fun HomeScreen(
     onShareWorkspace: (String) -> Unit = {},
     onSaveWorkspaceToFile: (String) -> Unit = {},
     onImportWorkspace: () -> Unit = {},
+    onBackupLibrary: () -> Unit = {},
+    onRestoreLibrary: () -> Unit = {},
+    backupLibraryEnabled: Boolean = true,
     appIconLoader: AppIconLoader? = null,
     nowEpochMillis: Long = 0L,
 ) {
@@ -113,6 +116,7 @@ fun HomeScreen(
     var showTemplatePicker by rememberSaveable { mutableStateOf(false) }
     var selectedTemplateId by rememberSaveable { mutableStateOf<String?>(null) }
     var showSortSheet by rememberSaveable { mutableStateOf(false) }
+    var showFileSheet by rememberSaveable { mutableStateOf(false) }
     var exportWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
     val templateCatalog = remember { WorkspaceTemplateCatalog.default() }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -288,6 +292,31 @@ fun HomeScreen(
         }
     }
 
+    if (showFileSheet) {
+        ModalBottomSheet(onDismissRequest = { showFileSheet = false }) {
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(Spacing.L),
+                verticalArrangement = Arrangement.spacedBy(Spacing.S),
+            ) {
+                Text("Tệp", style = MaterialTheme.typography.titleLarge)
+                OutlinedButton(
+                    onClick = { showFileSheet = false; onImportWorkspace() },
+                    modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
+                ) { Text("Nhập workspace") }
+                OutlinedButton(
+                    onClick = { showFileSheet = false; onBackupLibrary() },
+                    enabled = backupLibraryEnabled,
+                    modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
+                ) { Text("Sao lưu Library") }
+                OutlinedButton(
+                    onClick = { showFileSheet = false; onRestoreLibrary() },
+                    modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
+                ) { Text("Khôi phục Library") }
+                if (!backupLibraryEnabled) Text("Chưa có workspace để sao lưu.")
+            }
+        }
+    }
+
     renameWorkspaceId?.let { id ->
         workspaces.firstOrNull { it.id == id }?.let { workspace ->
             AlertDialog(
@@ -387,9 +416,9 @@ fun HomeScreen(
             if (!hasSourceWorkspaces) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     OutlinedButton(
-                        onClick = onImportWorkspace,
+                        onClick = { showFileSheet = true },
                         modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
-                    ) { Text("Nhập") }
+                    ) { Text("Tệp") }
                 }
             }
             if (hasSourceWorkspaces) {
@@ -425,11 +454,11 @@ fun HomeScreen(
                                     },
                             ) { Text("Sắp xếp") }
                         }
-                        val import: @Composable (Modifier) -> Unit = { modifier ->
+                        val files: @Composable (Modifier) -> Unit = { modifier ->
                             OutlinedButton(
-                                onClick = onImportWorkspace,
+                                onClick = { showFileSheet = true },
                                 modifier = modifier.height(TouchTargets.SecondaryButton),
-                            ) { Text("Nhập") }
+                            ) { Text("Tệp") }
                         }
                         if (wide) {
                             Row(
@@ -439,7 +468,7 @@ fun HomeScreen(
                             ) {
                                 search(Modifier.weight(1f))
                                 sort(Modifier)
-                                import(Modifier)
+                                files(Modifier)
                             }
                         } else {
                             Column(
@@ -448,7 +477,7 @@ fun HomeScreen(
                             ) {
                                 search(Modifier.fillMaxWidth())
                                 sort(Modifier.fillMaxWidth())
-                                import(Modifier.fillMaxWidth())
+                                files(Modifier.fillMaxWidth())
                             }
                         }
                     }

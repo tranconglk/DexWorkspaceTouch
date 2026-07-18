@@ -99,3 +99,6 @@ use friendly format/version/read/write messages and never expose raw URI, JSON o
 - Dùng metadata ngắn “x ô • y ứng dụng” và relative updated time một dòng.
 - Snapshot ưu tiên icon thật; cell nhỏ có thể ẩn label và giữ icon/fallback rõ ràng.
 - Card ghim đầu tiên không trở thành featured/hero card và giữ cùng layout với card thường.
+- Library toolbar uses one “Tệp” action sheet for importing one workspace, backing up Library and
+  restoring Library. Restore always shows counts, sample names, conflicts and the no-overwrite warning.
+- Backup warnings require an explicit continue/cancel choice; all actions keep a 56dp touch target.

@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -20,6 +21,14 @@ interface WorkspaceDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(entity: WorkspaceEntity)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insertRows(entities: List<WorkspaceEntity>)
+
+    @Transaction
+    suspend fun insertAllAtomically(entities: List<WorkspaceEntity>) {
+        insertRows(entities)
+    }
 
     @Update(onConflict = OnConflictStrategy.ABORT)
     suspend fun updateRows(entity: WorkspaceEntity): Int

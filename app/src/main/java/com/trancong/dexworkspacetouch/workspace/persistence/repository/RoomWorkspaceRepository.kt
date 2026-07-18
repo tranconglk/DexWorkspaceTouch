@@ -57,6 +57,13 @@ class RoomWorkspaceRepository(
         }
     }
 
+    override suspend fun insertAllAtomically(workspaces: List<Workspace>) {
+        if (workspaces.isEmpty()) return
+        val entities = try { workspaces.map { it.toEntity(serializer) } }
+        catch (error: Throwable) { throw mapFailure("serialize workspace batch", error) }
+        databaseCall("insert workspace batch") { dao.insertAllAtomically(entities) }
+    }
+
     override suspend fun update(workspace: Workspace) =
         databaseCall("update workspace '${workspace.id}'") { dao.update(workspace.toEntity(serializer)) }
 

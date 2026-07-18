@@ -25,6 +25,9 @@ interface WorkspaceRepository {
         observeAll().map(::WorkspaceRepositorySnapshot)
     suspend fun getById(id: String): Workspace?
     suspend fun insert(workspace: Workspace)
+    suspend fun insertAllAtomically(workspaces: List<Workspace>) {
+        workspaces.forEach { insert(it) }
+    }
     suspend fun update(workspace: Workspace)
     suspend fun deleteById(id: String)
     suspend fun exists(id: String): Boolean

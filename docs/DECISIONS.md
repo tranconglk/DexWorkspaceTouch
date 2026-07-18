@@ -381,3 +381,11 @@ Library snapshot và App Picker dùng chung loader thuộc Application graph, kh
 Cache RAM là LRU tối đa 64 identity, dùng stable String package/activity và cache cả fallback.
 Chỉ cell đang compose trong viewport yêu cầu icon; icon không được lưu vào Room hoặc domain.
 Target UX là tối đa 100 workspace. Workspace ghim giữ cùng card layout, không có hero/featured item.
+## ADR-030 — Library backup uses all-or-nothing `.dwtbundle`
+
+Status: Accepted.
+
+Bundle v1 contains at most 100 workspaces and 500 cells in a 2 MiB UTF-8 deterministic envelope.
+It excludes database IDs, timestamps, sequences and pin state. Restore creates new IDs, resolves
+names deterministically, resets pin to false and inserts the complete batch in one Room transaction.
+Existing rows are never overwritten. Pin remains a device-local organization preference.
