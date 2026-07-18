@@ -312,3 +312,11 @@ Catalog mặc định được tinh gọn còn 16 topology canonical có giá tr
 6 Trái/Phải và 4 Trên/Dưới. `canonicalTemplateSignature()` bỏ qua ID/order và so bounds theo tolerance;
 catalog từ chối duplicate nhưng giữ mirror có hướng sử dụng khác. Quick Split đã bị
 loại bỏ; Designer chỉ còn split ngang/dọc với một history entry cho mỗi thao tác.
+
+## Workspace duplication
+
+Duplicate là operation của `WorkspaceLibraryViewModel`, không thuộc DAO. Luồng dữ liệu:
+workspace source được đọc lại từ repository → `WorkspaceDuplicateNamePolicy` chọn tên
+duy nhất → tạo `Workspace` domain với ID/time/sequence mới → `WorkspaceRepository.insert`
+→ Room Flow phát danh sách mới. Canvas immutable và app assignments được giữ nguyên;
+Entity không được copy trực tiếp và schema Room không thay đổi.

@@ -4,6 +4,7 @@ enum class WorkspaceLibraryPersistenceOperation {
     LOAD,
     SAVE,
     RENAME,
+    DUPLICATE,
     DELETE,
 }
 
@@ -14,6 +15,12 @@ data class WorkspaceLibraryPersistenceError(
         WorkspaceLibraryPersistenceOperation.LOAD -> "Không thể đọc danh sách workspace."
         WorkspaceLibraryPersistenceOperation.SAVE -> "Không thể lưu workspace."
         WorkspaceLibraryPersistenceOperation.RENAME -> "Không thể đổi tên workspace."
+        WorkspaceLibraryPersistenceOperation.DUPLICATE -> "Không thể nhân bản workspace."
         WorkspaceLibraryPersistenceOperation.DELETE -> "Không thể xóa workspace."
     }
+}
+
+sealed interface WorkspaceDuplicateFeedback {
+    data class Success(val workspaceName: String) : WorkspaceDuplicateFeedback
+    data object Failure : WorkspaceDuplicateFeedback
 }

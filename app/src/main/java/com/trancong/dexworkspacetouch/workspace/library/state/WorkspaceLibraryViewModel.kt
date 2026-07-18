@@ -40,6 +40,8 @@ class WorkspaceLibraryViewModel(
         private set
     var persistenceIssues by mutableStateOf<List<WorkspacePersistenceIssue>>(emptyList())
         private set
+    var duplicateFeedback by mutableStateOf<WorkspaceDuplicateFeedback?>(null)
+        private set
 
     private val scope: CoroutineScope get() = suppliedScope ?: viewModelScope
     private var observedDomains: List<Workspace> = emptyList()
@@ -51,6 +53,7 @@ class WorkspaceLibraryViewModel(
     private val issuedDefaultNameNumbers = mutableSetOf<Int>()
 
     val isCreatingWorkspace: Boolean get() = editingWorkspaceId == null
+    val isWriting: Boolean get() = mutationJob?.isActive == true
 
     init {
         observeLibrary()
@@ -64,6 +67,10 @@ class WorkspaceLibraryViewModel(
 
     fun dismissPersistenceError() {
         persistenceError = null
+    }
+
+    fun dismissDuplicateFeedback() {
+        duplicateFeedback = null
     }
 
     fun selectWorkspace(id: String) {
@@ -96,6 +103,7 @@ class WorkspaceLibraryViewModel(
 
     fun renameWorkspace(id: String, newName: String): WorkspaceLibraryItem {
         val existing = requireDomain(id)
+        if (mutationJob?.isActive == true) return existing.toLibraryItem()
         val trimmedName = newName.trim()
         require(trimmedName.isNotEmpty()) { "Workspace name must not be blank" }
         val renamed = existing.toLibraryItem().copy(
@@ -112,8 +120,52 @@ class WorkspaceLibraryViewModel(
 
     fun deleteWorkspace(id: String) {
         requireDomain(id)
+        if (mutationJob?.isActive == true) return
         check(editingWorkspaceId != id) { "Workspace '$id' is currently being edited" }
         runMutation(WorkspaceLibraryPersistenceOperation.DELETE) { repository.deleteById(id) }
+    }
+
+    fun duplicateWorkspace(id: String) {
+        if (mutationJob?.isActive == true) return
+        if (domainOrNull(id) == null) {
+            persistenceError = WorkspaceLibraryPersistenceError(
+                WorkspaceLibraryPersistenceOperation.DUPLICATE,
+            )
+            duplicateFeedback = WorkspaceDuplicateFeedback.Failure
+            return
+        }
+        persistenceError = null
+        duplicateFeedback = null
+        mutationJob = scope.launch {
+            try {
+                val duplicate = writeMutex.withLock {
+                    val source = repository.getById(id)
+                        ?: throw IllegalArgumentException("Workspace '$id' does not exist")
+                    val now = nonNegativeNow()
+                    Workspace(
+                        id = uniqueIdForInsert(),
+                        name = WorkspaceDuplicateNamePolicy.nextName(
+                            sourceName = source.name,
+                            existingNames = observedDomains.map(Workspace::name),
+                        ),
+                        canvas = source.canvas,
+                        modifiedSequence = takeModifiedSequence(),
+                        schemaVersion = source.schemaVersion,
+                        createdAtEpochMillis = now,
+                        updatedAtEpochMillis = now,
+                    ).also { repository.insert(it) }
+                }
+                selectedWorkspaceId = duplicate.id
+                duplicateFeedback = WorkspaceDuplicateFeedback.Success(duplicate.name)
+            } catch (error: CancellationException) {
+                throw error
+            } catch (_: Exception) {
+                persistenceError = WorkspaceLibraryPersistenceError(
+                    WorkspaceLibraryPersistenceOperation.DUPLICATE,
+                )
+                duplicateFeedback = WorkspaceDuplicateFeedback.Failure
+            }
+        }
     }
 
     fun saveWorkspace(
@@ -122,6 +174,7 @@ class WorkspaceLibraryViewModel(
         onPersisted: () -> Unit = {},
     ): WorkspaceLibraryItem {
         if (mutationJob?.isActive == true && pendingSave != null) return requireNotNull(pendingSave)
+        check(mutationJob?.isActive != true) { "Another workspace write is active" }
         val editingId = editingWorkspaceId
         val existing = editingId?.let(::domainOrNull)
         val now = nonNegativeNow()
@@ -193,6 +246,7 @@ class WorkspaceLibraryViewModel(
         onSuccess: () -> Unit = {},
         block: suspend () -> Unit,
     ) {
+        if (mutationJob?.isActive == true) return
         persistenceError = null
         mutationJob = scope.launch {
             try {
@@ -213,6 +267,15 @@ class WorkspaceLibraryViewModel(
             val id = idGenerator.newId()
             require(id.isNotBlank()) { "Generated workspace ID must not be blank" }
             if (observedDomains.none { it.id == id }) return id
+        }
+        throw IllegalStateException("Unable to generate a unique workspace ID")
+    }
+
+    private suspend fun uniqueIdForInsert(): String {
+        repeat(MAX_ID_ATTEMPTS) {
+            val id = idGenerator.newId()
+            require(id.isNotBlank()) { "Generated workspace ID must not be blank" }
+            if (!repository.exists(id)) return id
         }
         throw IllegalStateException("Unable to generate a unique workspace ID")
     }

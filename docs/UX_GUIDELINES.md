@@ -42,3 +42,10 @@ inset cộng margin ngoài bảo đảm hàng cuối, shape và shadow không b�
 Template hiển thị theo thứ tự Cơ bản, Chia trái / phải, Chia trên / dưới; không dùng tab
 hoặc nested scroll. Hai nhóm đầu mở mặc định để chọn nhanh, nhóm Trên/Dưới thu gọn.
 Header section là một touch target 56dp; card chỉ gồm preview 16:10 và tên.
+
+## Workspace duplication
+
+“Nhân bản” không cần confirmation vì không phá dữ liệu. Card rộng hiển thị action trực
+tiếp; card hẹp đặt action trong sheet “Quản lý”. Mọi action cao tối thiểu 56dp và có label
+đầy đủ. Trong lúc ghi, action bị disable để chống double tap. Thành công/thất bại được báo
+bằng Snackbar; bản sao mới được chọn nhưng không tự mở Designer, scroll hay launch.

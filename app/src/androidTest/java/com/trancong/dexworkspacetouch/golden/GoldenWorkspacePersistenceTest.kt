@@ -106,6 +106,35 @@ class GoldenWorkspacePersistenceTest {
         assertEquals("Before", db.workspaceDao().getById("id")?.name)
     }
 
+    @Test fun duplicatedWorkspaceRowsRemainIndependentAfterReopen() = runBlocking {
+        var repository = repository()
+        val assignedCanvas = WorkspaceCanvas(
+            listOf(
+                WorkspaceCell(
+                    "cell",
+                    NormalizedBounds.FullCanvas,
+                    AssignedApp("golden.maps", "golden.maps.Main", "Maps"),
+                ),
+            ),
+        )
+        val source = workspace("source", "Đi đường", 1).copy(canvas = assignedCanvas)
+        val copy = source.copy(
+            id = "copy",
+            name = "Đi đường (Bản sao)",
+            modifiedSequence = 2,
+            createdAtEpochMillis = 30,
+            updatedAtEpochMillis = 30,
+        )
+        repository.insert(source)
+        repository.insert(copy)
+        reopen()
+        repository = repository(reuseOpenDatabase = true)
+        assertEquals(source.canvas, repository.getById("copy")?.canvas)
+        repository.update(copy.copy(name = "Bản sao riêng", modifiedSequence = 3, updatedAtEpochMillis = 40))
+        assertEquals("Đi đường", repository.getById("source")?.name)
+        assertEquals("Bản sao riêng", repository.getById("copy")?.name)
+    }
+
     private fun repository(reuseOpenDatabase: Boolean = false): RoomWorkspaceRepository {
         val db = if (reuseOpenDatabase) requireNotNull(database) else openDatabase()
         return RoomWorkspaceRepository(db.workspaceDao(), serializer)

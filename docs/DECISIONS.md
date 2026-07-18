@@ -302,3 +302,16 @@ Quyết định:
 Lý do:
 Giới hạn năm cửa sổ phản ánh phạm vi đã xác minh trên thiết bị, đồng thời đặt guard
 cuối trước Android infrastructure mà không thay đổi Room schema hay launch sequencing.
+
+## ADR-021 — Duplicate workspace tạo row độc lập
+
+Quyết định:
+
+- Duplicate tạo `Workspace` domain mới và gọi `WorkspaceRepository.insert`; không copy Entity.
+- ID lấy từ `WorkspaceIdGenerator`; created/updated time và modified sequence đều là giá trị mới.
+- Canvas, bounds, topology, app assignment và schemaVersion được giữ nguyên.
+- Tên bản sao được chọn deterministic, trim và so sánh không phân biệt hoa thường:
+  `(Bản sao)`, `(Bản sao 2)`, rồi số nhỏ nhất chưa dùng.
+- Write mutex và active-mutation guard ngăn double tap hoặc write cạnh tranh.
+- Thành công chọn bản sao để phản hồi rõ nhưng không tự mở Designer hoặc launch.
+- Không thay đổi Room schema, serializer hay Launch Engine.

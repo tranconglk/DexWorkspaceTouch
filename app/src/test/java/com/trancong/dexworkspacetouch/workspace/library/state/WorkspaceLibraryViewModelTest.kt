@@ -238,6 +238,66 @@ class WorkspaceLibraryViewModelTest {
         assertEquals(app, recreated.workspaces.single().canvas.cells.single().app)
     }
 
+    @Test fun `duplicate creates independent persisted row with new metadata and selects copy`() {
+        val source = workspace("source", "Đi đường", 7, created = 10, updated = 20)
+            .copy(canvas = canvas.assignApp("cell", app), schemaVersion = 1)
+        val repository = FakeRepository(listOf(source))
+        val state = viewModel(repository, clock = QueueClock(100), ids = QueueIds("copy"))
+        state.selectWorkspace("source")
+
+        state.duplicateWorkspace("source")
+
+        val copy = repository.current.first { it.id == "copy" }
+        assertEquals("Đi đường (Bản sao)", copy.name)
+        assertEquals(source.canvas, copy.canvas)
+        assertEquals(source.schemaVersion, copy.schemaVersion)
+        assertEquals(100, copy.createdAtEpochMillis)
+        assertEquals(100, copy.updatedAtEpochMillis)
+        assertTrue(copy.modifiedSequence > source.modifiedSequence)
+        assertEquals("copy", state.selectedWorkspaceId)
+        assertEquals(source, repository.current.first { it.id == "source" })
+        assertEquals(WorkspaceDuplicateFeedback.Success(copy.name), state.duplicateFeedback)
+    }
+
+    @Test fun `duplicate retries colliding id and survives recreation`() {
+        val source = workspace("source", "Name", 1)
+        val repository = FakeRepository(listOf(source))
+        val state = viewModel(repository, ids = QueueIds("source", "copy"))
+        state.duplicateWorkspace("source")
+        val recreated = viewModel(repository)
+        assertEquals(setOf("source", "copy"), recreated.workspaces.map { it.id }.toSet())
+    }
+
+    @Test fun `double duplicate while insert active writes one copy`() {
+        val repository = FakeRepository(listOf(workspace("source", "Name", 1))).apply {
+            insertGate = CompletableDeferred()
+        }
+        val state = viewModel(repository, ids = QueueIds("copy", "unused"))
+        state.duplicateWorkspace("source")
+        state.duplicateWorkspace("source")
+        assertEquals(1, repository.insertCalls)
+        repository.insertGate?.complete(Unit)
+        assertEquals(2, repository.current.size)
+    }
+
+    @Test fun `missing source and insert failure do not create copy`() {
+        val repository = FakeRepository(listOf(workspace("source", "Name", 1))).apply {
+            failMutations = true
+        }
+        val state = viewModel(repository, ids = QueueIds("copy"))
+        state.duplicateWorkspace("source")
+        assertEquals(WorkspaceLibraryPersistenceOperation.DUPLICATE, state.persistenceError?.operation)
+        assertEquals(WorkspaceDuplicateFeedback.Failure, state.duplicateFeedback)
+        assertEquals(1, repository.current.size)
+    }
+
+    @Test fun `duplicate missing source reports friendly failure`() {
+        val state = viewModel()
+        state.duplicateWorkspace("missing")
+        assertEquals(WorkspaceLibraryPersistenceOperation.DUPLICATE, state.persistenceError?.operation)
+        assertEquals(WorkspaceDuplicateFeedback.Failure, state.duplicateFeedback)
+    }
+
     @Test fun `modified sequence high water mark advances after external emission`() {
         val repository = FakeRepository(listOf(workspace("old", "Old", 50)))
         val state = viewModel(repository, ids = QueueIds("new"))

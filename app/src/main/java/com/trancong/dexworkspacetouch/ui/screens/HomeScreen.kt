@@ -23,10 +23,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +46,7 @@ import com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceLibraryCard
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchStatusDialog
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchUiState
 import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryPersistenceError
+import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceDuplicateFeedback
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.templates.WorkspaceTemplateCatalog
 import com.trancong.dexworkspacetouch.workspace.templates.ui.WorkspaceTemplatePickerDialog
@@ -57,6 +61,7 @@ fun HomeScreen(
     onCreateWorkspace: (WorkspaceCanvas) -> Unit,
     onEditWorkspace: (String) -> Unit,
     onRenameWorkspace: (String, String) -> Unit,
+    onDuplicateWorkspace: (String) -> Unit,
     onDeleteWorkspace: (String) -> Unit,
     libraryIsLoading: Boolean,
     persistenceError: WorkspaceLibraryPersistenceError?,
@@ -64,6 +69,9 @@ fun HomeScreen(
     hasUnsupportedWorkspaces: Boolean,
     onRetryLibrary: () -> Unit,
     onDismissPersistenceError: () -> Unit,
+    duplicateFeedback: WorkspaceDuplicateFeedback?,
+    onDismissDuplicateFeedback: () -> Unit,
+    libraryWriteInProgress: Boolean,
     launchState: WorkspaceLaunchUiState,
     onLaunchWorkspace: (WorkspaceLibraryItem) -> Unit,
     onCancelLaunch: () -> Unit,
@@ -76,6 +84,17 @@ fun HomeScreen(
     var showTemplatePicker by rememberSaveable { mutableStateOf(false) }
     var selectedTemplateId by rememberSaveable { mutableStateOf<String?>(null) }
     val templateCatalog = remember { WorkspaceTemplateCatalog.default() }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(duplicateFeedback) {
+        val message = when (val feedback = duplicateFeedback) {
+            is WorkspaceDuplicateFeedback.Success -> "Đã tạo bản sao ${feedback.workspaceName}."
+            WorkspaceDuplicateFeedback.Failure -> "Không thể nhân bản workspace."
+            null -> return@LaunchedEffect
+        }
+        snackbarHostState.showSnackbar(message)
+        onDismissDuplicateFeedback()
+    }
 
     if (showTemplatePicker) {
         WorkspaceTemplatePickerDialog(
@@ -131,6 +150,19 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(Spacing.S),
                 ) {
                     Text(workspace.name, style = MaterialTheme.typography.titleLarge)
+                    OutlinedButton(
+                        onClick = {
+                            managedWorkspaceId = null
+                            onDuplicateWorkspace(workspace.id)
+                        },
+                        enabled = !libraryWriteInProgress,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(TouchTargets.SecondaryButton)
+                            .semantics {
+                                contentDescription = "Nhân bản workspace ${workspace.name}."
+                            },
+                    ) { Text("Nhân bản") }
                     OutlinedButton(
                         onClick = { showRename(workspace) },
                         modifier = Modifier
@@ -226,6 +258,7 @@ fun HomeScreen(
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
         LazyVerticalGrid(
             columns = GridCells.Adaptive(Dimensions.WorkspaceCardMinWidth),
@@ -277,12 +310,14 @@ fun HomeScreen(
                         onSelect = { onWorkspaceSelected(workspace.id) },
                         onOpen = { onLaunchWorkspace(workspace) },
                         onEdit = { onEditWorkspace(workspace.id) },
+                        onDuplicate = { onDuplicateWorkspace(workspace.id) },
                         onRename = { showRename(workspace) },
                         onDelete = { deleteWorkspaceId = workspace.id },
                         onManage = { managedWorkspaceId = workspace.id },
                         canDelete = editingWorkspaceId != workspace.id,
                         openEnabled = launchState !is WorkspaceLaunchUiState.Checking &&
                             launchState !is WorkspaceLaunchUiState.Launching,
+                        duplicateEnabled = !libraryWriteInProgress,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

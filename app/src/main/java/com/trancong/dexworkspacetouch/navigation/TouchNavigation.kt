@@ -70,6 +70,7 @@ fun TouchNavigation(activity: Activity) {
                     navController.navigate(Routes.LayoutDesigner)
                 },
                 onRenameWorkspace = { id, name -> libraryViewModel.renameWorkspace(id, name) },
+                onDuplicateWorkspace = libraryViewModel::duplicateWorkspace,
                 onDeleteWorkspace = libraryViewModel::deleteWorkspace,
                 libraryIsLoading = libraryViewModel.isLoading,
                 persistenceError = libraryViewModel.persistenceError,
@@ -81,6 +82,9 @@ fun TouchNavigation(activity: Activity) {
                 },
                 onRetryLibrary = libraryViewModel::retryLoad,
                 onDismissPersistenceError = libraryViewModel::dismissPersistenceError,
+                duplicateFeedback = libraryViewModel.duplicateFeedback,
+                onDismissDuplicateFeedback = libraryViewModel::dismissDuplicateFeedback,
+                libraryWriteInProgress = libraryViewModel.isWriting,
                 launchState = launchViewModel.state,
                 onLaunchWorkspace = { workspace ->
                     launchViewModel.launchWorkspace(workspace, launchRuntime, launchHostToken)

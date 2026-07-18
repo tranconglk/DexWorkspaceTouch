@@ -39,12 +39,14 @@ fun WorkspaceLibraryCard(
     onSelect: () -> Unit,
     onOpen: () -> Unit,
     onEdit: () -> Unit,
+    onDuplicate: () -> Unit,
     onRename: () -> Unit,
     onDelete: () -> Unit,
     onManage: () -> Unit,
     canDelete: Boolean,
     modifier: Modifier = Modifier,
     openEnabled: Boolean = true,
+    duplicateEnabled: Boolean = true,
 ) {
     Card(
         onClick = onSelect,
@@ -103,6 +105,16 @@ fun WorkspaceLibraryCard(
                     }
                     if (selected) {
                         if (showDirectManagementActions) {
+                            OutlinedButton(
+                                onClick = onDuplicate,
+                                enabled = duplicateEnabled,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(TouchTargets.SecondaryButton)
+                                    .semantics {
+                                        contentDescription = "Nhân bản workspace ${workspace.name}."
+                                    },
+                            ) { Text("Nhân bản") }
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(Spacing.S),

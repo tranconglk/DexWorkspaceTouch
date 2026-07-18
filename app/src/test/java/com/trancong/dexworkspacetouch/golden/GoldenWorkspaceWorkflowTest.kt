@@ -122,6 +122,25 @@ class GoldenWorkspaceWorkflowTest {
         assertNull(library.selectedWorkspaceId)
     }
 
+    @Test fun `duplicate persists assignments independently through recreation rename and delete`() {
+        val repository = FakeWorkspaceRepository()
+        val library = library(repository)
+        val source = library.saveWorkspace(GoldenWorkspaceFixtures.assigned(), "Đi đường")
+        library.finishEditing()
+        library.duplicateWorkspace(source.id)
+
+        val recreated = library(repository)
+        assertEquals(2, recreated.workspaces.size)
+        val original = recreated.workspaces.first { it.id == source.id }
+        val copy = recreated.workspaces.first { it.id != source.id }
+        assertEquals(original.canvas, copy.canvas)
+        assertEquals("Đi đường (Bản sao)", copy.name)
+        recreated.renameWorkspace(copy.id, "Bản sao riêng")
+        assertEquals("Đi đường", repository.values.first { it.id == source.id }.name)
+        recreated.deleteWorkspace(copy.id)
+        assertEquals(listOf(source.id), repository.values.map { it.id })
+    }
+
     @Test fun `designer undo redo remain draft only and save final redo state`() {
         val repository = FakeWorkspaceRepository()
         val library = library(repository)
@@ -208,7 +227,7 @@ class GoldenWorkspaceWorkflowTest {
     private fun library(repository: FakeWorkspaceRepository) = WorkspaceLibraryViewModel(
         repository = repository,
         clock = FakeClock(),
-        idGenerator = FakeIdGenerator("golden-workspace"),
+        idGenerator = FakeIdGenerator("golden-workspace", "golden-copy"),
         suppliedScope = CoroutineScope(SupervisorJob() + Dispatchers.Unconfined),
     )
 
