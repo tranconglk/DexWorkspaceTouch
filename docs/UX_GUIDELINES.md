@@ -89,3 +89,8 @@ status in one row; narrow windows use separate history, context, and status rows
 - Always present valid targets by direction before changing the layout.
 - Confirm when merging would discard the selected source cell's app assignment.
 - Tapping a cell continues to activate the App Picker and never merges automatically.
+## Workspace transfer
+
+Export is available from the selected card and offers “Chia sẻ” before “Lưu vào tệp…”. Import is a
+56dp Library-toolbar action. A snapshot/name/cell/app preview is required before insertion. Errors
+use friendly format/version/read/write messages and never expose raw URI, JSON or exceptions.

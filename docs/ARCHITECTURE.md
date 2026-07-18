@@ -365,3 +365,12 @@ Selected cell
 
 Only cells sharing a complete edge can merge. The target ID survives, dividers are re-derived from
 the resulting bounds, and no UI, Android, persistence, or launch type enters the domain operation.
+## Workspace transfer boundary
+
+```text
+Workspace → versioned WorkspaceTransferSerializer → FileProvider/Sharesheet or SAF
+          → bounded content validation → import preview → new Workspace ID → Room
+```
+
+The transfer envelope reuses the deterministic canvas serializer. Android `Uri`, streams and
+`ContentResolver` remain at the platform boundary and never enter the transfer domain model.

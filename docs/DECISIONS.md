@@ -366,3 +366,9 @@ target that shares its full edge and whose union is one rectangle. The target ID
 assignment wins; when the target is empty, the source assignment moves to it. Losing a source app when
 both cells are assigned requires confirmation. A successful merge is atomic and creates exactly one
 history entry; invalid or cancelled merges create none.
+## ADR-027 — Workspace transfer uses a versioned `.dwt` envelope
+
+Share is the primary export path and SAF “Save As” is secondary. Import always creates a new local
+ID and never overwrites in version 1. Local IDs, pin state, timestamps and modification sequence are
+not exported. FileProvider exposes only `cache/exports`; SAF and temporary URI grants avoid broad
+storage permission. ACTION_VIEW/Open With is deferred until cross-provider device validation.

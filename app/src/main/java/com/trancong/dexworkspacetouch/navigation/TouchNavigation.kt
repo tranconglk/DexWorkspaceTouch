@@ -4,6 +4,20 @@ import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,6 +37,14 @@ import com.trancong.dexworkspacetouch.workspace.launcher.WorkspaceLaunchRequestF
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModel
 import com.trancong.dexworkspacetouch.DexWorkspaceTouchApplication
 import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspacePersistenceIssue
+import com.trancong.dexworkspacetouch.workspace.transfer.AndroidWorkspaceTransferPlatform
+import com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferFailure
+import com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferFormat
+import com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferState
+import com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferViewModel
+import com.trancong.dexworkspacetouch.workspace.snapshot.ui.WorkspaceSnapshot
+import com.trancong.dexworkspacetouch.ui.design.TouchTargets
+import kotlinx.coroutines.launch
 
 private object Routes {
     const val Home = "home"
@@ -38,6 +60,79 @@ fun TouchNavigation(activity: Activity) {
     val libraryViewModel: WorkspaceLibraryViewModel = viewModel(
         factory = WorkspaceLibraryViewModel.factory(application.workspaceRepository),
     )
+    val transferViewModel: WorkspaceTransferViewModel = viewModel(
+        factory = WorkspaceTransferViewModel.factory(application.workspaceRepository),
+    )
+    val transferPlatform = remember(activity) { AndroidWorkspaceTransferPlatform(activity) }
+    val transferScope = rememberCoroutineScope()
+    var exportMode by rememberSaveable { mutableStateOf<String?>(null) }
+    val saveLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument(WorkspaceTransferFormat.MimeType),
+    ) { uri ->
+        val ready = transferViewModel.state as? WorkspaceTransferState.ExportReady
+        if (uri == null || ready == null) transferViewModel.consumeExport() else transferScope.launch {
+            try { transferPlatform.write(uri, ready.bytes); transferViewModel.complete("Đã lưu workspace.") }
+            catch (_: Exception) { transferViewModel.fail(WorkspaceTransferFailure.WRITE_FAILURE) }
+        }
+        exportMode = null
+    }
+    val importLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) transferScope.launch {
+            try { transferViewModel.readImport(transferPlatform.read(uri)) }
+            catch (error: com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferException) {
+                transferViewModel.fail(error.failure)
+            }
+        }
+    }
+    LaunchedEffect(transferViewModel.state, exportMode) {
+        val ready = transferViewModel.state as? WorkspaceTransferState.ExportReady ?: return@LaunchedEffect
+        when (exportMode) {
+            "share" -> {
+                try {
+                    transferPlatform.share(ready)
+                    exportMode = null
+                    transferViewModel.consumeExport()
+                } catch (error: kotlinx.coroutines.CancellationException) {
+                    throw error
+                } catch (_: Exception) {
+                    exportMode = null
+                    transferViewModel.fail(WorkspaceTransferFailure.WRITE_FAILURE)
+                }
+            }
+            "save" -> { exportMode = "save-launched"; saveLauncher.launch(ready.fileName) }
+        }
+    }
+    when (val transferState = transferViewModel.state) {
+        WorkspaceTransferState.PreparingExport, WorkspaceTransferState.ReadingImport, WorkspaceTransferState.Importing -> AlertDialog(
+            onDismissRequest = {},
+            title = { Text(if (transferState is WorkspaceTransferState.PreparingExport) "Đang chuẩn bị file…" else "Đang đọc workspace…") },
+            confirmButton = {},
+        )
+        is WorkspaceTransferState.ImportPreview -> AlertDialog(
+            onDismissRequest = transferViewModel::cancelPreview,
+            title = { Text("Nhập workspace") },
+            text = {
+                androidx.compose.foundation.layout.Column {
+                    WorkspaceSnapshot(transferState.payload.canvas, Modifier.fillMaxWidth())
+                    Text(transferState.payload.name)
+                    Text("${transferState.payload.canvas.cells.size} ô • ${transferState.payload.canvas.cells.count { it.app != null }} ứng dụng")
+                }
+            },
+            confirmButton = { TextButton(onClick = transferViewModel::confirmImport, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Nhập") } },
+            dismissButton = { TextButton(onClick = transferViewModel::cancelPreview, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Hủy") } },
+        )
+        is WorkspaceTransferState.Completed -> AlertDialog(
+            onDismissRequest = transferViewModel::dismissFeedback,
+            title = { Text(transferState.message) },
+            confirmButton = { TextButton(onClick = transferViewModel::dismissFeedback) { Text("Đã hiểu") } },
+        )
+        is WorkspaceTransferState.Error -> AlertDialog(
+            onDismissRequest = transferViewModel::dismissFeedback,
+            title = { Text(transferState.failure.userMessage()) },
+            confirmButton = { TextButton(onClick = transferViewModel::dismissFeedback) { Text("Đã hiểu") } },
+        )
+        else -> Unit
+    }
     val applicationContext = activity.applicationContext
     val installedAppCatalog = remember(applicationContext) {
         DefaultInstalledAppCatalog(AndroidInstalledAppDataSource.create(applicationContext))
@@ -102,6 +197,9 @@ fun TouchNavigation(activity: Activity) {
                 },
                 onCancelLaunch = launchViewModel::cancelLaunch,
                 onDismissLaunchResult = launchViewModel::dismissResult,
+                onShareWorkspace = { id -> exportMode = "share"; transferViewModel.prepareExport(id) },
+                onSaveWorkspaceToFile = { id -> exportMode = "save"; transferViewModel.prepareExport(id) },
+                onImportWorkspace = { importLauncher.launch("*/*") },
             )
         }
         composable(Routes.LayoutDesigner) {
@@ -161,4 +259,11 @@ fun TouchNavigation(activity: Activity) {
             )
         }
     }
+}
+
+private fun WorkspaceTransferFailure.userMessage(): String = when (this) {
+    WorkspaceTransferFailure.UNSUPPORTED_VERSION -> "File được tạo bởi phiên bản mới hơn."
+    WorkspaceTransferFailure.WRITE_FAILURE -> "Không thể xuất workspace."
+    WorkspaceTransferFailure.READ_FAILURE -> "Không thể đọc file workspace."
+    else -> "File workspace không hợp lệ."
 }

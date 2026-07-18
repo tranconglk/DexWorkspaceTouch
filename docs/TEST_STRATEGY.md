@@ -32,3 +32,9 @@
 - Assertions describe behavior rather than private implementation.
 - No screenshot golden baseline across API levels or densities.
 - Performance tests assert correctness at scale; absolute device timing stays in measured reports.
+## Workspace transfer
+
+- JVM tests cover deterministic envelopes, strict decoding, size limits, Unicode naming and canvas reuse.
+- Instrumentation covers FileProvider and Room persistence seams without opening a real Sharesheet target.
+- Manual cross-device validation records provider MIME behavior for Quick Share, Files, Drive and Zalo.
+- Corrupted, oversized and newer-version `.dwt` files must fail before preview or persistence.

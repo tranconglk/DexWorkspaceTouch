@@ -63,6 +63,7 @@ fun WorkspaceLibraryCard(
     openEnabled: Boolean = true,
     duplicateEnabled: Boolean = true,
     pinEnabled: Boolean = true,
+    onExport: () -> Unit = {},
 ) {
     val cardDescription = buildString {
         append("Workspace ${workspace.name}, ${workspace.appCount} ứng dụng.")
@@ -127,6 +128,10 @@ fun WorkspaceLibraryCard(
                         }
                         if (selected) {
                             if (showDirectManagementActions) {
+                            OutlinedButton(
+                                onClick = onExport,
+                                modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
+                            ) { Text("Xuất") }
                             OutlinedButton(
                                 onClick = onDuplicate,
                                 enabled = duplicateEnabled,

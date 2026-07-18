@@ -99,6 +99,9 @@ fun HomeScreen(
     onLaunchWorkspace: (WorkspaceLibraryItem) -> Unit,
     onCancelLaunch: () -> Unit,
     onDismissLaunchResult: () -> Unit,
+    onShareWorkspace: (String) -> Unit = {},
+    onSaveWorkspaceToFile: (String) -> Unit = {},
+    onImportWorkspace: () -> Unit = {},
 ) {
     var managedWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
     var renameWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
@@ -107,6 +110,7 @@ fun HomeScreen(
     var showTemplatePicker by rememberSaveable { mutableStateOf(false) }
     var selectedTemplateId by rememberSaveable { mutableStateOf<String?>(null) }
     var showSortSheet by rememberSaveable { mutableStateOf(false) }
+    var exportWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
     val templateCatalog = remember { WorkspaceTemplateCatalog.default() }
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -186,6 +190,10 @@ fun HomeScreen(
                 ) {
                     Text(workspace.name, style = MaterialTheme.typography.titleLarge)
                     OutlinedButton(
+                        onClick = { managedWorkspaceId = null; exportWorkspaceId = workspace.id },
+                        modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
+                    ) { Text("Xuất") }
+                    OutlinedButton(
                         onClick = {
                             managedWorkspaceId = null
                             onDuplicateWorkspace(workspace.id)
@@ -226,6 +234,26 @@ fun HomeScreen(
                     if (editingWorkspaceId == workspace.id) {
                         Text("Không thể xóa workspace đang được chỉnh sửa.")
                     }
+                }
+            }
+        }
+    }
+    exportWorkspaceId?.let { id ->
+        workspaces.firstOrNull { it.id == id }?.let { workspace ->
+            ModalBottomSheet(onDismissRequest = { exportWorkspaceId = null }) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(Spacing.L),
+                    verticalArrangement = Arrangement.spacedBy(Spacing.S),
+                ) {
+                    Text("Xuất ${workspace.name}", style = MaterialTheme.typography.titleLarge)
+                    Button(
+                        onClick = { exportWorkspaceId = null; onShareWorkspace(id) },
+                        modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
+                    ) { Text("Chia sẻ") }
+                    OutlinedButton(
+                        onClick = { exportWorkspaceId = null; onSaveWorkspaceToFile(id) },
+                        modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
+                    ) { Text("Lưu vào tệp…") }
                 }
             }
         }
@@ -353,6 +381,14 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth().height(TouchTargets.PrimaryButton),
                 ) { Text("Tạo bố cục mới") }
             }
+            if (!hasSourceWorkspaces) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    OutlinedButton(
+                        onClick = onImportWorkspace,
+                        modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
+                    ) { Text("Nhập") }
+                }
+            }
             if (hasSourceWorkspaces) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
@@ -386,6 +422,12 @@ fun HomeScreen(
                                     },
                             ) { Text("Sắp xếp") }
                         }
+                        val import: @Composable (Modifier) -> Unit = { modifier ->
+                            OutlinedButton(
+                                onClick = onImportWorkspace,
+                                modifier = modifier.height(TouchTargets.SecondaryButton),
+                            ) { Text("Nhập") }
+                        }
                         if (wide) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -394,6 +436,7 @@ fun HomeScreen(
                             ) {
                                 search(Modifier.weight(1f))
                                 sort(Modifier)
+                                import(Modifier)
                             }
                         } else {
                             Column(
@@ -402,6 +445,7 @@ fun HomeScreen(
                             ) {
                                 search(Modifier.fillMaxWidth())
                                 sort(Modifier.fillMaxWidth())
+                                import(Modifier.fillMaxWidth())
                             }
                         }
                     }
@@ -483,6 +527,7 @@ fun HomeScreen(
                                                         launchState !is WorkspaceLaunchUiState.Launching,
                                                     duplicateEnabled = !libraryWriteInProgress,
                                                     pinEnabled = !libraryWriteInProgress,
+                                                    onExport = { exportWorkspaceId = workspace.id },
                                     modifier = Modifier.width(pinnedCardWidth.dp),
                                 )
                             }
@@ -511,6 +556,7 @@ fun HomeScreen(
                             launchState !is WorkspaceLaunchUiState.Launching,
                         duplicateEnabled = !libraryWriteInProgress,
                         pinEnabled = !libraryWriteInProgress,
+                        onExport = { exportWorkspaceId = workspace.id },
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

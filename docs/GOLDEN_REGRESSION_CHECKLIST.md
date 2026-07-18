@@ -46,3 +46,7 @@
 - S23 result:
 - Note 8 result:
 - Failures and reproduction links:
+- [ ] Export one five-cell workspace to `.dwt`, import it as a new unpinned ID, recreate, and compare canvas/readiness.
+- [ ] Transfer S23 Ultra → Note 8 and Note 8 → S23 Ultra using Quick Share; record received MIME.
+- [ ] Save/open through Files, Drive and USB where available; verify Unicode filenames.
+- [ ] Reject corrupted, oversized and unsupported-version files without creating a Room row.
