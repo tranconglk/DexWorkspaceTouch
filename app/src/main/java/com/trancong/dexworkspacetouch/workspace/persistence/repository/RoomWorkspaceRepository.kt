@@ -68,6 +68,9 @@ class RoomWorkspaceRepository(
 
     override suspend fun count(): Int = databaseCall("count workspaces") { dao.count() }
 
+    override suspend fun setPinned(id: String, isPinned: Boolean) =
+        databaseCall("set workspace '$id' pinned=$isPinned") { dao.setPinned(id, isPinned) }
+
     private suspend fun <T> databaseCall(action: String, block: suspend () -> T): T = try {
         block()
     } catch (error: Throwable) {

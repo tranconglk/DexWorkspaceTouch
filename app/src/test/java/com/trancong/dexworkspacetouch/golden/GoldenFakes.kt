@@ -38,6 +38,10 @@ class FakeWorkspaceRepository(initial: List<Workspace> = emptyList()) : Workspac
     override suspend fun deleteById(id: String) { state.value = values.filterNot { it.id == id } }
     override suspend fun exists(id: String) = values.any { it.id == id }
     override suspend fun count() = values.size
+    override suspend fun setPinned(id: String, isPinned: Boolean) {
+        check(values.any { it.id == id })
+        state.value = values.map { if (it.id == id) it.copy(isPinned = isPinned) else it }
+    }
 }
 
 class FakeInstalledAppCatalog(private val apps: List<InstalledApp>) : InstalledAppCatalog {

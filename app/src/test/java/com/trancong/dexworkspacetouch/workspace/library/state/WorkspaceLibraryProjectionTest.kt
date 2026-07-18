@@ -45,6 +45,21 @@ class WorkspaceLibraryProjectionTest {
         assertEquals(listOf("d", "b"), projectWorkspaceLibrary(values, "beta", WorkspaceSortMode.CREATED_NEWEST).map { it.id })
     }
 
+    @Test fun `pinned and regular are partitioned then sorted independently`() {
+        val values = listOf(
+            item("p2", "Beta", 1, 1, 1).copy(isPinned = true),
+            item("r2", "Delta", 1, 1, 1),
+            item("p1", "Alpha", 1, 1, 1).copy(isPinned = true),
+            item("r1", "Charlie", 1, 1, 1),
+        )
+        val sections = projectWorkspaceLibrarySections(values, "", WorkspaceSortMode.NAME_ASCENDING)
+        assertEquals(listOf("p1", "p2"), sections.pinned.map { it.id })
+        assertEquals(listOf("r1", "r2"), sections.regular.map { it.id })
+        val searched = projectWorkspaceLibrarySections(values, "Alpha", WorkspaceSortMode.NAME_ASCENDING)
+        assertEquals(listOf("p1"), searched.pinned.map { it.id })
+        assertEquals(emptyList<String>(), searched.regular.map { it.id })
+    }
+
     private fun ids(mode: WorkspaceSortMode) = projectWorkspaceLibrary(source, "", mode).map { it.id }
     private fun item(id: String, name: String, sequence: Long, created: Long, updated: Long) =
         WorkspaceLibraryItem(id, name, WorkspaceCanvas.singleCell(), sequence, created, updated)

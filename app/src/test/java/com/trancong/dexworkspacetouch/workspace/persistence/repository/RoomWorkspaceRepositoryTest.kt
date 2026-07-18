@@ -91,6 +91,20 @@ class RoomWorkspaceRepositoryTest {
         assertEquals(0, repository.count())
     }
 
+    @Test fun `set pinned changes only pin state`() = runBlocking {
+        repository.insert(workspace)
+
+        repository.setPinned(workspace.id, true)
+
+        assertEquals(workspace.copy(isPinned = true), repository.getById(workspace.id))
+    }
+
+    @Test fun `set pinned for missing workspace maps database error`() {
+        assertThrows(WorkspacePersistenceException.DatabaseFailure::class.java) {
+            runBlocking { repository.setPinned("missing", true) }
+        }
+    }
+
     @Test fun `duplicate id has typed error`() {
         runBlocking {
             repository.insert(workspace)
@@ -136,6 +150,11 @@ class RoomWorkspaceRepositoryTest {
         override suspend fun updateRows(entity: WorkspaceEntity): Int {
             if (state.value.none { it.id == entity.id }) return 0
             state.value = state.value.map { if (it.id == entity.id) entity else it }
+            return 1
+        }
+        override suspend fun setPinnedRows(id: String, isPinned: Boolean): Int {
+            if (state.value.none { it.id == id }) return 0
+            state.value = state.value.map { if (it.id == id) it.copy(isPinned = isPinned) else it }
             return 1
         }
         override suspend fun deleteRowsById(id: String): Int {

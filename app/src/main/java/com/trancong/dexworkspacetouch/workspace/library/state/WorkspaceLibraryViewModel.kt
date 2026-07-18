@@ -32,6 +32,10 @@ class WorkspaceLibraryViewModel(
         private set
     var visibleWorkspaces by mutableStateOf<List<WorkspaceLibraryItem>>(emptyList())
         private set
+    var pinnedWorkspaces by mutableStateOf<List<WorkspaceLibraryItem>>(emptyList())
+        private set
+    var regularWorkspaces by mutableStateOf<List<WorkspaceLibraryItem>>(emptyList())
+        private set
     var searchQuery by mutableStateOf("")
         private set
     var sortMode by mutableStateOf(WorkspaceSortMode.RECENTLY_UPDATED)
@@ -47,6 +51,8 @@ class WorkspaceLibraryViewModel(
     var persistenceIssues by mutableStateOf<List<WorkspacePersistenceIssue>>(emptyList())
         private set
     var duplicateFeedback by mutableStateOf<WorkspaceDuplicateFeedback?>(null)
+        private set
+    var pinFeedback by mutableStateOf<WorkspacePinFeedback?>(null)
         private set
 
     private val scope: CoroutineScope get() = suppliedScope ?: viewModelScope
@@ -77,6 +83,27 @@ class WorkspaceLibraryViewModel(
 
     fun dismissDuplicateFeedback() {
         duplicateFeedback = null
+    }
+
+    fun dismissPinFeedback() { pinFeedback = null }
+
+    fun setWorkspacePinned(id: String, isPinned: Boolean) {
+        if (mutationJob?.isActive == true) return
+        val source = domainOrNull(id)
+        val operation = if (isPinned) WorkspaceLibraryPersistenceOperation.PIN
+        else WorkspaceLibraryPersistenceOperation.UNPIN
+        if (source == null) {
+            persistenceError = WorkspaceLibraryPersistenceError(operation)
+            pinFeedback = WorkspacePinFeedback.Failure(isPinned)
+            return
+        }
+        if (source.isPinned == isPinned) return
+        pinFeedback = null
+        runMutation(
+            operation = operation,
+            onSuccess = { pinFeedback = WorkspacePinFeedback.Success(source.name, isPinned) },
+            onFailure = { pinFeedback = WorkspacePinFeedback.Failure(isPinned) },
+        ) { repository.setPinned(id, isPinned) }
     }
 
     fun updateSearchQuery(query: String) {
@@ -173,6 +200,7 @@ class WorkspaceLibraryViewModel(
                         schemaVersion = source.schemaVersion,
                         createdAtEpochMillis = now,
                         updatedAtEpochMillis = now,
+                        isPinned = false,
                     ).also { repository.insert(it) }
                 }
                 selectedWorkspaceId = duplicate.id
@@ -265,6 +293,7 @@ class WorkspaceLibraryViewModel(
     private fun runMutation(
         operation: WorkspaceLibraryPersistenceOperation,
         onSuccess: () -> Unit = {},
+        onFailure: () -> Unit = {},
         block: suspend () -> Unit,
     ) {
         if (mutationJob?.isActive == true) return
@@ -277,6 +306,7 @@ class WorkspaceLibraryViewModel(
                 throw error
             } catch (_: Exception) {
                 persistenceError = WorkspaceLibraryPersistenceError(operation)
+                onFailure()
             } finally {
                 pendingSave = null
             }
@@ -312,7 +342,10 @@ class WorkspaceLibraryViewModel(
 
     private fun takeModifiedSequence(): Long = nextModifiedSequence++
     private fun refreshProjection() {
-        visibleWorkspaces = projectWorkspaceLibrary(workspaces, searchQuery, sortMode)
+        val sections = projectWorkspaceLibrarySections(workspaces, searchQuery, sortMode)
+        pinnedWorkspaces = sections.pinned
+        regularWorkspaces = sections.regular
+        visibleWorkspaces = sections.all
     }
     private fun nonNegativeNow(): Long = clock.nowEpochMillis().coerceAtLeast(0L)
     private fun nextUpdatedAt(existing: Workspace): Long = max(

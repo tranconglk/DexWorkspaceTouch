@@ -40,6 +40,7 @@ fun WorkspaceLibraryCard(
     onOpen: () -> Unit,
     onEdit: () -> Unit,
     onDuplicate: () -> Unit,
+    onPinToggle: () -> Unit,
     onRename: () -> Unit,
     onDelete: () -> Unit,
     onManage: () -> Unit,
@@ -48,12 +49,16 @@ fun WorkspaceLibraryCard(
     openEnabled: Boolean = true,
     duplicateEnabled: Boolean = true,
 ) {
+    val cardDescription = buildString {
+        append("Workspace ${workspace.name}, ${workspace.appCount} ứng dụng.")
+        if (workspace.isPinned) append(" Đã ghim.")
+    }
     Card(
         onClick = onSelect,
         modifier = modifier
             .heightIn(min = Dimensions.WorkspaceCardMinHeight)
             .semantics {
-                contentDescription = "Workspace ${workspace.name}, ${workspace.appCount} ứng dụng."
+                contentDescription = cardDescription
                 if (selected) stateDescription = "Đang được chọn."
             },
         shape = DesignerShapes.Workspace,
@@ -73,6 +78,9 @@ fun WorkspaceLibraryCard(
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
             )
+            if (workspace.isPinned) {
+                Text("Đã ghim", style = MaterialTheme.typography.labelLarge)
+            }
             WorkspaceSnapshot(
                 canvas = workspace.canvas,
                 modifier = Modifier.fillMaxWidth(),
@@ -105,6 +113,17 @@ fun WorkspaceLibraryCard(
                     }
                     if (selected) {
                         if (showDirectManagementActions) {
+                            OutlinedButton(
+                                onClick = onPinToggle,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(TouchTargets.SecondaryButton)
+                                    .semantics {
+                                        contentDescription = if (workspace.isPinned) {
+                                            "Bỏ ghim workspace ${workspace.name}."
+                                        } else "Ghim workspace ${workspace.name}."
+                                    },
+                            ) { Text(if (workspace.isPinned) "Bỏ ghim" else "Ghim") }
                             OutlinedButton(
                                 onClick = onDuplicate,
                                 enabled = duplicateEnabled,

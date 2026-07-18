@@ -86,6 +86,7 @@ class WorkspaceLibraryBenchmarkActivity : ComponentActivity() {
                                 onOpen = {},
                                 onEdit = {},
                                 onDuplicate = {},
+                                onPinToggle = {},
                                 onRename = {},
                                 onDelete = {},
                                 onManage = {},

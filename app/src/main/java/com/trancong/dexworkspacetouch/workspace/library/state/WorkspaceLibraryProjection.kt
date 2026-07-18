@@ -6,10 +6,25 @@ internal fun projectWorkspaceLibrary(
     source: List<WorkspaceLibraryItem>,
     searchQuery: String,
     sortMode: WorkspaceSortMode,
-): List<WorkspaceLibraryItem> {
+): List<WorkspaceLibraryItem> = projectWorkspaceLibrarySections(source, searchQuery, sortMode).all
+
+internal data class WorkspaceLibrarySections(
+    val pinned: List<WorkspaceLibraryItem>,
+    val regular: List<WorkspaceLibraryItem>,
+) {
+    val all: List<WorkspaceLibraryItem> get() = pinned + regular
+}
+
+internal fun projectWorkspaceLibrarySections(
+    source: List<WorkspaceLibraryItem>,
+    searchQuery: String,
+    sortMode: WorkspaceSortMode,
+): WorkspaceLibrarySections {
     val query = searchQuery.trim()
     val filtered = if (query.isEmpty()) source else source.filter { it.name.contains(query, ignoreCase = true) }
-    return filtered.sortedWith(sortMode.comparator())
+    val (pinned, regular) = filtered.partition(WorkspaceLibraryItem::isPinned)
+    val comparator = sortMode.comparator()
+    return WorkspaceLibrarySections(pinned.sortedWith(comparator), regular.sortedWith(comparator))
 }
 
 private fun WorkspaceSortMode.comparator(): Comparator<WorkspaceLibraryItem> {

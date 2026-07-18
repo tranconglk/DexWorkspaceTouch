@@ -10,6 +10,7 @@ data class Workspace(
     val schemaVersion: Int,
     val createdAtEpochMillis: Long,
     val updatedAtEpochMillis: Long,
+    val isPinned: Boolean = false,
 ) {
     init {
         require(id.isNotBlank()) { "id must not be blank" }

@@ -58,6 +58,8 @@ fun TouchNavigation(activity: Activity) {
         composable(Routes.Home) {
             HomeScreen(
                 workspaces = libraryViewModel.visibleWorkspaces,
+                pinnedWorkspaces = libraryViewModel.pinnedWorkspaces,
+                regularWorkspaces = libraryViewModel.regularWorkspaces,
                 hasSourceWorkspaces = libraryViewModel.workspaces.isNotEmpty(),
                 searchQuery = libraryViewModel.searchQuery,
                 sortMode = libraryViewModel.sortMode,
@@ -77,6 +79,7 @@ fun TouchNavigation(activity: Activity) {
                 },
                 onRenameWorkspace = { id, name -> libraryViewModel.renameWorkspace(id, name) },
                 onDuplicateWorkspace = libraryViewModel::duplicateWorkspace,
+                onSetWorkspacePinned = libraryViewModel::setWorkspacePinned,
                 onDeleteWorkspace = libraryViewModel::deleteWorkspace,
                 libraryIsLoading = libraryViewModel.isLoading,
                 persistenceError = libraryViewModel.persistenceError,
@@ -91,6 +94,8 @@ fun TouchNavigation(activity: Activity) {
                 duplicateFeedback = libraryViewModel.duplicateFeedback,
                 onDismissDuplicateFeedback = libraryViewModel::dismissDuplicateFeedback,
                 libraryWriteInProgress = libraryViewModel.isWriting,
+                pinFeedback = libraryViewModel.pinFeedback,
+                onDismissPinFeedback = libraryViewModel::dismissPinFeedback,
                 launchState = launchViewModel.state,
                 onLaunchWorkspace = { workspace ->
                     launchViewModel.launchWorkspace(workspace, launchRuntime, launchHostToken)

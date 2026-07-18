@@ -25,6 +25,8 @@ private fun WorkspaceLibraryPreview() {
     DexWorkspaceTouchTheme(darkTheme = false) {
         HomeScreen(
             workspaces = previewWorkspaces,
+            pinnedWorkspaces = previewWorkspaces.filter { it.isPinned },
+            regularWorkspaces = previewWorkspaces.filterNot { it.isPinned },
             hasSourceWorkspaces = previewWorkspaces.isNotEmpty(),
             searchQuery = "",
             sortMode = WorkspaceSortMode.RECENTLY_UPDATED,
@@ -38,6 +40,7 @@ private fun WorkspaceLibraryPreview() {
             onEditWorkspace = {},
             onRenameWorkspace = { _, _ -> },
             onDuplicateWorkspace = {},
+            onSetWorkspacePinned = { _, _ -> },
             onDeleteWorkspace = {},
             libraryIsLoading = false,
             persistenceError = null,
@@ -48,6 +51,8 @@ private fun WorkspaceLibraryPreview() {
             duplicateFeedback = null,
             onDismissDuplicateFeedback = {},
             libraryWriteInProgress = false,
+            pinFeedback = null,
+            onDismissPinFeedback = {},
             launchState = WorkspaceLaunchUiState.Idle,
             onLaunchWorkspace = {},
             onCancelLaunch = {},

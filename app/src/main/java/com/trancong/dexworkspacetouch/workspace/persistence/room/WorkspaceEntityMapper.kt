@@ -11,6 +11,7 @@ fun Workspace.toEntity(serializer: WorkspaceCanvasSerializer): WorkspaceEntity =
     schemaVersion = schemaVersion,
     createdAtEpochMillis = createdAtEpochMillis,
     updatedAtEpochMillis = updatedAtEpochMillis,
+    isPinned = isPinned,
 )
 
 fun WorkspaceEntity.toDomain(serializer: WorkspaceCanvasSerializer): Workspace = Workspace(
@@ -21,4 +22,5 @@ fun WorkspaceEntity.toDomain(serializer: WorkspaceCanvasSerializer): Workspace =
     schemaVersion = schemaVersion,
     createdAtEpochMillis = createdAtEpochMillis,
     updatedAtEpochMillis = updatedAtEpochMillis,
+    isPinned = isPinned,
 )

@@ -29,4 +29,7 @@ interface WorkspaceRepository {
     suspend fun deleteById(id: String)
     suspend fun exists(id: String): Boolean
     suspend fun count(): Int
+    suspend fun setPinned(id: String, isPinned: Boolean) {
+        throw UnsupportedOperationException("Pin is not supported")
+    }
 }

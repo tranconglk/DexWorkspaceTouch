@@ -9,6 +9,7 @@ data class WorkspaceLibraryItem(
     val modifiedSequence: Long,
     val createdAtEpochMillis: Long = 0L,
     val updatedAtEpochMillis: Long = 0L,
+    val isPinned: Boolean = false,
 ) {
     init {
         require(id.isNotBlank()) { "id must not be blank" }

@@ -16,6 +16,10 @@
 ## Persistence
 
 - [ ] Restart process and install an upgrade APK without data loss.
+- [ ] Upgrade a v1 database to v2; confirm every existing workspace remains and starts unpinned.
+- [ ] Pin, force-stop/reopen, rename, and edit/save; confirm pin and workspace content remain.
+- [ ] Duplicate a pinned workspace; confirm the source stays pinned and the copy starts unpinned.
+- [ ] Unpin and restart; confirm it returns to the regular section.
 - [ ] If corruption debug tooling is available, confirm one bad row does not hide valid rows.
 
 ## Launch

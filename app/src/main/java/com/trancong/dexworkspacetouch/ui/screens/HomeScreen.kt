@@ -61,6 +61,8 @@ import com.trancong.dexworkspacetouch.workspace.templates.ui.WorkspaceTemplatePi
 @Composable
 fun HomeScreen(
     workspaces: List<WorkspaceLibraryItem>,
+    pinnedWorkspaces: List<WorkspaceLibraryItem>,
+    regularWorkspaces: List<WorkspaceLibraryItem>,
     hasSourceWorkspaces: Boolean,
     searchQuery: String,
     sortMode: WorkspaceSortMode,
@@ -74,6 +76,7 @@ fun HomeScreen(
     onEditWorkspace: (String) -> Unit,
     onRenameWorkspace: (String, String) -> Unit,
     onDuplicateWorkspace: (String) -> Unit,
+    onSetWorkspacePinned: (String, Boolean) -> Unit,
     onDeleteWorkspace: (String) -> Unit,
     libraryIsLoading: Boolean,
     persistenceError: WorkspaceLibraryPersistenceError?,
@@ -84,6 +87,8 @@ fun HomeScreen(
     duplicateFeedback: WorkspaceDuplicateFeedback?,
     onDismissDuplicateFeedback: () -> Unit,
     libraryWriteInProgress: Boolean,
+    pinFeedback: com.trancong.dexworkspacetouch.workspace.library.state.WorkspacePinFeedback?,
+    onDismissPinFeedback: () -> Unit,
     launchState: WorkspaceLaunchUiState,
     onLaunchWorkspace: (WorkspaceLibraryItem) -> Unit,
     onCancelLaunch: () -> Unit,
@@ -107,6 +112,17 @@ fun HomeScreen(
         }
         snackbarHostState.showSnackbar(message)
         onDismissDuplicateFeedback()
+    }
+    LaunchedEffect(pinFeedback) {
+        val message = when (val feedback = pinFeedback) {
+            is com.trancong.dexworkspacetouch.workspace.library.state.WorkspacePinFeedback.Success ->
+                if (feedback.isPinned) "Đã ghim ${feedback.workspaceName}." else "Đã bỏ ghim ${feedback.workspaceName}."
+            is com.trancong.dexworkspacetouch.workspace.library.state.WorkspacePinFeedback.Failure ->
+                if (feedback.attemptedPinned) "Không thể ghim workspace." else "Không thể bỏ ghim workspace."
+            null -> return@LaunchedEffect
+        }
+        snackbarHostState.showSnackbar(message)
+        onDismissPinFeedback()
     }
 
     if (showTemplatePicker) {
@@ -163,6 +179,21 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(Spacing.S),
                 ) {
                     Text(workspace.name, style = MaterialTheme.typography.titleLarge)
+                    OutlinedButton(
+                        onClick = {
+                            managedWorkspaceId = null
+                            onSetWorkspacePinned(workspace.id, !workspace.isPinned)
+                        },
+                        enabled = !libraryWriteInProgress,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(TouchTargets.SecondaryButton)
+                            .semantics {
+                                contentDescription = if (workspace.isPinned) {
+                                    "Bỏ ghim workspace ${workspace.name}."
+                                } else "Ghim workspace ${workspace.name}."
+                            },
+                    ) { Text(if (workspace.isPinned) "Bỏ ghim" else "Ghim") }
                     OutlinedButton(
                         onClick = {
                             managedWorkspaceId = null
@@ -408,7 +439,16 @@ fun HomeScreen(
                     }
                 }
             } else {
-                items(workspaces, key = WorkspaceLibraryItem::id) { workspace ->
+                if (pinnedWorkspaces.isNotEmpty()) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Text(
+                            "Đã ghim",
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.semantics { contentDescription = "Workspace đã ghim." },
+                        )
+                    }
+                }
+                items(pinnedWorkspaces, key = WorkspaceLibraryItem::id) { workspace ->
                     WorkspaceLibraryCard(
                         workspace = workspace,
                         selected = workspace.id == selectedWorkspaceId,
@@ -416,6 +456,31 @@ fun HomeScreen(
                         onOpen = { onLaunchWorkspace(workspace) },
                         onEdit = { onEditWorkspace(workspace.id) },
                         onDuplicate = { onDuplicateWorkspace(workspace.id) },
+                        onPinToggle = { onSetWorkspacePinned(workspace.id, !workspace.isPinned) },
+                        onRename = { showRename(workspace) },
+                        onDelete = { deleteWorkspaceId = workspace.id },
+                        onManage = { managedWorkspaceId = workspace.id },
+                        canDelete = editingWorkspaceId != workspace.id,
+                        openEnabled = launchState !is WorkspaceLaunchUiState.Checking &&
+                            launchState !is WorkspaceLaunchUiState.Launching,
+                        duplicateEnabled = !libraryWriteInProgress,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                if (regularWorkspaces.isNotEmpty()) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Text("Workspace", style = MaterialTheme.typography.titleLarge)
+                    }
+                }
+                items(regularWorkspaces, key = WorkspaceLibraryItem::id) { workspace ->
+                    WorkspaceLibraryCard(
+                        workspace = workspace,
+                        selected = workspace.id == selectedWorkspaceId,
+                        onSelect = { onWorkspaceSelected(workspace.id) },
+                        onOpen = { onLaunchWorkspace(workspace) },
+                        onEdit = { onEditWorkspace(workspace.id) },
+                        onDuplicate = { onDuplicateWorkspace(workspace.id) },
+                        onPinToggle = { onSetWorkspacePinned(workspace.id, !workspace.isPinned) },
                         onRename = { showRename(workspace) },
                         onDelete = { deleteWorkspaceId = workspace.id },
                         onManage = { managedWorkspaceId = workspace.id },

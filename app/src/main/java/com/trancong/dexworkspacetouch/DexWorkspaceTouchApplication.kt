@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.trancong.dexworkspacetouch.workspace.persistence.repository.RoomWorkspaceRepository
 import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspaceRepository
 import com.trancong.dexworkspacetouch.workspace.persistence.room.DexWorkspaceDatabase
+import com.trancong.dexworkspacetouch.workspace.persistence.room.MIGRATION_1_2
 import com.trancong.dexworkspacetouch.workspace.persistence.serialization.DeterministicWorkspaceCanvasJsonSerializer
 
 class DexWorkspaceTouchApplication : Application() {
@@ -17,7 +18,7 @@ class DexWorkspaceTouchApplication : Application() {
             applicationContext,
             DexWorkspaceDatabase::class.java,
             DexWorkspaceDatabase.DATABASE_NAME,
-        ).build()
+        ).addMigrations(MIGRATION_1_2).build()
         workspaceRepository = RoomWorkspaceRepository(
             dao = database.workspaceDao(),
             serializer = DeterministicWorkspaceCanvasJsonSerializer(),

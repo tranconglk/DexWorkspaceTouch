@@ -56,3 +56,10 @@ Library có toolbar touch-first: cửa sổ rộng đặt search và “Sắp x�
 xếp dọc. Search không tự focus, chỉ tìm theo tên và có action xóa 56dp. Sort dùng bottom
 sheet với năm lựa chọn full-width 56dp, selected state rõ ràng. Source rỗng và query không
 khớp có empty state riêng; filter không xóa selection theo ID.
+
+## Workspace pin
+
+Pinned workspaces appear first under “Đã ghim”, followed by the regular “Workspace” section.
+The card exposes “Ghim” or “Bỏ ghim” only through labeled touch actions of at least 56dp;
+narrow cards use the existing management sheet. A visible “Đã ghim” badge and card semantics
+communicate state without relying on color. Search applies to both sections and preserves IDs.

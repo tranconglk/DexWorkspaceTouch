@@ -8,7 +8,7 @@ import org.junit.Test
 
 class WorkspaceEntityMapperTest {
     private val serializer = DeterministicWorkspaceCanvasJsonSerializer()
-    private val workspace = Workspace("id", "Tên", WorkspaceCanvas.singleCell(), 9, 1, 100, 200)
+    private val workspace = Workspace("id", "Tên", WorkspaceCanvas.singleCell(), 9, 1, 100, 200, isPinned = true)
 
     @Test fun `domain maps every field to entity`() {
         val entity = workspace.toEntity(serializer)
@@ -18,6 +18,7 @@ class WorkspaceEntityMapperTest {
         assertEquals(workspace.schemaVersion, entity.schemaVersion)
         assertEquals(workspace.createdAtEpochMillis, entity.createdAtEpochMillis)
         assertEquals(workspace.updatedAtEpochMillis, entity.updatedAtEpochMillis)
+        assertEquals(true, entity.isPinned)
     }
 
     @Test fun `entity maps every field to domain`() {

@@ -28,6 +28,13 @@ interface WorkspaceDao {
         if (updateRows(entity) != 1) throw WorkspaceRowNotFoundException(entity.id)
     }
 
+    @Query("UPDATE workspaces SET isPinned = :isPinned WHERE id = :id")
+    suspend fun setPinnedRows(id: String, isPinned: Boolean): Int
+
+    suspend fun setPinned(id: String, isPinned: Boolean) {
+        if (setPinnedRows(id, isPinned) != 1) throw WorkspaceRowNotFoundException(id)
+    }
+
     @Query("DELETE FROM workspaces WHERE id = :id")
     suspend fun deleteRowsById(id: String): Int
 

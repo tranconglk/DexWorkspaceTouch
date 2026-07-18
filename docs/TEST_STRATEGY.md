@@ -19,6 +19,10 @@
 - `golden/GoldenWorkspacePersistenceTest` covers file-backed insert/update/rename/delete/reopen,
   malformed-row isolation, Unicode/large JSON, ordering, and failed-update rollback.
 - Existing focused class tests remain the fastest diagnosis layer and are not duplicated wholesale.
+- Room migration instrumentation validates v1→v2 row preservation, the default unpinned value,
+  schema identity, and pin persistence after reopening the migrated database.
+- Pin JVM coverage verifies mapping, repository field updates, partition/sort/search behavior,
+  ViewModel pin/unpin, duplicate defaults, and preservation through rename/Designer save.
 - Compose animation, exact pixels, DeX taskbar, display disconnect, and real PackageManager/launch are
   intentionally manual because device and window-manager behavior is authoritative.
 

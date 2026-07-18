@@ -1,5 +1,6 @@
 package com.trancong.dexworkspacetouch.workspace.persistence.room
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -12,4 +13,5 @@ data class WorkspaceEntity(
     val schemaVersion: Int,
     val createdAtEpochMillis: Long,
     val updatedAtEpochMillis: Long,
+    @ColumnInfo(defaultValue = "0") val isPinned: Boolean = false,
 )

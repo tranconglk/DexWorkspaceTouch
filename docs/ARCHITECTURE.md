@@ -327,3 +327,12 @@ Room Flow phát source list đã decode một lần → `WorkspaceLibraryViewMod
 immutable → projection lọc theo tên → comparator sort deterministic → Home render
 `visibleWorkspaces`. Search/sort không query lại Room, không mutate source và không tham gia
 write mutex. Selection và Lazy grid key tiếp tục dùng workspace ID, không dùng index.
+
+## Persistent workspace pin
+
+Room schema v2 adds `workspaces.isPinned INTEGER NOT NULL DEFAULT 0`. `MIGRATION_1_2`
+preserves every v1 row and makes it unpinned by default. Pin writes use a dedicated DAO
+field update, then the existing Room Flow refreshes the domain and presentation models.
+Library projection filters once, partitions pinned and regular workspaces, and applies the
+selected deterministic sort independently inside each section. Pin does not alter canvas,
+identity, timestamps, or modified sequence; duplicate always starts unpinned.

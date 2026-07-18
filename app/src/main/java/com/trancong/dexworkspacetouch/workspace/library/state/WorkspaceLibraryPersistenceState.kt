@@ -5,6 +5,8 @@ enum class WorkspaceLibraryPersistenceOperation {
     SAVE,
     RENAME,
     DUPLICATE,
+    PIN,
+    UNPIN,
     DELETE,
 }
 
@@ -16,6 +18,8 @@ data class WorkspaceLibraryPersistenceError(
         WorkspaceLibraryPersistenceOperation.SAVE -> "Không thể lưu workspace."
         WorkspaceLibraryPersistenceOperation.RENAME -> "Không thể đổi tên workspace."
         WorkspaceLibraryPersistenceOperation.DUPLICATE -> "Không thể nhân bản workspace."
+        WorkspaceLibraryPersistenceOperation.PIN -> "Không thể ghim workspace."
+        WorkspaceLibraryPersistenceOperation.UNPIN -> "Không thể bỏ ghim workspace."
         WorkspaceLibraryPersistenceOperation.DELETE -> "Không thể xóa workspace."
     }
 }
@@ -23,4 +27,9 @@ data class WorkspaceLibraryPersistenceError(
 sealed interface WorkspaceDuplicateFeedback {
     data class Success(val workspaceName: String) : WorkspaceDuplicateFeedback
     data object Failure : WorkspaceDuplicateFeedback
+}
+
+sealed interface WorkspacePinFeedback {
+    data class Success(val workspaceName: String, val isPinned: Boolean) : WorkspacePinFeedback
+    data class Failure(val attemptedPinned: Boolean) : WorkspacePinFeedback
 }

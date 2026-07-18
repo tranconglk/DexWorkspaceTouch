@@ -370,6 +370,44 @@ class WorkspaceLibraryViewModelTest {
         assertEquals(listOf("id"), recreated.visibleWorkspaces.map { it.id })
     }
 
+    @Test fun `pin and unpin persist without changing content metadata`() {
+        val original = workspace("id", "Pinned", 7, created = 10, updated = 20)
+        val repository = FakeRepository(listOf(original))
+        val state = viewModel(repository)
+        state.setWorkspacePinned("id", true)
+        val pinned = repository.current.single()
+        assertTrue(pinned.isPinned)
+        assertEquals(original.canvas, pinned.canvas)
+        assertEquals(original.createdAtEpochMillis, pinned.createdAtEpochMillis)
+        assertEquals(original.updatedAtEpochMillis, pinned.updatedAtEpochMillis)
+        assertEquals(original.modifiedSequence, pinned.modifiedSequence)
+        assertEquals(listOf("id"), state.pinnedWorkspaces.map { it.id })
+        state.setWorkspacePinned("id", false)
+        assertFalse(repository.current.single().isPinned)
+        assertEquals(listOf("id"), state.regularWorkspaces.map { it.id })
+    }
+
+    @Test fun `duplicate pinned source creates unpinned copy while source remains pinned`() {
+        val repository = FakeRepository(listOf(workspace("source", "Name", 1).copy(isPinned = true)))
+        val state = viewModel(repository, ids = QueueIds("copy"))
+        state.duplicateWorkspace("source")
+        assertTrue(repository.current.first { it.id == "source" }.isPinned)
+        assertFalse(repository.current.first { it.id == "copy" }.isPinned)
+    }
+
+    @Test fun `rename and designer save preserve pin while new workspace defaults unpinned`() {
+        val repository = FakeRepository(listOf(workspace("id", "Name", 1).copy(isPinned = true)))
+        val state = viewModel(repository, ids = QueueIds("new"))
+        state.renameWorkspace("id", "Renamed")
+        state.beginEditingWorkspace("id")
+        state.saveWorkspace(canvas, "Saved")
+        assertTrue(repository.current.single().isPinned)
+        state.finishEditing()
+        state.createWorkspace()
+        state.saveWorkspace(canvas, "New")
+        assertFalse(repository.current.first { it.id == "new" }.isPinned)
+    }
+
     @Test fun `selection rename delete and default name remain correct with five hundred workspaces`() {
         val repository = FakeRepository(WorkspaceBenchmarkDataGenerator.generate(500))
         val state = viewModel(repository, ids = QueueIds("new-501"))
@@ -437,6 +475,11 @@ class WorkspaceLibraryViewModelTest {
         }
         override suspend fun exists(id: String) = current.any { it.id == id }
         override suspend fun count() = current.size
+        override suspend fun setPinned(id: String, isPinned: Boolean) {
+            if (failMutations) throw WorkspacePersistenceException.DatabaseFailure("pin")
+            if (current.none { it.id == id }) throw WorkspacePersistenceException.DatabaseFailure("missing")
+            state.value = current.map { if (it.id == id) it.copy(isPinned = isPinned) else it }
+        }
         fun emit(values: List<Workspace>) { state.value = values }
     }
 

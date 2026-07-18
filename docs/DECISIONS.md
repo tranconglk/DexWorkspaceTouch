@@ -324,3 +324,12 @@ Quyết định:
 - Năm sort mode có tie-break deterministic bằng metadata, name và ID.
 - `searchQuery` và `sortMode` là preference trong phiên ViewModel, chưa persistence/DataStore.
 - Selection và stable key dùng ID nên filter/sort không thay đổi identity.
+
+## ADR-023 — Pin is persisted metadata with independent library sections
+
+- Pin is a persisted `Workspace` property and a Room v2 column, not transient UI state.
+- Migration v1→v2 uses `NOT NULL DEFAULT 0`; existing data is never destructively rebuilt.
+- A dedicated DAO update changes only `isPinned`; pin/unpin does not change content metadata.
+- Library search runs before partitioning. Pinned and regular sections are sorted independently.
+- Duplicating a pinned workspace creates an unpinned copy; rename and Designer save preserve pin.
+- Pin actions remain touch-first and never use an overflow menu.

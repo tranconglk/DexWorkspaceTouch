@@ -77,6 +77,17 @@ class WorkspaceDaoTest {
         assertEquals("First", dao.getById("id")?.name)
     }
 
+    @Test fun setPinnedPreservesWorkspaceMetadata() = runBlocking {
+        val original = entity("id", "Name", 7, 20)
+        dao.insert(original)
+
+        dao.setPinned("id", true)
+
+        assertEquals(original.copy(isPinned = true), dao.getById("id"))
+        dao.setPinned("id", false)
+        assertEquals(original, dao.getById("id"))
+    }
+
     @Test fun largeCanvasJsonIsPreserved() = runBlocking {
         val largeJson = "x".repeat(100_000)
         dao.insert(entity("large", "Lớn", 1, 10).copy(canvasJson = largeJson))

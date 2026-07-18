@@ -9,6 +9,7 @@ fun Workspace.toLibraryItem(): WorkspaceLibraryItem = WorkspaceLibraryItem(
     modifiedSequence = modifiedSequence,
     createdAtEpochMillis = createdAtEpochMillis,
     updatedAtEpochMillis = updatedAtEpochMillis,
+    isPinned = isPinned,
 )
 
 fun WorkspaceLibraryItem.toDomainWorkspace(
@@ -23,4 +24,5 @@ fun WorkspaceLibraryItem.toDomainWorkspace(
     schemaVersion = schemaVersion,
     createdAtEpochMillis = createdAtEpochMillis,
     updatedAtEpochMillis = updatedAtEpochMillis,
+    isPinned = isPinned,
 )
