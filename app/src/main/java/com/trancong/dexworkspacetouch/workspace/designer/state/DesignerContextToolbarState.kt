@@ -3,6 +3,7 @@ package com.trancong.dexworkspacetouch.workspace.designer.state
 import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceLimits
+import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasEditor
 import com.trancong.dexworkspacetouch.workspace.designer.model.dividers
 import kotlin.math.roundToInt
 
@@ -20,6 +21,7 @@ data class DesignerContextToolbarState(
             val canSplitHorizontal: Boolean,
             val canSplitVertical: Boolean,
             val maximumCellsReached: Boolean,
+            val canMerge: Boolean,
         ) : Context
 
         data class Divider(
@@ -57,6 +59,7 @@ data class DesignerContextToolbarState(
                             canSplitHorizontal = !maximumReached && cell.bounds.height / 2f >= MIN_CHILD_RATIO,
                             canSplitVertical = !maximumReached && cell.bounds.width / 2f >= MIN_CHILD_RATIO,
                             maximumCellsReached = maximumReached,
+                            canMerge = WorkspaceCanvasEditor().findMergeCandidates(canvas, cell.id).isNotEmpty(),
                         )
                     }
                 ?: Context.None

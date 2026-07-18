@@ -45,6 +45,10 @@ import com.trancong.dexworkspacetouch.workspace.designer.state.SplitResult
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceLimits
 import com.trancong.dexworkspacetouch.workspace.designer.ui.WorkspaceCanvasView
 import com.trancong.dexworkspacetouch.workspace.designer.ui.DesignerContextToolbar
+import com.trancong.dexworkspacetouch.workspace.designer.ui.WorkspaceMergeConfirmationDialog
+import com.trancong.dexworkspacetouch.workspace.designer.ui.WorkspaceMergeTargetDialog
+import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceMergeResult
+import com.trancong.dexworkspacetouch.workspace.designer.model.requiresMergeConfirmation
 import com.trancong.dexworkspacetouch.workspace.designer.state.DesignerContextToolbarState
 import com.trancong.dexworkspacetouch.workspace.designer.ui.layout.fitSize
 import kotlinx.coroutines.launch
@@ -61,6 +65,8 @@ fun LayoutDesignerScreen(
     var workspaceName by rememberSaveable { mutableStateOf("") }
     val snackbarHostState = androidx.compose.runtime.remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    var showMergePicker by rememberSaveable { mutableStateOf(false) }
+    var pendingMergeTargetId by rememberSaveable { mutableStateOf<String?>(null) }
     if (showNameDialog) {
         AlertDialog(
             onDismissRequest = { showNameDialog = false },
@@ -86,6 +92,40 @@ fun LayoutDesignerScreen(
                 ) { Text("Hủy") }
             },
         )
+    }
+    if (showMergePicker) {
+        WorkspaceMergeTargetDialog(
+            canvas = state.canvas,
+            candidates = state.mergeCandidates,
+            onTargetSelected = { targetId ->
+                showMergePicker = false
+                val source = state.selectedCellId?.let { id -> state.canvas.cells.firstOrNull { it.id == id } }
+                val target = state.canvas.cells.firstOrNull { it.id == targetId }
+                if (source != null && target != null && requiresMergeConfirmation(source, target)) {
+                    pendingMergeTargetId = targetId
+                } else {
+                    performMerge(state, targetId, scope, snackbarHostState)
+                }
+            },
+            onDismiss = { showMergePicker = false },
+        )
+    }
+    pendingMergeTargetId?.let { targetId ->
+        val sourceLabel = state.selectedCellId
+            ?.let { id -> state.canvas.cells.firstOrNull { it.id == id } }
+            ?.app?.label
+        if (sourceLabel != null) {
+            WorkspaceMergeConfirmationDialog(
+                sourceLabel = sourceLabel,
+                onConfirm = {
+                    pendingMergeTargetId = null
+                    performMerge(state, targetId, scope, snackbarHostState)
+                },
+                onDismiss = { pendingMergeTargetId = null },
+            )
+        } else {
+            pendingMergeTargetId = null
+        }
     }
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -138,6 +178,7 @@ fun LayoutDesignerScreen(
                 onSplitVertical = {
                     handleSplit(state, com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection.VERTICAL, scope, snackbarHostState)
                 },
+                onMergeCell = { showMergePicker = true },
                 onDecreaseDivider = { resizeSelectedDivider(state, -DIVIDER_STEP) },
                 onIncreaseDivider = { resizeSelectedDivider(state, DIVIDER_STEP) },
                 onResetDivider = { resetSelectedDivider(state) },
@@ -177,6 +218,17 @@ fun LayoutDesignerScreen(
                 }
             }
         }
+    }
+}
+
+private fun performMerge(
+    state: WorkspaceDesignerViewModel,
+    targetCellId: String,
+    scope: kotlinx.coroutines.CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+) {
+    if (state.mergeSelectedCell(targetCellId) is WorkspaceMergeResult.Failure) {
+        scope.launch { snackbarHostState.showSnackbar("Không thể gộp hai ô này.") }
     }
 }
 

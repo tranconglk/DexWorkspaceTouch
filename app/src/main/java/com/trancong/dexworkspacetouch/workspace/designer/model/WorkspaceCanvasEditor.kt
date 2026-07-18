@@ -3,6 +3,59 @@ package com.trancong.dexworkspacetouch.workspace.designer.model
 class WorkspaceCanvasEditor(
     private val validator: WorkspaceCanvasValidator = WorkspaceCanvasValidator(),
 ) {
+    fun findMergeCandidates(
+        canvas: WorkspaceCanvas,
+        sourceCellId: String,
+    ): List<WorkspaceMergeCandidate> {
+        require(validator.validate(canvas).isEmpty()) { "canvas must be valid before finding merge candidates" }
+        val source = canvas.cells.firstOrNull { it.id == sourceCellId }
+            ?: throw IllegalArgumentException("Cell '$sourceCellId' does not exist")
+
+        return canvas.cells.asSequence()
+            .filter { it.id != sourceCellId }
+            .mapNotNull { target -> mergeCandidate(canvas, source, target) }
+            .distinctBy { it.targetCellId }
+            .sortedWith(compareBy<WorkspaceMergeCandidate>({ it.direction.ordinal }, { it.targetCellId }))
+            .toList()
+    }
+
+    fun mergeCells(
+        canvas: WorkspaceCanvas,
+        sourceCellId: String,
+        targetCellId: String,
+    ): WorkspaceMergeResult {
+        val source = canvas.cells.firstOrNull { it.id == sourceCellId }
+            ?: return WorkspaceMergeResult.Failure(WorkspaceMergeFailureReason.SOURCE_NOT_FOUND)
+        val target = canvas.cells.firstOrNull { it.id == targetCellId }
+            ?: return WorkspaceMergeResult.Failure(WorkspaceMergeFailureReason.TARGET_NOT_FOUND)
+        if (sourceCellId == targetCellId) {
+            return WorkspaceMergeResult.Failure(WorkspaceMergeFailureReason.SAME_CELL)
+        }
+        if (validator.validate(canvas).isNotEmpty()) {
+            return WorkspaceMergeResult.Failure(WorkspaceMergeFailureReason.INVALID_RESULT)
+        }
+
+        val candidate = mergeCandidate(canvas, source, target)
+            ?: return WorkspaceMergeResult.Failure(classifyInvalidPair(source.bounds, target.bounds))
+        val mergedCell = target.copy(
+            bounds = candidate.mergedBounds,
+            app = target.app ?: source.app,
+        )
+        val result = WorkspaceCanvas(
+            canvas.cells.mapNotNull { cell ->
+                when (cell.id) {
+                    sourceCellId -> null
+                    targetCellId -> mergedCell
+                    else -> cell
+                }
+            },
+        )
+        if (validator.validate(result).isNotEmpty()) {
+            return WorkspaceMergeResult.Failure(WorkspaceMergeFailureReason.INVALID_RESULT)
+        }
+        return WorkspaceMergeResult.Success(result, candidate)
+    }
+
     fun splitCell(
         canvas: WorkspaceCanvas,
         cellId: String,
@@ -103,8 +156,59 @@ class WorkspaceCanvasEditor(
         } while (true)
     }
 
+    private fun mergeCandidate(
+        canvas: WorkspaceCanvas,
+        source: WorkspaceCell,
+        target: WorkspaceCell,
+    ): WorkspaceMergeCandidate? {
+        val direction = mergeDirection(source.bounds, target.bounds) ?: return null
+        val mergedBounds = NormalizedBounds(
+            left = minOf(source.bounds.left, target.bounds.left),
+            top = minOf(source.bounds.top, target.bounds.top),
+            right = maxOf(source.bounds.right, target.bounds.right),
+            bottom = maxOf(source.bounds.bottom, target.bounds.bottom),
+        )
+        val candidate = WorkspaceMergeCandidate(source.id, target.id, mergedBounds, direction)
+        val otherCells = canvas.cells.filter { it.id != source.id && it.id != target.id }
+        if (otherCells.any { mergedBounds.overlapsWithTolerance(it.bounds) }) return null
+        return candidate
+    }
+
+    private fun mergeDirection(
+        source: NormalizedBounds,
+        target: NormalizedBounds,
+    ): WorkspaceMergeDirection? {
+        val sameVerticalSpan = close(source.top, target.top) && close(source.bottom, target.bottom)
+        val sameHorizontalSpan = close(source.left, target.left) && close(source.right, target.right)
+        return when {
+            sameVerticalSpan && close(target.right, source.left) -> WorkspaceMergeDirection.LEFT
+            sameVerticalSpan && close(source.right, target.left) -> WorkspaceMergeDirection.RIGHT
+            sameHorizontalSpan && close(target.bottom, source.top) -> WorkspaceMergeDirection.UP
+            sameHorizontalSpan && close(source.bottom, target.top) -> WorkspaceMergeDirection.DOWN
+            else -> null
+        }
+    }
+
+    private fun classifyInvalidPair(
+        source: NormalizedBounds,
+        target: NormalizedBounds,
+    ): WorkspaceMergeFailureReason {
+        val touches = close(source.right, target.left) || close(target.right, source.left) ||
+            close(source.bottom, target.top) || close(target.bottom, source.top)
+        return if (touches) WorkspaceMergeFailureReason.NON_RECTANGULAR_UNION
+        else WorkspaceMergeFailureReason.NOT_ADJACENT
+    }
+
+    private fun NormalizedBounds.overlapsWithTolerance(other: NormalizedBounds): Boolean =
+        left < other.right - GEOMETRY_TOLERANCE && right > other.left + GEOMETRY_TOLERANCE &&
+            top < other.bottom - GEOMETRY_TOLERANCE && bottom > other.top + GEOMETRY_TOLERANCE
+
+    private fun close(first: Float, second: Float): Boolean =
+        kotlin.math.abs(first - second) <= GEOMETRY_TOLERANCE
+
     private companion object {
         const val MIN_RATIO = 0.2f
         const val MAX_RATIO = 0.8f
+        const val GEOMETRY_TOLERANCE = 0.00001f
     }
 }

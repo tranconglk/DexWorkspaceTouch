@@ -9,8 +9,22 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import com.trancong.dexworkspacetouch.workspace.designer.model.NormalizedBounds
+import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCell
 
 class DesignerContextToolbarStateTest {
+    @Test fun selectedCellMergeAvailabilityFollowsTopology() {
+        val single = DesignerContextToolbarState.from(WorkspaceCanvas.singleCell(), "cell", null, false, false)
+        assertFalse((single.context as DesignerContextToolbarState.Context.Cell).canMerge)
+
+        val columns = WorkspaceCanvas(listOf(
+            WorkspaceCell("left", NormalizedBounds(0f, 0f, 0.5f, 1f)),
+            WorkspaceCell("right", NormalizedBounds(0.5f, 0f, 1f, 1f)),
+        ))
+        val paired = DesignerContextToolbarState.from(columns, "left", null, false, false)
+        assertTrue((paired.context as DesignerContextToolbarState.Context.Cell).canMerge)
+    }
+
     @Test fun `no selection exposes history and summary only`() {
         val state = DesignerContextToolbarState.from(WorkspaceCanvas.singleCell(), null, null, true, false)
         assertEquals(DesignerContextToolbarState.Context.None, state.context)

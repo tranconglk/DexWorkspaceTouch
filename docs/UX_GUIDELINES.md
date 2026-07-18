@@ -80,3 +80,9 @@ Cell content stays unobstructed: tapping it is reserved for selecting/changing i
 or selected-divider action overlay is rendered. Wide windows keep history, context actions, and
 status in one row; narrow windows use separate history, context, and status rows while preserving
 56dp targets. Selection itself never creates history.
+### Merge cells
+
+- Use the label “Gộp ô”; do not describe the action as a standalone delete.
+- Always present valid targets by direction before changing the layout.
+- Confirm when merging would discard the selected source cell's app assignment.
+- Tapping a cell continues to activate the App Picker and never merges automatically.

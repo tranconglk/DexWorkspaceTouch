@@ -33,6 +33,38 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class GoldenWorkspaceWorkflowTest {
+    @Test fun `five cell merge undo redo save recreate remains ready with four targets`() {
+        val repository = FakeWorkspaceRepository()
+        val library = library(repository)
+        val designer = WorkspaceDesignerViewModel()
+        designer.loadCanvas(WorkspaceTemplateCatalog.default().find("top-large-four-bottom")!!.factory())
+        designer.canvas.cells.forEachIndexed { index, cell ->
+            designer.assignApp(
+                cell.id,
+                if (index % 2 == 0) GoldenWorkspaceFixtures.mapsAssigned else GoldenWorkspaceFixtures.musicAssigned,
+            )
+        }
+        val beforeMerge = designer.canvas
+        val source = designer.canvas.cells[1]
+        designer.selectCell(source.id)
+        val target = designer.mergeCandidates.first().targetCellId
+        assertTrue(designer.mergeSelectedCell(target) is com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceMergeResult.Success)
+        val merged = designer.canvas
+        assertEquals(4, merged.cells.size)
+        assertTrue(designer.undo())
+        assertEquals(beforeMerge, designer.canvas)
+        assertTrue(designer.redo())
+        assertEquals(merged, designer.canvas)
+
+        library.saveWorkspace(merged, "Merged Golden")
+        val recreated = library(repository).workspaces.single()
+        val readiness = WorkspaceLaunchRequestFactory(
+            FakeInstalledAppCatalog(GoldenWorkspaceFixtures.installedApps),
+        ).create(recreated.id, recreated.name, recreated.canvas)
+        assertTrue(readiness is LaunchReadiness.Ready)
+        assertEquals(4, (readiness as LaunchReadiness.Ready).request.targets.size)
+    }
+
     @Test fun `template from every rendered category assigns saves recreates and is ready within five cells`() {
         val catalog = WorkspaceTemplateCatalog.default()
         val representatives = mapOf(

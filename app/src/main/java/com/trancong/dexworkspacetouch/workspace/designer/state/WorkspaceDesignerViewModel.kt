@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import com.trancong.dexworkspacetouch.workspace.designer.model.AssignedApp
 import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
+import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceMergeCandidate
+import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceMergeResult
 
 class WorkspaceDesignerViewModel : ViewModel() {
     private val stateHolder = WorkspaceDesignerStateHolder(WorkspaceCanvas.singleCell())
@@ -24,6 +26,8 @@ class WorkspaceDesignerViewModel : ViewModel() {
             canUndo = canUndo,
             canRedo = canRedo,
         )
+    val mergeCandidates: List<WorkspaceMergeCandidate>
+        get() = stateHolder.findMergeCandidates()
 
     fun loadCanvas(canvas: WorkspaceCanvas) {
         appPickerNavigationPending = false
@@ -65,6 +69,9 @@ class WorkspaceDesignerViewModel : ViewModel() {
 
     fun splitSelectedCell(direction: SplitDirection): SplitResult =
         stateHolder.splitSelectedCell(direction)
+
+    fun mergeSelectedCell(targetCellId: String): WorkspaceMergeResult =
+        stateHolder.mergeSelectedCell(targetCellId)
 
     fun undo(): Boolean = stateHolder.undo()
 

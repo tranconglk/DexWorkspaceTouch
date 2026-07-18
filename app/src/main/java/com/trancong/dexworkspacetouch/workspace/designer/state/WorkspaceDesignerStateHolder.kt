@@ -7,6 +7,9 @@ import com.trancong.dexworkspacetouch.workspace.designer.model.AssignedApp
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasEditor
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceLimits
+import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceMergeCandidate
+import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceMergeFailureReason
+import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceMergeResult
 import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.assignApp
 import com.trancong.dexworkspacetouch.workspace.designer.model.dividers
@@ -126,6 +129,23 @@ class WorkspaceDesignerStateHolder(
         selectedCellId = firstCellId
         selectedDividerId = null
         return SplitResult.Success(firstCellId)
+    }
+
+    fun findMergeCandidates(): List<WorkspaceMergeCandidate> {
+        val sourceCellId = selectedCellId ?: return emptyList()
+        return editor.findMergeCandidates(canvas, sourceCellId)
+    }
+
+    fun mergeSelectedCell(targetCellId: String): WorkspaceMergeResult {
+        val sourceCellId = selectedCellId
+            ?: return WorkspaceMergeResult.Failure(WorkspaceMergeFailureReason.SOURCE_NOT_FOUND)
+        val result = editor.mergeCells(canvas, sourceCellId, targetCellId)
+        if (result is WorkspaceMergeResult.Success) {
+            updateCanvas(result.canvas)
+            selectedCellId = targetCellId
+            selectedDividerId = null
+        }
+        return result
     }
 
     fun undo(): Boolean {

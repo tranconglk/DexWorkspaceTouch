@@ -350,3 +350,18 @@ Selection state (`selectedCellId` / `selectedDividerId`) → pure
 The canvas owns hit testing and drag feedback only; structural commands no longer live inside
 cell/divider overlays. Toolbar resize buttons still call the existing 5%/50% divider APIs and
 therefore retain the current immutable history behavior.
+### Rectangular cell merge
+
+Cell removal is represented as a rectangular merge rather than deletion. The flow is:
+
+```text
+Selected cell
+→ WorkspaceCanvasEditor.findMergeCandidates
+→ directional target picker
+→ optional assignment-loss confirmation
+→ atomic mergeCells
+→ one immutable history entry
+```
+
+Only cells sharing a complete edge can merge. The target ID survives, dividers are re-derived from
+the resulting bounds, and no UI, Android, persistence, or launch type enters the domain operation.

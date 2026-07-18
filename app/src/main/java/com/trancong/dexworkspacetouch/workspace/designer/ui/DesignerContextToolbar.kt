@@ -28,6 +28,7 @@ fun DesignerContextToolbar(
     onRedo: () -> Unit,
     onSplitHorizontal: () -> Unit,
     onSplitVertical: () -> Unit,
+    onMergeCell: () -> Unit,
     onDecreaseDivider: () -> Unit,
     onIncreaseDivider: () -> Unit,
     onResetDivider: () -> Unit,
@@ -54,6 +55,7 @@ fun DesignerContextToolbar(
                     state.context,
                     onSplitHorizontal,
                     onSplitVertical,
+                    onMergeCell,
                     onDecreaseDivider,
                     onIncreaseDivider,
                     onResetDivider,
@@ -78,6 +80,7 @@ fun DesignerContextToolbar(
                             state.context,
                             onSplitHorizontal,
                             onSplitVertical,
+                            onMergeCell,
                             onDecreaseDivider,
                             onIncreaseDivider,
                             onResetDivider,
@@ -108,6 +111,7 @@ private fun RowScope.ContextActions(
     context: DesignerContextToolbarState.Context,
     onSplitHorizontal: () -> Unit,
     onSplitVertical: () -> Unit,
+    onMergeCell: () -> Unit,
     onDecreaseDivider: () -> Unit,
     onIncreaseDivider: () -> Unit,
     onResetDivider: () -> Unit,
@@ -127,6 +131,14 @@ private fun RowScope.ContextActions(
             ToolbarButton(
                 "Chia dọc", disabledDescription ?: "Chia ô theo chiều dọc.",
                 context.canSplitVertical, onSplitVertical, weighted,
+            )
+            ToolbarButton(
+                "Gộp ô",
+                if (context.canMerge) "Gộp ô đang chọn với một ô kề."
+                else "Ô này không có ô kề phù hợp để gộp.",
+                context.canMerge,
+                onMergeCell,
+                weighted,
             )
             ToolbarButton("Bỏ chọn", "Bỏ chọn ô.", true, onClearSelection, weighted)
         }

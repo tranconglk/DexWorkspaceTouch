@@ -354,3 +354,12 @@ Quyết định:
 - Wide layout uses one row; narrow layout prioritizes history, then context, then status rows.
 - Toolbar commands delegate to existing ViewModel/state-holder contracts and do not change domain,
   drag/snap, history, Room, or persistence behavior.
+## ADR-026 — Cell removal is represented by rectangular merge
+
+Status: Accepted.
+
+Removing a cell must never leave a gap. A selected source cell can therefore only be merged into a
+target that shares its full edge and whose union is one rectangle. The target ID is retained. Its app
+assignment wins; when the target is empty, the source assignment moves to it. Losing a source app when
+both cells are assigned requires confirmation. A successful merge is atomic and creates exactly one
+history entry; invalid or cancelled merges create none.
