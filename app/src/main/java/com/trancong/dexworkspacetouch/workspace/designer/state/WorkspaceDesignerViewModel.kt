@@ -7,16 +7,34 @@ import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 
 class WorkspaceDesignerViewModel : ViewModel() {
     private val stateHolder = WorkspaceDesignerStateHolder(WorkspaceCanvas.singleCell())
+    private var appPickerNavigationPending = false
 
     val canvas: WorkspaceCanvas get() = stateHolder.canvas
     val selectedCellId: String? get() = stateHolder.selectedCellId
     val selectedDividerId: String? get() = stateHolder.selectedDividerId
     val canUndo: Boolean get() = stateHolder.canUndo
     val canRedo: Boolean get() = stateHolder.canRedo
+    val summary: WorkspaceDesignerSummary get() = WorkspaceDesignerSummary.from(canvas)
+    val canSplit: Boolean get() = canvas.cells.size < com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceLimits.MaxCells
 
-    fun loadCanvas(canvas: WorkspaceCanvas) = stateHolder.loadCanvas(canvas)
+    fun loadCanvas(canvas: WorkspaceCanvas) {
+        appPickerNavigationPending = false
+        stateHolder.loadCanvas(canvas)
+    }
 
     fun selectCell(cellId: String) = stateHolder.selectCell(cellId)
+
+    fun activateCell(cellId: String): WorkspaceCellActivation? {
+        if (appPickerNavigationPending) return null
+        stateHolder.selectCell(cellId)
+        appPickerNavigationPending = true
+        val assignment = canvas.cells.first { it.id == cellId }.app
+        return WorkspaceCellActivation(cellId, assignment)
+    }
+
+    fun onAppPickerClosed() {
+        appPickerNavigationPending = false
+    }
 
     fun assignApp(cellId: String, app: AssignedApp) = stateHolder.assignApp(cellId, app)
 
@@ -44,3 +62,8 @@ class WorkspaceDesignerViewModel : ViewModel() {
 
     fun redo(): Boolean = stateHolder.redo()
 }
+
+data class WorkspaceCellActivation(
+    val cellId: String,
+    val currentAssignment: AssignedApp?,
+)

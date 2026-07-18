@@ -126,27 +126,7 @@ fun LayoutDesignerScreen(
         ) {
             TextButton(onClick = onBack) { Text("Quay lại") }
             Text("Thiết kế workspace")
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(top = Spacing.S),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.S),
-            ) {
-                OutlinedButton(
-                    onClick = { state.undo() },
-                    enabled = state.canUndo,
-                    modifier = Modifier.weight(1f).heightIn(min = TouchTargets.SecondaryButton),
-                ) { Text("↶ Undo") }
-                OutlinedButton(
-                    onClick = { state.redo() },
-                    enabled = state.canRedo,
-                    modifier = Modifier.weight(1f).heightIn(min = TouchTargets.SecondaryButton),
-                ) { Text("↷ Redo") }
-            }
-            if (state.selectedCellId != null && state.canvas.cells.size >= WorkspaceLimits.MaxCells) {
-                Text(
-                    text = "Workspace hỗ trợ tối đa ${WorkspaceLimits.MaxCells} ô.",
-                    modifier = Modifier.padding(top = Spacing.S),
-                )
-            }
+            DesignerToolbar(state)
             BoxWithConstraints(
                 modifier = Modifier.fillMaxWidth().weight(1f).padding(vertical = InteractionZones.DeadZone),
                 contentAlignment = Alignment.Center,
@@ -164,7 +144,11 @@ fun LayoutDesignerScreen(
                             canvas = state.canvas,
                             selectedCellId = state.selectedCellId,
                             selectedDividerId = state.selectedDividerId,
-                            onCellSelected = state::selectCell,
+                            onCellActivated = { cellId ->
+                                state.activateCell(cellId)?.let { activation ->
+                                    onOpenAppPicker(activation.cellId)
+                                }
+                            },
                             onDividerSelected = state::selectDivider,
                             onDividerRatioChanged = state::resizeDivider,
                             onDividerDragStart = state::beginDividerResize,
@@ -172,7 +156,6 @@ fun LayoutDesignerScreen(
                             onDividerDragEnd = { state.commitDividerResize() },
                             onDividerDragCancel = state::cancelDividerResize,
                             onClearDividerSelection = state::clearDividerSelection,
-                            onChooseApp = onOpenAppPicker,
                             onSplit = { direction ->
                                 if (state.splitSelectedCell(direction) == SplitResult.MaximumCellsReached) {
                                     scope.launch {
@@ -189,5 +172,49 @@ fun LayoutDesignerScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun DesignerToolbar(state: WorkspaceDesignerViewModel) {
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth().padding(top = Spacing.S)) {
+        val wide = maxWidth >= Dimensions.WorkspaceDesignerToolbarWideWidth
+        if (wide) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.S),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                DesignerHistoryButtons(state, Modifier.weight(2f))
+                Text(
+                    text = state.summary.statusText,
+                    modifier = Modifier.weight(1f).heightIn(min = Dimensions.DesignerStatusMinHeight),
+                )
+            }
+        } else {
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.XS)) {
+                DesignerHistoryButtons(state, Modifier.fillMaxWidth())
+                Text(
+                    text = state.summary.statusText,
+                    modifier = Modifier.heightIn(min = Dimensions.DesignerStatusMinHeight),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DesignerHistoryButtons(state: WorkspaceDesignerViewModel, modifier: Modifier) {
+    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(Spacing.S)) {
+        OutlinedButton(
+            onClick = { state.undo() },
+            enabled = state.canUndo,
+            modifier = Modifier.weight(1f).heightIn(min = TouchTargets.SecondaryButton),
+        ) { Text("↶ Undo") }
+        OutlinedButton(
+            onClick = { state.redo() },
+            enabled = state.canRedo,
+            modifier = Modifier.weight(1f).heightIn(min = TouchTargets.SecondaryButton),
+        ) { Text("↷ Redo") }
     }
 }

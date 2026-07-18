@@ -11,7 +11,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.trancong.dexworkspacetouch.ui.design.DesignerColors
+import com.trancong.dexworkspacetouch.ui.design.DesignerAnimation
 import com.trancong.dexworkspacetouch.ui.design.DesignerShapes
 import com.trancong.dexworkspacetouch.ui.design.Dimensions
 import com.trancong.dexworkspacetouch.ui.design.InteractionZones
@@ -37,12 +41,22 @@ fun WorkspaceCellView(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val description = cell.app?.let { "${it.label}. Chạm để chọn ô." }
-        ?: "Ô trống. Chạm để chọn ô."
+    val description = cell.app?.let { "Ứng dụng ${it.label}. Chạm để đổi ứng dụng." }
+        ?: "Ô trống. Chạm để chọn ứng dụng."
+    val borderColor by animateColorAsState(
+        targetValue = if (selected) DesignerColors.Selection else DesignerColors.CellBorder,
+        animationSpec = tween(DesignerAnimation.FastDurationMillis),
+        label = "selectedCellBorder",
+    )
+    val containerColor by animateColorAsState(
+        targetValue = if (selected) DesignerColors.SelectedCellBackground else DesignerColors.CellBackground,
+        animationSpec = tween(DesignerAnimation.FastDurationMillis),
+        label = "selectedCellContainer",
+    )
     val border = if (selected) {
-        BorderStroke(Dimensions.SelectionBorderWidth, DesignerColors.Selection)
+        BorderStroke(Dimensions.SelectionBorderWidth, borderColor)
     } else {
-        BorderStroke(Dimensions.CellBorderWidth, DesignerColors.CellBorder)
+        BorderStroke(Dimensions.CellBorderWidth, borderColor)
     }
 
     Card(
@@ -56,11 +70,7 @@ fun WorkspaceCellView(
         shape = DesignerShapes.Cell,
         border = border,
         colors = CardDefaults.cardColors(
-            containerColor = if (selected) {
-                DesignerColors.SelectedCellBackground
-            } else {
-                DesignerColors.CellBackground
-            },
+            containerColor = containerColor,
         ),
     ) {
         Box(Modifier.fillMaxSize()) {

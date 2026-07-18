@@ -37,6 +37,8 @@ object Dimensions {
     val WorkspaceCardMinHeight = 336.dp
     val WorkspaceCardWideActionsWidth = 420.dp
     val WorkspaceLibraryToolbarWideWidth = 720.dp
+    val WorkspaceDesignerToolbarWideWidth = 720.dp
+    val DesignerStatusMinHeight = 32.dp
     val WorkspaceSearchMinHeight = 56.dp
     val WorkspaceSortButtonMinWidth = 180.dp
     val AppRowMinHeight = 72.dp

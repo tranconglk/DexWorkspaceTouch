@@ -113,7 +113,9 @@ fun TouchNavigation(activity: Activity) {
                     navController.navigateUp()
                 },
                 onOpenAppPicker = { cellId ->
-                    navController.navigate("${Routes.AppPicker}/$cellId")
+                    navController.navigate("${Routes.AppPicker}/$cellId") {
+                        launchSingleTop = true
+                    }
                 },
                 onSave = { name ->
                     libraryViewModel.saveWorkspace(designerViewModel.canvas, name) {
@@ -131,6 +133,9 @@ fun TouchNavigation(activity: Activity) {
             val selectedIdentity = validCellId
                 ?.let { cellId -> designerViewModel.canvas.cells.first { it.id == cellId }.app }
                 ?.toIdentity()
+            DisposableEffect(validCellId) {
+                onDispose { designerViewModel.onAppPickerClosed() }
+            }
             val appIconLoader = remember(applicationContext) {
                 PackageManagerAppIconLoader.create(applicationContext)
             }
@@ -144,9 +149,13 @@ fun TouchNavigation(activity: Activity) {
             AppPickerScreen(
                 cellId = validCellId,
                 state = appPickerViewModel,
-                onBack = navController::navigateUp,
+                onBack = {
+                    designerViewModel.onAppPickerClosed()
+                    navController.navigateUp()
+                },
                 onAppSelected = { cellId, app ->
                     designerViewModel.assignApp(cellId, app)
+                    designerViewModel.onAppPickerClosed()
                     navController.navigateUp()
                 },
             )

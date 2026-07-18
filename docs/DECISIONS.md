@@ -336,3 +336,12 @@ Quyết định:
 - Pin is an always-visible 56dp corner action on every card and is removed from “Quản lý”.
 - Outline/filled bookmark state replaces the redundant text badge; toggle requires no confirmation.
 - Workspace ID remains the stable lazy key while a card moves between pinned and regular sections.
+
+## ADR-024 — Cell activation opens App Picker directly
+
+- One cell tap selects the cell, clears divider selection, and emits one navigation action.
+- A ViewModel-scoped pending guard ignores rapid taps until App Picker closes; selection alone
+  never triggers navigation, so recomposition and configuration changes cannot replay it.
+- Divider and contextual-action hit targets remain above cell content and consume their gestures.
+- Choose/change-app buttons are removed from the structural overlay.
+- App assignment changes only the working draft and history; persistence still occurs on Save.

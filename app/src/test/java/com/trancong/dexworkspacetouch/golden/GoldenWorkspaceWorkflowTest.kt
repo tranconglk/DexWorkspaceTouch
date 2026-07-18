@@ -8,6 +8,7 @@ import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppPicker
 import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasValidator
 import com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerStateHolder
+import com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerViewModel
 import com.trancong.dexworkspacetouch.workspace.launcher.WorkspaceLaunchRequestFactory
 import com.trancong.dexworkspacetouch.workspace.launcher.model.AppLaunchFailure
 import com.trancong.dexworkspacetouch.workspace.launcher.model.AppLaunchFailureReason
@@ -59,6 +60,31 @@ class GoldenWorkspaceWorkflowTest {
             ).create(saved.id, saved.name, saved.canvas)
             assertTrue(readiness is LaunchReadiness.Ready)
         }
+    }
+
+    @Test fun `five cell direct activation assignment save and recreation are launch ready`() {
+        val repository = FakeWorkspaceRepository()
+        val library = library(repository)
+        val designer = WorkspaceDesignerViewModel()
+        designer.loadCanvas(WorkspaceTemplateCatalog.default().find("top-large-four-bottom")!!.factory())
+
+        designer.canvas.cells.forEachIndexed { index, cell ->
+            val activation = designer.activateCell(cell.id)
+            assertEquals(cell.id, activation?.cellId)
+            designer.assignApp(
+                cell.id,
+                if (index % 2 == 0) GoldenWorkspaceFixtures.mapsAssigned else GoldenWorkspaceFixtures.musicAssigned,
+            )
+            designer.onAppPickerClosed()
+        }
+        assertEquals(5, designer.summary.assignedAppCount)
+        library.saveWorkspace(designer.canvas, "Direct activation")
+
+        val recreated = library(repository).workspaces.single()
+        val readiness = WorkspaceLaunchRequestFactory(
+            FakeInstalledAppCatalog(GoldenWorkspaceFixtures.installedApps),
+        ).create(recreated.id, recreated.name, recreated.canvas)
+        assertTrue(readiness is LaunchReadiness.Ready)
     }
 
     @Test fun `create split assign save and process recreation preserve final canvas`() {

@@ -64,3 +64,11 @@ Pin is an always-visible direct corner action, never an action inside “Quản 
 target shows a neutral outline bookmark when inactive and a primary filled bookmark when active.
 The former text badge is removed; accessibility still announces the action and state. Toggling
 needs no confirmation. Search applies to both sections and preserves IDs.
+
+## Direct cell activation
+
+A single tap on an empty or assigned Designer cell selects it and opens App Picker directly.
+The structural overlay no longer repeats choose/change-app actions; it contains only horizontal
+split, vertical split, and clear selection. Divider and overlay gestures keep higher hit-test
+priority than cell content. At five cells, split actions are visibly disabled and announce the
+maximum. A compact summary shows current cells, the five-cell limit, and assigned-app count.

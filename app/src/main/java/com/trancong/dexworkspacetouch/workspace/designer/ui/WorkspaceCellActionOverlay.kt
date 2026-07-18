@@ -40,7 +40,7 @@ fun WorkspaceCellActionOverlay(
     cell: WorkspaceCell,
     canSplitHorizontal: Boolean,
     canSplitVertical: Boolean,
-    onChooseApp: () -> Unit,
+    maximumCellsReached: Boolean,
     onSplitHorizontal: () -> Unit,
     onSplitVertical: () -> Unit,
     onClearSelection: () -> Unit,
@@ -48,7 +48,6 @@ fun WorkspaceCellActionOverlay(
 ) {
     var showSplitChoices by remember(cell.id) { mutableStateOf(false) }
     var showActionSheet by remember(cell.id) { mutableStateOf(false) }
-    val chooseLabel = if (cell.app == null) "Chọn ứng dụng" else "Đổi ứng dụng"
     val overlayInteractionSource = remember { MutableInteractionSource() }
 
     Surface(
@@ -64,10 +63,9 @@ fun WorkspaceCellActionOverlay(
             when {
                 maxWidth >= Dimensions.LargeCellWidth && maxHeight >= Dimensions.LargeCellHeight -> {
                     FullActionRow(
-                        chooseLabel = chooseLabel,
                         canSplitHorizontal = canSplitHorizontal,
                         canSplitVertical = canSplitVertical,
-                        onChooseApp = onChooseApp,
+                        maximumCellsReached = maximumCellsReached,
                         onSplitHorizontal = onSplitHorizontal,
                         onSplitVertical = onSplitVertical,
                         onClearSelection = onClearSelection,
@@ -76,11 +74,10 @@ fun WorkspaceCellActionOverlay(
 
                 maxWidth >= Dimensions.MediumCellWidth && maxHeight >= Dimensions.MediumCellHeight -> {
                     MediumActionRow(
-                        chooseLabel = chooseLabel,
                         showSplitChoices = showSplitChoices,
                         canSplitHorizontal = canSplitHorizontal,
                         canSplitVertical = canSplitVertical,
-                        onChooseApp = onChooseApp,
+                        maximumCellsReached = maximumCellsReached,
                         onShowSplitChoices = { showSplitChoices = true },
                         onHideSplitChoices = { showSplitChoices = false },
                         onSplitHorizontal = onSplitHorizontal,
@@ -103,14 +100,10 @@ fun WorkspaceCellActionOverlay(
 
     if (showActionSheet) {
         CellActionSheet(
-            chooseLabel = chooseLabel,
             canSplitHorizontal = canSplitHorizontal,
             canSplitVertical = canSplitVertical,
+            maximumCellsReached = maximumCellsReached,
             onDismiss = { showActionSheet = false },
-            onChooseApp = {
-                showActionSheet = false
-                onChooseApp()
-            },
             onSplitHorizontal = {
                 showActionSheet = false
                 onSplitHorizontal()
@@ -129,10 +122,9 @@ fun WorkspaceCellActionOverlay(
 
 @Composable
 private fun FullActionRow(
-    chooseLabel: String,
     canSplitHorizontal: Boolean,
     canSplitVertical: Boolean,
-    onChooseApp: () -> Unit,
+    maximumCellsReached: Boolean,
     onSplitHorizontal: () -> Unit,
     onSplitVertical: () -> Unit,
     onClearSelection: () -> Unit,
@@ -141,20 +133,18 @@ private fun FullActionRow(
         modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(InteractionZones.ActionPadding),
     ) {
-        ChooseAppButton(chooseLabel, onChooseApp)
-        ActionButton("Chia ngang", canSplitHorizontal, onSplitHorizontal)
-        ActionButton("Chia dọc", canSplitVertical, onSplitVertical)
+        ActionButton("Chia ngang", canSplitHorizontal, onSplitHorizontal, disabledContentDescription = disabledDescription(maximumCellsReached))
+        ActionButton("Chia dọc", canSplitVertical, onSplitVertical, disabledContentDescription = disabledDescription(maximumCellsReached))
         ActionButton("Bỏ chọn", true, onClearSelection)
     }
 }
 
 @Composable
 private fun MediumActionRow(
-    chooseLabel: String,
     showSplitChoices: Boolean,
     canSplitHorizontal: Boolean,
     canSplitVertical: Boolean,
-    onChooseApp: () -> Unit,
+    maximumCellsReached: Boolean,
     onShowSplitChoices: () -> Unit,
     onHideSplitChoices: () -> Unit,
     onSplitHorizontal: () -> Unit,
@@ -166,12 +156,16 @@ private fun MediumActionRow(
         horizontalArrangement = Arrangement.spacedBy(InteractionZones.ActionPadding),
     ) {
         if (showSplitChoices) {
-            ActionButton("Chia ngang", canSplitHorizontal, onSplitHorizontal)
-            ActionButton("Chia dọc", canSplitVertical, onSplitVertical)
+            ActionButton("Chia ngang", canSplitHorizontal, onSplitHorizontal, disabledContentDescription = disabledDescription(maximumCellsReached))
+            ActionButton("Chia dọc", canSplitVertical, onSplitVertical, disabledContentDescription = disabledDescription(maximumCellsReached))
             ActionButton("Quay lại", true, onHideSplitChoices)
         } else {
-            ChooseAppButton(chooseLabel.replace(" ứng dụng", " app"), onChooseApp)
-            ActionButton("Chia", canSplitHorizontal || canSplitVertical, onShowSplitChoices)
+            ActionButton(
+                "Chia",
+                canSplitHorizontal || canSplitVertical,
+                onShowSplitChoices,
+                disabledContentDescription = disabledDescription(maximumCellsReached),
+            )
             ActionButton("Bỏ chọn", true, onClearSelection)
         }
     }
@@ -180,11 +174,10 @@ private fun MediumActionRow(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CellActionSheet(
-    chooseLabel: String,
     canSplitHorizontal: Boolean,
     canSplitVertical: Boolean,
+    maximumCellsReached: Boolean,
     onDismiss: () -> Unit,
-    onChooseApp: () -> Unit,
     onSplitHorizontal: () -> Unit,
     onSplitVertical: () -> Unit,
     onClearSelection: () -> Unit,
@@ -202,25 +195,19 @@ private fun CellActionSheet(
             verticalArrangement = Arrangement.spacedBy(InteractionZones.ActionPadding),
         ) {
             Text("Thao tác ô", style = MaterialTheme.typography.titleLarge)
-            Button(
-                onClick = onChooseApp,
-                modifier = Modifier.fillMaxWidth().heightIn(min = TouchTargets.SecondaryButton),
-            ) { Text(chooseLabel) }
-            ActionButton("Chia ngang", canSplitHorizontal, onSplitHorizontal, Modifier.fillMaxWidth())
-            ActionButton("Chia dọc", canSplitVertical, onSplitVertical, Modifier.fillMaxWidth())
-            ActionButton("Bỏ chọn", true, onClearSelection, Modifier.fillMaxWidth())
+            ActionButton(
+                "Chia ngang", canSplitHorizontal, onSplitHorizontal,
+                modifier = Modifier.fillMaxWidth(),
+                disabledContentDescription = disabledDescription(maximumCellsReached),
+            )
+            ActionButton(
+                "Chia dọc", canSplitVertical, onSplitVertical,
+                modifier = Modifier.fillMaxWidth(),
+                disabledContentDescription = disabledDescription(maximumCellsReached),
+            )
+            ActionButton("Bỏ chọn", true, onClearSelection, modifier = Modifier.fillMaxWidth())
         }
     }
-}
-
-@Composable
-private fun ChooseAppButton(label: String, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .heightIn(min = TouchTargets.SecondaryButton)
-            .semantics { contentDescription = "$label cho ô đang chọn" },
-    ) { Text(label) }
 }
 
 @Composable
@@ -229,10 +216,20 @@ private fun ActionButton(
     enabled: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    disabledContentDescription: String? = null,
 ) {
     OutlinedButton(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier.heightIn(min = TouchTargets.SecondaryButton),
+        modifier = modifier
+            .heightIn(min = TouchTargets.SecondaryButton)
+            .semantics {
+                if (!enabled && disabledContentDescription != null) {
+                    contentDescription = disabledContentDescription
+                }
+            },
     ) { Text(label) }
 }
+
+private fun disabledDescription(maximumCellsReached: Boolean): String? =
+    if (maximumCellsReached) "Không thể chia thêm. Workspace đã có tối đa 5 ô." else null

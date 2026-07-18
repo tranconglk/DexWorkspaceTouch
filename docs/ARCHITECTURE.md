@@ -336,3 +336,11 @@ field update, then the existing Room Flow refreshes the domain and presentation 
 Library projection filters once, partitions pinned and regular workspaces, and applies the
 selected deterministic sort independently inside each section. Pin does not alter canvas,
 identity, timestamps, or modified sequence; duplicate always starts unpinned.
+
+## Designer cell activation
+
+`WorkspaceCellView` tap → `LayoutDesignerScreen` → `WorkspaceDesignerViewModel.activateCell`
+selects the cell and clears divider selection → one-shot navigation callback opens App Picker →
+assignment updates the shared working draft. The ViewModel guard ignores additional activation
+until App Picker closes, so recomposition and resize cannot replay navigation. Room is written
+only by the existing explicit Designer Save workflow.
