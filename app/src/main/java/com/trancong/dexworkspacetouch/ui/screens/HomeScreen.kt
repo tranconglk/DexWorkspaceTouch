@@ -62,6 +62,7 @@ import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceSortMode
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.templates.WorkspaceTemplateCatalog
 import com.trancong.dexworkspacetouch.workspace.templates.ui.WorkspaceTemplatePickerDialog
+import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppIconLoader
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,6 +103,8 @@ fun HomeScreen(
     onShareWorkspace: (String) -> Unit = {},
     onSaveWorkspaceToFile: (String) -> Unit = {},
     onImportWorkspace: () -> Unit = {},
+    appIconLoader: AppIconLoader? = null,
+    nowEpochMillis: Long = 0L,
 ) {
     var managedWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
     var renameWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
@@ -528,6 +531,8 @@ fun HomeScreen(
                                                     duplicateEnabled = !libraryWriteInProgress,
                                                     pinEnabled = !libraryWriteInProgress,
                                                     onExport = { exportWorkspaceId = workspace.id },
+                                                    appIconLoader = appIconLoader,
+                                                    nowEpochMillis = nowEpochMillis,
                                     modifier = Modifier.width(pinnedCardWidth.dp),
                                 )
                             }
@@ -557,6 +562,8 @@ fun HomeScreen(
                         duplicateEnabled = !libraryWriteInProgress,
                         pinEnabled = !libraryWriteInProgress,
                         onExport = { exportWorkspaceId = workspace.id },
+                        appIconLoader = appIconLoader,
+                        nowEpochMillis = nowEpochMillis,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

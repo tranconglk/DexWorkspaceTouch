@@ -136,3 +136,10 @@ list duy nhất cuộn các section. Section header tối thiểu 56dp và title
 Toolbar chuyển Row/Column tại 720dp. Search cao tối thiểu 56dp; sort button rộng tối thiểu
 180dp ở layout rộng và full-width ở layout hẹp. Khoảng cách dùng `Spacing.M`/`Spacing.S`;
 mọi clear/sort option dùng `TouchTargets.SecondaryButton = 56dp`.
+
+## Workspace Snapshot Icons
+
+- Icon nhỏ, vừa và lớn lần lượt dùng `WorkspaceSnapshotIconMinSize` (20dp),
+  `WorkspaceSnapshotIconMediumSize` (28dp) và `WorkspaceSnapshotIconLargeSize` (36dp).
+- Metadata và thời gian cập nhật dành chiều cao tối thiểu 20dp mỗi dòng.
+- Kích thước icon được chọn theo bounds thực tế của cell; cell nhỏ ưu tiên icon hơn label.

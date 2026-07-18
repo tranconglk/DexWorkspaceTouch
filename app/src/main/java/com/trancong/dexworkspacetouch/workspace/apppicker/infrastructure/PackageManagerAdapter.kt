@@ -53,10 +53,13 @@ class PackageManagerAdapter(
         } == true
     }
 
-    fun loadIcon(identity: AppIdentity): Drawable = if (identity.activityName != null) {
-        packageManager.getActivityIcon(ComponentName(identity.packageName, identity.activityName))
-    } else {
-        packageManager.getApplicationIcon(identity.packageName)
+    fun loadIcon(identity: AppIdentity): Drawable {
+        if (identity.activityName != null) {
+            runCatching {
+                packageManager.getActivityIcon(ComponentName(identity.packageName, identity.activityName))
+            }.getOrNull()?.let { return it }
+        }
+        return packageManager.getApplicationIcon(identity.packageName)
     }
 
     fun getLauncherActivities(): List<LauncherActivityRecord> {

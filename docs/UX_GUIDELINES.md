@@ -94,3 +94,8 @@ status in one row; narrow windows use separate history, context, and status rows
 Export is available from the selected card and offers “Chia sẻ” before “Lưu vào tệp…”. Import is a
 56dp Library-toolbar action. A snapshot/name/cell/app preview is required before insertion. Errors
 use friendly format/version/read/write messages and never expose raw URI, JSON or exceptions.
+## Workspace Library cards
+
+- Dùng metadata ngắn “x ô • y ứng dụng” và relative updated time một dòng.
+- Snapshot ưu tiên icon thật; cell nhỏ có thể ẩn label và giữ icon/fallback rõ ràng.
+- Card ghim đầu tiên không trở thành featured/hero card và giữ cùng layout với card thường.

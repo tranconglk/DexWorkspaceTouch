@@ -18,6 +18,11 @@ object Dimensions {
     val DividerSnapGuideLength = 32.dp
     val DividerSnapGuideThickness = 3.dp
     val AppIconSize = 32.dp
+    val WorkspaceSnapshotIconMinSize = 20.dp
+    val WorkspaceSnapshotIconMediumSize = 28.dp
+    val WorkspaceSnapshotIconLargeSize = 36.dp
+    val WorkspaceCardMetadataMinHeight = 20.dp
+    val WorkspaceCardUpdatedTextMinHeight = 20.dp
     val WorkspacePinIconSize = 24.dp
     val AppPickerIconSize = 64.dp
     val AppPickerItemMinWidth = 280.dp

@@ -45,6 +45,7 @@ import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import com.trancong.dexworkspacetouch.ui.design.ZLayers
 import com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryItem
 import com.trancong.dexworkspacetouch.workspace.snapshot.ui.WorkspaceSnapshot
+import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppIconLoader
 
 @Composable
 fun WorkspaceLibraryCard(
@@ -64,9 +65,13 @@ fun WorkspaceLibraryCard(
     duplicateEnabled: Boolean = true,
     pinEnabled: Boolean = true,
     onExport: () -> Unit = {},
+    appIconLoader: AppIconLoader? = null,
+    nowEpochMillis: Long = 0L,
 ) {
+    val metadata = workspace.canvas.cardMetadata()
+    val updatedText = WorkspaceRelativeTimeFormatter.format(workspace.updatedAtEpochMillis, nowEpochMillis)
     val cardDescription = buildString {
-        append("Workspace ${workspace.name}, ${workspace.appCount} ứng dụng.")
+        append("Workspace ${workspace.name}, ${metadata.cellCount} ô, ${metadata.assignedCount} ứng dụng, cập nhật $updatedText.")
         if (workspace.isPinned) append(" Đã ghim.")
     }
     Box(modifier = modifier.heightIn(min = Dimensions.WorkspaceCardMinHeight)) {
@@ -100,14 +105,21 @@ fun WorkspaceLibraryCard(
                     canvas = workspace.canvas,
                     modifier = Modifier.fillMaxWidth(),
                     includeAccessibilitySummary = false,
+                    appIconLoader = appIconLoader,
                 )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text("${workspace.appCount} ứng dụng", style = MaterialTheme.typography.bodySmall)
-                    Text("Cập nhật #${workspace.modifiedSequence}", style = MaterialTheme.typography.bodySmall)
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.XXS)) {
+                    Text(
+                        metadata.compactText,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.heightIn(min = Dimensions.WorkspaceCardMetadataMinHeight),
+                    )
+                    Text(
+                        updatedText,
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        modifier = Modifier.heightIn(min = Dimensions.WorkspaceCardUpdatedTextMinHeight),
+                    )
                 }
                 BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
                     val showDirectManagementActions = maxWidth >= Dimensions.WorkspaceCardWideActionsWidth

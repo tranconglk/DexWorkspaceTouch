@@ -40,6 +40,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.trancong.dexworkspacetouch.DexWorkspaceTouchApplication
 
 class WorkspaceLibraryBenchmarkActivity : ComponentActivity() {
     private var items by mutableStateOf<List<WorkspaceLibraryItem>>(emptyList())
@@ -51,6 +52,7 @@ class WorkspaceLibraryBenchmarkActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val count = intent.getIntExtra(EXTRA_COUNT, 100).takeIf { it in DATASET_SIZES } ?: 100
         val heapBefore = heapUsedBytes()
+        val benchmarkNowEpochMillis = System.currentTimeMillis()
         loadStartedNanos = SystemClock.elapsedRealtimeNanos()
         setContent {
             DexWorkspaceTouchTheme {
@@ -92,6 +94,8 @@ class WorkspaceLibraryBenchmarkActivity : ComponentActivity() {
                                 onManage = {},
                                 canDelete = false,
                                 openEnabled = false,
+                                appIconLoader = (application as DexWorkspaceTouchApplication).appIconLoader,
+                                nowEpochMillis = benchmarkNowEpochMillis,
                                 modifier = Modifier.fillMaxWidth(),
                             )
                         }

@@ -71,6 +71,9 @@ Không tạo package `util`, `helpers`, `common` hoặc `misc` chung chung.
   Infrastructure. Chỉ Infrastructure biết Android `PackageManager`; UI nhận
   state từ `AppPickerViewModel`.
 - `PackageManagerAppIconLoader` tải icon theo `AppIdentity` trên IO dispatcher.
+- Library dùng cùng loader application-scoped với App Picker. Luồng tải là: visible Library card
+  → visible `WorkspaceSnapshot` cell → LRU icon cache → render. Repository, Room Flow và Library
+  ViewModel không preload hoặc chứa icon.
   Kết quả được giữ trong LRU cache RAM giới hạn 96 entry; domain không chứa
   `Drawable`, `Bitmap` hoặc Compose image type.
 - UI label/icon phải được resolve từ catalog; domain không tự truy cập catalog

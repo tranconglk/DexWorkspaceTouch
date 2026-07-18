@@ -6,15 +6,21 @@ import androidx.core.graphics.drawable.toBitmap
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.AppIdentity
 import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppIconLoader
 import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppIconState
+import com.trancong.dexworkspacetouch.workspace.apppicker.model.toStableKey
 
 class PackageManagerAppIconLoader(
     packageManagerAdapter: PackageManagerAdapter,
-    maximumEntries: Int = DEFAULT_CACHE_ENTRIES,
+    maximumEntries: Int = APP_ICON_CACHE_ENTRIES,
 ) : AppIconLoader {
     private val cache = SafeCachedLoader(
         maximumEntries = maximumEntries,
         fallback = AppIconState.Fallback,
-    ) { identity: AppIdentity ->
+    ) { identityKey: String ->
+        val separator = identityKey.indexOf(KEY_SEPARATOR)
+        val identity = AppIdentity(
+            packageName = identityKey.substring(0, separator),
+            activityName = identityKey.substring(separator + 1).ifEmpty { null },
+        )
         packageManagerAdapter.loadIcon(identity)
             .toBitmap()
             .asImageBitmap()
@@ -22,12 +28,14 @@ class PackageManagerAppIconLoader(
     }
 
     override fun loadIcon(identity: AppIdentity): AppIconState =
-        cache.load(identity)
+        cache.load(identity.toStableKey())
 
     companion object {
         fun create(context: Context): PackageManagerAppIconLoader =
             PackageManagerAppIconLoader(PackageManagerAdapter(context.packageManager))
 
-        private const val DEFAULT_CACHE_ENTRIES = 96
+        private const val KEY_SEPARATOR = "#"
     }
 }
+
+internal const val APP_ICON_CACHE_ENTRIES = 64

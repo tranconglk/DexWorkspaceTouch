@@ -27,7 +27,6 @@ import com.trancong.dexworkspacetouch.ui.screens.HomeScreen
 import com.trancong.dexworkspacetouch.ui.screens.LayoutDesignerScreen
 import com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerViewModel
 import com.trancong.dexworkspacetouch.workspace.apppicker.infrastructure.AndroidInstalledAppDataSource
-import com.trancong.dexworkspacetouch.workspace.apppicker.infrastructure.PackageManagerAppIconLoader
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.DefaultInstalledAppCatalog
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.toIdentity
 import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppPickerViewModel
@@ -200,6 +199,8 @@ fun TouchNavigation(activity: Activity) {
                 onShareWorkspace = { id -> exportMode = "share"; transferViewModel.prepareExport(id) },
                 onSaveWorkspaceToFile = { id -> exportMode = "save"; transferViewModel.prepareExport(id) },
                 onImportWorkspace = { importLauncher.launch("*/*") },
+                appIconLoader = application.appIconLoader,
+                nowEpochMillis = com.trancong.dexworkspacetouch.workspace.library.state.SystemWorkspaceClock.nowEpochMillis(),
             )
         }
         composable(Routes.LayoutDesigner) {
@@ -234,13 +235,10 @@ fun TouchNavigation(activity: Activity) {
             DisposableEffect(validCellId) {
                 onDispose { designerViewModel.onAppPickerClosed() }
             }
-            val appIconLoader = remember(applicationContext) {
-                PackageManagerAppIconLoader.create(applicationContext)
-            }
             val appPickerViewModel: AppPickerViewModel = viewModel(
                 factory = AppPickerViewModel.factory(
                     catalog = installedAppCatalog,
-                    iconLoader = appIconLoader,
+                    iconLoader = application.appIconLoader,
                     selectedIdentity = selectedIdentity,
                 ),
             )

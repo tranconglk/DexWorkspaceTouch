@@ -38,3 +38,9 @@
 - Instrumentation covers FileProvider and Room persistence seams without opening a real Sharesheet target.
 - Manual cross-device validation records provider MIME behavior for Quick Share, Files, Drive and Zalo.
 - Corrupted, oversized and newer-version `.dwt` files must fail before preview or persistence.
+## Workspace Library icon and metadata regression
+
+- Kiểm tra LRU 64, eviction, cache hit, cached fallback và stable package/activity key.
+- Với dữ liệu 100 workspace, cuộn toàn Library trên S23 Ultra và Note 8; theo dõi crash/OOM,
+  icon tải lại bất thường và missing-app fallback.
+- Metadata, relative time và snapshot phải giữ đúng sau recreation-style reload.

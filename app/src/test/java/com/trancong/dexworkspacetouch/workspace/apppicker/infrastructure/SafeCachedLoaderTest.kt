@@ -7,6 +7,9 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Test
 
 class SafeCachedLoaderTest {
+    @Test fun productionIconCacheIsBoundedToSixtyFourEntries() {
+        assertEquals(64, APP_ICON_CACHE_ENTRIES)
+    }
     @Test fun cacheHitDoesNotCallLoaderTwice() {
         var calls = 0
         val loader = SafeCachedLoader(4, "fallback") { key: String ->

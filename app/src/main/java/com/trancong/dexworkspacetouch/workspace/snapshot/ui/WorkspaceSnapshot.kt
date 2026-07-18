@@ -14,6 +14,7 @@ import com.trancong.dexworkspacetouch.ui.design.DesignerShapes
 import com.trancong.dexworkspacetouch.ui.design.Dimensions
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.designer.ui.toComposePlacement
+import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppIconLoader
 
 @Composable
 fun WorkspaceSnapshot(
@@ -21,6 +22,7 @@ fun WorkspaceSnapshot(
     modifier: Modifier = Modifier,
     showLabels: Boolean = true,
     includeAccessibilitySummary: Boolean = true,
+    appIconLoader: AppIconLoader? = null,
 ) {
     val shape = DesignerShapes.Workspace
     val summary = canvas.accessibilitySummary()
@@ -32,7 +34,7 @@ fun WorkspaceSnapshot(
     Layout(
         content = {
             canvas.cells.forEach { cell ->
-                WorkspaceSnapshotCell(cell = cell, showLabels = showLabels)
+                WorkspaceSnapshotCell(cell = cell, showLabels = showLabels, appIconLoader = appIconLoader)
             }
         },
         modifier = modifier

@@ -50,3 +50,6 @@
 - [ ] Transfer S23 Ultra → Note 8 and Note 8 → S23 Ultra using Quick Share; record received MIME.
 - [ ] Save/open through Files, Drive and USB where available; verify Unicode filenames.
 - [ ] Reject corrupted, oversized and unsupported-version files without creating a Room row.
+- [ ] Library 100 workspace cuộn hết trên S23 Ultra và Note 8, không OOM/crash.
+- [ ] App đã gỡ dùng fallback ổn định; icon cache hit/eviction đúng giới hạn 64.
+- [ ] Card hiển thị đúng “x ô • y ứng dụng”, relative time và giữ nguyên sau recreation.

@@ -372,3 +372,12 @@ Share is the primary export path and SAF “Save As” is secondary. Import alwa
 ID and never overwrites in version 1. Local IDs, pin state, timestamps and modification sequence are
 not exported. FileProvider exposes only `cache/exports`; SAF and temporary URI grants avoid broad
 storage permission. ACTION_VIEW/Open With is deferred until cross-provider device validation.
+
+## ADR-028 — Workspace card uses a bounded 64-entry icon cache
+
+Status: Accepted.
+
+Library snapshot và App Picker dùng chung loader thuộc Application graph, không giữ Activity.
+Cache RAM là LRU tối đa 64 identity, dùng stable String package/activity và cache cả fallback.
+Chỉ cell đang compose trong viewport yêu cầu icon; icon không được lưu vào Room hoặc domain.
+Target UX là tối đa 100 workspace. Workspace ghim giữ cùng card layout, không có hero/featured item.
