@@ -182,21 +182,6 @@ fun HomeScreen(
                     OutlinedButton(
                         onClick = {
                             managedWorkspaceId = null
-                            onSetWorkspacePinned(workspace.id, !workspace.isPinned)
-                        },
-                        enabled = !libraryWriteInProgress,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(TouchTargets.SecondaryButton)
-                            .semantics {
-                                contentDescription = if (workspace.isPinned) {
-                                    "Bỏ ghim workspace ${workspace.name}."
-                                } else "Ghim workspace ${workspace.name}."
-                            },
-                    ) { Text(if (workspace.isPinned) "Bỏ ghim" else "Ghim") }
-                    OutlinedButton(
-                        onClick = {
-                            managedWorkspaceId = null
                             onDuplicateWorkspace(workspace.id)
                         },
                         enabled = !libraryWriteInProgress,
@@ -464,6 +449,7 @@ fun HomeScreen(
                         openEnabled = launchState !is WorkspaceLaunchUiState.Checking &&
                             launchState !is WorkspaceLaunchUiState.Launching,
                         duplicateEnabled = !libraryWriteInProgress,
+                        pinEnabled = !libraryWriteInProgress,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
@@ -488,6 +474,7 @@ fun HomeScreen(
                         openEnabled = launchState !is WorkspaceLaunchUiState.Checking &&
                             launchState !is WorkspaceLaunchUiState.Launching,
                         duplicateEnabled = !libraryWriteInProgress,
+                        pinEnabled = !libraryWriteInProgress,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

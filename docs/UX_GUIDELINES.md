@@ -60,6 +60,7 @@ khớp có empty state riêng; filter không xóa selection theo ID.
 ## Workspace pin
 
 Pinned workspaces appear first under “Đã ghim”, followed by the regular “Workspace” section.
-The card exposes “Ghim” or “Bỏ ghim” only through labeled touch actions of at least 56dp;
-narrow cards use the existing management sheet. A visible “Đã ghim” badge and card semantics
-communicate state without relying on color. Search applies to both sections and preserves IDs.
+Pin is an always-visible direct corner action, never an action inside “Quản lý”. Its 56dp touch
+target shows a neutral outline bookmark when inactive and a primary filled bookmark when active.
+The former text badge is removed; accessibility still announces the action and state. Toggling
+needs no confirmation. Search applies to both sections and preserves IDs.

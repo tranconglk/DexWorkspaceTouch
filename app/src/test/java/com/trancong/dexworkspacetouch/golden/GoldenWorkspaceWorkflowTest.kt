@@ -82,6 +82,22 @@ class GoldenWorkspaceWorkflowTest {
         assertEquals(designer.canvas, recreated.workspaces.single().canvas)
     }
 
+    @Test fun `direct pin survives recreation and unpin returns workspace to regular section`() {
+        val repository = FakeWorkspaceRepository()
+        val library = library(repository)
+        library.saveWorkspace(GoldenWorkspaceFixtures.oneEmpty(), "Pinned Golden")
+        library.setWorkspacePinned("golden-workspace", true)
+
+        val recreated = library(repository)
+        assertEquals(listOf("golden-workspace"), recreated.pinnedWorkspaces.map { it.id })
+        assertTrue(repository.values.single().isPinned)
+
+        recreated.setWorkspacePinned("golden-workspace", false)
+        assertTrue(recreated.pinnedWorkspaces.isEmpty())
+        assertEquals(listOf("golden-workspace"), recreated.regularWorkspaces.map { it.id })
+        assertFalse(repository.values.single().isPinned)
+    }
+
     @Test fun `edit working copy cancel and save obey repository boundary`() {
         val repository = FakeWorkspaceRepository()
         val library = library(repository)

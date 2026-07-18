@@ -98,6 +98,10 @@ App Picker dùng `GridCells.Adaptive` với
 Số cột do chiều rộng cửa sổ theo dp quyết định; không ép số cột hoặc giảm touch
 target để đạt mật độ cao hơn.
 
+Workspace Library pin dùng `Dimensions.WorkspacePinIconSize = 24dp` trong vùng chạm
+`TouchTargets.SecondaryButton = 56dp`. Nút góc dùng `ZLayers.ActionOverlay`; chuyển
+outline/filled dùng `DesignerAnimation.FastDurationMillis`.
+
 ## Design Token Rules
 
 1. UI mới phải dùng token thay cho literal `Dp`, elevation, shape, z-index và aspect ratio lặp lại.

@@ -333,3 +333,6 @@ Quyết định:
 - Library search runs before partitioning. Pinned and regular sections are sorted independently.
 - Duplicating a pinned workspace creates an unpinned copy; rename and Designer save preserve pin.
 - Pin actions remain touch-first and never use an overflow menu.
+- Pin is an always-visible 56dp corner action on every card and is removed from “Quản lý”.
+- Outline/filled bookmark state replaces the redundant text badge; toggle requires no confirmation.
+- Workspace ID remains the stable lazy key while a card moves between pinned and regular sections.

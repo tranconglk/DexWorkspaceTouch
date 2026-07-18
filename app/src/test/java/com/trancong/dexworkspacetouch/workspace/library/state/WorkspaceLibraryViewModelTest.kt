@@ -387,6 +387,33 @@ class WorkspaceLibraryViewModelTest {
         assertEquals(listOf("id"), state.regularWorkspaces.map { it.id })
     }
 
+    @Test fun `pin feedback reports success and failure without changing selection`() {
+        val repository = FakeRepository(listOf(workspace("id", "Pinned", 1)))
+        val state = viewModel(repository)
+        state.selectWorkspace("id")
+        state.setWorkspacePinned("id", true)
+        assertEquals(WorkspacePinFeedback.Success("Pinned", true), state.pinFeedback)
+        assertEquals("id", state.selectedWorkspaceId)
+
+        repository.failMutations = true
+        state.setWorkspacePinned("id", false)
+        assertEquals(WorkspacePinFeedback.Failure(false), state.pinFeedback)
+        assertEquals(WorkspaceLibraryPersistenceOperation.UNPIN, state.persistenceError?.operation)
+        assertEquals("id", state.selectedWorkspaceId)
+    }
+
+    @Test fun `double pin while write is active creates one repository call`() {
+        val repository = FakeRepository(listOf(workspace("id", "Pinned", 1))).apply {
+            pinGate = CompletableDeferred()
+        }
+        val state = viewModel(repository)
+        state.setWorkspacePinned("id", true)
+        state.setWorkspacePinned("id", true)
+        assertEquals(1, repository.pinCalls)
+        repository.pinGate?.complete(Unit)
+        assertTrue(repository.current.single().isPinned)
+    }
+
     @Test fun `duplicate pinned source creates unpinned copy while source remains pinned`() {
         val repository = FakeRepository(listOf(workspace("source", "Name", 1).copy(isPinned = true)))
         val state = viewModel(repository, ids = QueueIds("copy"))
@@ -439,7 +466,9 @@ class WorkspaceLibraryViewModelTest {
         var forceDuplicateInsert = false
         var holdObserve = false
         var insertGate: CompletableDeferred<Unit>? = null
+        var pinGate: CompletableDeferred<Unit>? = null
         var insertCalls = 0
+        var pinCalls = 0
         var updateCalls = 0
         var issues: List<WorkspacePersistenceIssue> = emptyList()
         val current: List<Workspace> get() = state.value
@@ -478,6 +507,8 @@ class WorkspaceLibraryViewModelTest {
         override suspend fun setPinned(id: String, isPinned: Boolean) {
             if (failMutations) throw WorkspacePersistenceException.DatabaseFailure("pin")
             if (current.none { it.id == id }) throw WorkspacePersistenceException.DatabaseFailure("missing")
+            pinCalls++
+            pinGate?.await()
             state.value = current.map { if (it.id == id) it.copy(isPinned = isPinned) else it }
         }
         fun emit(values: List<Workspace>) { state.value = values }
