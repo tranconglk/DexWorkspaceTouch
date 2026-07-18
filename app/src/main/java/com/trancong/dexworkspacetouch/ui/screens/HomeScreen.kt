@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -37,17 +38,22 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.key
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import com.trancong.dexworkspacetouch.ui.design.Dimensions
 import com.trancong.dexworkspacetouch.ui.design.Spacing
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryItem
 import com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceLibraryCard
+import com.trancong.dexworkspacetouch.workspace.library.ui.adaptiveGridColumnCount
+import com.trancong.dexworkspacetouch.workspace.library.ui.centeredGridMetrics
+import com.trancong.dexworkspacetouch.workspace.library.ui.chunkCenteredRows
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchStatusDialog
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchUiState
 import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryPersistenceError
@@ -315,13 +321,27 @@ fun HomeScreen(
         contentWindowInsets = WindowInsets.safeDrawing,
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(Dimensions.WorkspaceCardMinWidth),
-            modifier = Modifier.fillMaxSize().padding(innerPadding),
-            contentPadding = PaddingValues(Spacing.L),
-            horizontalArrangement = Arrangement.spacedBy(Spacing.WorkspaceGrid),
-            verticalArrangement = Arrangement.spacedBy(Spacing.WorkspaceGrid),
-        ) {
+        BoxWithConstraints(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+            val gridAvailableWidth = (maxWidth.value - Spacing.L.value * 2f).coerceAtLeast(0f)
+            val pinnedColumnCount = adaptiveGridColumnCount(
+                availableWidth = gridAvailableWidth,
+                cardMinWidth = Dimensions.WorkspaceCardMinWidth.value,
+                spacing = Spacing.WorkspaceGrid.value,
+            )
+            val pinnedCardWidth = centeredGridMetrics(
+                availableWidth = gridAvailableWidth,
+                cardMinWidth = Dimensions.WorkspaceCardMinWidth.value,
+                spacing = Spacing.WorkspaceGrid.value,
+                columnCount = pinnedColumnCount,
+            ).cardWidth
+            val pinnedRows = chunkCenteredRows(pinnedWorkspaces, pinnedColumnCount)
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(Dimensions.WorkspaceCardMinWidth),
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(Spacing.L),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.WorkspaceGrid),
+                verticalArrangement = Arrangement.spacedBy(Spacing.WorkspaceGrid),
+            ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Text("DeX Workspace Manager", style = MaterialTheme.typography.headlineMedium)
             }
@@ -433,25 +453,41 @@ fun HomeScreen(
                         )
                     }
                 }
-                items(pinnedWorkspaces, key = WorkspaceLibraryItem::id) { workspace ->
-                    WorkspaceLibraryCard(
-                        workspace = workspace,
-                        selected = workspace.id == selectedWorkspaceId,
-                        onSelect = { onWorkspaceSelected(workspace.id) },
-                        onOpen = { onLaunchWorkspace(workspace) },
-                        onEdit = { onEditWorkspace(workspace.id) },
-                        onDuplicate = { onDuplicateWorkspace(workspace.id) },
-                        onPinToggle = { onSetWorkspacePinned(workspace.id, !workspace.isPinned) },
-                        onRename = { showRename(workspace) },
-                        onDelete = { deleteWorkspaceId = workspace.id },
-                        onManage = { managedWorkspaceId = workspace.id },
-                        canDelete = editingWorkspaceId != workspace.id,
-                        openEnabled = launchState !is WorkspaceLaunchUiState.Checking &&
-                            launchState !is WorkspaceLaunchUiState.Launching,
-                        duplicateEnabled = !libraryWriteInProgress,
-                        pinEnabled = !libraryWriteInProgress,
+                items(
+                    items = pinnedRows,
+                    key = { row -> "pinned-row-${row.joinToString(separator = ":") { it.id }}" },
+                    span = { GridItemSpan(maxLineSpan) },
+                ) { row ->
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
-                    )
+                        horizontalArrangement = Arrangement.spacedBy(
+                            Spacing.WorkspaceGrid,
+                            androidx.compose.ui.Alignment.CenterHorizontally,
+                        ),
+                    ) {
+                        row.forEach { workspace ->
+                            key(workspace.id) {
+                                WorkspaceLibraryCard(
+                                                    workspace = workspace,
+                                                    selected = workspace.id == selectedWorkspaceId,
+                                                    onSelect = { onWorkspaceSelected(workspace.id) },
+                                                    onOpen = { onLaunchWorkspace(workspace) },
+                                                    onEdit = { onEditWorkspace(workspace.id) },
+                                                    onDuplicate = { onDuplicateWorkspace(workspace.id) },
+                                                    onPinToggle = { onSetWorkspacePinned(workspace.id, !workspace.isPinned) },
+                                                    onRename = { showRename(workspace) },
+                                                    onDelete = { deleteWorkspaceId = workspace.id },
+                                                    onManage = { managedWorkspaceId = workspace.id },
+                                                    canDelete = editingWorkspaceId != workspace.id,
+                                                    openEnabled = launchState !is WorkspaceLaunchUiState.Checking &&
+                                                        launchState !is WorkspaceLaunchUiState.Launching,
+                                                    duplicateEnabled = !libraryWriteInProgress,
+                                                    pinEnabled = !libraryWriteInProgress,
+                                    modifier = Modifier.width(pinnedCardWidth.dp),
+                                )
+                            }
+                        }
+                    }
                 }
                 if (regularWorkspaces.isNotEmpty()) {
                     item(span = { GridItemSpan(maxLineSpan) }) {
@@ -478,6 +514,7 @@ fun HomeScreen(
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
+            }
             }
         }
     }

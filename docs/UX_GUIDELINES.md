@@ -60,6 +60,9 @@ khớp có empty state riêng; filter không xóa selection theo ID.
 ## Workspace pin
 
 Pinned workspaces appear first under “Đã ghim”, followed by the regular “Workspace” section.
+Pinned rows are centered when they do not fill all adaptive columns. Pinned cards retain the same
+calculated width as regular cards, while the section header stays left-aligned. The regular workspace
+grid remains left-aligned, including its final partial row.
 Pin is an always-visible direct corner action, never an action inside “Quản lý”. Its 56dp touch
 target shows a neutral outline bookmark when inactive and a primary filled bookmark when active.
 The former text badge is removed; accessibility still announces the action and state. Toggling

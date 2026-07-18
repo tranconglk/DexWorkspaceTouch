@@ -336,6 +336,9 @@ Quyết định:
 - Pin is an always-visible 56dp corner action on every card and is removed from “Quản lý”.
 - Outline/filled bookmark state replaces the redundant text badge; toggle requires no confirmation.
 - Workspace ID remains the stable lazy key while a card moves between pinned and regular sections.
+- Partially filled pinned rows are centered for visual balance. This is presentation-only: pinned
+  card width follows the regular adaptive grid, while sorting, persistence, IDs, and traversal order
+  remain unchanged. Regular workspace rows remain left-aligned.
 
 ## ADR-024 — Cell activation opens App Picker directly
 

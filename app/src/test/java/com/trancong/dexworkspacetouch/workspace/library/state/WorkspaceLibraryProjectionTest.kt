@@ -4,6 +4,7 @@ import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryItem
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import com.trancong.dexworkspacetouch.workspace.library.ui.chunkCenteredRows
 
 class WorkspaceLibraryProjectionTest {
     private val source = listOf(
@@ -58,6 +59,20 @@ class WorkspaceLibraryProjectionTest {
         val searched = projectWorkspaceLibrarySections(values, "Alpha", WorkspaceSortMode.NAME_ASCENDING)
         assertEquals(listOf("p1"), searched.pinned.map { it.id })
         assertEquals(emptyList<String>(), searched.regular.map { it.id })
+    }
+
+    @Test fun `search sort and pin projection feed centered rows without changing order`() {
+        val values = listOf(
+            item("p2", "Beta", 1, 1, 1).copy(isPinned = true),
+            item("p1", "Alpha", 1, 1, 1).copy(isPinned = true),
+            item("regular", "Alpha regular", 1, 1, 1),
+        )
+        val projected = projectWorkspaceLibrarySections(values, "a", WorkspaceSortMode.NAME_ASCENDING)
+        assertEquals(listOf("p1", "p2"), chunkCenteredRows(projected.pinned, 6).flatten().map { it.id })
+
+        val afterUnpin = values.map { if (it.id == "p1") it.copy(isPinned = false) else it }
+        val regrouped = projectWorkspaceLibrarySections(afterUnpin, "a", WorkspaceSortMode.NAME_ASCENDING)
+        assertEquals(listOf("p2"), chunkCenteredRows(regrouped.pinned, 6).flatten().map { it.id })
     }
 
     private fun ids(mode: WorkspaceSortMode) = projectWorkspaceLibrary(source, "", mode).map { it.id }

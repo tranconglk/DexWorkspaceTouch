@@ -162,20 +162,24 @@ class GoldenWorkspaceWorkflowTest {
         assertEquals(designer.canvas, recreated.workspaces.single().canvas)
     }
 
-    @Test fun `direct pin survives recreation and unpin returns workspace to regular section`() {
+    @Test fun `pin two workspaces then unpin one preserves pinned data and order`() {
         val repository = FakeWorkspaceRepository()
         val library = library(repository)
         library.saveWorkspace(GoldenWorkspaceFixtures.oneEmpty(), "Pinned Golden")
+        library.finishEditing()
+        library.saveWorkspace(GoldenWorkspaceFixtures.oneEmpty(), "Second Pinned")
+        library.finishEditing()
         library.setWorkspacePinned("golden-workspace", true)
+        library.setWorkspacePinned("golden-copy", true)
 
         val recreated = library(repository)
-        assertEquals(listOf("golden-workspace"), recreated.pinnedWorkspaces.map { it.id })
-        assertTrue(repository.values.single().isPinned)
+        assertEquals(listOf("golden-copy", "golden-workspace"), recreated.pinnedWorkspaces.map { it.id })
+        assertTrue(repository.values.all { it.isPinned })
 
         recreated.setWorkspacePinned("golden-workspace", false)
-        assertTrue(recreated.pinnedWorkspaces.isEmpty())
+        assertEquals(listOf("golden-copy"), recreated.pinnedWorkspaces.map { it.id })
         assertEquals(listOf("golden-workspace"), recreated.regularWorkspaces.map { it.id })
-        assertFalse(repository.values.single().isPinned)
+        assertFalse(repository.values.first { it.id == "golden-workspace" }.isPinned)
     }
 
     @Test fun `edit working copy cancel and save obey repository boundary`() {
