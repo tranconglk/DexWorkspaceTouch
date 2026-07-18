@@ -30,6 +30,12 @@ class WorkspaceLibraryViewModel(
 ) : ViewModel() {
     var workspaces by mutableStateOf<List<WorkspaceLibraryItem>>(emptyList())
         private set
+    var visibleWorkspaces by mutableStateOf<List<WorkspaceLibraryItem>>(emptyList())
+        private set
+    var searchQuery by mutableStateOf("")
+        private set
+    var sortMode by mutableStateOf(WorkspaceSortMode.RECENTLY_UPDATED)
+        private set
     var selectedWorkspaceId by mutableStateOf<String?>(null)
         private set
     var editingWorkspaceId by mutableStateOf<String?>(null)
@@ -71,6 +77,20 @@ class WorkspaceLibraryViewModel(
 
     fun dismissDuplicateFeedback() {
         duplicateFeedback = null
+    }
+
+    fun updateSearchQuery(query: String) {
+        if (searchQuery == query) return
+        searchQuery = query
+        refreshProjection()
+    }
+
+    fun clearSearchQuery() = updateSearchQuery("")
+
+    fun updateSortMode(mode: WorkspaceSortMode) {
+        if (sortMode == mode) return
+        sortMode = mode
+        refreshProjection()
     }
 
     fun selectWorkspace(id: String) {
@@ -226,6 +246,7 @@ class WorkspaceLibraryViewModel(
                     observedDomains = domains
                     persistenceIssues = snapshot.issues
                     workspaces = domains.map(Workspace::toLibraryItem)
+                    refreshProjection()
                     val highWaterMark = domains.maxOfOrNull(Workspace::modifiedSequence) ?: 0L
                     nextModifiedSequence = max(nextModifiedSequence, highWaterMark + 1)
                     domains.mapNotNullTo(issuedDefaultNameNumbers) { workspace ->
@@ -290,6 +311,9 @@ class WorkspaceLibraryViewModel(
     }
 
     private fun takeModifiedSequence(): Long = nextModifiedSequence++
+    private fun refreshProjection() {
+        visibleWorkspaces = projectWorkspaceLibrary(workspaces, searchQuery, sortMode)
+    }
     private fun nonNegativeNow(): Long = clock.nowEpochMillis().coerceAtLeast(0L)
     private fun nextUpdatedAt(existing: Workspace): Long = max(
         nonNegativeNow(),

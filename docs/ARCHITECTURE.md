@@ -320,3 +320,10 @@ workspace source được đọc lại từ repository → `WorkspaceDuplicateNa
 duy nhất → tạo `Workspace` domain với ID/time/sequence mới → `WorkspaceRepository.insert`
 → Room Flow phát danh sách mới. Canvas immutable và app assignments được giữ nguyên;
 Entity không được copy trực tiếp và schema Room không thay đổi.
+
+## Workspace Library search and sort
+
+Room Flow phát source list đã decode một lần → `WorkspaceLibraryViewModel` giữ source
+immutable → projection lọc theo tên → comparator sort deterministic → Home render
+`visibleWorkspaces`. Search/sort không query lại Room, không mutate source và không tham gia
+write mutex. Selection và Lazy grid key tiếp tục dùng workspace ID, không dùng index.

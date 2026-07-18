@@ -57,7 +57,13 @@ fun TouchNavigation(activity: Activity) {
     NavHost(navController = navController, startDestination = Routes.Home) {
         composable(Routes.Home) {
             HomeScreen(
-                workspaces = libraryViewModel.workspaces,
+                workspaces = libraryViewModel.visibleWorkspaces,
+                hasSourceWorkspaces = libraryViewModel.workspaces.isNotEmpty(),
+                searchQuery = libraryViewModel.searchQuery,
+                sortMode = libraryViewModel.sortMode,
+                onSearchQueryChanged = libraryViewModel::updateSearchQuery,
+                onClearSearch = libraryViewModel::clearSearchQuery,
+                onSortModeChanged = libraryViewModel::updateSortMode,
                 selectedWorkspaceId = libraryViewModel.selectedWorkspaceId,
                 editingWorkspaceId = libraryViewModel.editingWorkspaceId,
                 onWorkspaceSelected = libraryViewModel::selectWorkspace,

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.trancong.dexworkspacetouch.ui.theme.DexWorkspaceTouchTheme
 import com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryItem
+import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceSortMode
 import com.trancong.dexworkspacetouch.workspace.snapshot.ui.WorkspaceSnapshotDemoData
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchUiState
 
@@ -24,6 +25,12 @@ private fun WorkspaceLibraryPreview() {
     DexWorkspaceTouchTheme(darkTheme = false) {
         HomeScreen(
             workspaces = previewWorkspaces,
+            hasSourceWorkspaces = previewWorkspaces.isNotEmpty(),
+            searchQuery = "",
+            sortMode = WorkspaceSortMode.RECENTLY_UPDATED,
+            onSearchQueryChanged = {},
+            onClearSearch = {},
+            onSortModeChanged = {},
             selectedWorkspaceId = "workspace-2",
             editingWorkspaceId = null,
             onWorkspaceSelected = {},

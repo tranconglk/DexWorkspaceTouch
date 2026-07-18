@@ -315,3 +315,12 @@ Quyết định:
 - Write mutex và active-mutation guard ngăn double tap hoặc write cạnh tranh.
 - Thành công chọn bản sao để phản hồi rõ nhưng không tự mở Designer hoặc launch.
 - Không thay đổi Room schema, serializer hay Launch Engine.
+
+## ADR-022 — Search và sort là presentation projection
+
+- Room/DAO tiếp tục là source of truth và không đổi query/schema.
+- ViewModel tạo một projection search rồi sort từ source list đã observe; source không mutate.
+- Search chỉ theo workspace name, trim và không phân biệt hoa thường.
+- Năm sort mode có tie-break deterministic bằng metadata, name và ID.
+- `searchQuery` và `sortMode` là preference trong phiên ViewModel, chưa persistence/DataStore.
+- Selection và stable key dùng ID nên filter/sort không thay đổi identity.

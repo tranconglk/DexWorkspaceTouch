@@ -13,6 +13,8 @@ class WorkspaceLibraryMapperTest {
         assertEquals(domain.name, item.name)
         assertEquals(domain.canvas, item.canvas)
         assertEquals(domain.modifiedSequence, item.modifiedSequence)
+        assertEquals(domain.createdAtEpochMillis, item.createdAtEpochMillis)
+        assertEquals(domain.updatedAtEpochMillis, item.updatedAtEpochMillis)
         assertEquals(1, domain.schemaVersion)
         assertEquals(100, domain.createdAtEpochMillis)
         assertEquals(200, domain.updatedAtEpochMillis)

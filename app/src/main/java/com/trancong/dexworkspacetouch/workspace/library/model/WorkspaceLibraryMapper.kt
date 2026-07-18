@@ -7,6 +7,8 @@ fun Workspace.toLibraryItem(): WorkspaceLibraryItem = WorkspaceLibraryItem(
     name = name,
     canvas = canvas,
     modifiedSequence = modifiedSequence,
+    createdAtEpochMillis = createdAtEpochMillis,
+    updatedAtEpochMillis = updatedAtEpochMillis,
 )
 
 fun WorkspaceLibraryItem.toDomainWorkspace(

@@ -121,3 +121,9 @@ và tự tính chiều cao từ chiều rộng card, không có fixed-height tok
 `Spacing.TemplateGrid = 16dp`; dialog header tối thiểu 72dp đứng yên trong khi một outer
 list duy nhất cuộn các section. Section header tối thiểu 56dp và title card dành tối thiểu
 48dp để giữ chiều cao hàng ổn định.
+
+## Workspace Library Toolbar
+
+Toolbar chuyển Row/Column tại 720dp. Search cao tối thiểu 56dp; sort button rộng tối thiểu
+180dp ở layout rộng và full-width ở layout hẹp. Khoảng cách dùng `Spacing.M`/`Spacing.S`;
+mọi clear/sort option dùng `TouchTargets.SecondaryButton = 56dp`.

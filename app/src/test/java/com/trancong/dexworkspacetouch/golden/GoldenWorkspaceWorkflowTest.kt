@@ -131,11 +131,15 @@ class GoldenWorkspaceWorkflowTest {
 
         val recreated = library(repository)
         assertEquals(2, recreated.workspaces.size)
+        recreated.updateSearchQuery("bản sao")
+        assertEquals(1, recreated.visibleWorkspaces.size)
+        recreated.updateSortMode(com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceSortMode.NAME_DESCENDING)
         val original = recreated.workspaces.first { it.id == source.id }
         val copy = recreated.workspaces.first { it.id != source.id }
         assertEquals(original.canvas, copy.canvas)
         assertEquals("Đi đường (Bản sao)", copy.name)
         recreated.renameWorkspace(copy.id, "Bản sao riêng")
+        assertEquals(listOf(copy.id), recreated.visibleWorkspaces.map { it.id })
         assertEquals("Đi đường", repository.values.first { it.id == source.id }.name)
         recreated.deleteWorkspace(copy.id)
         assertEquals(listOf(source.id), repository.values.map { it.id })

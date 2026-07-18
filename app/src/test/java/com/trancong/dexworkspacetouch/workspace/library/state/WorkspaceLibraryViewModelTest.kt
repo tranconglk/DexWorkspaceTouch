@@ -306,6 +306,70 @@ class WorkspaceLibraryViewModelTest {
         assertEquals(51, repository.current.first { it.id == "new" }.modifiedSequence)
     }
 
+    @Test fun `search projection trims ignores case clears and preserves filtered selection`() {
+        val repository = FakeRepository(listOf(
+            workspace("one", "Đi đường", 1),
+            workspace("two", "Làm việc", 2),
+        ))
+        val state = viewModel(repository)
+        state.selectWorkspace("two")
+        state.updateSearchQuery("  ĐI  ")
+        assertEquals(listOf("one"), state.visibleWorkspaces.map { it.id })
+        assertEquals("two", state.selectedWorkspaceId)
+        state.clearSearchQuery()
+        assertEquals(setOf("one", "two"), state.visibleWorkspaces.map { it.id }.toSet())
+        assertEquals("two", state.selectedWorkspaceId)
+    }
+
+    @Test fun `sort preference updates projection without changing source`() {
+        val repository = FakeRepository(listOf(
+            workspace("b", "Beta", 1, created = 30, updated = 40),
+            workspace("a", "Alpha", 2, created = 10, updated = 50),
+        ))
+        val state = viewModel(repository)
+        val sourceOrder = state.workspaces.map { it.id }
+        state.updateSortMode(WorkspaceSortMode.CREATED_NEWEST)
+        assertEquals(listOf("b", "a"), state.visibleWorkspaces.map { it.id })
+        state.updateSortMode(WorkspaceSortMode.NAME_ASCENDING)
+        assertEquals(listOf("a", "b"), state.visibleWorkspaces.map { it.id })
+        assertEquals(sourceOrder, state.workspaces.map { it.id })
+    }
+
+    @Test fun `rename duplicate and delete update active projection from repository emissions`() {
+        val repository = FakeRepository(listOf(workspace("source", "Maps", 1)))
+        val state = viewModel(repository, ids = QueueIds("copy"))
+        state.updateSearchQuery("maps")
+        state.renameWorkspace("source", "Music")
+        assertTrue(state.visibleWorkspaces.isEmpty())
+        state.updateSearchQuery("music")
+        state.duplicateWorkspace("source")
+        assertEquals(2, state.visibleWorkspaces.size)
+        state.deleteWorkspace("copy")
+        assertEquals(listOf("source"), state.visibleWorkspaces.map { it.id })
+    }
+
+    @Test fun `five hundred workspace projection remains complete and deterministic`() {
+        val repository = FakeRepository(WorkspaceBenchmarkDataGenerator.generate(500))
+        val state = viewModel(repository)
+        state.updateSortMode(WorkspaceSortMode.NAME_DESCENDING)
+        assertEquals(500, state.visibleWorkspaces.size)
+        assertEquals(
+            state.visibleWorkspaces.map { it.id },
+            state.visibleWorkspaces.map { it.id }.distinct(),
+        )
+    }
+
+    @Test fun `search and sort are session state and reset on new ViewModel`() {
+        val repository = FakeRepository(listOf(workspace("id", "Name", 1)))
+        val first = viewModel(repository)
+        first.updateSearchQuery("Name")
+        first.updateSortMode(WorkspaceSortMode.CREATED_OLDEST)
+        val recreated = viewModel(repository)
+        assertEquals("", recreated.searchQuery)
+        assertEquals(WorkspaceSortMode.RECENTLY_UPDATED, recreated.sortMode)
+        assertEquals(listOf("id"), recreated.visibleWorkspaces.map { it.id })
+    }
+
     @Test fun `selection rename delete and default name remain correct with five hundred workspaces`() {
         val repository = FakeRepository(WorkspaceBenchmarkDataGenerator.generate(500))
         val state = viewModel(repository, ids = QueueIds("new-501"))

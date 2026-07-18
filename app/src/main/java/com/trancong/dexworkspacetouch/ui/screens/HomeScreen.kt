@@ -2,6 +2,8 @@ package com.trancong.dexworkspacetouch.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -22,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -37,6 +41,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import com.trancong.dexworkspacetouch.ui.design.Dimensions
 import com.trancong.dexworkspacetouch.ui.design.Spacing
@@ -47,6 +52,7 @@ import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceL
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchUiState
 import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryPersistenceError
 import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceDuplicateFeedback
+import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceSortMode
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.templates.WorkspaceTemplateCatalog
 import com.trancong.dexworkspacetouch.workspace.templates.ui.WorkspaceTemplatePickerDialog
@@ -55,6 +61,12 @@ import com.trancong.dexworkspacetouch.workspace.templates.ui.WorkspaceTemplatePi
 @Composable
 fun HomeScreen(
     workspaces: List<WorkspaceLibraryItem>,
+    hasSourceWorkspaces: Boolean,
+    searchQuery: String,
+    sortMode: WorkspaceSortMode,
+    onSearchQueryChanged: (String) -> Unit,
+    onClearSearch: () -> Unit,
+    onSortModeChanged: (WorkspaceSortMode) -> Unit,
     selectedWorkspaceId: String?,
     editingWorkspaceId: String?,
     onWorkspaceSelected: (String) -> Unit,
@@ -83,6 +95,7 @@ fun HomeScreen(
     var deleteWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
     var showTemplatePicker by rememberSaveable { mutableStateOf(false) }
     var selectedTemplateId by rememberSaveable { mutableStateOf<String?>(null) }
+    var showSortSheet by rememberSaveable { mutableStateOf(false) }
     val templateCatalog = remember { WorkspaceTemplateCatalog.default() }
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -196,6 +209,32 @@ fun HomeScreen(
         }
     }
 
+    if (showSortSheet) {
+        ModalBottomSheet(onDismissRequest = { showSortSheet = false }) {
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(Spacing.L),
+                verticalArrangement = Arrangement.spacedBy(Spacing.S),
+            ) {
+                Text("Sắp xếp workspace", style = MaterialTheme.typography.titleLarge)
+                WorkspaceSortMode.entries.forEach { mode ->
+                    OutlinedButton(
+                        onClick = {
+                            onSortModeChanged(mode)
+                            showSortSheet = false
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(TouchTargets.SecondaryButton)
+                            .semantics {
+                                selected = mode == sortMode
+                                contentDescription = "Sắp xếp theo ${mode.accessibilityLabel()}."
+                            },
+                    ) { Text(mode.displayName()) }
+                }
+            }
+        }
+    }
+
     renameWorkspaceId?.let { id ->
         workspaces.firstOrNull { it.id == id }?.let { workspace ->
             AlertDialog(
@@ -278,6 +317,60 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth().height(TouchTargets.PrimaryButton),
                 ) { Text("Tạo bố cục mới") }
             }
+            if (hasSourceWorkspaces) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                        val wide = maxWidth >= Dimensions.WorkspaceLibraryToolbarWideWidth
+                        val search: @Composable (Modifier) -> Unit = { modifier ->
+                            OutlinedTextField(
+                                value = searchQuery,
+                                onValueChange = onSearchQueryChanged,
+                                label = { Text("Tìm workspace") },
+                                singleLine = true,
+                                trailingIcon = if (searchQuery.isNotEmpty()) {
+                                    {
+                                        TextButton(
+                                            onClick = onClearSearch,
+                                            modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                                        ) { Text("Xóa") }
+                                    }
+                                } else null,
+                                modifier = modifier.heightIn(min = Dimensions.WorkspaceSearchMinHeight),
+                            )
+                        }
+                        val sort: @Composable (Modifier) -> Unit = { modifier ->
+                            OutlinedButton(
+                                onClick = { showSortSheet = true },
+                                modifier = modifier
+                                    .height(TouchTargets.SecondaryButton)
+                                    .widthIn(min = Dimensions.WorkspaceSortButtonMinWidth)
+                                    .semantics {
+                                        contentDescription =
+                                            "Sắp xếp workspace. Hiện tại: ${sortMode.displayName()}."
+                                    },
+                            ) { Text("Sắp xếp") }
+                        }
+                        if (wide) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(Spacing.M),
+                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                            ) {
+                                search(Modifier.weight(1f))
+                                sort(Modifier)
+                            }
+                        } else {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalArrangement = Arrangement.spacedBy(Spacing.S),
+                            ) {
+                                search(Modifier.fillMaxWidth())
+                                sort(Modifier.fillMaxWidth())
+                            }
+                        }
+                    }
+                }
+            }
             if (!libraryIsLoading && hasCorruptedWorkspaces) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     Text("Không thể đọc một số workspace.")
@@ -298,9 +391,21 @@ fun HomeScreen(
                         Text("Đang đọc danh sách workspace...")
                     }
                 }
+            } else if (!hasSourceWorkspaces) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Text("Chưa có workspace.")
+                }
             } else if (workspaces.isEmpty()) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    Text("Chưa có workspace. Hãy tạo bố cục đầu tiên.")
+                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.S)) {
+                        Text("Không tìm thấy workspace phù hợp.")
+                        if (searchQuery.trim().isNotEmpty()) {
+                            OutlinedButton(
+                                onClick = onClearSearch,
+                                modifier = Modifier.height(TouchTargets.SecondaryButton),
+                            ) { Text("Xóa tìm kiếm") }
+                        }
+                    }
                 }
             } else {
                 items(workspaces, key = WorkspaceLibraryItem::id) { workspace ->
@@ -324,4 +429,20 @@ fun HomeScreen(
             }
         }
     }
+}
+
+private fun WorkspaceSortMode.displayName(): String = when (this) {
+    WorkspaceSortMode.RECENTLY_UPDATED -> "Mới chỉnh sửa"
+    WorkspaceSortMode.NAME_ASCENDING -> "Tên A–Z"
+    WorkspaceSortMode.NAME_DESCENDING -> "Tên Z–A"
+    WorkspaceSortMode.CREATED_NEWEST -> "Mới tạo"
+    WorkspaceSortMode.CREATED_OLDEST -> "Cũ nhất"
+}
+
+private fun WorkspaceSortMode.accessibilityLabel(): String = when (this) {
+    WorkspaceSortMode.RECENTLY_UPDATED -> "Mới chỉnh sửa"
+    WorkspaceSortMode.NAME_ASCENDING -> "Tên A đến Z"
+    WorkspaceSortMode.NAME_DESCENDING -> "Tên Z đến A"
+    WorkspaceSortMode.CREATED_NEWEST -> "Mới tạo"
+    WorkspaceSortMode.CREATED_OLDEST -> "Cũ nhất"
 }

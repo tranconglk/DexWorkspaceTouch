@@ -49,3 +49,10 @@ Header section là một touch target 56dp; card chỉ gồm preview 16:10 và t
 tiếp; card hẹp đặt action trong sheet “Quản lý”. Mọi action cao tối thiểu 56dp và có label
 đầy đủ. Trong lúc ghi, action bị disable để chống double tap. Thành công/thất bại được báo
 bằng Snackbar; bản sao mới được chọn nhưng không tự mở Designer, scroll hay launch.
+
+## Workspace Library search and sort
+
+Library có toolbar touch-first: cửa sổ rộng đặt search và “Sắp xếp” cùng hàng, cửa sổ hẹp
+xếp dọc. Search không tự focus, chỉ tìm theo tên và có action xóa 56dp. Sort dùng bottom
+sheet với năm lựa chọn full-width 56dp, selected state rõ ràng. Source rỗng và query không
+khớp có empty state riêng; filter không xóa selection theo ID.
