@@ -1,19 +1,19 @@
 package com.trancong.dexworkspacetouch.workspace.library.ui
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import com.trancong.dexworkspacetouch.ui.design.Dimensions
@@ -29,18 +29,21 @@ fun WorkspaceMultiSelectToolbar(
     onClose: () -> Unit,
     onPin: () -> Unit,
     onUnpin: () -> Unit,
+    onExport: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    BoxWithConstraints(
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = Dimensions.MultiSelectToolbarMinHeight)
+            .horizontalScroll(rememberScrollState())
             .semantics {
                 contentDescription = "Chế độ chọn nhiều. Đã chọn $selectedCount workspace."
             },
+        horizontalArrangement = Arrangement.spacedBy(Spacing.S),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        val wide = maxWidth >= Dimensions.WorkspaceLibraryToolbarWideWidth
         val title: @Composable () -> Unit = { Text("Đã chọn $selectedCount") }
         val close: @Composable (Modifier) -> Unit = { target ->
             OutlinedButton(
@@ -78,37 +81,20 @@ fun WorkspaceMultiSelectToolbar(
                 },
             ) { Text("Xóa") }
         }
-        if (wide) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.S),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                title()
-                close(Modifier.weight(1f))
-                pin(Modifier.weight(1f))
-                unpin(Modifier.weight(1f))
-                delete(Modifier.weight(1f))
-            }
-        } else {
-            Column(verticalArrangement = Arrangement.spacedBy(Spacing.S)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.S),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    title()
-                    close(Modifier.weight(1f))
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.S),
-                ) {
-                    pin(Modifier.weight(1f))
-                    unpin(Modifier.weight(1f))
-                    delete(Modifier.weight(1f))
-                }
-            }
+        val export: @Composable (Modifier) -> Unit = { target ->
+            OutlinedButton(
+                onClick = onExport,
+                enabled = actionsEnabled && selectedCount > 0,
+                modifier = target.height(TouchTargets.SecondaryButton).semantics {
+                    contentDescription = "Xuất $selectedCount workspace đã chọn."
+                },
+            ) { Text("Xuất") }
         }
+        close(Modifier)
+        title()
+        pin(Modifier)
+        unpin(Modifier)
+        export(Modifier)
+        delete(Modifier)
     }
 }

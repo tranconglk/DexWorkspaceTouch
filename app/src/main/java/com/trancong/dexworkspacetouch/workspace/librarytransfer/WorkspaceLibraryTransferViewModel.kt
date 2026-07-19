@@ -25,8 +25,17 @@ import kotlinx.coroutines.withContext
 sealed interface WorkspaceLibraryTransferState {
     data object Idle : WorkspaceLibraryTransferState
     data object PreparingBackup : WorkspaceLibraryTransferState
-    data class BackupWarning(val skippedCount: Int, val validCount: Int) : WorkspaceLibraryTransferState
-    data class BackupReady(val fileName: String, val bytes: ByteArray) : WorkspaceLibraryTransferState
+    data class BackupWarning(
+        val skippedCount: Int,
+        val validCount: Int,
+        val selectedExport: Boolean = false,
+    ) : WorkspaceLibraryTransferState
+    data class BackupReady(
+        val fileName: String,
+        val bytes: ByteArray,
+        val workspaceCount: Int,
+        val selectedExport: Boolean = false,
+    ) : WorkspaceLibraryTransferState
     data object ReadingRestore : WorkspaceLibraryTransferState
     data class RestorePreview(val preview: WorkspaceLibraryImportPreview) : WorkspaceLibraryTransferState
     data object Restoring : WorkspaceLibraryTransferState
@@ -44,7 +53,12 @@ class WorkspaceLibraryTransferViewModel(
 ) : ViewModel() {
     var state by mutableStateOf<WorkspaceLibraryTransferState>(WorkspaceLibraryTransferState.Idle)
         private set
-    private var pendingValidBackup: List<WorkspaceImportPayload>? = null
+    private data class PendingBackup(
+        val workspaces: List<WorkspaceImportPayload>,
+        val selectedExport: Boolean,
+    )
+
+    private var pendingBackup: PendingBackup? = null
 
     fun prepareBackup() {
         if (state !is WorkspaceLibraryTransferState.Idle) return
@@ -55,21 +69,66 @@ class WorkspaceLibraryTransferViewModel(
                 val valid = snapshot.workspaces.map { WorkspaceImportPayload(it.name, it.canvas, it.schemaVersion) }
                 if (valid.isEmpty()) throw WorkspaceLibraryTransferException(WorkspaceLibraryTransferFailure.EMPTY_LIBRARY)
                 if (snapshot.issues.isNotEmpty()) {
-                    pendingValidBackup = valid
+                    pendingBackup = PendingBackup(valid, selectedExport = false)
                     state = WorkspaceLibraryTransferState.BackupWarning(snapshot.issues.size, valid.size)
-                } else encodeBackup(valid)
+                } else encodeBackup(valid, selectedExport = false)
             } catch (error: CancellationException) { throw error }
             catch (error: WorkspaceLibraryTransferException) { state = WorkspaceLibraryTransferState.Error(error.failure) }
             catch (_: Exception) { state = WorkspaceLibraryTransferState.Error(WorkspaceLibraryTransferFailure.READ_FAILURE) }
         }
     }
 
-    fun continueBackup() {
-        val valid = pendingValidBackup ?: return
-        if (state !is WorkspaceLibraryTransferState.BackupWarning) return
-        pendingValidBackup = null
+    fun prepareSelectedBackup(selectedWorkspaceIds: Set<String>) {
+        if (state !is WorkspaceLibraryTransferState.Idle || selectedWorkspaceIds.isEmpty()) return
+        val selectedSnapshot = selectedWorkspaceIds.toSet()
+        if (selectedSnapshot.size > WorkspaceLibraryTransferFormat.MaxWorkspaces) {
+            state = WorkspaceLibraryTransferState.Error(
+                WorkspaceLibraryTransferFailure.TOO_MANY_SELECTED_WORKSPACES,
+            )
+            return
+        }
         state = WorkspaceLibraryTransferState.PreparingBackup
-        launchTask { try { encodeBackup(valid) } catch (error: CancellationException) { throw error }
+        launchTask {
+            try {
+                val snapshot = repository.observeSnapshot().first()
+                val valid = snapshot.workspaces
+                    .asSequence()
+                    .filter { it.id in selectedSnapshot }
+                    .map { WorkspaceImportPayload(it.name, it.canvas, it.schemaVersion) }
+                    .toList()
+                if (valid.isEmpty()) {
+                    throw WorkspaceLibraryTransferException(
+                        WorkspaceLibraryTransferFailure.SELECTED_WORKSPACES_UNAVAILABLE,
+                    )
+                }
+                val validIds = snapshot.workspaces.asSequence().map { it.id }.filter { it in selectedSnapshot }.toSet()
+                val issueIds = snapshot.issues.asSequence().map { it.workspaceId }.filter { it in selectedSnapshot }.toSet()
+                val skippedCount = (selectedSnapshot - validIds).plus(issueIds).size
+                if (skippedCount > 0) {
+                    pendingBackup = PendingBackup(valid, selectedExport = true)
+                    state = WorkspaceLibraryTransferState.BackupWarning(
+                        skippedCount = skippedCount,
+                        validCount = valid.size,
+                        selectedExport = true,
+                    )
+                } else {
+                    encodeBackup(valid, selectedExport = true)
+                }
+            } catch (error: CancellationException) { throw error }
+            catch (error: WorkspaceLibraryTransferException) {
+                state = WorkspaceLibraryTransferState.Error(error.failure)
+            } catch (_: Exception) {
+                state = WorkspaceLibraryTransferState.Error(WorkspaceLibraryTransferFailure.READ_FAILURE)
+            }
+        }
+    }
+
+    fun continueBackup() {
+        val pending = pendingBackup ?: return
+        if (state !is WorkspaceLibraryTransferState.BackupWarning) return
+        pendingBackup = null
+        state = WorkspaceLibraryTransferState.PreparingBackup
+        launchTask { try { encodeBackup(pending.workspaces, pending.selectedExport) } catch (error: CancellationException) { throw error }
             catch (error: WorkspaceLibraryTransferException) { state = WorkspaceLibraryTransferState.Error(error.failure) }
             catch (_: Exception) { state = WorkspaceLibraryTransferState.Error(WorkspaceLibraryTransferFailure.WRITE_FAILURE) } }
     }
@@ -118,7 +177,7 @@ class WorkspaceLibraryTransferViewModel(
         }
     }
 
-    fun cancel() { if (state is WorkspaceLibraryTransferState.BackupWarning || state is WorkspaceLibraryTransferState.RestorePreview) { pendingValidBackup = null; state = WorkspaceLibraryTransferState.Idle } }
+    fun cancel() { if (state is WorkspaceLibraryTransferState.BackupWarning || state is WorkspaceLibraryTransferState.RestorePreview) { pendingBackup = null; state = WorkspaceLibraryTransferState.Idle } }
     fun consumeBackup() { if (state is WorkspaceLibraryTransferState.BackupReady) state = WorkspaceLibraryTransferState.Idle }
     fun complete(message: String) { state = WorkspaceLibraryTransferState.Completed(message) }
     fun fail(failure: WorkspaceLibraryTransferFailure) { state = WorkspaceLibraryTransferState.Error(failure) }
@@ -127,13 +186,15 @@ class WorkspaceLibraryTransferViewModel(
         WorkspaceLibraryTransferState.PreparingBackup,
         WorkspaceLibraryTransferState.ReadingRestore,
         WorkspaceLibraryTransferState.Restoring -> false
-        else -> { pendingValidBackup = null; state = WorkspaceLibraryTransferState.Idle; true }
+        else -> { pendingBackup = null; state = WorkspaceLibraryTransferState.Idle; true }
     }
 
-    private suspend fun encodeBackup(valid: List<WorkspaceImportPayload>) {
+    private suspend fun encodeBackup(valid: List<WorkspaceImportPayload>, selectedExport: Boolean) {
         val now = clock.nowEpochMillis().coerceAtLeast(0L)
         val bytes = withContext(workerDispatcher) { serializer.encode(WorkspaceLibraryExport(valid, now)) }
-        state = WorkspaceLibraryTransferState.BackupReady(libraryBackupFileName(now), bytes)
+        val fileName = if (selectedExport) selectedWorkspaceBundleFileName(valid.size, now)
+        else libraryBackupFileName(now)
+        state = WorkspaceLibraryTransferState.BackupReady(fileName, bytes, valid.size, selectedExport)
     }
 
     private suspend fun generateIds(count: Int, occupied: MutableSet<String>): List<String> {

@@ -30,6 +30,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -48,6 +49,7 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.trancong.dexworkspacetouch.ui.design.Dimensions
+import com.trancong.dexworkspacetouch.ui.design.DesignerElevation
 import com.trancong.dexworkspacetouch.ui.design.Spacing
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryItem
@@ -89,7 +91,9 @@ fun HomeScreen(
     onExitMultiSelect: () -> Unit = {},
     onBatchPin: () -> Unit = {},
     onBatchUnpin: () -> Unit = {},
+    onBatchExport: () -> Unit = {},
     onBatchDelete: () -> Unit = {},
+    multiSelectTransferInProgress: Boolean = false,
     editingWorkspaceId: String?,
     onWorkspaceSelected: (String) -> Unit,
     onCreateWorkspace: (WorkspaceCanvas) -> Unit,
@@ -450,6 +454,28 @@ fun HomeScreen(
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
+        topBar = {
+            if (isMultiSelectMode) {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.surface,
+                    shadowElevation = DesignerElevation.MultiSelectSelected,
+                ) {
+                    WorkspaceMultiSelectToolbar(
+                        selectedCount = selectedWorkspaceIds.size,
+                        pinnableCount = selectedUnpinnedCount,
+                        unpinnableCount = selectedPinnedCount,
+                        actionsEnabled = !libraryWriteInProgress && !multiSelectTransferInProgress,
+                        onClose = onExitMultiSelect,
+                        onPin = onBatchPin,
+                        onUnpin = onBatchUnpin,
+                        onExport = onBatchExport,
+                        onDelete = { showBatchDeleteConfirmation = true },
+                        modifier = Modifier.padding(horizontal = Spacing.L, vertical = Spacing.XS),
+                    )
+                }
+            }
+        },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
         BoxWithConstraints(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
@@ -493,19 +519,8 @@ fun HomeScreen(
                 }
             }
             if (hasSourceWorkspaces) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    if (isMultiSelectMode) {
-                        WorkspaceMultiSelectToolbar(
-                            selectedCount = selectedWorkspaceIds.size,
-                            pinnableCount = selectedUnpinnedCount,
-                            unpinnableCount = selectedPinnedCount,
-                            actionsEnabled = !libraryWriteInProgress,
-                            onClose = onExitMultiSelect,
-                            onPin = onBatchPin,
-                            onUnpin = onBatchUnpin,
-                            onDelete = { showBatchDeleteConfirmation = true },
-                        )
-                    } else BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                if (!isMultiSelectMode) item(span = { GridItemSpan(maxLineSpan) }) {
+                    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
                         val wide = maxWidth >= Dimensions.WorkspaceLibraryToolbarWideWidth
                         val search: @Composable (Modifier) -> Unit = { modifier ->
                             OutlinedTextField(

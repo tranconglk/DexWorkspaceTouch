@@ -84,3 +84,6 @@ Observed provider MIME:
 - [ ] Pin/Unpin applies to all applicable selected workspaces without duplicate updates.
 - [ ] Batch delete confirms the count, deletes all rows together, and preserves selection on failure.
 - [ ] Back/Close exits multi-select and restores normal card actions.
+- [ ] Select mixed pinned/regular workspaces, hide some with search, and export; the bundle contains every valid selected ID.
+- [ ] Share and Save selected bundles preserve selection and do not export pin state.
+- [ ] Restore a selected bundle on the opposite device; only selected workspaces return, with new IDs and unpinned state.

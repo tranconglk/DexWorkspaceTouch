@@ -59,10 +59,16 @@ class DeterministicWorkspaceLibraryBundleSerializer(
 
     private fun bodyOf(payload: WorkspaceImportPayload): WorkspaceBody {
         if (payload.workspaceSchemaVersion != 1) fail(WorkspaceLibraryTransferFailure.UNSUPPORTED_WORKSPACE_SCHEMA)
-        val envelope = singleSerializer.encode(WorkspaceExport(payload.name, payload.canvas, 0L)).toString(Charsets.UTF_8)
-        try { singleSerializer.decode(envelope.toByteArray()) }
+        val envelope = try {
+            singleSerializer.encode(WorkspaceExport(payload.name, payload.canvas, 0L))
+                .toString(Charsets.UTF_8)
+                .also { singleSerializer.decode(it.toByteArray()) }
+        }
         catch (error: WorkspaceTransferException) {
-            throw WorkspaceLibraryTransferException(WorkspaceLibraryTransferFailure.INVALID_WORKSPACE, error)
+            val failure = if (error.failure == WorkspaceTransferFailure.FILE_TOO_LARGE) {
+                WorkspaceLibraryTransferFailure.FILE_TOO_LARGE
+            } else WorkspaceLibraryTransferFailure.INVALID_WORKSPACE
+            throw WorkspaceLibraryTransferException(failure, error)
         }
         val marker = ",\"workspace\":"
         val start = envelope.indexOf(marker).takeIf { it >= 0 } ?: invalid()

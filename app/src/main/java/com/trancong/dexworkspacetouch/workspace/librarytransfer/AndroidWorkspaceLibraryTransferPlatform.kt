@@ -26,7 +26,9 @@ class AndroidWorkspaceLibraryTransferPlatform(private val activity: Activity) {
         }
         if (activity.packageManager.queryIntentActivities(intent, 0).isEmpty()) intent.type = "application/json"
         if (activity.packageManager.queryIntentActivities(intent, 0).isEmpty()) intent.type = "*/*"
-        activity.startActivity(Intent.createChooser(intent, "Chia sẻ bản sao lưu Library"))
+        val chooserTitle = if (ready.selectedExport) "Chia sẻ ${ready.workspaceCount} workspace"
+        else "Chia sẻ bản sao lưu Library"
+        activity.startActivity(Intent.createChooser(intent, chooserTitle))
     }
 
     suspend fun write(uri: Uri, bytes: ByteArray) = withContext(Dispatchers.IO) {

@@ -127,6 +127,9 @@ confirmation. A shared file waits while Designer is active so an unsaved draft i
 - Search and sort may hide selected workspaces without deselecting them. Back or Close exits the mode.
 - Batch deletion always requires confirmation, names the number of workspaces, and remains all-or-nothing.
 - While multi-select is active, card-level open/edit/manage actions and external transfer dispatch are suspended.
+- Multi-select uses a fixed top toolbar so actions remain available while the Library scrolls. Its single horizontal row starts with Close, followed by the selected count, Pin, Unpin, Export, and Delete; narrow windows can scroll the labeled 56 dp actions horizontally.
+- Export offers Share and Save to file without leaving multi-select. Selection remains after success, cancellation, or failure.
+- Search-hidden selected workspaces remain included in the selected count and exported bundle.
 
 - Dùng metadata ngắn “x ô • y ứng dụng” và relative updated time một dòng.
 - Snapshot ưu tiên icon thật; cell nhỏ có thể ẩn label và giữ icon/fallback rõ ràng.

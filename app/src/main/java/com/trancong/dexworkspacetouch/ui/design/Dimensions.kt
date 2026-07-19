@@ -46,7 +46,7 @@ object Dimensions {
     val DesignerStatusMinHeight = 32.dp
     val WorkspaceSearchMinHeight = 56.dp
     val WorkspaceSortButtonMinWidth = 180.dp
-    val MultiSelectToolbarMinHeight = 112.dp
+    val MultiSelectToolbarMinHeight = 64.dp
     val MultiSelectCheckContainerSize = 40.dp
     const val MultiSelectSelectedContainerAlpha = 0.12f
     val AppRowMinHeight = 72.dp

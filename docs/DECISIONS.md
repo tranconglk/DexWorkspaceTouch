@@ -1,5 +1,11 @@
 # Architecture Decisions
 
+## ADR-034 — Selected export reuses the Library bundle
+
+Exporting selected workspaces uses the existing `.dwtbundle` envelope, MIME type, canonical serializer, validation limits, FileProvider sharing, SAF writing, and restore path. No selection or pin metadata is added to the file. Selection order, visible card order, current sort mode, and pinned sections do not influence canonical payload order. Workspaces hidden by search remain exported when their IDs are selected.
+
+The export operation captures an immutable ID snapshot and rereads the repository. Missing or unreadable selected rows require explicit continuation when valid rows remain; if none remain, no file is created. Success and failure both preserve Library multi-selection. Restored rows continue to receive new IDs and default to unpinned.
+
 ## ADR-033 — Library multi-select uses ID state and atomic persistence operations
 
 Workspace Library multi-select is held as an immutable `Set<String>` of persistent workspace IDs in the graph-scoped ViewModel. Visibility changes from search, sort, pin sections, or resize do not discard valid selections. Batch pin/unpin updates only rows whose value changes. Batch deletion is a single Room transaction that validates the affected row count and rolls back on mismatch. Selection is cleared only after successful deletion and is preserved on failure so the user can retry.

@@ -197,6 +197,8 @@ WorkspaceCanvas
 
 Multi-select is presentation state owned by the graph-scoped `WorkspaceLibraryViewModel`. A long press enters the mode and stores an immutable set of workspace IDs; search and sort only project the visible list and never rewrite that set. Room remains the source of truth. Batch pin/unpin and delete flow through repository APIs to DAO transactions. Delete validates every requested ID before committing, so a missing row cannot produce a partial deletion. External file intents wait until multi-select exits, preventing transfer UI from replacing an active batch operation.
 
+Selected export follows `selectedWorkspaceIds → immutable ID snapshot → repository snapshot → existing WorkspaceLibraryBundleSerializer → FileProvider or SAF`. Hidden-but-selected items remain part of the ID snapshot. Missing, corrupted, or unsupported selected IDs produce the same explicit continue/cancel warning policy as full-Library backup. The transfer ViewModel serializes only valid current repository rows and never reads stale card models.
+
 ## Workspace Library Launch Integration
 
 ```text

@@ -46,6 +46,34 @@ class WorkspaceLibraryBundleSerializerTest {
         failure(WorkspaceLibraryTransferFailure.FILE_TOO_LARGE) { serializer.decode(ByteArray(WorkspaceLibraryTransferFormat.MaxBytes + 1)) }
     }
 
+    @Test fun totalCellAndEncodedSizeLimitsRemainEnforcedForSelectedBundles() {
+        val sixCells = (0 until 6).map { index ->
+            WorkspaceCell(
+                "cell-$index",
+                NormalizedBounds(index / 6f, 0f, (index + 1) / 6f, 1f),
+            )
+        }
+        failure(WorkspaceLibraryTransferFailure.TOO_MANY_CELLS) {
+            serializer.encode(WorkspaceLibraryExport((1..100).map {
+                WorkspaceImportPayload("Workspace $it", WorkspaceCanvas(sixCells), 1)
+            }, 0))
+        }
+        val oversizedLabel = "x".repeat(WorkspaceLibraryTransferFormat.MaxBytes)
+        failure(WorkspaceLibraryTransferFailure.FILE_TOO_LARGE) {
+            serializer.encode(WorkspaceLibraryExport(listOf(
+                WorkspaceImportPayload(
+                    "Large",
+                    WorkspaceCanvas(listOf(WorkspaceCell(
+                        "cell",
+                        NormalizedBounds.FullCanvas,
+                        AssignedApp("pkg", "activity", oversizedLabel),
+                    ))),
+                    1,
+                ),
+            ), 0))
+        }
+    }
+
     @Test fun localMetadataIsNeverExported() {
         val text = serializer.encode(WorkspaceLibraryExport(listOf(item("One")), 0)).toString(Charsets.UTF_8)
         listOf("isPinned", "modifiedSequence", "createdAt", "updatedAt", "databaseId").forEach { assertFalse(text.contains(it)) }

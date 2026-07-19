@@ -34,6 +34,26 @@ class WorkspaceFileProviderTest {
         assertEquals("bundle", context.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() })
     }
 
+    @Test fun selectedLibraryBundleUriSupportsShareAndReadBack() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val directory = File(context.cacheDir, "exports/library").apply { mkdirs() }
+        val file = File(directory, "DexWorkspaceTouch-selected-4-20260719-0930.dwtbundle")
+            .apply { writeText("selected-bundle") }
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "application/vnd.dexworkspacetouch.library+json"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            clipData = ClipData.newUri(context.contentResolver, file.name, uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        assertTrue(context.packageManager.queryIntentActivities(intent, 0).isNotEmpty())
+        context.contentResolver.openInputStream(uri)!!.use {
+            assertEquals("selected-bundle", it.bufferedReader().readText())
+        }
+        assertTrue(file.delete())
+    }
+
     @Test fun workspaceCustomMimeActionViewResolvesToMainActivity() {
         assertCustomMimeResolves(
             fileName = "open-with-test.dwt",

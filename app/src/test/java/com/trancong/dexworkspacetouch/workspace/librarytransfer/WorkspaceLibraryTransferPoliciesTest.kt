@@ -13,6 +13,16 @@ class WorkspaceLibraryTransferPoliciesTest {
         assertEquals("application/vnd.dexworkspacetouch.library+json", WorkspaceLibraryTransferFormat.MimeType)
     }
 
+    @Test fun selectedFilenameContainsCountTimestampAndBundleExtension() {
+        val name = selectedWorkspaceBundleFileName(4, 0)
+        assertTrue(name.startsWith("DexWorkspaceTouch-selected-4-"))
+        assertTrue(name.endsWith(".dwtbundle"))
+        try {
+            selectedWorkspaceBundleFileName(0, 0)
+            throw AssertionError("Expected invalid count")
+        } catch (_: IllegalArgumentException) { Unit }
+    }
+
     @Test fun boundedReaderAcceptsLimitAndRejectsOneByteMore() {
         assertEquals(WorkspaceLibraryTransferFormat.MaxBytes, readWorkspaceLibraryBytes(ByteArrayInputStream(ByteArray(WorkspaceLibraryTransferFormat.MaxBytes))).size)
         try {

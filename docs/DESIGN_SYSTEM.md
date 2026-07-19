@@ -145,7 +145,7 @@ mọi clear/sort option dùng `TouchTargets.SecondaryButton = 56dp`.
 - Kích thước icon được chọn theo bounds thực tế của cell; cell nhỏ ưu tiên icon hơn label.
 ### Multi-select toolbar and cards
 
-- `Dimensions.MultiSelectToolbarMinHeight`: 112 dp, allowing the narrow two-row action layout without clipped touch targets.
+- `Dimensions.MultiSelectToolbarMinHeight`: 64 dp for the fixed, single-row Library multi-select toolbar.
 - `Dimensions.MultiSelectCheckContainerSize`: 40 dp for the visual selection marker; the card remains the full interactive target.
 - `Dimensions.MultiSelectSelectedContainerAlpha`: 0.12 for the selected surface tint.
 - `DesignerElevation.MultiSelectSelected`: 3 dp to distinguish selection without changing card geometry.

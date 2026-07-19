@@ -6,6 +6,7 @@ import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceIdGenerat
 import com.trancong.dexworkspacetouch.workspace.persistence.domain.Workspace
 import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspaceRepository
 import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspaceRepositorySnapshot
+import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspacePersistenceIssue
 import com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceImportPayload
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -56,6 +57,99 @@ class WorkspaceLibraryTransferViewModelTest {
         assertEquals(WorkspaceLibraryTransferFailure.EMPTY_LIBRARY, (viewModel.state as WorkspaceLibraryTransferState.Error).failure)
     }
 
+    @Test fun selectedBackupExportsExactlyOneOrManyIdsAndKeepsCanonicalOrder() {
+        val repository = FakeRepository(listOf(
+            workspace("one", "Zulu", 1).copy(isPinned = true),
+            workspace("two", "Alpha", 2),
+            workspace("three", "Hidden", 3),
+        ))
+        val viewModel = viewModel(repository)
+
+        viewModel.prepareSelectedBackup(linkedSetOf("one"))
+        val one = viewModel.state as WorkspaceLibraryTransferState.BackupReady
+        assertEquals(listOf("Zulu"), decode(one))
+        assertTrue(one.selectedExport)
+        assertTrue(one.fileName.startsWith("DexWorkspaceTouch-selected-1-"))
+
+        viewModel.consumeBackup()
+        viewModel.prepareSelectedBackup(linkedSetOf("one", "two"))
+        val many = viewModel.state as WorkspaceLibraryTransferState.BackupReady
+        assertEquals(listOf("Alpha", "Zulu"), decode(many))
+        assertFalse(many.bytes.toString(Charsets.UTF_8).contains("isPinned"))
+    }
+
+    @Test fun hiddenSelectionIsIndependentOfVisibleUiProjection() {
+        val repository = FakeRepository(listOf(
+            workspace("visible", "Visible", 1),
+            workspace("hidden", "Hidden by search", 2),
+        ))
+        val viewModel = viewModel(repository)
+
+        viewModel.prepareSelectedBackup(setOf("visible", "hidden"))
+
+        assertEquals(listOf("Hidden by search", "Visible"), decode(viewModel.state as WorkspaceLibraryTransferState.BackupReady))
+    }
+
+    @Test fun missingOrCorruptedSelectedIdsRequireExplicitContinuation() {
+        val repository = FakeRepository(listOf(workspace("valid", "Valid", 1)))
+        repository.issues = listOf(WorkspacePersistenceIssue.CorruptedRow("corrupt"))
+        val viewModel = viewModel(repository)
+
+        viewModel.prepareSelectedBackup(setOf("valid", "missing", "corrupt"))
+        val warning = viewModel.state as WorkspaceLibraryTransferState.BackupWarning
+        assertEquals(2, warning.skippedCount)
+        assertEquals(1, warning.validCount)
+        assertTrue(warning.selectedExport)
+
+        viewModel.continueBackup()
+        assertEquals(listOf("Valid"), decode(viewModel.state as WorkspaceLibraryTransferState.BackupReady))
+    }
+
+    @Test fun noRemainingSelectedWorkspaceFailsWithoutCreatingBundle() {
+        val viewModel = viewModel(FakeRepository(emptyList()))
+        viewModel.prepareSelectedBackup(setOf("gone"))
+        assertEquals(
+            WorkspaceLibraryTransferFailure.SELECTED_WORKSPACES_UNAVAILABLE,
+            (viewModel.state as WorkspaceLibraryTransferState.Error).failure,
+        )
+    }
+
+    @Test fun emptySelectionAndDoubleExportAreGuarded() {
+        val repository = FakeRepository(listOf(workspace("one", "One", 1)))
+        val viewModel = viewModel(repository)
+        viewModel.prepareSelectedBackup(emptySet())
+        assertTrue(viewModel.state is WorkspaceLibraryTransferState.Idle)
+
+        viewModel.prepareSelectedBackup(setOf("one"))
+        val first = (viewModel.state as WorkspaceLibraryTransferState.BackupReady).bytes
+        viewModel.prepareSelectedBackup(setOf("one"))
+        assertTrue(first === (viewModel.state as WorkspaceLibraryTransferState.BackupReady).bytes)
+    }
+
+    @Test fun moreThanOneHundredSelectedIdsFailBeforeRepositoryRead() {
+        val viewModel = viewModel(FakeRepository(emptyList()))
+        viewModel.prepareSelectedBackup((0..100).map { "id-$it" }.toSet())
+        assertEquals(
+            WorkspaceLibraryTransferFailure.TOO_MANY_SELECTED_WORKSPACES,
+            (viewModel.state as WorkspaceLibraryTransferState.Error).failure,
+        )
+    }
+
+    @Test fun selectedInputIsSnapshottedBeforePreparation() {
+        val repository = FakeRepository(listOf(
+            workspace("one", "One", 1),
+            workspace("two", "Two", 2),
+        ))
+        val mutableSelection = mutableSetOf("one")
+        val viewModel = viewModel(repository)
+        viewModel.prepareSelectedBackup(mutableSelection)
+        mutableSelection += "two"
+        assertEquals(listOf("One"), decode(viewModel.state as WorkspaceLibraryTransferState.BackupReady))
+    }
+
+    private fun decode(ready: WorkspaceLibraryTransferState.BackupReady): List<String> =
+        DeterministicWorkspaceLibraryBundleSerializer().decode(ready.bytes).workspaces.map { it.name }
+
     private fun viewModel(repository: FakeRepository): WorkspaceLibraryTransferViewModel {
         var id = 0
         return WorkspaceLibraryTransferViewModel(
@@ -71,10 +165,12 @@ class WorkspaceLibraryTransferViewModelTest {
 
     private class FakeRepository(initial: List<Workspace>) : WorkspaceRepository {
         val items = MutableStateFlow(initial)
+        var issues: List<WorkspacePersistenceIssue> = emptyList()
         var batchCalls = 0
         var lastBatch = emptyList<Workspace>()
         override fun observeAll(): Flow<List<Workspace>> = items
-        override fun observeSnapshot(): Flow<WorkspaceRepositorySnapshot> = MutableStateFlow(WorkspaceRepositorySnapshot(items.value))
+        override fun observeSnapshot(): Flow<WorkspaceRepositorySnapshot> =
+            MutableStateFlow(WorkspaceRepositorySnapshot(items.value, issues))
         override suspend fun getById(id: String) = items.value.firstOrNull { it.id == id }
         override suspend fun insert(workspace: Workspace) { items.value += workspace }
         override suspend fun insertAllAtomically(workspaces: List<Workspace>) { batchCalls++; lastBatch = workspaces }

@@ -9,6 +9,13 @@ import java.util.Locale
 fun libraryBackupFileName(epochMillis: Long): String =
     "DexWorkspaceTouch-backup-${SimpleDateFormat("yyyyMMdd-HHmm", Locale.ROOT).format(Date(epochMillis.coerceAtLeast(0L)))}.${WorkspaceLibraryTransferFormat.Extension}"
 
+fun selectedWorkspaceBundleFileName(count: Int, epochMillis: Long): String {
+    require(count > 0) { "Selected workspace count must be positive" }
+    val timestamp = SimpleDateFormat("yyyyMMdd-HHmm", Locale.ROOT)
+        .format(Date(epochMillis.coerceAtLeast(0L)))
+    return "DexWorkspaceTouch-selected-$count-$timestamp.${WorkspaceLibraryTransferFormat.Extension}"
+}
+
 fun readWorkspaceLibraryBytes(input: InputStream): ByteArray {
     val output = ByteArrayOutputStream()
     val buffer = ByteArray(8192)

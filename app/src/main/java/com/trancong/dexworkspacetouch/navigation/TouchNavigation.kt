@@ -83,6 +83,9 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
     val libraryTransferPlatform = remember(activity) { AndroidWorkspaceLibraryTransferPlatform(activity) }
     val transferScope = rememberCoroutineScope()
     var exportMode by rememberSaveable { mutableStateOf<String?>(null) }
+    val transferOperationActive = transferViewModel.state !is WorkspaceTransferState.Idle ||
+        libraryTransferViewModel.state !is WorkspaceLibraryTransferState.Idle ||
+        externalTransferViewModel.state !is ExternalTransferInboxState.Idle
     LaunchedEffect(
         externalTransferViewModel.state,
         currentRoute,
@@ -131,7 +134,10 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
         if (uri == null || ready == null) libraryTransferViewModel.consumeBackup() else transferScope.launch {
             try {
                 libraryTransferPlatform.write(uri, ready.bytes)
-                libraryTransferViewModel.complete("Đã lưu bản sao Library.")
+                libraryTransferViewModel.complete(
+                    if (ready.selectedExport) "Đã lưu ${ready.workspaceCount} workspace."
+                    else "Đã lưu bản sao Library.",
+                )
             } catch (error: kotlinx.coroutines.CancellationException) { throw error }
             catch (_: Exception) { libraryTransferViewModel.fail(WorkspaceLibraryTransferFailure.WRITE_FAILURE) }
         }
@@ -207,15 +213,15 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
         )
         is WorkspaceLibraryTransferState.BackupWarning -> AlertDialog(
             onDismissRequest = libraryTransferViewModel::cancel,
-            title = { Text("Có ${bundleState.skippedCount} workspace không thể đưa vào bản sao lưu.") },
-            text = { Text("Tiếp tục sao lưu ${bundleState.validCount} workspace hợp lệ?") },
+            title = { Text(if (bundleState.selectedExport) "Một số workspace đã chọn không thể xuất." else "Có ${bundleState.skippedCount} workspace không thể đưa vào bản sao lưu.") },
+            text = { Text(if (bundleState.selectedExport) "Tiếp tục xuất ${bundleState.validCount} workspace hợp lệ?" else "Tiếp tục sao lưu ${bundleState.validCount} workspace hợp lệ?") },
             confirmButton = { TextButton(onClick = libraryTransferViewModel::continueBackup, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Tiếp tục") } },
             dismissButton = { TextButton(onClick = libraryTransferViewModel::cancel, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Hủy") } },
         )
         is WorkspaceLibraryTransferState.BackupReady -> AlertDialog(
             onDismissRequest = libraryTransferViewModel::consumeBackup,
-            title = { Text("Sao lưu Library") },
-            text = { Text("${bundleState.fileName}\nChọn cách lưu bản sao.") },
+            title = { Text(if (bundleState.selectedExport) "Xuất workspace đã chọn" else "Sao lưu Library") },
+            text = { Text("${bundleState.fileName}\n${if (bundleState.selectedExport) "Chọn cách xuất ${bundleState.workspaceCount} workspace." else "Chọn cách lưu bản sao."}") },
             confirmButton = {
                 TextButton(
                     onClick = { transferScope.launch {
@@ -318,7 +324,13 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
                 onExitMultiSelect = libraryViewModel::exitMultiSelect,
                 onBatchPin = { libraryViewModel.setSelectedPinned(true) },
                 onBatchUnpin = { libraryViewModel.setSelectedPinned(false) },
+                onBatchExport = {
+                    if (!transferOperationActive) {
+                        libraryTransferViewModel.prepareSelectedBackup(libraryViewModel.selectedWorkspaceIds)
+                    }
+                },
                 onBatchDelete = libraryViewModel::deleteSelectedWorkspaces,
+                multiSelectTransferInProgress = transferOperationActive,
                 editingWorkspaceId = libraryViewModel.editingWorkspaceId,
                 onWorkspaceSelected = libraryViewModel::selectWorkspace,
                 onCreateWorkspace = { templateCanvas ->
@@ -437,6 +449,8 @@ private fun WorkspaceLibraryTransferFailure.libraryUserMessage(): String = when 
     WorkspaceLibraryTransferFailure.FILE_TOO_LARGE -> "File bản sao lưu quá lớn."
     WorkspaceLibraryTransferFailure.INVALID_WORKSPACE -> "Bản sao lưu có dữ liệu workspace không hợp lệ."
     WorkspaceLibraryTransferFailure.EMPTY_LIBRARY -> "Chưa có workspace để sao lưu."
+    WorkspaceLibraryTransferFailure.SELECTED_WORKSPACES_UNAVAILABLE -> "Một số workspace đã chọn không thể xuất."
+    WorkspaceLibraryTransferFailure.TOO_MANY_SELECTED_WORKSPACES -> "Có quá nhiều workspace để xuất trong một file."
     WorkspaceLibraryTransferFailure.READ_FAILURE -> "Không thể đọc bản sao lưu Library."
     WorkspaceLibraryTransferFailure.WRITE_FAILURE -> "Không thể ghi bản sao lưu hoặc khôi phục Library."
     WorkspaceLibraryTransferFailure.ID_GENERATION_FAILURE -> "Không thể tạo ID mới cho workspace."

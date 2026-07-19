@@ -69,3 +69,5 @@
 ### Workspace Library multi-select
 
 JVM tests cover entry/toggle/exit, immutable ID selection across search and sort, pruning after Room emissions, filtered batch pin/unpin, no-op and double-action guards, atomic delete success/failure, editing protection, and deterministic handling of 100 selected IDs. Repository tests verify metadata mapping and row-count failures. Room instrumentation tests verify batch metadata changes and transaction rollback when any requested ID is missing.
+
+Selected-export tests cover one/many IDs, hidden selection, canonical order independent of tap order, mixed pinned/unpinned input without pin metadata, missing/corrupted rows, immutable selection snapshots, double-export guards, filename policy, and the existing 100-workspace/500-cell/2 MiB limits. The resulting bytes are decoded by the existing bundle importer. Instrumentation verifies a selected bundle FileProvider URI, ACTION_SEND payload, and readable content.
