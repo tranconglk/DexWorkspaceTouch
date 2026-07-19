@@ -123,6 +123,12 @@ class WorkspaceLibraryTransferViewModel(
     fun complete(message: String) { state = WorkspaceLibraryTransferState.Completed(message) }
     fun fail(failure: WorkspaceLibraryTransferFailure) { state = WorkspaceLibraryTransferState.Error(failure) }
     fun dismissFeedback() { if (state is WorkspaceLibraryTransferState.Completed || state is WorkspaceLibraryTransferState.Error) state = WorkspaceLibraryTransferState.Idle }
+    fun prepareForExternalRestore(): Boolean = when (state) {
+        WorkspaceLibraryTransferState.PreparingBackup,
+        WorkspaceLibraryTransferState.ReadingRestore,
+        WorkspaceLibraryTransferState.Restoring -> false
+        else -> { pendingValidBackup = null; state = WorkspaceLibraryTransferState.Idle; true }
+    }
 
     private suspend fun encodeBackup(valid: List<WorkspaceImportPayload>) {
         val now = clock.nowEpochMillis().coerceAtLeast(0L)

@@ -377,6 +377,28 @@ Workspace → versioned WorkspaceTransferSerializer → FileProvider/Sharesheet 
 
 The transfer envelope reuses the deterministic canvas serializer. Android `Uri`, streams and
 `ContentResolver` remain at the platform boundary and never enter the transfer domain model.
+
+### External transfer entry
+
+```text
+ACTION_VIEW / ACTION_SEND -> external intent parser -> Activity URI reader
+                          -> bounded envelope detector -> Activity-scoped pending event
+                          -> existing transfer state -> existing preview
+                          -> confirmed import/restore
+```
+
+`MainActivity` handles both cold-start and `onNewIntent`. The URI is read once, its stream is
+closed immediately, and only bounded bytes plus a typed detection result cross into state. MIME,
+extension, and display name are diagnostics only; the envelope selects the existing `.dwt` or
+`.dwtbundle` workflow. While Designer or App Picker is visible the event remains pending, so the
+working draft is not replaced or navigated away from. It is dispatched when Library becomes
+visible. An Activity-scoped identity guard ensures one accepted ACTION_VIEW event creates one
+preview across recomposition and resize.
+
+ACTION_SEND is adapted at the Android boundary: one `EXTRA_STREAM` URI is preferred, ClipData is
+the fallback, identical values are deduplicated, and ambiguous/multiple values are rejected. The
+pure parser sees only action and URI strings; Android `Intent`, `ClipData`, `Uri`, and
+`ContentResolver` remain outside domain and transfer formats.
 - Library backup pipeline: latest repository snapshot → deterministic `.dwtbundle` serializer →
   FileProvider/SAF → restore preview → batch name/ID policy → atomic Room transaction.
 - Bundle restore validates the complete payload before writing and always creates new local rows.

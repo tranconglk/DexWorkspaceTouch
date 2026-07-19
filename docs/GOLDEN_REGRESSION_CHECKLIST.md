@@ -56,3 +56,26 @@
 - [ ] Backup Library → clear test database → restore preserves every canvas/app and resets all pins.
 - [ ] Restore the same bundle twice creates new IDs/names without overwrite.
 - [ ] Malformed, future-version and oversized bundles preview/restore nothing.
+- [ ] Open `.dwt` and `.dwtbundle` by ACTION_VIEW from cold and warm app states; each event shows one preview.
+- [ ] Record provider package, reported MIME, extension and detected envelope for My Files, Downloads,
+  Quick Share, Drive, Zalo and Bluetooth where available; do not record payload or full URI.
+- [ ] Open the same URI twice, resize with preview open, and recreate the Activity; no consumed preview repeats.
+- [ ] Open an external file while Designer has an unsaved draft; transfer waits and the draft remains intact.
+- [ ] Reject malformed, future-version and oversized external files before any Room write.
+- [ ] Samsung My Files: select and Share one `.dwt` to DexWorkspaceTouch; preview and confirm import.
+- [ ] Samsung My Files: select and Share one `.dwtbundle`; preview and confirm atomic restore.
+- [ ] Google Files ACTION_VIEW and Share both continue to work for `.dwt` and `.dwtbundle`.
+- [ ] ACTION_SEND cold start, warm start, Designer pending, resize, and intentional same-file reshare
+  each preserve the one-delivery/one-preview policy.
+
+Observed provider MIME:
+
+- 2026-07-19, Note 8 legacy ROM (`SM-N960N`): Downloads document provider reported
+  `application/octet-stream` for the received `.dwt` file. Content URI path exposed only a document
+  ID, not the filename extension; octet-stream fallback is therefore required on this device.
+- 2026-07-19, the same device's Samsung My Files opened `market://search?q=dwtbundle` and emitted no
+  file ACTION_VIEW. MIME-less `.dwt`/`.dwtbundle` extension filters are required for this legacy path.
+- 2026-07-19, Samsung My Files ACTION_SEND passed on S23 Ultra and Note 8 legacy ROM for both formats:
+  `application/octet-stream`, EXTRA_STREAM present, one matching ClipData URI, read-grant flag set,
+  and correct single/bundle envelope detection. Direct-open remains provider-dependent; Share is the
+  supported Samsung fallback.

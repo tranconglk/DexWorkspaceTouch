@@ -38,6 +38,26 @@
 - Instrumentation covers FileProvider and Room persistence seams without opening a real Sharesheet target.
 - Manual cross-device validation records provider MIME behavior for Quick Share, Files, Drive and Zalo.
 - Corrupted, oversized and newer-version `.dwt` files must fail before preview or persistence.
+- External ACTION_VIEW JVM coverage includes content sniffing independent of MIME/extension, strict
+  size/version failures, stream closure, duplicate/consumed events, and pending Designer routing.
+- Instrumentation verifies both custom MIME filters resolve to MainActivity and the granted content
+  URI is readable. Device validation remains authoritative for provider-reported MIME and cold/warm
+  chooser behavior.
+- Provider matrix records Samsung My Files, Google Files/Downloads, Quick Share, Drive, Zalo and
+  Bluetooth where available. Add an octet-stream fallback only after this evidence proves it is
+  needed; content validation remains mandatory.
+- Measured 2026-07-19: Downloads on the Note 8 legacy ROM delivered a received `.dwt` document as
+  `application/octet-stream`; the compatibility filter is covered by instrumentation and every
+  payload still passes the same bounded envelope detector.
+- ACTION_SEND helper tests cover EXTRA_STREAM, ClipData-only, identical and conflicting sources,
+  missing/multiple URI, unsupported action, content-only scheme, replay/reshare, and bounded input.
+- Instrumentation verifies all three registered SEND MIME types resolve to MainActivity and that
+  EXTRA_STREAM/ClipData content URIs are adapted and readable. Samsung Sharesheet selection itself
+  remains a physical-device/manual assertion.
+- Measured 2026-07-19 on S23 Ultra and Note 8 legacy ROM: Samsung My Files shared both `.dwt` and
+  `.dwtbundle` as `application/octet-stream`, supplied the same content URI in EXTRA_STREAM and one
+  ClipData item, and set `FLAG_GRANT_READ_URI_PERMISSION`. Detection returned `SingleWorkspace` and
+  `LibraryBundle` respectively; both existing preview/confirmation flows completed successfully.
 ## Workspace Library icon and metadata regression
 
 - Kiểm tra LRU 64, eviction, cache hit, cached fallback và stable package/activity key.

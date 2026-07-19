@@ -389,3 +389,42 @@ Bundle v1 contains at most 100 workspaces and 500 cells in a 2 MiB UTF-8 determi
 It excludes database IDs, timestamps, sequences and pin state. Restore creates new IDs, resolves
 names deterministically, resets pin to false and inserts the complete batch in one Room transaction.
 Existing rows are never overwritten. Pin remains a device-local organization preference.
+
+## ADR-031 — External transfer files are always content-validated
+
+Status: Accepted.
+
+- MIME, extension, and provider display name are hints and never choose the final parser.
+- ACTION_VIEW input is byte-limited, minimally envelope-sniffed, then passed to the existing strict
+  `.dwt` importer or `.dwtbundle` restorer.
+- No Room write occurs until the existing preview is confirmed; bundle restore remains atomic.
+- One accepted external event produces at most one preview. Consumed events do not replay after
+  recomposition, resize, or normal Activity recreation within the same Activity-scoped owner.
+- A later explicit `onNewIntent` delivery may reopen the same URI after the prior inbox event was
+  consumed. This distinguishes a new user action from `onCreate` replay during configuration change;
+  an event already reading or pending still rejects rapid duplicate delivery.
+- An open Designer draft is never discarded or force-navigated. External transfer waits until the
+  user returns to Library.
+- The implementation reuses both established transfer flows and does not introduce a second parser,
+  import policy, restore policy, or persistence path.
+- `application/octet-stream` is registered as a measured compatibility fallback: Downloads on the
+  Note 8 legacy-ROM device reported a received `.dwt` content URI with that MIME. The URI path did
+  not contain a usable filename, so an extension path filter could not safely replace content validation.
+- Legacy Samsung My Files was also observed opening a Play Store search for `dwtbundle` without
+  delivering ACTION_VIEW. Narrow data-only `content`/`file` path patterns for `.dwt` and
+  `.dwtbundle` provide extension resolution when that file manager omits MIME entirely.
+
+## ADR-032 — ACTION_SEND is the fallback for file managers that do not support custom extensions
+
+Status: Accepted.
+
+- Samsung My Files direct-open is not reliable: on both tested devices it can open
+  `market://search?q=dwtbundle` without delivering the file to DexWorkspaceTouch.
+- DexWorkspaceTouch does not intercept `market://`. The supported fallback is My Files **Share**
+  to DexWorkspaceTouch through ACTION_SEND.
+- Only one content URI is accepted. EXTRA_STREAM is preferred; ClipData is the fallback; matching
+  values are one event and differing/multiple values are rejected.
+- Reported MIME is a chooser hint only. The bounded envelope detector and existing strict parser
+  still decide whether the file is `.dwt`, `.dwtbundle`, invalid, oversized, or too new.
+- ACTION_VIEW and ACTION_SEND share the same pending, preview, confirmation, duplicate-event, and
+  Designer-draft preservation pipeline.

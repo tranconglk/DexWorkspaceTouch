@@ -96,6 +96,10 @@ class WorkspaceTransferViewModel(
     fun complete(message: String) { state = WorkspaceTransferState.Completed(message) }
     fun fail(failure: WorkspaceTransferFailure) { state = WorkspaceTransferState.Error(failure) }
     fun dismissFeedback() { if (state is WorkspaceTransferState.Completed || state is WorkspaceTransferState.Error) state = WorkspaceTransferState.Idle }
+    fun prepareForExternalImport(): Boolean = when (state) {
+        WorkspaceTransferState.PreparingExport, WorkspaceTransferState.ReadingImport, WorkspaceTransferState.Importing -> false
+        else -> { state = WorkspaceTransferState.Idle; true }
+    }
 
     private suspend fun uniqueId(): String {
         repeat(100) { val id = idGenerator.newId(); if (id.isNotBlank() && !repository.exists(id)) return id }

@@ -94,6 +94,29 @@ status in one row; narrow windows use separate history, context, and status rows
 Export is available from the selected card and offers “Chia sẻ” before “Lưu vào tệp…”. Import is a
 56dp Library-toolbar action. A snapshot/name/cell/app preview is required before insertion. Errors
 use friendly format/version/read/write messages and never expose raw URI, JSON or exceptions.
+
+### Open with DexWorkspaceTouch
+
+- Opening a supported external file brings the app forward and shows the established preview on
+  Library; it never imports automatically.
+- If Designer or App Picker is active, keep the transfer pending until the user returns to Library.
+  Never discard a working draft or force navigation.
+- A newer external file replaces an inactive old transfer dialog through one explicit routing policy;
+  active reads/imports are allowed to finish before another event is dispatched.
+- Errors use only friendly messages: cannot read, invalid DexWorkspaceTouch data, newer version,
+  file too large, or read permission no longer available. Never show raw URI or parser details.
+
+### Samsung My Files share fallback
+
+Directly tapping `.dwt` or `.dwtbundle` in Samsung My Files is not guaranteed; some versions open
+an app-store search without sending the file. The officially supported fallback is:
+
+```text
+Samsung My Files -> nhấn giữ file -> Chia sẻ -> DexWorkspaceTouch
+```
+
+The app accepts one shared file per delivery, shows the existing preview, and never imports before
+confirmation. A shared file waits while Designer is active so an unsaved draft is not discarded.
 ## Workspace Library cards
 
 - Dùng metadata ngắn “x ô • y ứng dụng” và relative updated time một dòng.

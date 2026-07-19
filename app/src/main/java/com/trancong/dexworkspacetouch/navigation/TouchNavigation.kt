@@ -22,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.trancong.dexworkspacetouch.ui.screens.AppPickerScreen
 import com.trancong.dexworkspacetouch.ui.screens.HomeScreen
 import com.trancong.dexworkspacetouch.ui.screens.LayoutDesignerScreen
@@ -50,6 +51,11 @@ import com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibrary
 import com.trancong.dexworkspacetouch.workspace.snapshot.ui.WorkspaceSnapshot
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import kotlinx.coroutines.launch
+import com.trancong.dexworkspacetouch.workspace.externaltransfer.ExternalTransferDetection
+import com.trancong.dexworkspacetouch.workspace.externaltransfer.ExternalTransferInboxState
+import com.trancong.dexworkspacetouch.workspace.externaltransfer.ExternalTransferReadFailure
+import com.trancong.dexworkspacetouch.workspace.externaltransfer.ExternalTransferViewModel
+import com.trancong.dexworkspacetouch.workspace.externaltransfer.shouldDispatchExternalTransfer
 
 private object Routes {
     const val Home = "home"
@@ -58,8 +64,10 @@ private object Routes {
 }
 
 @Composable
-fun TouchNavigation(activity: Activity) {
+fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTransferViewModel) {
     val navController = rememberNavController()
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route
     val designerViewModel: WorkspaceDesignerViewModel = viewModel()
     val application = activity.application as DexWorkspaceTouchApplication
     val libraryViewModel: WorkspaceLibraryViewModel = viewModel(
@@ -75,6 +83,25 @@ fun TouchNavigation(activity: Activity) {
     val libraryTransferPlatform = remember(activity) { AndroidWorkspaceLibraryTransferPlatform(activity) }
     val transferScope = rememberCoroutineScope()
     var exportMode by rememberSaveable { mutableStateOf<String?>(null) }
+    LaunchedEffect(
+        externalTransferViewModel.state,
+        currentRoute,
+        transferViewModel.state,
+        libraryTransferViewModel.state,
+    ) {
+        val pending = externalTransferViewModel.state as? ExternalTransferInboxState.Pending
+            ?: return@LaunchedEffect
+        if (!shouldDispatchExternalTransfer(currentRoute == Routes.Home)) return@LaunchedEffect
+        if (!transferViewModel.prepareForExternalImport() || !libraryTransferViewModel.prepareForExternalRestore()) {
+            return@LaunchedEffect
+        }
+        when (pending.event.detection) {
+            ExternalTransferDetection.SingleWorkspace -> transferViewModel.readImport(pending.event.bytes)
+            ExternalTransferDetection.LibraryBundle -> libraryTransferViewModel.readRestore(pending.event.bytes)
+            else -> Unit
+        }
+        externalTransferViewModel.consume(pending.event.identity)
+    }
     val saveLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument(WorkspaceTransferFormat.MimeType),
     ) { uri ->
@@ -229,6 +256,26 @@ fun TouchNavigation(activity: Activity) {
         )
         WorkspaceLibraryTransferState.Idle -> Unit
     }
+    if (currentRoute == Routes.Home) {
+        when (val externalState = externalTransferViewModel.state) {
+            is ExternalTransferInboxState.Reading -> AlertDialog(
+                onDismissRequest = {},
+                title = { Text("Đang đọc file workspace…") },
+                confirmButton = {},
+            )
+            is ExternalTransferInboxState.Error -> AlertDialog(
+                onDismissRequest = { externalTransferViewModel.consume(externalState.identity) },
+                title = { Text(externalState.failure.externalUserMessage()) },
+                confirmButton = {
+                    TextButton(
+                        onClick = { externalTransferViewModel.consume(externalState.identity) },
+                        modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                    ) { Text("Đã hiểu") }
+                },
+            )
+            else -> Unit
+        }
+    }
     val applicationContext = activity.applicationContext
     val installedAppCatalog = remember(applicationContext) {
         DefaultInstalledAppCatalog(AndroidInstalledAppDataSource.create(applicationContext))
@@ -378,4 +425,15 @@ private fun WorkspaceLibraryTransferFailure.libraryUserMessage(): String = when 
     WorkspaceLibraryTransferFailure.WRITE_FAILURE -> "Không thể ghi bản sao lưu hoặc khôi phục Library."
     WorkspaceLibraryTransferFailure.ID_GENERATION_FAILURE -> "Không thể tạo ID mới cho workspace."
     WorkspaceLibraryTransferFailure.INVALID_FORMAT -> "File bản sao lưu không hợp lệ."
+}
+
+private fun ExternalTransferReadFailure.externalUserMessage(): String = when (this) {
+    ExternalTransferReadFailure.READ_FAILURE,
+    ExternalTransferReadFailure.PERMISSION_REVOKED -> "Không thể đọc file được chia sẻ."
+    ExternalTransferReadFailure.INVALID_CONTENT -> "File không phải dữ liệu DexWorkspaceTouch."
+    ExternalTransferReadFailure.UNSUPPORTED_VERSION -> "File được tạo bởi phiên bản mới hơn."
+    ExternalTransferReadFailure.FILE_TOO_LARGE -> "File được chia sẻ quá lớn."
+    ExternalTransferReadFailure.MISSING_URI -> "Không tìm thấy file được chia sẻ."
+    ExternalTransferReadFailure.MULTIPLE_URIS -> "Hiện chỉ hỗ trợ nhập một file mỗi lần."
+    ExternalTransferReadFailure.INVALID_PAYLOAD -> "File chia sẻ không hợp lệ."
 }
