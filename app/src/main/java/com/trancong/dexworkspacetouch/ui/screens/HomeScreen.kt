@@ -33,6 +33,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -51,6 +52,7 @@ import com.trancong.dexworkspacetouch.ui.design.Spacing
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryItem
 import com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceLibraryCard
+import com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceMultiSelectToolbar
 import com.trancong.dexworkspacetouch.workspace.library.ui.adaptiveGridColumnCount
 import com.trancong.dexworkspacetouch.workspace.library.ui.centeredGridMetrics
 import com.trancong.dexworkspacetouch.workspace.library.ui.chunkCenteredRows
@@ -58,6 +60,7 @@ import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceL
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchUiState
 import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryPersistenceError
 import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceDuplicateFeedback
+import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceBatchFeedback
 import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceSortMode
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.templates.WorkspaceTemplateCatalog
@@ -77,6 +80,16 @@ fun HomeScreen(
     onClearSearch: () -> Unit,
     onSortModeChanged: (WorkspaceSortMode) -> Unit,
     selectedWorkspaceId: String?,
+    isMultiSelectMode: Boolean = false,
+    selectedWorkspaceIds: Set<String> = emptySet(),
+    selectedPinnedCount: Int = 0,
+    selectedUnpinnedCount: Int = 0,
+    onEnterMultiSelect: (String) -> Unit = {},
+    onToggleMultiSelect: (String) -> Unit = {},
+    onExitMultiSelect: () -> Unit = {},
+    onBatchPin: () -> Unit = {},
+    onBatchUnpin: () -> Unit = {},
+    onBatchDelete: () -> Unit = {},
     editingWorkspaceId: String?,
     onWorkspaceSelected: (String) -> Unit,
     onCreateWorkspace: (WorkspaceCanvas) -> Unit,
@@ -96,6 +109,8 @@ fun HomeScreen(
     libraryWriteInProgress: Boolean,
     pinFeedback: com.trancong.dexworkspacetouch.workspace.library.state.WorkspacePinFeedback?,
     onDismissPinFeedback: () -> Unit,
+    batchFeedback: WorkspaceBatchFeedback? = null,
+    onDismissBatchFeedback: () -> Unit = {},
     launchState: WorkspaceLaunchUiState,
     onLaunchWorkspace: (WorkspaceLibraryItem) -> Unit,
     onCancelLaunch: () -> Unit,
@@ -118,8 +133,25 @@ fun HomeScreen(
     var showSortSheet by rememberSaveable { mutableStateOf(false) }
     var showFileSheet by rememberSaveable { mutableStateOf(false) }
     var exportWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
+    var showBatchDeleteConfirmation by rememberSaveable { mutableStateOf(false) }
     val templateCatalog = remember { WorkspaceTemplateCatalog.default() }
     val snackbarHostState = remember { SnackbarHostState() }
+
+    BackHandler(enabled = isMultiSelectMode) { onExitMultiSelect() }
+
+    LaunchedEffect(isMultiSelectMode) {
+        if (isMultiSelectMode) {
+            managedWorkspaceId = null
+            renameWorkspaceId = null
+            deleteWorkspaceId = null
+            exportWorkspaceId = null
+            showSortSheet = false
+            showFileSheet = false
+            showTemplatePicker = false
+        } else {
+            showBatchDeleteConfirmation = false
+        }
+    }
 
     LaunchedEffect(duplicateFeedback) {
         val message = when (val feedback = duplicateFeedback) {
@@ -140,6 +172,18 @@ fun HomeScreen(
         }
         snackbarHostState.showSnackbar(message)
         onDismissPinFeedback()
+    }
+    LaunchedEffect(batchFeedback) {
+        val message = when (val feedback = batchFeedback) {
+            is WorkspaceBatchFeedback.PinSuccess -> if (feedback.isPinned) {
+                "Đã ghim ${feedback.count} workspace."
+            } else "Đã bỏ ghim ${feedback.count} workspace."
+            is WorkspaceBatchFeedback.DeleteSuccess -> "Đã xóa ${feedback.count} workspace."
+            WorkspaceBatchFeedback.MutationFailure -> "Không thể cập nhật workspace đã chọn."
+            null -> return@LaunchedEffect
+        }
+        snackbarHostState.showSnackbar(message)
+        onDismissBatchFeedback()
     }
 
     if (showTemplatePicker) {
@@ -377,6 +421,33 @@ fun HomeScreen(
         }
     }
 
+    if (showBatchDeleteConfirmation && selectedWorkspaceIds.isNotEmpty()) {
+        AlertDialog(
+            onDismissRequest = { showBatchDeleteConfirmation = false },
+            title = { Text("Xóa ${selectedWorkspaceIds.size} workspace?") },
+            text = { Text("Thao tác này không thể hoàn tác.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showBatchDeleteConfirmation = false
+                        onBatchDelete()
+                    },
+                    enabled = !libraryWriteInProgress,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error,
+                    ),
+                    modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                ) { Text("Xóa") }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showBatchDeleteConfirmation = false },
+                    modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                ) { Text("Hủy") }
+            },
+        )
+    }
+
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -406,14 +477,14 @@ fun HomeScreen(
                 Text("DeX Workspace Manager", style = MaterialTheme.typography.headlineMedium)
             }
             item(span = { GridItemSpan(maxLineSpan) }) { Text("Workspace Library") }
-            item(span = { GridItemSpan(maxLineSpan) }) {
+            if (!isMultiSelectMode) item(span = { GridItemSpan(maxLineSpan) }) {
                 Button(
                     onClick = { showTemplatePicker = true },
                     enabled = !libraryIsLoading,
                     modifier = Modifier.fillMaxWidth().height(TouchTargets.PrimaryButton),
                 ) { Text("Tạo bố cục mới") }
             }
-            if (!hasSourceWorkspaces) {
+            if (!hasSourceWorkspaces && !isMultiSelectMode) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     OutlinedButton(
                         onClick = { showFileSheet = true },
@@ -423,7 +494,18 @@ fun HomeScreen(
             }
             if (hasSourceWorkspaces) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                    if (isMultiSelectMode) {
+                        WorkspaceMultiSelectToolbar(
+                            selectedCount = selectedWorkspaceIds.size,
+                            pinnableCount = selectedUnpinnedCount,
+                            unpinnableCount = selectedPinnedCount,
+                            actionsEnabled = !libraryWriteInProgress,
+                            onClose = onExitMultiSelect,
+                            onPin = onBatchPin,
+                            onUnpin = onBatchUnpin,
+                            onDelete = { showBatchDeleteConfirmation = true },
+                        )
+                    } else BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
                         val wide = maxWidth >= Dimensions.WorkspaceLibraryToolbarWideWidth
                         val search: @Composable (Modifier) -> Unit = { modifier ->
                             OutlinedTextField(
@@ -562,6 +644,10 @@ fun HomeScreen(
                                                     onExport = { exportWorkspaceId = workspace.id },
                                                     appIconLoader = appIconLoader,
                                                     nowEpochMillis = nowEpochMillis,
+                                                    multiSelectMode = isMultiSelectMode,
+                                                    multiSelected = workspace.id in selectedWorkspaceIds,
+                                                    onEnterMultiSelect = { onEnterMultiSelect(workspace.id) },
+                                                    onToggleMultiSelect = { onToggleMultiSelect(workspace.id) },
                                     modifier = Modifier.width(pinnedCardWidth.dp),
                                 )
                             }
@@ -593,6 +679,10 @@ fun HomeScreen(
                         onExport = { exportWorkspaceId = workspace.id },
                         appIconLoader = appIconLoader,
                         nowEpochMillis = nowEpochMillis,
+                        multiSelectMode = isMultiSelectMode,
+                        multiSelected = workspace.id in selectedWorkspaceIds,
+                        onEnterMultiSelect = { onEnterMultiSelect(workspace.id) },
+                        onToggleMultiSelect = { onToggleMultiSelect(workspace.id) },
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

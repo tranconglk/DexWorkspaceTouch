@@ -42,6 +42,10 @@ class WorkspaceLibraryViewModel(
         private set
     var selectedWorkspaceId by mutableStateOf<String?>(null)
         private set
+    var isMultiSelectMode by mutableStateOf(false)
+        private set
+    var selectedWorkspaceIds by mutableStateOf<Set<String>>(emptySet())
+        private set
     var editingWorkspaceId by mutableStateOf<String?>(null)
         private set
     var isLoading by mutableStateOf(true)
@@ -53,6 +57,8 @@ class WorkspaceLibraryViewModel(
     var duplicateFeedback by mutableStateOf<WorkspaceDuplicateFeedback?>(null)
         private set
     var pinFeedback by mutableStateOf<WorkspacePinFeedback?>(null)
+        private set
+    var batchFeedback by mutableStateOf<WorkspaceBatchFeedback?>(null)
         private set
 
     private val scope: CoroutineScope get() = suppliedScope ?: viewModelScope
@@ -86,6 +92,69 @@ class WorkspaceLibraryViewModel(
     }
 
     fun dismissPinFeedback() { pinFeedback = null }
+
+    fun dismissBatchFeedback() { batchFeedback = null }
+
+    fun enterMultiSelect(id: String) {
+        require(workspaces.any { it.id == id }) { "Workspace '$id' does not exist" }
+        selectedWorkspaceId = null
+        isMultiSelectMode = true
+        selectedWorkspaceIds = setOf(id)
+    }
+
+    fun toggleMultiSelect(id: String) {
+        require(workspaces.any { it.id == id }) { "Workspace '$id' does not exist" }
+        if (!isMultiSelectMode) return enterMultiSelect(id)
+        selectedWorkspaceIds = if (id in selectedWorkspaceIds) {
+            selectedWorkspaceIds - id
+        } else {
+            selectedWorkspaceIds + id
+        }
+        if (selectedWorkspaceIds.isEmpty()) exitMultiSelect()
+    }
+
+    fun exitMultiSelect() {
+        selectedWorkspaceIds = emptySet()
+        isMultiSelectMode = false
+    }
+
+    val selectedPinnedCount: Int
+        get() = observedDomains.count { it.id in selectedWorkspaceIds && it.isPinned }
+    val selectedUnpinnedCount: Int
+        get() = observedDomains.count { it.id in selectedWorkspaceIds && !it.isPinned }
+
+    fun setSelectedPinned(isPinned: Boolean) {
+        if (!isMultiSelectMode || mutationJob?.isActive == true) return
+        val idsToChange = observedDomains.asSequence()
+            .filter { it.id in selectedWorkspaceIds && it.isPinned != isPinned }
+            .map(Workspace::id)
+            .toSet()
+        if (idsToChange.isEmpty()) return
+        batchFeedback = null
+        runMutation(
+            operation = if (isPinned) WorkspaceLibraryPersistenceOperation.BATCH_PIN
+            else WorkspaceLibraryPersistenceOperation.BATCH_UNPIN,
+            onSuccess = { batchFeedback = WorkspaceBatchFeedback.PinSuccess(idsToChange.size, isPinned) },
+            onFailure = { batchFeedback = WorkspaceBatchFeedback.MutationFailure },
+        ) { repository.setPinnedForIds(idsToChange, isPinned) }
+    }
+
+    fun deleteSelectedWorkspaces() {
+        if (!isMultiSelectMode || mutationJob?.isActive == true) return
+        val existingIds = observedDomains.mapTo(mutableSetOf(), Workspace::id)
+        val ids = selectedWorkspaceIds.intersect(existingIds)
+        if (ids.isEmpty()) return exitMultiSelect()
+        check(editingWorkspaceId !in ids) { "A selected workspace is currently being edited" }
+        batchFeedback = null
+        runMutation(
+            operation = WorkspaceLibraryPersistenceOperation.BATCH_DELETE,
+            onSuccess = {
+                exitMultiSelect()
+                batchFeedback = WorkspaceBatchFeedback.DeleteSuccess(ids.size)
+            },
+            onFailure = { batchFeedback = WorkspaceBatchFeedback.MutationFailure },
+        ) { repository.deleteByIdsAtomically(ids) }
+    }
 
     fun setWorkspacePinned(id: String, isPinned: Boolean) {
         if (mutationJob?.isActive == true) return
@@ -282,6 +351,11 @@ class WorkspaceLibraryViewModel(
                             ?.groupValues?.get(1)?.toIntOrNull()
                     }
                     if (selectedWorkspaceId !in domains.map(Workspace::id)) selectedWorkspaceId = null
+                    if (isMultiSelectMode) {
+                        val existingIds = domains.mapTo(mutableSetOf(), Workspace::id)
+                        selectedWorkspaceIds = selectedWorkspaceIds.intersect(existingIds)
+                        if (selectedWorkspaceIds.isEmpty()) exitMultiSelect()
+                    }
                     isLoading = false
                     if (persistenceError?.operation == WorkspaceLibraryPersistenceOperation.LOAD) {
                         persistenceError = null

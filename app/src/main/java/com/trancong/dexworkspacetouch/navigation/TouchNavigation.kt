@@ -86,12 +86,16 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
     LaunchedEffect(
         externalTransferViewModel.state,
         currentRoute,
+        libraryViewModel.isMultiSelectMode,
         transferViewModel.state,
         libraryTransferViewModel.state,
     ) {
         val pending = externalTransferViewModel.state as? ExternalTransferInboxState.Pending
             ?: return@LaunchedEffect
-        if (!shouldDispatchExternalTransfer(currentRoute == Routes.Home)) return@LaunchedEffect
+        if (!shouldDispatchExternalTransfer(
+                currentRoute == Routes.Home && !libraryViewModel.isMultiSelectMode,
+            )
+        ) return@LaunchedEffect
         if (!transferViewModel.prepareForExternalImport() || !libraryTransferViewModel.prepareForExternalRestore()) {
             return@LaunchedEffect
         }
@@ -305,6 +309,16 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
                 onClearSearch = libraryViewModel::clearSearchQuery,
                 onSortModeChanged = libraryViewModel::updateSortMode,
                 selectedWorkspaceId = libraryViewModel.selectedWorkspaceId,
+                isMultiSelectMode = libraryViewModel.isMultiSelectMode,
+                selectedWorkspaceIds = libraryViewModel.selectedWorkspaceIds,
+                selectedPinnedCount = libraryViewModel.selectedPinnedCount,
+                selectedUnpinnedCount = libraryViewModel.selectedUnpinnedCount,
+                onEnterMultiSelect = libraryViewModel::enterMultiSelect,
+                onToggleMultiSelect = libraryViewModel::toggleMultiSelect,
+                onExitMultiSelect = libraryViewModel::exitMultiSelect,
+                onBatchPin = { libraryViewModel.setSelectedPinned(true) },
+                onBatchUnpin = { libraryViewModel.setSelectedPinned(false) },
+                onBatchDelete = libraryViewModel::deleteSelectedWorkspaces,
                 editingWorkspaceId = libraryViewModel.editingWorkspaceId,
                 onWorkspaceSelected = libraryViewModel::selectWorkspace,
                 onCreateWorkspace = { templateCanvas ->
@@ -334,6 +348,8 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
                 libraryWriteInProgress = libraryViewModel.isWriting,
                 pinFeedback = libraryViewModel.pinFeedback,
                 onDismissPinFeedback = libraryViewModel::dismissPinFeedback,
+                batchFeedback = libraryViewModel.batchFeedback,
+                onDismissBatchFeedback = libraryViewModel::dismissBatchFeedback,
                 launchState = launchViewModel.state,
                 onLaunchWorkspace = { workspace ->
                     launchViewModel.launchWorkspace(workspace, launchRuntime, launchHostToken)

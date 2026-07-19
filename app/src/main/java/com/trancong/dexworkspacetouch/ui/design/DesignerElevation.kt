@@ -7,4 +7,5 @@ object DesignerElevation {
     val BottomBar = 3.dp
     val ActionOverlay = 3.dp
     val DividerOverlay = 4.dp
+    val MultiSelectSelected = 3.dp
 }

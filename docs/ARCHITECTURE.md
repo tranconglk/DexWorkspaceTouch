@@ -193,6 +193,10 @@ WorkspaceCanvas
   platform implementation sau này phải báo kết quả rõ ràng nếu ứng dụng không hỗ trợ
   nhiều instance.
 
+## Workspace Library multi-select
+
+Multi-select is presentation state owned by the graph-scoped `WorkspaceLibraryViewModel`. A long press enters the mode and stores an immutable set of workspace IDs; search and sort only project the visible list and never rewrite that set. Room remains the source of truth. Batch pin/unpin and delete flow through repository APIs to DAO transactions. Delete validates every requested ID before committing, so a missing row cannot produce a partial deletion. External file intents wait until multi-select exits, preventing transfer UI from replacing an active batch operation.
+
 ## Workspace Library Launch Integration
 
 ```text

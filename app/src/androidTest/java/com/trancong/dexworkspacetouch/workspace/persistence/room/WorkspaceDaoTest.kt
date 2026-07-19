@@ -102,6 +102,48 @@ class WorkspaceDaoTest {
         assertEquals(original, dao.getById("id"))
     }
 
+    @Test fun batchPinAndUnpinAreAtomicAndPreserveMetadata() = runBlocking {
+        val first = entity("one", "One", 7, 20)
+        val second = entity("two", "Two", 8, 30)
+        dao.insert(first)
+        dao.insert(second)
+
+        dao.setPinnedForIds(setOf("two", "one"), true)
+        assertEquals(first.copy(isPinned = true), dao.getById("one"))
+        assertEquals(second.copy(isPinned = true), dao.getById("two"))
+        dao.setPinnedForIds(setOf("one", "two"), false)
+        assertEquals(first, dao.getById("one"))
+        assertEquals(second, dao.getById("two"))
+    }
+
+    @Test fun missingBatchPinAndDeleteRollBackEveryRow() = runBlocking {
+        val first = entity("one", "One", 1, 10)
+        val second = entity("two", "Two", 2, 20)
+        dao.insert(first)
+        dao.insert(second)
+
+        assertThrows(WorkspaceBatchRowCountException::class.java) {
+            runBlocking { dao.setPinnedForIds(setOf("one", "missing"), true) }
+        }
+        assertEquals(first, dao.getById("one"))
+        assertThrows(WorkspaceBatchRowCountException::class.java) {
+            runBlocking { dao.deleteByIdsAtomically(setOf("one", "missing")) }
+        }
+        assertEquals(first, dao.getById("one"))
+        assertEquals(second, dao.getById("two"))
+    }
+
+    @Test fun batchDeleteRemovesAllRowsAndEmptyInputIsRejected() = runBlocking {
+        dao.insert(entity("one", "One", 1, 10))
+        dao.insert(entity("two", "Two", 2, 20))
+        dao.deleteByIdsAtomically(setOf("one", "two"))
+        assertEquals(0, dao.count())
+        assertThrows(IllegalArgumentException::class.java) {
+            runBlocking { dao.deleteByIdsAtomically(emptySet()) }
+        }
+        Unit
+    }
+
     @Test fun largeCanvasJsonIsPreserved() = runBlocking {
         val largeJson = "x".repeat(100_000)
         dao.insert(entity("large", "Lớn", 1, 10).copy(canvasJson = largeJson))

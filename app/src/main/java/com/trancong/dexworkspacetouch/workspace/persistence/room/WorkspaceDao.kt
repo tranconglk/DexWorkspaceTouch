@@ -44,11 +44,35 @@ interface WorkspaceDao {
         if (setPinnedRows(id, isPinned) != 1) throw WorkspaceRowNotFoundException(id)
     }
 
+    @Query("UPDATE workspaces SET isPinned = :isPinned WHERE id IN (:ids)")
+    suspend fun setPinnedRowsForIds(ids: List<String>, isPinned: Boolean): Int
+
+    @Transaction
+    suspend fun setPinnedForIds(ids: Set<String>, isPinned: Boolean) {
+        require(ids.isNotEmpty()) { "Workspace IDs must not be empty" }
+        val orderedIds = ids.sorted()
+        if (setPinnedRowsForIds(orderedIds, isPinned) != orderedIds.size) {
+            throw WorkspaceBatchRowCountException(orderedIds.toSet())
+        }
+    }
+
     @Query("DELETE FROM workspaces WHERE id = :id")
     suspend fun deleteRowsById(id: String): Int
 
     suspend fun deleteById(id: String) {
         if (deleteRowsById(id) != 1) throw WorkspaceRowNotFoundException(id)
+    }
+
+    @Query("DELETE FROM workspaces WHERE id IN (:ids)")
+    suspend fun deleteRowsByIds(ids: List<String>): Int
+
+    @Transaction
+    suspend fun deleteByIdsAtomically(ids: Set<String>) {
+        require(ids.isNotEmpty()) { "Workspace IDs must not be empty" }
+        val orderedIds = ids.sorted()
+        if (deleteRowsByIds(orderedIds) != orderedIds.size) {
+            throw WorkspaceBatchRowCountException(orderedIds.toSet())
+        }
     }
 
     @Query("SELECT EXISTS(SELECT 1 FROM workspaces WHERE id = :id)")
@@ -60,3 +84,6 @@ interface WorkspaceDao {
 
 class WorkspaceRowNotFoundException(val workspaceId: String) :
     IllegalStateException("Workspace '$workspaceId' does not exist")
+
+class WorkspaceBatchRowCountException(val workspaceIds: Set<String>) :
+    IllegalStateException("One or more workspaces do not exist")

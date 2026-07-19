@@ -66,3 +66,6 @@
 - Metadata, relative time và snapshot phải giữ đúng sau recreation-style reload.
 - Cross-device backup matrix covers S23 Ultra ↔ Note 8, 100-workspace bundles, malformed/versioned
   files, restoring the same bundle twice and atomic rollback on a conflicting row.
+### Workspace Library multi-select
+
+JVM tests cover entry/toggle/exit, immutable ID selection across search and sort, pruning after Room emissions, filtered batch pin/unpin, no-op and double-action guards, atomic delete success/failure, editing protection, and deterministic handling of 100 selected IDs. Repository tests verify metadata mapping and row-count failures. Room instrumentation tests verify batch metadata changes and transaction rollback when any requested ID is missing.

@@ -448,6 +448,116 @@ class WorkspaceLibraryViewModelTest {
         assertEquals(500, repository.current.size)
     }
 
+    @Test fun multiSelectUsesIdsAndExitsWhenLastItemIsToggledOff() {
+        val state = viewModel(FakeRepository(listOf(workspace("one", "One", 1), workspace("two", "Two", 2))))
+        state.selectWorkspace("one")
+
+        state.enterMultiSelect("one")
+        assertTrue(state.isMultiSelectMode)
+        assertNull(state.selectedWorkspaceId)
+        assertEquals(setOf("one"), state.selectedWorkspaceIds)
+        state.toggleMultiSelect("two")
+        assertEquals(setOf("one", "two"), state.selectedWorkspaceIds)
+        state.toggleMultiSelect("one")
+        assertEquals(setOf("two"), state.selectedWorkspaceIds)
+        state.toggleMultiSelect("two")
+        assertFalse(state.isMultiSelectMode)
+        assertTrue(state.selectedWorkspaceIds.isEmpty())
+    }
+
+    @Test fun searchSortAndHiddenItemsPreserveMultiSelection() {
+        val state = viewModel(FakeRepository(listOf(workspace("one", "Alpha", 1), workspace("two", "Beta", 2))))
+        state.enterMultiSelect("one")
+        state.toggleMultiSelect("two")
+
+        state.updateSearchQuery("Alpha")
+        assertEquals(listOf("one"), state.visibleWorkspaces.map { it.id })
+        assertEquals(setOf("one", "two"), state.selectedWorkspaceIds)
+        state.updateSortMode(WorkspaceSortMode.NAME_DESCENDING)
+        assertEquals(setOf("one", "two"), state.selectedWorkspaceIds)
+        state.clearSearchQuery()
+        assertEquals(2, state.visibleWorkspaces.size)
+    }
+
+    @Test fun repositoryEmissionPrunesMissingSelectedIdsAndExitsWhenNoneRemain() {
+        val repository = FakeRepository(listOf(workspace("one", "One", 1), workspace("two", "Two", 2)))
+        val state = viewModel(repository)
+        state.enterMultiSelect("one")
+        state.toggleMultiSelect("two")
+
+        repository.emit(listOf(workspace("two", "Two", 2)))
+        assertEquals(setOf("two"), state.selectedWorkspaceIds)
+        repository.emit(emptyList())
+        assertFalse(state.isMultiSelectMode)
+    }
+
+    @Test fun batchPinAndUnpinOnlyWriteRowsThatNeedChangingAndKeepSelection() {
+        val repository = FakeRepository(
+            listOf(workspace("pinned", "Pinned", 1).copy(isPinned = true), workspace("regular", "Regular", 2)),
+        )
+        val state = viewModel(repository)
+        state.enterMultiSelect("pinned")
+        state.toggleMultiSelect("regular")
+
+        state.setSelectedPinned(true)
+        assertEquals(setOf("regular"), repository.lastBatchPinIds)
+        assertTrue(repository.current.all { it.isPinned })
+        assertEquals(setOf("pinned", "regular"), state.selectedWorkspaceIds)
+        assertEquals(WorkspaceBatchFeedback.PinSuccess(1, true), state.batchFeedback)
+
+        state.setSelectedPinned(false)
+        assertEquals(setOf("pinned", "regular"), repository.lastBatchPinIds)
+        assertTrue(repository.current.none { it.isPinned })
+        assertEquals(setOf("pinned", "regular"), state.selectedWorkspaceIds)
+    }
+
+    @Test fun batchPinNoOpDoesNotWriteAndActiveMutationGuardsDoubleTap() {
+        val repository = FakeRepository(listOf(workspace("one", "One", 1)))
+        val state = viewModel(repository)
+        state.enterMultiSelect("one")
+        state.setSelectedPinned(false)
+        assertEquals(0, repository.batchPinCalls)
+
+        repository.batchGate = CompletableDeferred()
+        state.setSelectedPinned(true)
+        state.setSelectedPinned(true)
+        assertEquals(1, repository.batchPinCalls)
+        repository.batchGate?.complete(Unit)
+    }
+
+    @Test fun batchDeleteSuccessClearsModeAndFailureKeepsEveryRowAndSelection() {
+        val repository = FakeRepository(listOf(workspace("one", "One", 1), workspace("two", "Two", 2)))
+        val state = viewModel(repository)
+        state.enterMultiSelect("one")
+        state.toggleMultiSelect("two")
+        state.deleteSelectedWorkspaces()
+        assertTrue(repository.current.isEmpty())
+        assertFalse(state.isMultiSelectMode)
+        assertEquals(WorkspaceBatchFeedback.DeleteSuccess(2), state.batchFeedback)
+
+        val failing = FakeRepository(listOf(workspace("one", "One", 1), workspace("two", "Two", 2))).apply {
+            failMutations = true
+        }
+        val failedState = viewModel(failing)
+        failedState.enterMultiSelect("one")
+        failedState.toggleMultiSelect("two")
+        failedState.deleteSelectedWorkspaces()
+        assertEquals(2, failing.current.size)
+        assertEquals(setOf("one", "two"), failedState.selectedWorkspaceIds)
+        assertTrue(failedState.isMultiSelectMode)
+        assertEquals(WorkspaceLibraryPersistenceOperation.BATCH_DELETE, failedState.persistenceError?.operation)
+    }
+
+    @Test fun selectionOfOneHundredWorkspacesIsDeterministic() {
+        val values = (1..100).map { workspace("id-$it", "Workspace $it", it.toLong()) }
+        val state = viewModel(FakeRepository(values))
+        state.enterMultiSelect("id-1")
+        values.drop(1).forEach { state.toggleMultiSelect(it.id) }
+        assertEquals(values.mapTo(linkedSetOf()) { it.id }, state.selectedWorkspaceIds)
+        state.exitMultiSelect()
+        assertFalse(state.isMultiSelectMode)
+    }
+
     private fun viewModel(
         repository: FakeRepository = FakeRepository(),
         clock: WorkspaceClock = QueueClock(1000),
@@ -469,6 +579,10 @@ class WorkspaceLibraryViewModelTest {
         var pinGate: CompletableDeferred<Unit>? = null
         var insertCalls = 0
         var pinCalls = 0
+        var batchPinCalls = 0
+        var batchDeleteCalls = 0
+        var lastBatchPinIds: Set<String> = emptySet()
+        var batchGate: CompletableDeferred<Unit>? = null
         var updateCalls = 0
         var issues: List<WorkspacePersistenceIssue> = emptyList()
         val current: List<Workspace> get() = state.value
@@ -510,6 +624,20 @@ class WorkspaceLibraryViewModelTest {
             pinCalls++
             pinGate?.await()
             state.value = current.map { if (it.id == id) it.copy(isPinned = isPinned) else it }
+        }
+        override suspend fun setPinnedForIds(ids: Set<String>, isPinned: Boolean) {
+            if (failMutations) throw WorkspacePersistenceException.DatabaseFailure("batch pin")
+            check(ids.isNotEmpty() && ids.all { id -> current.any { it.id == id } })
+            batchPinCalls++
+            lastBatchPinIds = ids
+            batchGate?.await()
+            state.value = current.map { if (it.id in ids) it.copy(isPinned = isPinned) else it }
+        }
+        override suspend fun deleteByIdsAtomically(ids: Set<String>) {
+            if (failMutations) throw WorkspacePersistenceException.DatabaseFailure("batch delete")
+            check(ids.isNotEmpty() && ids.all { id -> current.any { it.id == id } })
+            batchDeleteCalls++
+            state.value = current.filterNot { it.id in ids }
         }
         fun emit(values: List<Workspace>) { state.value = values }
     }

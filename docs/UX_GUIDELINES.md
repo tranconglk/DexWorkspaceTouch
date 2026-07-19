@@ -119,6 +119,15 @@ The app accepts one shared file per delivery, shows the existing preview, and ne
 confirmation. A shared file waits while Designer is active so an unsaved draft is not discarded.
 ## Workspace Library cards
 
+### Multi-select
+
+- Long-press a card to enter multi-select; a normal tap then toggles that card.
+- Selected cards use an explicit check marker, primary tint/border, and accessibility state rather than color alone.
+- The adaptive toolbar reports the selected count and provides Pin, Unpin, Delete, and Close actions with 56 dp touch targets.
+- Search and sort may hide selected workspaces without deselecting them. Back or Close exits the mode.
+- Batch deletion always requires confirmation, names the number of workspaces, and remains all-or-nothing.
+- While multi-select is active, card-level open/edit/manage actions and external transfer dispatch are suspended.
+
 - Dùng metadata ngắn “x ô • y ứng dụng” và relative updated time một dòng.
 - Snapshot ưu tiên icon thật; cell nhỏ có thể ẩn label và giữ icon/fallback rõ ràng.
 - Card ghim đầu tiên không trở thành featured/hero card và giữ cùng layout với card thường.

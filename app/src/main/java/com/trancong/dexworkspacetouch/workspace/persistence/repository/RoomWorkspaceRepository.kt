@@ -78,6 +78,16 @@ class RoomWorkspaceRepository(
     override suspend fun setPinned(id: String, isPinned: Boolean) =
         databaseCall("set workspace '$id' pinned=$isPinned") { dao.setPinned(id, isPinned) }
 
+    override suspend fun setPinnedForIds(ids: Set<String>, isPinned: Boolean) {
+        require(ids.isNotEmpty()) { "Workspace IDs must not be empty" }
+        databaseCall("set selected workspaces pinned=$isPinned") { dao.setPinnedForIds(ids, isPinned) }
+    }
+
+    override suspend fun deleteByIdsAtomically(ids: Set<String>) {
+        require(ids.isNotEmpty()) { "Workspace IDs must not be empty" }
+        databaseCall("delete selected workspaces") { dao.deleteByIdsAtomically(ids) }
+    }
+
     private suspend fun <T> databaseCall(action: String, block: suspend () -> T): T = try {
         block()
     } catch (error: Throwable) {

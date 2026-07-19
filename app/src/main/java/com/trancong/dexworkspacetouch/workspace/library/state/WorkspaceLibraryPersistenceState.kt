@@ -8,6 +8,9 @@ enum class WorkspaceLibraryPersistenceOperation {
     PIN,
     UNPIN,
     DELETE,
+    BATCH_PIN,
+    BATCH_UNPIN,
+    BATCH_DELETE,
 }
 
 data class WorkspaceLibraryPersistenceError(
@@ -21,6 +24,9 @@ data class WorkspaceLibraryPersistenceError(
         WorkspaceLibraryPersistenceOperation.PIN -> "Không thể ghim workspace."
         WorkspaceLibraryPersistenceOperation.UNPIN -> "Không thể bỏ ghim workspace."
         WorkspaceLibraryPersistenceOperation.DELETE -> "Không thể xóa workspace."
+        WorkspaceLibraryPersistenceOperation.BATCH_PIN,
+        WorkspaceLibraryPersistenceOperation.BATCH_UNPIN -> "Không thể cập nhật workspace đã chọn."
+        WorkspaceLibraryPersistenceOperation.BATCH_DELETE -> "Không thể xóa workspace đã chọn."
     }
 }
 
@@ -32,4 +38,10 @@ sealed interface WorkspaceDuplicateFeedback {
 sealed interface WorkspacePinFeedback {
     data class Success(val workspaceName: String, val isPinned: Boolean) : WorkspacePinFeedback
     data class Failure(val attemptedPinned: Boolean) : WorkspacePinFeedback
+}
+
+sealed interface WorkspaceBatchFeedback {
+    data class PinSuccess(val count: Int, val isPinned: Boolean) : WorkspaceBatchFeedback
+    data class DeleteSuccess(val count: Int) : WorkspaceBatchFeedback
+    data object MutationFailure : WorkspaceBatchFeedback
 }

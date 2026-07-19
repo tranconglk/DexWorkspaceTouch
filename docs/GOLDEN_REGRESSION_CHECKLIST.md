@@ -79,3 +79,8 @@ Observed provider MIME:
   `application/octet-stream`, EXTRA_STREAM present, one matching ClipData URI, read-grant flag set,
   and correct single/bundle envelope detection. Direct-open remains provider-dependent; Share is the
   supported Samsung fallback.
+- [ ] Long-press a Library card enters multi-select and a tap toggles another card.
+- [ ] Search, sort, resize, pinned sections, and scroll retain valid selected IDs.
+- [ ] Pin/Unpin applies to all applicable selected workspaces without duplicate updates.
+- [ ] Batch delete confirms the count, deletes all rows together, and preserves selection on failure.
+- [ ] Back/Close exits multi-select and restores normal card actions.

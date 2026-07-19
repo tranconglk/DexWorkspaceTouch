@@ -99,6 +99,30 @@ class RoomWorkspaceRepositoryTest {
         assertEquals(workspace.copy(isPinned = true), repository.getById(workspace.id))
     }
 
+    @Test fun `batch pin and delete delegate atomically without changing metadata`() = runBlocking {
+        val second = workspace.copy(id = "second", name = "Second", modifiedSequence = 9, updatedAtEpochMillis = 99)
+        repository.insert(workspace)
+        repository.insert(second)
+
+        repository.setPinnedForIds(setOf("id", "second"), true)
+
+        assertEquals(workspace.copy(isPinned = true), repository.getById("id"))
+        assertEquals(second.copy(isPinned = true), repository.getById("second"))
+        repository.deleteByIdsAtomically(setOf("id", "second"))
+        assertEquals(0, repository.count())
+    }
+
+    @Test fun `batch APIs reject empty and missing IDs without partial mutation`() = runBlocking {
+        repository.insert(workspace)
+        assertThrows(IllegalArgumentException::class.java) {
+            runBlocking { repository.setPinnedForIds(emptySet(), true) }
+        }
+        assertThrows(WorkspacePersistenceException.DatabaseFailure::class.java) {
+            runBlocking { repository.deleteByIdsAtomically(setOf("id", "missing")) }
+        }
+        assertEquals(workspace, repository.getById("id"))
+    }
+
     @Test fun `set pinned for missing workspace maps database error`() {
         assertThrows(WorkspacePersistenceException.DatabaseFailure::class.java) {
             runBlocking { repository.setPinned("missing", true) }
@@ -162,10 +186,30 @@ class RoomWorkspaceRepositoryTest {
             state.value = state.value.map { if (it.id == id) it.copy(isPinned = isPinned) else it }
             return 1
         }
+        override suspend fun setPinnedRowsForIds(ids: List<String>, isPinned: Boolean): Int {
+            val matched = state.value.count { it.id in ids }
+            state.value = state.value.map { if (it.id in ids) it.copy(isPinned = isPinned) else it }
+            return matched
+        }
+        override suspend fun setPinnedForIds(ids: Set<String>, isPinned: Boolean) {
+            require(ids.isNotEmpty())
+            check(ids.all { id -> state.value.any { it.id == id } })
+            setPinnedRowsForIds(ids.toList(), isPinned)
+        }
         override suspend fun deleteRowsById(id: String): Int {
             if (state.value.none { it.id == id }) return 0
             state.value = state.value.filterNot { it.id == id }
             return 1
+        }
+        override suspend fun deleteRowsByIds(ids: List<String>): Int {
+            val matched = state.value.count { it.id in ids }
+            state.value = state.value.filterNot { it.id in ids }
+            return matched
+        }
+        override suspend fun deleteByIdsAtomically(ids: Set<String>) {
+            require(ids.isNotEmpty())
+            check(ids.all { id -> state.value.any { it.id == id } })
+            deleteRowsByIds(ids.toList())
         }
         override suspend fun exists(id: String) = state.value.any { it.id == id }
         override suspend fun count() = state.value.size

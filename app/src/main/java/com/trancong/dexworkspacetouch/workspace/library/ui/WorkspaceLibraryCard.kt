@@ -2,7 +2,9 @@ package com.trancong.dexworkspacetouch.workspace.library.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -47,6 +49,7 @@ import com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryIt
 import com.trancong.dexworkspacetouch.workspace.snapshot.ui.WorkspaceSnapshot
 import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppIconLoader
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WorkspaceLibraryCard(
     workspace: WorkspaceLibraryItem,
@@ -67,28 +70,52 @@ fun WorkspaceLibraryCard(
     onExport: () -> Unit = {},
     appIconLoader: AppIconLoader? = null,
     nowEpochMillis: Long = 0L,
+    multiSelectMode: Boolean = false,
+    multiSelected: Boolean = false,
+    onEnterMultiSelect: () -> Unit = {},
+    onToggleMultiSelect: () -> Unit = {},
 ) {
     val metadata = workspace.canvas.cardMetadata()
     val updatedText = WorkspaceRelativeTimeFormatter.format(workspace.updatedAtEpochMillis, nowEpochMillis)
     val cardDescription = buildString {
-        append("Workspace ${workspace.name}, ${metadata.cellCount} ô, ${metadata.assignedCount} ứng dụng, cập nhật $updatedText.")
-        if (workspace.isPinned) append(" Đã ghim.")
+        append("Workspace ${workspace.name}.")
+        if (multiSelectMode) {
+            append(if (multiSelected) " Đã chọn. Chạm để bỏ chọn." else " Chạm để chọn.")
+        } else {
+            append(" ${metadata.cellCount} ô, ${metadata.assignedCount} ứng dụng, cập nhật $updatedText.")
+            if (workspace.isPinned) append(" Đã ghim.")
+        }
     }
     Box(modifier = modifier.heightIn(min = Dimensions.WorkspaceCardMinHeight)) {
         Card(
-            onClick = onSelect,
             modifier = Modifier
                 .fillMaxWidth()
+                .combinedClickable(
+                    onClick = if (multiSelectMode) onToggleMultiSelect else onSelect,
+                    onLongClick = if (multiSelectMode) null else onEnterMultiSelect,
+                    onLongClickLabel = if (multiSelectMode) null else "Chọn nhiều workspace",
+                )
                 .semantics {
                     contentDescription = cardDescription
-                    if (selected) stateDescription = "Đang được chọn."
+                    if (multiSelected) stateDescription = "Đã chọn."
+                    else if (selected) stateDescription = "Đang được chọn."
                 },
             shape = DesignerShapes.Workspace,
             border = BorderStroke(
-                if (selected) Dimensions.SelectionBorderWidth else Dimensions.CellBorderWidth,
-                if (selected) DesignerColors.Selection else DesignerColors.CellBorder,
+                if (selected || multiSelected) Dimensions.SelectionBorderWidth else Dimensions.CellBorderWidth,
+                if (selected || multiSelected) DesignerColors.Selection else DesignerColors.CellBorder,
             ),
-            elevation = CardDefaults.cardElevation(defaultElevation = DesignerElevation.SnapshotCard),
+            colors = CardDefaults.cardColors(
+                containerColor = if (multiSelected) {
+                    MaterialTheme.colorScheme.primaryContainer.copy(
+                        alpha = Dimensions.MultiSelectSelectedContainerAlpha,
+                    )
+                } else MaterialTheme.colorScheme.surface,
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = if (multiSelected) DesignerElevation.MultiSelectSelected
+                else DesignerElevation.SnapshotCard,
+            ),
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(Spacing.M),
@@ -121,7 +148,7 @@ fun WorkspaceLibraryCard(
                         modifier = Modifier.heightIn(min = Dimensions.WorkspaceCardUpdatedTextMinHeight),
                     )
                 }
-                BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                if (!multiSelectMode) BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
                     val showDirectManagementActions = maxWidth >= Dimensions.WorkspaceCardWideActionsWidth
                     Column(verticalArrangement = Arrangement.spacedBy(Spacing.S)) {
                         Row(
@@ -192,7 +219,7 @@ fun WorkspaceLibraryCard(
                 }
             }
         }
-        IconButton(
+        if (!multiSelectMode) IconButton(
             onClick = onPinToggle,
             enabled = pinEnabled,
             modifier = Modifier
@@ -214,6 +241,20 @@ fun WorkspaceLibraryCard(
                 label = "workspacePinState",
             ) { pinned ->
                 WorkspaceBookmarkIcon(pinned)
+            }
+        }
+        if (multiSelected) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = Spacing.S, end = Spacing.S)
+                    .size(Dimensions.MultiSelectCheckContainerSize)
+                    .zIndex(ZLayers.Selection)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text("✓", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)
             }
         }
     }

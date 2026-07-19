@@ -1,5 +1,11 @@
 # Architecture Decisions
 
+## ADR-033 — Library multi-select uses ID state and atomic persistence operations
+
+Workspace Library multi-select is held as an immutable `Set<String>` of persistent workspace IDs in the graph-scoped ViewModel. Visibility changes from search, sort, pin sections, or resize do not discard valid selections. Batch pin/unpin updates only rows whose value changes. Batch deletion is a single Room transaction that validates the affected row count and rolls back on mismatch. Selection is cleared only after successful deletion and is preserved on failure so the user can retry.
+
+The card long-press gesture enters selection mode; subsequent taps toggle selection. Normal open/edit/pin actions are unavailable while the mode is active. This avoids ambiguous touch behavior and keeps database entities and the Room schema unchanged.
+
 ## ADR-019 — Workspace templates are non-persistent domain objects
 
 - A template is immutable metadata plus a pure factory for `WorkspaceCanvas`.

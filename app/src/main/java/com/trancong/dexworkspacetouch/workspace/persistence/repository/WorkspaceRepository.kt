@@ -35,4 +35,10 @@ interface WorkspaceRepository {
     suspend fun setPinned(id: String, isPinned: Boolean) {
         throw UnsupportedOperationException("Pin is not supported")
     }
+    suspend fun setPinnedForIds(ids: Set<String>, isPinned: Boolean) {
+        throw UnsupportedOperationException("Batch pin is not supported")
+    }
+    suspend fun deleteByIdsAtomically(ids: Set<String>) {
+        throw UnsupportedOperationException("Batch delete is not supported")
+    }
 }
