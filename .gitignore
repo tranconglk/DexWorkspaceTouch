@@ -19,3 +19,6 @@ captures/
 *.keystore
 keystore.properties
 gradle/wrapper/dists/
+*.log
+device-logs/
+benchmark-results/

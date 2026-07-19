@@ -1,5 +1,15 @@
 # Architecture Decisions
 
+## ADR-036 — Beta release remains unminified and requires explicit signing intent
+
+The first beta keeps R8 minification and resource shrinking disabled because the full Compose, Room, transfer, and DeX behavior has not yet been qualified under shrinking. Release remains non-debuggable. Signing secrets are read only from ignored local properties or environment variables. Unsigned release builds may be produced for QA, while `DWT_REQUIRE_RELEASE_SIGNING=true` makes a missing or partial signing configuration a hard failure.
+
+## ADR-035 — Android automatic backup is disabled for the beta
+
+The Room database, app files, shared preferences, and external app data are excluded from Android cloud backup and device-to-device transfer. Users already have the validated `.dwtbundle` manual backup path. Disabling automatic restore avoids silently moving database state across ROMs or versions without bundle validation. Cache exports and temporary transfer files are also excluded and remain cleanup-managed.
+
+`.dwt` and `.dwtbundle` envelopes, MIME constants, and format version 1 are frozen for the beta.
+
 ## ADR-034 — Selected export reuses the Library bundle
 
 Exporting selected workspaces uses the existing `.dwtbundle` envelope, MIME type, canonical serializer, validation limits, FileProvider sharing, SAF writing, and restore path. No selection or pin metadata is added to the file. Selection order, visible card order, current sort mode, and pinned sections do not influence canonical payload order. Workspaces hidden by search remain exported when their IDs are selected.
