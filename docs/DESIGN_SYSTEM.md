@@ -150,3 +150,11 @@ mọi clear/sort option dùng `TouchTargets.SecondaryButton = 56dp`.
 - `Dimensions.MultiSelectSelectedContainerAlpha`: 0.12 for the selected surface tint.
 - `DesignerElevation.MultiSelectSelected`: 3 dp to distinguish selection without changing card geometry.
 - All batch action buttons continue to use `TouchTargets.SecondaryButton` (56 dp minimum).
+
+## About Dialog
+
+The centered About surface uses `Dimensions.AboutDialogMaxWidth` (720 dp), one bounded scroll region,
+and fixed reachable header/actions. Rows use `Dimensions.AboutInfoRowMinHeight` (48 dp), sections use
+`Dimensions.AboutSectionSpacing` (24 dp), and label/value layout switches at
+`Dimensions.AboutWideLayoutBreakpoint` (600 dp). Actions keep the 56 dp secondary touch target and
+the surface uses `DesignerElevation.AboutDialog` (6 dp).

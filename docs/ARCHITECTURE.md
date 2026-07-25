@@ -29,6 +29,21 @@
 
 ## Ranh giới chính
 
+## About and diagnostic copy
+
+```text
+BuildConfig + Android platform metadata + established format-version constants
+→ AppDiagnosticInfo
+→ About dialog
+→ plain-text clipboard only after an explicit user action
+```
+
+`AppDiagnosticInfo` is a presentation model and contains only app/build versions, non-unique
+manufacturer/model data, SDK level, and the current display ID/mode. Android `Build`, `Display`,
+`BuildConfig`, and `ClipboardManager` stay at the platform/UI boundary. The formatter is pure Kotlin
+and cannot access workspace content, installed-app lists, files, logs, identifiers, or Room paths.
+An external display is described as “External display”; it is not asserted to be Samsung DeX.
+
 Workspace Designer không biết cách mở ứng dụng.
 
 Launch engine không biết giao diện Designer.

@@ -56,6 +56,7 @@ import com.trancong.dexworkspacetouch.workspace.externaltransfer.ExternalTransfe
 import com.trancong.dexworkspacetouch.workspace.externaltransfer.ExternalTransferReadFailure
 import com.trancong.dexworkspacetouch.workspace.externaltransfer.ExternalTransferViewModel
 import com.trancong.dexworkspacetouch.workspace.externaltransfer.shouldDispatchExternalTransfer
+import com.trancong.dexworkspacetouch.about.platform.createAppDiagnosticInfo
 
 private object Routes {
     const val Home = "home"
@@ -374,6 +375,7 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
                 onBackupLibrary = libraryTransferViewModel::prepareBackup,
                 onRestoreLibrary = { libraryRestoreLauncher.launch("*/*") },
                 backupLibraryEnabled = libraryViewModel.workspaces.isNotEmpty() && !libraryViewModel.isWriting,
+                diagnosticInfo = createAppDiagnosticInfo(activity),
                 appIconLoader = application.appIconLoader,
                 nowEpochMillis = com.trancong.dexworkspacetouch.workspace.library.state.SystemWorkspaceClock.nowEpochMillis(),
             )

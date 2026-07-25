@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [WorkspaceEntity::class],
-    version = 2,
+    version = WorkspaceDatabaseMetadata.Version,
     exportSchema = true,
 )
 abstract class DexWorkspaceDatabase : RoomDatabase() {
@@ -14,4 +14,8 @@ abstract class DexWorkspaceDatabase : RoomDatabase() {
     companion object {
         const val DATABASE_NAME = "dex_workspace.db"
     }
+}
+
+object WorkspaceDatabaseMetadata {
+    const val Version = 2
 }

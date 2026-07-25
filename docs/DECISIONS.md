@@ -1,5 +1,14 @@
 # Architecture Decisions
 
+## ADR-037 — Diagnostic copy contains non-sensitive metadata only
+
+The existing ADR-035 already defines automatic-backup policy, so this decision uses the next
+available identifier rather than duplicating ADR-035. About diagnostics exclude device identifiers,
+workspace/app lists, file data, URIs, logs, stack traces, and persistence paths. Clipboard writing
+occurs only after the user presses the copy action; the app never reads the clipboard. Display mode
+is derived from the host display ID and uses “external display” wording without claiming that every
+external display is Samsung DeX.
+
 ## ADR-036 — Beta release remains unminified and requires explicit signing intent
 
 The first beta keeps R8 minification and resource shrinking disabled because the full Compose, Room, transfer, and DeX behavior has not yet been qualified under shrinking. Release remains non-debuggable. Signing secrets are read only from ignored local properties or environment variables. Unsigned release builds may be produced for QA, while `DWT_REQUIRE_RELEASE_SIGNING=true` makes a missing or partial signing configuration a hard failure.

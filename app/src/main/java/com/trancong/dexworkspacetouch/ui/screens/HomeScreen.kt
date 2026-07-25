@@ -23,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
@@ -43,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.key
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
@@ -68,6 +70,14 @@ import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.templates.WorkspaceTemplateCatalog
 import com.trancong.dexworkspacetouch.workspace.templates.ui.WorkspaceTemplatePickerDialog
 import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppIconLoader
+import com.trancong.dexworkspacetouch.about.platform.copyDiagnosticText
+import com.trancong.dexworkspacetouch.about.presentation.AboutDialogEffect
+import com.trancong.dexworkspacetouch.about.presentation.AboutDialogEvent
+import com.trancong.dexworkspacetouch.about.presentation.AboutDialogState
+import com.trancong.dexworkspacetouch.about.presentation.AppDiagnosticInfo
+import com.trancong.dexworkspacetouch.about.presentation.formatAppDiagnostics
+import com.trancong.dexworkspacetouch.about.presentation.reduceAboutDialog
+import com.trancong.dexworkspacetouch.about.ui.AboutDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -125,6 +135,7 @@ fun HomeScreen(
     onBackupLibrary: () -> Unit = {},
     onRestoreLibrary: () -> Unit = {},
     backupLibraryEnabled: Boolean = true,
+    diagnosticInfo: AppDiagnosticInfo,
     appIconLoader: AppIconLoader? = null,
     nowEpochMillis: Long = 0L,
 ) {
@@ -136,10 +147,29 @@ fun HomeScreen(
     var selectedTemplateId by rememberSaveable { mutableStateOf<String?>(null) }
     var showSortSheet by rememberSaveable { mutableStateOf(false) }
     var showFileSheet by rememberSaveable { mutableStateOf(false) }
+    var showAboutDialog by rememberSaveable { mutableStateOf(false) }
+    var showAboutCopySuccess by rememberSaveable { mutableStateOf(false) }
     var exportWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
     var showBatchDeleteConfirmation by rememberSaveable { mutableStateOf(false) }
     val templateCatalog = remember { WorkspaceTemplateCatalog.default() }
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+
+    fun dispatchAboutEvent(event: AboutDialogEvent) {
+        val transition = reduceAboutDialog(
+            AboutDialogState(showAboutDialog, showAboutCopySuccess),
+            event,
+        )
+        showAboutDialog = transition.state.isOpen
+        showAboutCopySuccess = transition.state.copySuccessVisible
+        if (transition.effect == AboutDialogEffect.CopyDiagnostics) {
+            if (copyDiagnosticText(context, formatAppDiagnostics(diagnosticInfo))) {
+                val completed = reduceAboutDialog(transition.state, AboutDialogEvent.CopySucceeded)
+                showAboutDialog = completed.state.isOpen
+                showAboutCopySuccess = completed.state.copySuccessVisible
+            }
+        }
+    }
 
     BackHandler(enabled = isMultiSelectMode) { onExitMultiSelect() }
 
@@ -151,6 +181,8 @@ fun HomeScreen(
             exportWorkspaceId = null
             showSortSheet = false
             showFileSheet = false
+            showAboutDialog = false
+            showAboutCopySuccess = false
             showTemplatePicker = false
         } else {
             showBatchDeleteConfirmation = false
@@ -361,8 +393,30 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
                 ) { Text("Khôi phục Library") }
                 if (!backupLibraryEnabled) Text("Chưa có workspace để sao lưu.")
+                HorizontalDivider(modifier = Modifier.padding(vertical = Spacing.S))
+                OutlinedButton(
+                    onClick = {
+                        showFileSheet = false
+                        dispatchAboutEvent(AboutDialogEvent.Open)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(TouchTargets.SecondaryButton)
+                        .semantics {
+                            contentDescription = "Giới thiệu về DexWorkspaceTouch."
+                        },
+                ) { Text("Giới thiệu") }
             }
         }
+    }
+
+    if (showAboutDialog) {
+        AboutDialog(
+            info = diagnosticInfo,
+            copySuccessVisible = showAboutCopySuccess,
+            onCopy = { dispatchAboutEvent(AboutDialogEvent.CopyRequested) },
+            onDismiss = { dispatchAboutEvent(AboutDialogEvent.Close) },
+        )
     }
 
     renameWorkspaceId?.let { id ->

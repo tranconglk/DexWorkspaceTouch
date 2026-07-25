@@ -29,3 +29,6 @@ keytool -genkeypair -v -keystore D:\secure\dexworkspacetouch-release.jks -alias 
 ```
 
 Back up the keystore securely. Losing it prevents signing future upgrades with the same identity.
+Keep at least two secure backups and store the passwords in a password manager. Do not place the
+keystore inside this repository. A lost production key prevents publishing upgrades under the same
+application ID unless an external distribution platform has an applicable key-management lineage.

@@ -55,4 +55,8 @@ object Dimensions {
     val LargeCellHeight = 120.dp
     val MediumCellWidth = 280.dp
     val MediumCellHeight = 72.dp
+    val AboutDialogMaxWidth = 720.dp
+    val AboutInfoRowMinHeight = 48.dp
+    val AboutSectionSpacing = 24.dp
+    val AboutWideLayoutBreakpoint = 600.dp
 }

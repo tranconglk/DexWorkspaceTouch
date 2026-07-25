@@ -20,10 +20,24 @@ val releaseKeyPassword = releaseSecret("DWT_RELEASE_KEY_PASSWORD")
 val releaseStore = releaseStorePath?.let(rootProject::file)
 val releaseSigningConfigured = releaseStore?.isFile == true &&
     releaseStorePassword != null && releaseKeyAlias != null && releaseKeyPassword != null
+val releaseSigningError = when {
+    releaseStorePath == null -> "DWT_RELEASE_STORE_FILE is missing."
+    releaseStore?.isFile != true -> "DWT_RELEASE_STORE_FILE does not exist or is not a file."
+    releaseStorePassword == null -> "DWT_RELEASE_STORE_PASSWORD is missing."
+    releaseKeyAlias == null -> "DWT_RELEASE_KEY_ALIAS is missing."
+    releaseKeyPassword == null -> "DWT_RELEASE_KEY_PASSWORD is missing."
+    else -> null
+}
 val requireReleaseSigning = (
     providers.gradleProperty("dwt.requireReleaseSigning").orNull
         ?: providers.environmentVariable("DWT_REQUIRE_RELEASE_SIGNING").orNull
     )?.toBooleanStrictOrNull() == true
+fun buildConfigString(value: String): String =
+    "\"${value.replace("\\", "\\\\").replace("\"", "\\\"")}\""
+val buildCommit = providers.environmentVariable("DWT_BUILD_COMMIT").orNull
+    ?.trim()?.takeIf(String::isNotEmpty) ?: "unknown"
+val buildDateUtc = providers.environmentVariable("DWT_BUILD_DATE_UTC").orNull
+    ?.trim()?.takeIf(String::isNotEmpty) ?: "unknown"
 
 android {
     namespace = "com.trancong.dexworkspacetouch"
@@ -33,9 +47,11 @@ android {
         applicationId = "com.trancong.dexworkspacetouch"
         minSdk = 28
         targetSdk = 37
-        versionCode = 2
-        versionName = "1.0.0-beta.1"
+        versionCode = 3
+        versionName = "1.0.0-beta.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "BUILD_COMMIT", buildConfigString(buildCommit))
+        buildConfigField("String", "BUILD_DATE_UTC", buildConfigString(buildDateUtc))
     }
 
     compileOptions {
@@ -45,6 +61,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     signingConfigs {
@@ -59,9 +76,13 @@ android {
     }
 
     buildTypes {
+        getByName("debug") {
+            buildConfigField("String", "BUILD_CHANNEL", buildConfigString("debug"))
+        }
         getByName("release") {
             isDebuggable = false
             isMinifyEnabled = false
+            buildConfigField("String", "BUILD_CHANNEL", buildConfigString("beta"))
             if (releaseSigningConfigured) signingConfig = signingConfigs.getByName("release")
         }
     }
@@ -75,11 +96,7 @@ tasks.matching {
 }.configureEach {
     doFirst {
         if (requireReleaseSigning && !releaseSigningConfigured) {
-            throw GradleException(
-                "Signed release requested but DWT_RELEASE_STORE_FILE, " +
-                    "DWT_RELEASE_STORE_PASSWORD, DWT_RELEASE_KEY_ALIAS, or " +
-                    "DWT_RELEASE_KEY_PASSWORD is missing, or the keystore file does not exist.",
-            )
+            throw GradleException("Signed release requested: $releaseSigningError")
         }
     }
 }

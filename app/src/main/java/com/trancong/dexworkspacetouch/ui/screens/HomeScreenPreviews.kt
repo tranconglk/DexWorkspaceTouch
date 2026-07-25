@@ -7,6 +7,8 @@ import com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryIt
 import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceSortMode
 import com.trancong.dexworkspacetouch.workspace.snapshot.ui.WorkspaceSnapshotDemoData
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchUiState
+import com.trancong.dexworkspacetouch.about.presentation.AppDiagnosticInfo
+import com.trancong.dexworkspacetouch.about.presentation.AppDisplayMode
 
 @Preview(showBackground = true, widthDp = 720, heightDp = 900)
 @Composable
@@ -57,9 +59,28 @@ private fun WorkspaceLibraryPreview() {
             onLaunchWorkspace = {},
             onCancelLaunch = {},
             onDismissLaunchResult = {},
+            diagnosticInfo = previewDiagnosticInfo,
         )
     }
 }
+
+private val previewDiagnosticInfo = AppDiagnosticInfo(
+    appName = "DexWorkspaceTouch",
+    versionName = "1.0.0-beta.2",
+    versionCode = 3,
+    buildChannel = "debug",
+    buildCommit = "unknown",
+    buildDateUtc = "unknown",
+    databaseVersion = 2,
+    workspaceTransferVersion = 1,
+    libraryBundleVersion = 1,
+    androidSdk = 34,
+    manufacturer = "Samsung",
+    model = "Preview",
+    isDexDisplay = null,
+    currentDisplayId = 0,
+    appDisplayMode = AppDisplayMode.PHONE,
+)
 
 private val previewWorkspaces = List(6) { index ->
     WorkspaceLibraryItem(

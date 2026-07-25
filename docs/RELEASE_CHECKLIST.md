@@ -4,8 +4,8 @@
 
 - [ ] Work on `release/1.0-beta`.
 - [ ] Working tree is clean after the approved release commit.
-- [ ] Confirm `versionName=1.0.0-beta.1` and `versionCode=2` exceed every distributed build.
-- [ ] Resolve the existing premature `v1.0.0-beta.1` tag; do not publish it as-is because it points to `0.1.0 (1)` metadata.
+- [ ] Confirm `versionName=1.0.0-beta.2` and `versionCode=3` exceed every distributed build.
+- [x] Preserve the published `v1.0.0-beta.1` tag; the intended next tag is `v1.0.0-beta.2`.
 - [ ] Confirm app label is `DexWorkspaceTouch`.
 - [ ] Replace the placeholder launcher icon and verify adaptive, round, monochrome, and Android 12 splash presentation on Samsung launchers.
 - [ ] Complete legal review: this repository currently has no LICENSE or NOTICE file.
@@ -38,10 +38,12 @@
 - [ ] Test `.dwt` Share/import and export on both devices.
 - [ ] Test `.dwtbundle` backup/restore in both directions.
 - [ ] Verify no debug benchmark or launch diagnostics component exists in the release manifest/APK.
+- [ ] Verify About shows the final version, channel, commit/date fallback, and current display wording.
+- [ ] Copy diagnostics on both device/display modes and confirm no personal or workspace data appears.
 
 ## Release
 
-- [ ] Review `RELEASE_NOTES_1.0.0_BETA_1.md`, privacy text, known limitations, and rollback notes.
+- [ ] Review `RELEASE_NOTES_1.0.0_BETA_2.md`, privacy text, known limitations, and rollback notes.
 - [ ] Create the release commit only after approval.
 - [ ] Create the corrected annotated tag only after the signed artifact is verified.
 - [ ] Push branch/tag only after approval.
