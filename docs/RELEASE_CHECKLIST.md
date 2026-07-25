@@ -7,7 +7,8 @@
 - [ ] Confirm `versionName=1.0.0-beta.2` and `versionCode=3` exceed every distributed build.
 - [x] Preserve the published `v1.0.0-beta.1` tag; the intended next tag is `v1.0.0-beta.2`.
 - [ ] Confirm app label is `DexWorkspaceTouch`.
-- [ ] Replace the placeholder launcher icon and verify adaptive, round, monochrome, and Android 12 splash presentation on Samsung launchers.
+- [x] Replace the placeholder launcher icon with approved adaptive, round, monochrome, legacy, and Android 12 splash resources.
+- [ ] Verify final launcher and splash presentation after reinstall on both Samsung test devices.
 - [ ] Complete legal review: this repository currently has no LICENSE or NOTICE file.
 
 ## Verification
@@ -40,6 +41,9 @@
 - [ ] Verify no debug benchmark or launch diagnostics component exists in the release manifest/APK.
 - [ ] Verify About shows the final version, channel, commit/date fallback, and current display wording.
 - [ ] Copy diagnostics on both device/display modes and confirm no personal or workspace data appears.
+- [ ] Verify circle, rounded-square, squircle, Samsung launcher, and themed-icon masks do not crop the approved mark.
+- [ ] Verify API 28â€“30 cold start has no placeholder/white flash in phone and DeX window modes.
+- [ ] Verify API 31+ system splash in phone, DeX windowed, and DeX maximized modes.
 
 ## Release
 

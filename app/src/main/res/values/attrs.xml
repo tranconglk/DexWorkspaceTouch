@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Kept app-scoped so the starting theme declares its final theme without adding
+         the AndroidX splash-screen dependency. The starting style also inherits the
+         final theme, so API 31+ retains identical post-splash window behavior. -->
+    <attr name="postSplashScreenTheme" format="reference" />
+</resources>

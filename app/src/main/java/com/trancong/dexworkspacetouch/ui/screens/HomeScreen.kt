@@ -59,6 +59,7 @@ import com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceLibraryCard
 import com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceMultiSelectToolbar
 import com.trancong.dexworkspacetouch.workspace.library.ui.adaptiveGridColumnCount
 import com.trancong.dexworkspacetouch.workspace.library.ui.centeredGridMetrics
+import com.trancong.dexworkspacetouch.workspace.library.ui.workspaceLibraryInteractionPolicy
 import com.trancong.dexworkspacetouch.workspace.library.ui.chunkCenteredRows
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchStatusDialog
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchUiState
@@ -154,6 +155,11 @@ fun HomeScreen(
     val templateCatalog = remember { WorkspaceTemplateCatalog.default() }
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
+    val interactionPolicy = workspaceLibraryInteractionPolicy(
+        libraryIsLoading = libraryIsLoading,
+        libraryWriteInProgress = libraryWriteInProgress,
+        transferOperationActive = multiSelectTransferInProgress,
+    )
 
     fun dispatchAboutEvent(event: AboutDialogEvent) {
         val transition = reduceAboutDialog(
@@ -278,6 +284,7 @@ fun HomeScreen(
                     Text(workspace.name, style = MaterialTheme.typography.titleLarge)
                     OutlinedButton(
                         onClick = { managedWorkspaceId = null; exportWorkspaceId = workspace.id },
+                        enabled = interactionPolicy.exportEnabled,
                         modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
                     ) { Text("Xuất") }
                     OutlinedButton(
@@ -295,6 +302,7 @@ fun HomeScreen(
                     ) { Text("Nhân bản") }
                     OutlinedButton(
                         onClick = { showRename(workspace) },
+                        enabled = interactionPolicy.managementEnabled,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(TouchTargets.SecondaryButton)
@@ -307,7 +315,8 @@ fun HomeScreen(
                             managedWorkspaceId = null
                             deleteWorkspaceId = workspace.id
                         },
-                        enabled = editingWorkspaceId != workspace.id,
+                        enabled = editingWorkspaceId != workspace.id &&
+                            interactionPolicy.managementEnabled,
                         colors = ButtonDefaults.outlinedButtonColors(
                             contentColor = MaterialTheme.colorScheme.error,
                         ),
@@ -438,7 +447,8 @@ fun HomeScreen(
                             onRenameWorkspace(workspace.id, renameText)
                             renameWorkspaceId = null
                         },
-                        enabled = renameText.trim().isNotEmpty(),
+                        enabled = renameText.trim().isNotEmpty() &&
+                            interactionPolicy.managementEnabled,
                         modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
                     ) { Text("Lưu") }
                 },
@@ -463,6 +473,7 @@ fun HomeScreen(
                             onDeleteWorkspace(workspace.id)
                             deleteWorkspaceId = null
                         },
+                        enabled = interactionPolicy.managementEnabled,
                         colors = ButtonDefaults.textButtonColors(
                             contentColor = MaterialTheme.colorScheme.error,
                         ),
@@ -560,7 +571,7 @@ fun HomeScreen(
             if (!isMultiSelectMode) item(span = { GridItemSpan(maxLineSpan) }) {
                 Button(
                     onClick = { showTemplatePicker = true },
-                    enabled = !libraryIsLoading,
+                    enabled = interactionPolicy.createEnabled,
                     modifier = Modifier.fillMaxWidth().height(TouchTargets.PrimaryButton),
                 ) { Text("Tạo bố cục mới") }
             }
@@ -705,11 +716,15 @@ fun HomeScreen(
                                                     onRename = { showRename(workspace) },
                                                     onDelete = { deleteWorkspaceId = workspace.id },
                                                     onManage = { managedWorkspaceId = workspace.id },
-                                                    canDelete = editingWorkspaceId != workspace.id,
+                                                    canDelete = editingWorkspaceId != workspace.id &&
+                                                        interactionPolicy.managementEnabled,
                                                     openEnabled = launchState !is WorkspaceLaunchUiState.Checking &&
                                                         launchState !is WorkspaceLaunchUiState.Launching,
+                                                    editEnabled = interactionPolicy.editEnabled,
                                                     duplicateEnabled = !libraryWriteInProgress,
                                                     pinEnabled = !libraryWriteInProgress,
+                                                    managementEnabled = interactionPolicy.managementEnabled,
+                                                    exportEnabled = interactionPolicy.exportEnabled,
                                                     onExport = { exportWorkspaceId = workspace.id },
                                                     appIconLoader = appIconLoader,
                                                     nowEpochMillis = nowEpochMillis,
@@ -740,11 +755,15 @@ fun HomeScreen(
                         onRename = { showRename(workspace) },
                         onDelete = { deleteWorkspaceId = workspace.id },
                         onManage = { managedWorkspaceId = workspace.id },
-                        canDelete = editingWorkspaceId != workspace.id,
+                        canDelete = editingWorkspaceId != workspace.id &&
+                            interactionPolicy.managementEnabled,
                         openEnabled = launchState !is WorkspaceLaunchUiState.Checking &&
                             launchState !is WorkspaceLaunchUiState.Launching,
+                        editEnabled = interactionPolicy.editEnabled,
                         duplicateEnabled = !libraryWriteInProgress,
                         pinEnabled = !libraryWriteInProgress,
+                        managementEnabled = interactionPolicy.managementEnabled,
+                        exportEnabled = interactionPolicy.exportEnabled,
                         onExport = { exportWorkspaceId = workspace.id },
                         appIconLoader = appIconLoader,
                         nowEpochMillis = nowEpochMillis,

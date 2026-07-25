@@ -32,7 +32,7 @@ test requires the same signing identity/lineage on both versions.
 - Direct open in Samsung My Files is inconsistent; prefer Share or Google Files.
 - Some apps do not support multiple instances even when Android accepts the launch request.
 - Window placement depends on the target app, Samsung DeX, and device ROM.
-- Approved launcher and splash artwork has not yet been supplied.
+- Launcher, adaptive, round, monochrome, and splash resources now use the approved DexWorkspaceTouch branding concept; final two-device visual verification remains pending.
 - Production signing credentials have not yet been supplied.
 - The project license has not yet been selected.
 - There is no About screen yet.

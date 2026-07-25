@@ -43,11 +43,14 @@ import com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferFormat
 import com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferState
 import com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferViewModel
 import com.trancong.dexworkspacetouch.workspace.librarytransfer.AndroidWorkspaceLibraryTransferPlatform
+import com.trancong.dexworkspacetouch.workspace.librarytransfer.LibraryOutputActionState
 import com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibraryTransferException
 import com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibraryTransferFailure
 import com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibraryTransferFormat
 import com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibraryTransferState
 import com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibraryTransferViewModel
+import com.trancong.dexworkspacetouch.workspace.librarytransfer.beginLibraryOutputAction
+import com.trancong.dexworkspacetouch.workspace.librarytransfer.finishLibraryOutputAction
 import com.trancong.dexworkspacetouch.workspace.snapshot.ui.WorkspaceSnapshot
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import kotlinx.coroutines.launch
@@ -84,6 +87,20 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
     val libraryTransferPlatform = remember(activity) { AndroidWorkspaceLibraryTransferPlatform(activity) }
     val transferScope = rememberCoroutineScope()
     var exportMode by rememberSaveable { mutableStateOf<String?>(null) }
+    var libraryOutputInProgress by rememberSaveable { mutableStateOf(false) }
+
+    fun beginLibraryOutput(): Boolean {
+        val transition = beginLibraryOutputAction(
+            LibraryOutputActionState(inProgress = libraryOutputInProgress),
+        )
+        libraryOutputInProgress = transition.state.inProgress
+        return transition.shouldLaunch
+    }
+
+    fun finishLibraryOutput() {
+        libraryOutputInProgress = finishLibraryOutputAction().inProgress
+    }
+
     val transferOperationActive = transferViewModel.state !is WorkspaceTransferState.Idle ||
         libraryTransferViewModel.state !is WorkspaceLibraryTransferState.Idle ||
         externalTransferViewModel.state !is ExternalTransferInboxState.Idle
@@ -131,6 +148,7 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
     val librarySaveLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument(WorkspaceLibraryTransferFormat.MimeType),
     ) { uri ->
+        finishLibraryOutput()
         val ready = libraryTransferViewModel.state as? WorkspaceLibraryTransferState.BackupReady
         if (uri == null || ready == null) libraryTransferViewModel.consumeBackup() else transferScope.launch {
             try {
@@ -220,22 +238,50 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
             dismissButton = { TextButton(onClick = libraryTransferViewModel::cancel, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Hủy") } },
         )
         is WorkspaceLibraryTransferState.BackupReady -> AlertDialog(
-            onDismissRequest = libraryTransferViewModel::consumeBackup,
+            onDismissRequest = {
+                if (!libraryOutputInProgress) libraryTransferViewModel.consumeBackup()
+            },
             title = { Text(if (bundleState.selectedExport) "Xuất workspace đã chọn" else "Sao lưu Library") },
             text = { Text("${bundleState.fileName}\n${if (bundleState.selectedExport) "Chọn cách xuất ${bundleState.workspaceCount} workspace." else "Chọn cách lưu bản sao."}") },
             confirmButton = {
                 TextButton(
-                    onClick = { transferScope.launch {
-                        try { libraryTransferPlatform.share(bundleState); libraryTransferViewModel.consumeBackup() }
-                        catch (error: kotlinx.coroutines.CancellationException) { throw error }
-                        catch (_: Exception) { libraryTransferViewModel.fail(WorkspaceLibraryTransferFailure.WRITE_FAILURE) }
-                    } },
+                    onClick = {
+                        if (beginLibraryOutput()) {
+                            transferScope.launch {
+                                try {
+                                    libraryTransferPlatform.share(bundleState)
+                                    libraryTransferViewModel.consumeBackup()
+                                } catch (error: kotlinx.coroutines.CancellationException) {
+                                    throw error
+                                } catch (_: Exception) {
+                                    libraryTransferViewModel.fail(
+                                        WorkspaceLibraryTransferFailure.WRITE_FAILURE,
+                                    )
+                                } finally {
+                                    finishLibraryOutput()
+                                }
+                            }
+                        }
+                    },
+                    enabled = !libraryOutputInProgress,
                     modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
                 ) { Text("Chia sẻ") }
             },
             dismissButton = {
                 TextButton(
-                    onClick = { librarySaveLauncher.launch(bundleState.fileName) },
+                    onClick = {
+                        if (beginLibraryOutput()) {
+                            try {
+                                librarySaveLauncher.launch(bundleState.fileName)
+                            } catch (_: Exception) {
+                                finishLibraryOutput()
+                                libraryTransferViewModel.fail(
+                                    WorkspaceLibraryTransferFailure.WRITE_FAILURE,
+                                )
+                            }
+                        }
+                    },
+                    enabled = !libraryOutputInProgress,
                     modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
                 ) { Text("Lưu vào tệp") }
             },

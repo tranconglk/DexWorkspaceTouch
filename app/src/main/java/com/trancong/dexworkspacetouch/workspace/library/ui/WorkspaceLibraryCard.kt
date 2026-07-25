@@ -74,6 +74,9 @@ fun WorkspaceLibraryCard(
     multiSelected: Boolean = false,
     onEnterMultiSelect: () -> Unit = {},
     onToggleMultiSelect: () -> Unit = {},
+    editEnabled: Boolean = true,
+    managementEnabled: Boolean = true,
+    exportEnabled: Boolean = true,
 ) {
     val metadata = workspace.canvas.cardMetadata()
     val updatedText = WorkspaceRelativeTimeFormatter.format(workspace.updatedAtEpochMillis, nowEpochMillis)
@@ -162,6 +165,7 @@ fun WorkspaceLibraryCard(
                             ) { Text("Mở") }
                             Button(
                                 onClick = onEdit,
+                                enabled = editEnabled,
                                 modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton),
                             ) { Text("Sửa") }
                         }
@@ -169,6 +173,7 @@ fun WorkspaceLibraryCard(
                             if (showDirectManagementActions) {
                             OutlinedButton(
                                 onClick = onExport,
+                                enabled = exportEnabled,
                                 modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
                             ) { Text("Xuất") }
                             OutlinedButton(
@@ -187,6 +192,7 @@ fun WorkspaceLibraryCard(
                             ) {
                                 OutlinedButton(
                                     onClick = onRename,
+                                    enabled = managementEnabled,
                                     modifier = Modifier
                                         .weight(1f)
                                         .height(TouchTargets.SecondaryButton)
@@ -211,6 +217,7 @@ fun WorkspaceLibraryCard(
                             } else {
                                 OutlinedButton(
                                     onClick = onManage,
+                                    enabled = managementEnabled,
                                     modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
                                 ) { Text("Quản lý") }
                             }
