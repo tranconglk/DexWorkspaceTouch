@@ -69,3 +69,21 @@ Signature:
 APK Signature Scheme v2 verified
 Number of signers: 1
 RSA key size: 4096 bits
+
+
+Version: 1.0.0-beta.2 (3)
+
+APK SHA-256:
+0561D75C39CEEC9AC328AB47C5896B60C6BA7970EFE0BDCA30645D9F66C46B23
+
+Signer certificate SHA-256:
+19AC0EA99125361B3C2083AAA44C8745EBAD9C55FA967642C2B9E5A1086A45E7
+
+Signature:
+APK Signature Scheme v2 verified
+RSA 4096-bit
+1 signer
+
+Device smoke test:
+- S23 Ultra: PASS / PENDING
+- Note 8 ROM Note 9: PASS / PENDING
