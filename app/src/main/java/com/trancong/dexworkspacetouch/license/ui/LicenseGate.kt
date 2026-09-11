@@ -39,6 +39,12 @@ import com.trancong.dexworkspacetouch.license.domain.LicenseState
 import com.trancong.dexworkspacetouch.license.runtime.LicenseGateUiState
 import com.trancong.dexworkspacetouch.update.AppUpdatePanel
 import com.trancong.dexworkspacetouch.update.AppUpdateUiState
+import com.trancong.dexworkspacetouch.ui.design.DesignerShapes
+import com.trancong.dexworkspacetouch.ui.design.Dimensions
+import com.trancong.dexworkspacetouch.ui.design.DwtStatusSurface
+import com.trancong.dexworkspacetouch.ui.design.DwtStatusTone
+import com.trancong.dexworkspacetouch.ui.design.Spacing
+import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 
 @Composable
 fun LicenseGate(
@@ -51,8 +57,19 @@ fun LicenseGate(
     mainContent: @Composable () -> Unit,
 ) {
     when (state) {
-        LicenseGateUiState.Checking -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
+        LicenseGateUiState.Checking -> Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background,
+        ) {
+            Box(Modifier.fillMaxSize().padding(Spacing.L), contentAlignment = Alignment.Center) {
+                DwtStatusSurface(
+                    tone = DwtStatusTone.Info,
+                    title = "Đang xác minh giấy phép",
+                    supportingText = "DexWorkspaceTouch đang kiểm tra quyền sử dụng trên thiết bị này.",
+                    modifier = Modifier.widthIn(max = Dimensions.ActivationContentMaxWidth),
+                    trailingContent = { CircularProgressIndicator() },
+                )
+            }
         }
         is LicenseGateUiState.Allowed -> mainContent()
         is LicenseGateUiState.ActivationRequired -> ActivationScreen(
@@ -71,16 +88,32 @@ private fun ActivationScreen(
     onOpenUpdateDownload: (String) -> Unit,
 ) {
     ProtectActivationCredentialSurface()
-    Surface(Modifier.fillMaxSize()) {
-        Box(Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
-            Column(
-                modifier = Modifier.fillMaxWidth().widthIn(max = 520.dp).verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.Center,
+    val presentation = licenseActivationPresentation(state)
+    Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+        Box(Modifier.fillMaxSize().padding(Spacing.L), contentAlignment = Alignment.Center) {
+            Surface(
+                modifier = Modifier.widthIn(max = Dimensions.ActivationContentMaxWidth).fillMaxWidth(),
+                shape = DesignerShapes.Workspace,
+                color = MaterialTheme.colorScheme.surface,
             ) {
-                Text("Kích hoạt DexWorkspaceTouch", style = MaterialTheme.typography.headlineMedium)
-                Spacer(Modifier.height(12.dp))
-                Text(state.licenseState.userMessage())
-                Spacer(Modifier.height(20.dp))
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(Spacing.L).verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(Spacing.M),
+                ) {
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.XS)) {
+                    Text("DexWorkspaceTouch", style = MaterialTheme.typography.titleLarge)
+                    Text("Kích hoạt bản quyền", style = MaterialTheme.typography.headlineSmall)
+                    Text(
+                        "Nhập License Key đã được cấp để xác minh thiết bị và tiếp tục sử dụng.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                DwtStatusSurface(
+                    tone = presentation.tone,
+                    title = presentation.title,
+                    supportingText = presentation.message,
+                )
                 OutlinedTextField(
                     value = state.licenseKeyInput,
                     onValueChange = onLicenseKeyChanged,
@@ -100,10 +133,10 @@ private fun ActivationScreen(
                         if (message != null) Text(message)
                     },
                 )
-                Spacer(Modifier.height(12.dp))
                 Button(
                     onClick = onActivate,
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    modifier = Modifier.align(Alignment.End)
+                        .widthIn(min = 200.dp).height(TouchTargets.SecondaryButton),
                     enabled = !state.activating && state.licenseKeyInput.isNotBlank(),
                 ) {
                     if (state.activating) {
@@ -113,16 +146,20 @@ private fun ActivationScreen(
                     } else Text("Kích hoạt")
                 }
                 state.requestId?.takeIf(String::isNotBlank)?.let {
-                    Spacer(Modifier.height(12.dp))
-                    Text("Mã hỗ trợ: ${it.take(32)}", style = MaterialTheme.typography.bodySmall)
+                    Text(
+                        "Mã hỗ trợ: ${it.take(32)}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
-                Spacer(Modifier.height(20.dp))
+                Text("Cập nhật ứng dụng", style = MaterialTheme.typography.titleMedium)
                 AppUpdatePanel(
                     state = updateState,
                     onCheck = onCheckUpdate,
                     onOpenDownload = onOpenUpdateDownload,
                     checkEnabled = !state.activating,
                 )
+                }
             }
         }
     }
@@ -163,6 +200,35 @@ internal fun licenseGateContentPolicy(state: LicenseGateUiState): LicenseGateCon
     LicenseGateUiState.Checking -> LicenseGateContentPolicy(false, false, false)
     is LicenseGateUiState.Allowed -> LicenseGateContentPolicy(true, false, false)
     is LicenseGateUiState.ActivationRequired -> LicenseGateContentPolicy(false, true, true)
+}
+
+internal data class LicenseActivationPresentation(
+    val tone: DwtStatusTone,
+    val title: String,
+    val message: String,
+)
+
+internal fun licenseActivationPresentation(
+    state: LicenseGateUiState.ActivationRequired,
+): LicenseActivationPresentation {
+    val failureMessage = state.validationMessage ?: state.activationFailure?.userMessage()
+    if (failureMessage != null) {
+        return LicenseActivationPresentation(DwtStatusTone.Error, "Không thể kích hoạt", failureMessage)
+    }
+    val tone = when (state.licenseState) {
+        LicenseState.Unactivated, LicenseState.Activating -> DwtStatusTone.Info
+        is LicenseState.NetworkRequired, is LicenseState.Expired -> DwtStatusTone.Warning
+        is LicenseState.DeviceMismatch, is LicenseState.DeviceRevoked, is LicenseState.Revoked,
+        is LicenseState.Error -> DwtStatusTone.Error
+        is LicenseState.Active, is LicenseState.OfflineGrace -> DwtStatusTone.Success
+    }
+    val title = when (tone) {
+        DwtStatusTone.Info -> if (state.activating) "Đang kích hoạt" else "Cần kích hoạt"
+        DwtStatusTone.Success -> "Giấy phép hợp lệ"
+        DwtStatusTone.Warning -> "Cần xác minh lại"
+        DwtStatusTone.Error -> "Giấy phép không hợp lệ"
+    }
+    return LicenseActivationPresentation(tone, title, state.licenseState.userMessage())
 }
 
 private fun LicenseState.userMessage(): String = when (this) {

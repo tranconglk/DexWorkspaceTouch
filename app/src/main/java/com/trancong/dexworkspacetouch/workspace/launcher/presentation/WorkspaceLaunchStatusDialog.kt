@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.trancong.dexworkspacetouch.ui.design.Spacing
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
+import com.trancong.dexworkspacetouch.ui.design.DwtStatusSurface
+import com.trancong.dexworkspacetouch.ui.design.DwtStatusTone
 import com.trancong.dexworkspacetouch.workspace.launcher.model.LaunchReadiness
 
 @Composable
@@ -23,32 +25,33 @@ fun WorkspaceLaunchStatusDialog(
         WorkspaceLaunchUiState.Idle -> Unit
         is WorkspaceLaunchUiState.Checking -> StatusDialog(
             title = "Đang kiểm tra workspace...", showProgress = true,
-            action = "Hủy", onAction = onCancel,
+            tone = DwtStatusTone.Info, action = "Hủy", onAction = onCancel,
         )
         is WorkspaceLaunchUiState.Launching -> StatusDialog(
             title = "Đang mở workspace ${state.workspaceName}...", showProgress = true,
-            action = "Hủy", onAction = onCancel,
+            tone = DwtStatusTone.Info, action = "Hủy", onAction = onCancel,
         )
         is WorkspaceLaunchUiState.Completed -> StatusDialog(
             title = state.summaryMessage(),
             details = state.failures().map { failure ->
                 "${failure.target.identity.packageName}: ${failure.reason.userMessage()}"
             },
+            tone = if (state.failures().isEmpty()) DwtStatusTone.Success else DwtStatusTone.Warning,
             action = "Đóng", onAction = onDismiss,
         )
         is WorkspaceLaunchUiState.ReadinessError -> StatusDialog(
             title = state.readiness.userMessage(),
             details = state.readiness.applicationDetails(),
-            action = "Đã hiểu", onAction = onDismiss,
+            tone = DwtStatusTone.Warning, action = "Đã hiểu", onAction = onDismiss,
         )
         is WorkspaceLaunchUiState.LaunchError -> StatusDialog(
             title = state.reason.title(), details = state.reason.details(),
-            action = "Đã hiểu", onAction = onDismiss,
+            tone = DwtStatusTone.Error, action = "Đã hiểu", onAction = onDismiss,
         )
         is WorkspaceLaunchUiState.Cancelled -> StatusDialog(
             title = "Đã hủy mở workspace ${state.workspaceName}.",
             details = listOf("Các ứng dụng đã mở trước đó không bị đóng."),
-            action = "Đóng", onAction = onDismiss,
+            tone = DwtStatusTone.Warning, action = "Đóng", onAction = onDismiss,
         )
     }
 }
@@ -58,15 +61,19 @@ private fun StatusDialog(
     title: String,
     details: List<String> = emptyList(),
     showProgress: Boolean = false,
+    tone: DwtStatusTone,
     action: String,
     onAction: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = { if (!showProgress) onAction() },
-        title = { Text(title) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.S)) {
-                if (showProgress) CircularProgressIndicator()
+                DwtStatusSurface(
+                    tone = tone,
+                    title = title,
+                    trailingContent = if (showProgress) ({ CircularProgressIndicator() }) else null,
+                )
                 details.forEach { Text(it) }
             }
         },
