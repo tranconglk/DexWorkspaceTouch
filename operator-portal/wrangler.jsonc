@@ -1,0 +1,35 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dexworkspacetouch-operator",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-22",
+  "workers_dev": true,
+  "vars": {
+    "LICENSE_ADMIN_API_URL": "https://dexworkspacetouch-license-production.dex-backend.workers.dev",
+    "UPDATE_MANIFEST_URL": "https://dexworkspacetouch-updates.dex-backend.workers.dev/update-manifest.json",
+    "CF_ACCESS_TEAM_DOMAIN": "dexworkspacetouch.cloudflareaccess.com",
+    "CF_ACCESS_AUD": "58fb2050630759d33327cb4a5eb7119c8049fa4b404155de3cbf5692d76c1105",
+    "OPERATOR_EMAIL_ALLOWLIST": "tranconglk@gmail.com"
+  },
+  "secrets": {
+    "required": ["LICENSE_ADMIN_TOKEN"]
+  },
+  "d1_databases": [
+    {
+      "binding": "FULFILLMENT_DB",
+      "database_name": "dexworkspacetouch-fulfillment",
+      "database_id": "97fed380-f04e-4b61-9cd6-abde3ad59240",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "services": [
+    {
+      "binding": "RELEASES",
+      "service": "dexworkspacetouch-updates"
+    },
+    {
+      "binding": "LICENSE_ADMIN",
+      "service": "dexworkspacetouch-license-production"
+    }
+  ]
+}
