@@ -32,12 +32,12 @@ object DwtStateColors {
 
 /** ARGB bridge for Android View surfaces such as Floating Dock. */
 object DwtViewColors {
-    val Background = 0xFF070A0F.toInt()
-    val Surface = 0xFF111720.toInt()
-    val SurfaceAlt = 0xFF182231.toInt()
+    val Background = 0xFF0F141B.toInt()
+    val Surface = 0xFF171E28.toInt()
+    val SurfaceAlt = 0xFF202B39.toInt()
     val Primary = 0xFF4DA3FF.toInt()
     val OnSurface = 0xFFF3F7FC.toInt()
-    val Outline = 0xFF2A394A.toInt()
+    val Outline = 0xFF3A4A5D.toInt()
 }
 
 object DwtPreviewTokens {
