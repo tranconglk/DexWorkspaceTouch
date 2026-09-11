@@ -1,0 +1,26 @@
+[
+  {
+    "input": "APP-7K3M-9QTX-2PL8",
+    "canonical": "APP-7K3M-9QTX-2PL8",
+    "valid": true,
+    "redacted": "APP-••••-••••-2PL8"
+  },
+  {
+    "input": "  app-7k3m-9qtx-2pl8  ",
+    "canonical": "APP-7K3M-9QTX-2PL8",
+    "valid": true,
+    "redacted": "APP-••••-••••-2PL8"
+  },
+  {
+    "input": "APP 7K3M 9QTX 2PL8",
+    "canonical": "APP 7K3M 9QTX 2PL8",
+    "valid": false,
+    "redacted": null
+  },
+  {
+    "input": "A-7K3M-9QTX-2PL8",
+    "canonical": "A-7K3M-9QTX-2PL8",
+    "valid": false,
+    "redacted": null
+  }
+]

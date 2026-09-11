@@ -1,0 +1,190 @@
+1
+00:00:00,000 --> 00:00:02,000
+Timing bản nháp — cần căn lại sau khi quay.
+
+2
+00:00:02,200 --> 00:00:09,000
+DexWorkspaceTouch lưu bố cục nhiều ứng dụng
+và mở lại trên Samsung DeX.
+
+3
+00:00:10,000 --> 00:00:18,000
+Video này đi từ Workspace
+đến Floating Dock.
+
+4
+00:00:21,000 --> 00:00:28,000
+Workspace Library lưu toàn bộ
+bố cục của bạn.
+
+5
+00:00:29,000 --> 00:00:36,000
+Mỗi thẻ có hình xem trước,
+số ô và số ứng dụng.
+
+6
+00:00:37,000 --> 00:00:45,000
+Bạn có thể mở, sửa,
+ghim hoặc quản lý Workspace.
+
+7
+00:00:46,000 --> 00:00:54,000
+Tìm theo tên hoặc chọn
+một trong năm cách sắp xếp.
+
+8
+00:00:56,000 --> 00:01:03,000
+Chọn Tạo bố cục mới,
+rồi chọn một mẫu.
+
+9
+00:01:04,000 --> 00:01:12,000
+Ở đây, chúng ta dùng
+bố cục hai cột.
+
+10
+00:01:13,000 --> 00:01:20,000
+Chạm từng ô để gán ứng dụng.
+
+11
+00:01:21,000 --> 00:01:29,000
+Bạn có thể kéo đường chia
+để thay đổi tỷ lệ.
+
+12
+00:01:30,000 --> 00:01:38,000
+Chọn Lưu và đặt tên
+cho Workspace.
+
+13
+00:01:46,000 --> 00:01:53,000
+Chọn Mở để chạy Workspace.
+
+14
+00:01:54,000 --> 00:02:03,000
+Các ứng dụng xuất hiện đúng vị trí
+đã lưu trên màn hình DeX.
+
+15
+00:02:16,000 --> 00:02:23,000
+Car Mode ưu tiên các Workspace
+bạn dùng thường xuyên.
+
+16
+00:02:24,000 --> 00:02:32,000
+Dashboard mở nhanh
+các Slot đã cấu hình.
+
+17
+00:02:33,000 --> 00:02:48,000
+Bên dưới là Floating Dock,
+shortcut Desktop và cài đặt Slot.
+
+18
+00:02:51,000 --> 00:02:59,000
+Bạn có thể hiển thị
+từ ba đến tám Slot.
+
+19
+00:03:00,000 --> 00:03:07,000
+Mặc định là sáu Slot.
+
+20
+00:03:08,000 --> 00:03:16,000
+Chạm một Slot để chọn Workspace.
+
+21
+00:03:17,000 --> 00:03:26,000
+Giảm số Slot chỉ ẩn Slot,
+không xóa liên kết đã lưu.
+
+22
+00:03:36,000 --> 00:03:43,000
+Floating Dock cần quyền
+hiển thị trên ứng dụng khác.
+
+23
+00:03:44,000 --> 00:03:51,000
+Chọn Allow và bật quyền
+trong cài đặt Android.
+
+24
+00:03:52,000 --> 00:04:01,000
+Quay lại và chọn Show
+để hiện nút CAR trên DeX.
+
+25
+00:04:11,000 --> 00:04:19,000
+Floating Dock không hiện
+tên Workspace trên card.
+
+26
+00:04:20,000 --> 00:04:28,000
+Hãy nhìn bố cục và icon
+để nhận diện nhanh.
+
+27
+00:04:29,000 --> 00:04:35,000
+Dấu cộng là Slot
+chưa được cấu hình.
+
+28
+00:04:36,000 --> 00:04:46,000
+Chọn card để mở Workspace.
+Dock sẽ tự thu gọn.
+
+29
+00:04:56,000 --> 00:05:03,000
+Khi thu gọn,
+bạn có thể kéo nút CAR.
+
+30
+00:05:04,000 --> 00:05:11,000
+Thả tay để Dock snap
+vào cạnh gần nhất.
+
+31
+00:05:12,000 --> 00:05:23,000
+Collapse chỉ thu gọn.
+Hide mới xóa Dock khỏi màn hình.
+
+32
+00:05:26,000 --> 00:05:33,000
+Bạn có thể thêm Car Dock
+vào DeX Desktop.
+
+33
+00:05:34,000 --> 00:05:42,000
+Chạm icon để hiện Floating Dock,
+không cần mở Car Mode.
+
+34
+00:05:43,000 --> 00:05:53,000
+Nếu Dock đã có,
+ứng dụng không tạo Dock thứ hai.
+
+35
+00:05:56,000 --> 00:06:03,000
+Trong sử dụng hằng ngày,
+hãy bật DeX và chạm Car Dock.
+
+36
+00:06:04,000 --> 00:06:11,000
+Mở nút CAR rồi chọn
+bố cục cần dùng.
+
+37
+00:06:12,000 --> 00:06:23,000
+Workspace sẵn sàng,
+còn Floating Dock tự thu gọn.
+
+38
+00:06:26,000 --> 00:06:33,000
+Bạn đã sẵn sàng gọi nhanh
+Workspace trên Samsung DeX.
+
+39
+00:06:34,000 --> 00:06:39,500
+Xem hướng dẫn đầy đủ
+khi cần hỗ trợ thêm.
+

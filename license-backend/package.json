@@ -1,0 +1,30 @@
+{
+  "name": "dexworkspacetouch-license-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run test && npm run deploy:dry-run",
+    "deploy:dry-run": "wrangler deploy --dry-run --outdir .wrangler-dry-run",
+    "deploy": "wrangler deploy",
+    "db:migrate:local": "wrangler d1 migrations apply license-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply license-db --remote",
+    "keys:generate": "node scripts/generate-license-signing-key.mjs",
+    "keys:verify": "node scripts/verify-generated-license-signing-key.mjs",
+    "admin:token": "node scripts/generate-admin-token.mjs",
+    "admin": "node scripts/admin.mjs",
+    "fulfillment": "node scripts/fulfillment.mjs",
+    "types": "wrangler types"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-plugin": "1.1.6",
+    "@cloudflare/workers-types": "5.20260908.1",
+    "@types/node": "24.13.3",
+    "typescript": "7.0.2",
+    "vitest": "4.1.11",
+    "wrangler": "4.130.0"
+  }
+}

@@ -1,7 +1,13 @@
 package com.trancong.dexworkspacetouch.navigation
 
 import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
@@ -36,6 +42,9 @@ import com.trancong.dexworkspacetouch.platform.launch.android.AndroidWorkspaceLa
 import com.trancong.dexworkspacetouch.workspace.launcher.WorkspaceLaunchRequestFactory
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModel
 import com.trancong.dexworkspacetouch.DexWorkspaceTouchApplication
+import com.trancong.dexworkspacetouch.BuildConfig
+import com.trancong.dexworkspacetouch.update.AppUpdateScreen
+import com.trancong.dexworkspacetouch.update.AppUpdateViewModel
 import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspacePersistenceIssue
 import com.trancong.dexworkspacetouch.workspace.transfer.AndroidWorkspaceTransferPlatform
 import com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferFailure
@@ -60,9 +69,27 @@ import com.trancong.dexworkspacetouch.workspace.externaltransfer.ExternalTransfe
 import com.trancong.dexworkspacetouch.workspace.externaltransfer.ExternalTransferViewModel
 import com.trancong.dexworkspacetouch.workspace.externaltransfer.shouldDispatchExternalTransfer
 import com.trancong.dexworkspacetouch.about.platform.createAppDiagnosticInfo
+import com.trancong.dexworkspacetouch.feature.car.CarScreen
+import com.trancong.dexworkspacetouch.feature.car.CarWorkspaceOption
+import com.trancong.dexworkspacetouch.feature.car.CarWorkspaceShortcutSlot
+import com.trancong.dexworkspacetouch.feature.car.resolveCarWorkspaceShortcutRows
+import com.trancong.dexworkspacetouch.feature.car.overlay.createCarOverlayPermissionIntent
+import com.trancong.dexworkspacetouch.feature.car.overlay.createActivityCarOverlayHost
+import com.trancong.dexworkspacetouch.feature.car.CarActionEngine
+import com.trancong.dexworkspacetouch.feature.car.CarWorkflowExecutionRunner
+import com.trancong.dexworkspacetouch.feature.car.PreferencesCarWorkspaceShortcutWorkflowProvider
+import com.trancong.dexworkspacetouch.feature.car.platform.AndroidCarActionExecutor
+import com.trancong.dexworkspacetouch.feature.car.platform.RepositoryCarWorkspaceLaunchPlatform
+import com.trancong.dexworkspacetouch.feature.car.shortcut.AndroidCarDockShortcutPinPlatform
+import com.trancong.dexworkspacetouch.feature.car.shortcut.CarDockPinRequestResult
+import com.trancong.dexworkspacetouch.feature.car.shortcut.CarDockShortcutPinController
+import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchRuntime
+import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspaceRepository
 
 private object Routes {
     const val Home = "home"
+    const val Car = "car"
+    const val Updates = "updates"
     const val LayoutDesigner = "layout-designer"
     const val AppPicker = "app-picker"
 }
@@ -74,6 +101,9 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
     val currentRoute = currentBackStackEntry?.destination?.route
     val designerViewModel: WorkspaceDesignerViewModel = viewModel()
     val application = activity.application as DexWorkspaceTouchApplication
+    val appUpdateViewModel: AppUpdateViewModel = viewModel(
+        factory = AppUpdateViewModel.factory(application.appUpdateRepository),
+    )
     val libraryViewModel: WorkspaceLibraryViewModel = viewModel(
         factory = WorkspaceLibraryViewModel.factory(application.workspaceRepository),
     )
@@ -337,9 +367,12 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
     val installedAppCatalog = remember(applicationContext) {
         DefaultInstalledAppCatalog(AndroidInstalledAppDataSource.create(applicationContext))
     }
+    val workspaceLaunchRequestFactory = remember(installedAppCatalog) {
+        WorkspaceLaunchRequestFactory(installedAppCatalog)
+    }
     val launchViewModel: WorkspaceLaunchViewModel = viewModel(
         factory = WorkspaceLaunchViewModel.factory(
-            WorkspaceLaunchRequestFactory(installedAppCatalog),
+            workspaceLaunchRequestFactory,
         ),
     )
     val launchHostToken = remember(activity) { Any() }
@@ -415,6 +448,8 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
                 },
                 onCancelLaunch = launchViewModel::cancelLaunch,
                 onDismissLaunchResult = launchViewModel::dismissResult,
+                onOpenCar = { navController.navigate(Routes.Car) },
+                onOpenUpdates = { navController.navigate(Routes.Updates) },
                 onShareWorkspace = { id -> exportMode = "share"; transferViewModel.prepareExport(id) },
                 onSaveWorkspaceToFile = { id -> exportMode = "save"; transferViewModel.prepareExport(id) },
                 onImportWorkspace = { importLauncher.launch("*/*") },
@@ -424,6 +459,26 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
                 diagnosticInfo = createAppDiagnosticInfo(activity),
                 appIconLoader = application.appIconLoader,
                 nowEpochMillis = com.trancong.dexworkspacetouch.workspace.library.state.SystemWorkspaceClock.nowEpochMillis(),
+            )
+        }
+        composable(Routes.Car) {
+            CarRoute(
+                activity = activity,
+                repository = application.workspaceRepository,
+                requestFactory = workspaceLaunchRequestFactory,
+                workspaceRuntime = launchRuntime,
+                onBack = navController::navigateUp,
+            )
+        }
+        composable(Routes.Updates) {
+            AppUpdateScreen(
+                currentVersion = BuildConfig.VERSION_NAME,
+                state = appUpdateViewModel.state,
+                onCheck = appUpdateViewModel::check,
+                onOpenDownload = { url ->
+                    activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                },
+                onBack = navController::navigateUp,
             )
         }
         composable(Routes.LayoutDesigner) {
@@ -480,6 +535,131 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
             )
         }
     }
+}
+
+@Composable
+private fun CarRoute(
+    activity: Activity,
+    repository: WorkspaceRepository,
+    requestFactory: WorkspaceLaunchRequestFactory,
+    workspaceRuntime: WorkspaceLaunchRuntime,
+    onBack: () -> Unit,
+) {
+    val floatingDockCoordinator = remember(activity.application) {
+        (activity.application as DexWorkspaceTouchApplication).carFloatingDockCoordinator
+    }
+    val floatingDockState by floatingDockCoordinator.dockState.collectAsState()
+    val shortcutPreferences = remember(activity.application) {
+        (activity.application as DexWorkspaceTouchApplication).carWorkspaceShortcutPreferences
+    }
+    val executionArbiter = remember(activity.application) {
+        (activity.application as DexWorkspaceTouchApplication).carWorkflowExecutionArbiter
+    }
+    val shortcuts by shortcutPreferences.shortcuts.collectAsState()
+    val visibleSlotCount by shortcutPreferences.visibleSlotCount.collectAsState()
+    val workspaceFlow = remember(repository) { repository.observeAll() }
+    val shortcutWorkspaces by workspaceFlow.collectAsState(initial = emptyList())
+    val workspaceOptions = remember(shortcutWorkspaces) {
+        shortcutWorkspaces.map { workspace ->
+            CarWorkspaceOption(
+                id = workspace.id,
+                name = workspace.name,
+                appCount = workspace.canvas.cells.count { it.app != null },
+            )
+        }
+    }
+    val shortcutRows = remember(shortcuts, workspaceOptions, visibleSlotCount) {
+        resolveCarWorkspaceShortcutRows(shortcuts, workspaceOptions, visibleSlotCount)
+    }
+    val overlayPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+    ) {
+        floatingDockCoordinator.refresh()
+    }
+    DisposableEffect(activity, floatingDockCoordinator) {
+        val lifecycle = (activity as LifecycleOwner).lifecycle
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                floatingDockCoordinator.refresh()
+                shortcutPreferences.refresh()
+            }
+        }
+        lifecycle.addObserver(observer)
+        onDispose { lifecycle.removeObserver(observer) }
+    }
+    val scope = rememberCoroutineScope()
+    val workflowProvider = remember(shortcutPreferences) {
+        PreferencesCarWorkspaceShortcutWorkflowProvider(shortcutPreferences)
+    }
+    val workspacePlatform = remember(repository, requestFactory, workspaceRuntime) {
+        RepositoryCarWorkspaceLaunchPlatform(repository, requestFactory, workspaceRuntime)
+    }
+    val actionExecutor = remember(activity, workspacePlatform) {
+        AndroidCarActionExecutor.create(activity, workspacePlatform)
+    }
+    val runner = remember(actionExecutor, scope, executionArbiter) {
+        CarWorkflowExecutionRunner<CarWorkspaceShortcutSlot>(
+            actionEngine = CarActionEngine(actionExecutor),
+            scope = scope,
+            arbiter = executionArbiter,
+        )
+    }
+    val workflowState by runner.state.collectAsState()
+    val carWorkflowRunning by executionArbiter.isRunning.collectAsState()
+    val desktopShortcutPlatform = remember(activity) {
+        AndroidCarDockShortcutPinPlatform(activity)
+    }
+    val desktopShortcutController = remember(desktopShortcutPlatform) {
+        CarDockShortcutPinController(
+            supported = desktopShortcutPlatform.isSupported,
+            platform = desktopShortcutPlatform,
+        )
+    }
+    var desktopShortcutStatus by remember { mutableStateOf<String?>(null) }
+    DisposableEffect(runner) {
+        onDispose(runner::dispose)
+    }
+
+    CarScreen(
+        onBack = onBack,
+        onDismissError = runner::dismissError,
+        floatingDockState = floatingDockState,
+        onShowFloatingDock = {
+            val host = createActivityCarOverlayHost(activity)
+            if (host == null) {
+                floatingDockCoordinator.reportDisplayUnavailable()
+            } else {
+                floatingDockCoordinator.show(host)
+            }
+        },
+        onHideFloatingDock = floatingDockCoordinator::hide,
+        onAllowFloatingDock = {
+            overlayPermissionLauncher.launch(createCarOverlayPermissionIntent(activity))
+        },
+        desktopShortcutSupported = desktopShortcutController.isSupported,
+        desktopShortcutStatus = desktopShortcutStatus,
+        onAddDesktopShortcut = {
+            desktopShortcutStatus = when (desktopShortcutController.requestPin()) {
+                CarDockPinRequestResult.Requested -> "Shortcut request sent"
+                CarDockPinRequestResult.Unsupported ->
+                    "Launcher does not support pinned shortcuts"
+                CarDockPinRequestResult.Rejected -> "Launcher did not accept the shortcut request"
+            }
+        },
+        workspaceShortcutRows = shortcutRows,
+        visibleSlotCount = visibleSlotCount,
+        onVisibleSlotCountChanged = shortcutPreferences::setVisibleSlotCount,
+        workspaceOptions = workspaceOptions,
+        onSetWorkspaceShortcut = shortcutPreferences::setWorkspace,
+        onClearWorkspaceShortcut = shortcutPreferences::clear,
+        onWorkspaceShortcut = { slot ->
+            workflowProvider.workflowFor(slot)?.let { workflow ->
+                runner.acceptAndRun(slot, workflow)
+            }
+        },
+        workspaceWorkflowState = workflowState,
+        workspaceActionsEnabled = !carWorkflowRunning,
+    )
 }
 
 private fun WorkspaceTransferFailure.userMessage(): String = when (this) {

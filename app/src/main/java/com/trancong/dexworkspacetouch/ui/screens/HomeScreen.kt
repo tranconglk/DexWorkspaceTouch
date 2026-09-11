@@ -130,6 +130,8 @@ fun HomeScreen(
     onLaunchWorkspace: (WorkspaceLibraryItem) -> Unit,
     onCancelLaunch: () -> Unit,
     onDismissLaunchResult: () -> Unit,
+    onOpenCar: () -> Unit = {},
+    onOpenUpdates: () -> Unit = {},
     onShareWorkspace: (String) -> Unit = {},
     onSaveWorkspaceToFile: (String) -> Unit = {},
     onImportWorkspace: () -> Unit = {},
@@ -568,6 +570,18 @@ fun HomeScreen(
                 Text("DeX Workspace Manager", style = MaterialTheme.typography.headlineMedium)
             }
             item(span = { GridItemSpan(maxLineSpan) }) { Text("Workspace Library") }
+            if (!isMultiSelectMode) item(span = { GridItemSpan(maxLineSpan) }) {
+                OutlinedButton(
+                    onClick = onOpenCar,
+                    modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
+                ) { Text("Open Car mode") }
+            }
+            if (!isMultiSelectMode) item(span = { GridItemSpan(maxLineSpan) }) {
+                OutlinedButton(
+                    onClick = onOpenUpdates,
+                    modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
+                ) { Text("Cập nhật ứng dụng") }
+            }
             if (!isMultiSelectMode) item(span = { GridItemSpan(maxLineSpan) }) {
                 Button(
                     onClick = { showTemplatePicker = true },

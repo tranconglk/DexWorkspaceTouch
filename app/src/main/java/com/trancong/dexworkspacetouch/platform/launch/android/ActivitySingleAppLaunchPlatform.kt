@@ -32,28 +32,7 @@ class ActivitySingleAppLaunchPlatform(
     }
 
     override fun verifyComponent(identity: AppIdentity): ComponentVerificationResult {
-        if (identity.activityName == null) return ComponentVerificationResult.ACTIVITY_MISSING
-        return try {
-            packageManagerAdapter.verifyPackageExists(identity.packageName)
-            try {
-                packageManagerAdapter.verifyActivityExists(identity)
-            } catch (_: PackageManager.NameNotFoundException) {
-                return ComponentVerificationResult.ACTIVITY_MISSING
-            }
-            if (packageManagerAdapter.canResolveLauncherActivity(identity)) {
-                ComponentVerificationResult.AVAILABLE
-            } else {
-                ComponentVerificationResult.ACTIVITY_MISSING
-            }
-        } catch (_: PackageManager.NameNotFoundException) {
-            ComponentVerificationResult.PACKAGE_MISSING
-        } catch (exception: SecurityException) {
-            Log.w(LOG_TAG, "Component verification blocked by security policy", exception)
-            ComponentVerificationResult.SECURITY_RESTRICTION
-        } catch (exception: Exception) {
-            Log.e(LOG_TAG, "Component verification failed", exception)
-            ComponentVerificationResult.UNKNOWN
-        }
+        return verifyLaunchComponent(identity, packageManagerAdapter)
     }
 
     override fun reportRejectedBounds(snapshot: DisplayWorkAreaSnapshot, bounds: PixelBounds) {
@@ -117,6 +96,34 @@ class ActivitySingleAppLaunchPlatform(
 
     private companion object {
         const val LOG_TAG = "DexSingleAppLaunch"
+    }
+}
+
+internal fun verifyLaunchComponent(
+    identity: AppIdentity,
+    packageManagerAdapter: PackageManagerAdapter,
+): ComponentVerificationResult {
+    if (identity.activityName == null) return ComponentVerificationResult.ACTIVITY_MISSING
+    return try {
+        packageManagerAdapter.verifyPackageExists(identity.packageName)
+        try {
+            packageManagerAdapter.verifyActivityExists(identity)
+        } catch (_: PackageManager.NameNotFoundException) {
+            return ComponentVerificationResult.ACTIVITY_MISSING
+        }
+        if (packageManagerAdapter.canResolveLauncherActivity(identity)) {
+            ComponentVerificationResult.AVAILABLE
+        } else {
+            ComponentVerificationResult.ACTIVITY_MISSING
+        }
+    } catch (_: PackageManager.NameNotFoundException) {
+        ComponentVerificationResult.PACKAGE_MISSING
+    } catch (exception: SecurityException) {
+        Log.w("DexSingleAppLaunch", "Component verification blocked by security policy", exception)
+        ComponentVerificationResult.SECURITY_RESTRICTION
+    } catch (exception: Exception) {
+        Log.e("DexSingleAppLaunch", "Component verification failed", exception)
+        ComponentVerificationResult.UNKNOWN
     }
 }
 

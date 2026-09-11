@@ -1,0 +1,11 @@
+node_modules/
+.dev.vars
+.env
+.env.*
+!.env.example
+.wrangler/
+.wrangler-dry-run/
+coverage/
+dist/
+.local-keys/
+*.log

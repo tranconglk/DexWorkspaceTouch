@@ -9,6 +9,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
 import com.trancong.dexworkspacetouch.navigation.TouchNavigation
 import com.trancong.dexworkspacetouch.ui.theme.DexWorkspaceTouchTheme
@@ -24,9 +26,19 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.trancong.dexworkspacetouch.license.runtime.LicenseRuntimeCoordinator
+import com.trancong.dexworkspacetouch.license.ui.LicenseGate
+import com.trancong.dexworkspacetouch.update.AppUpdateViewModel
 
 class MainActivity : ComponentActivity() {
     private val externalTransferViewModel: ExternalTransferViewModel by viewModels()
+    private val licenseRuntimeCoordinator: LicenseRuntimeCoordinator by viewModels {
+        val app = application as DexWorkspaceTouchApplication
+        LicenseRuntimeCoordinator.factory(app.licenseRepository, app.licenseTimeProvider)
+    }
+    private val appUpdateViewModel: AppUpdateViewModel by viewModels {
+        AppUpdateViewModel.factory((application as DexWorkspaceTouchApplication).appUpdateRepository)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +46,19 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DexWorkspaceTouchTheme {
-                TouchNavigation(activity = this, externalTransferViewModel = externalTransferViewModel)
+                val licenseState by licenseRuntimeCoordinator.state.collectAsState()
+                LicenseGate(
+                    state = licenseState,
+                    onLicenseKeyChanged = licenseRuntimeCoordinator::updateLicenseKey,
+                    onActivate = licenseRuntimeCoordinator::activate,
+                    updateState = appUpdateViewModel.state,
+                    onCheckUpdate = appUpdateViewModel::check,
+                    onOpenUpdateDownload = { url ->
+                        startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url)))
+                    },
+                ) {
+                    TouchNavigation(activity = this, externalTransferViewModel = externalTransferViewModel)
+                }
             }
         }
         handleExternalIntent(intent, allowConsumedReplay = false)
@@ -44,6 +68,11 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         handleExternalIntent(intent, allowConsumedReplay = true)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        licenseRuntimeCoordinator.refreshIfDue()
     }
 
     private fun handleExternalIntent(sourceIntent: Intent, allowConsumedReplay: Boolean) {

@@ -1,0 +1,36 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dexworkspacetouch-license-production",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-22",
+  "workers_dev": true,
+  "vars": {
+    "APP_PACKAGE_NAME": "com.trancong.dexworkspacetouch",
+    "ANDROID_ALLOWED_SIGNING_CERT_SHA256": "19ac0ea99125361b3c2083aaa44c8745ebad9c55fa967642c2b9e5a1086a45e7",
+      "LICENSE_SIGNING_KEY_ID": "license-signing-v1",
+      "LICENSE_TRUSTED_PUBLIC_KEYS_JSON": "[{\"kid\":\"license-signing-v1\",\"algorithm\":\"RS256\",\"spkiBase64\":\"REPLACE_WITH_PRODUCTION_V1_SPKI_BASE64\"}]"
+  },
+  "secrets": {
+    "required": [
+      "LICENSE_KEY_PEPPER",
+      "LICENSE_SIGNING_PRIVATE_KEY",
+      "LICENSE_SIGNING_PUBLIC_KEY_V1",
+      "LICENSE_ADMIN_TOKEN"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "REPLACE_WITH_PRODUCTION_DATABASE_NAME",
+      "database_id": "REPLACE_WITH_PRODUCTION_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "ratelimits": [
+    { "name": "ACTIVATION_LIMITER", "namespace_id": "12001", "simple": { "limit": 10, "period": 60 } },
+    { "name": "PUBLIC_IP_LIMITER", "namespace_id": "12002", "simple": { "limit": 60, "period": 60 } },
+    { "name": "REFRESH_LIMITER", "namespace_id": "12003", "simple": { "limit": 10, "period": 60 } },
+    { "name": "ADMIN_AUTH_LIMITER", "namespace_id": "12004", "simple": { "limit": 120, "period": 60 } },
+    { "name": "ADMIN_UNAUTH_LIMITER", "namespace_id": "12005", "simple": { "limit": 20, "period": 60 } }
+  ]
+}

@@ -1,0 +1,4 @@
+# Local development only. Replace locally in .dev.vars; never commit the actual value.
+LICENSE_KEY_PEPPER=REPLACE_WITH_LOCAL_DEVELOPMENT_SECRET
+LICENSE_SIGNING_PRIVATE_KEY=REPLACE_WITH_LOCAL_PKCS8_PEM
+LICENSE_ADMIN_TOKEN=replace-with-local-admin-token

@@ -7,6 +7,7 @@ Công cụ touch-first để thiết kế và mở workspace nhiều ứng dụn
 - [Vision](docs/VISION.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Architecture Decisions](docs/DECISIONS.md)
+- [Hướng dẫn sử dụng](docs/USER_GUIDE_VI.md)
 
 Build debug:
 
