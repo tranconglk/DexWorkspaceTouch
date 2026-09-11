@@ -2,7 +2,6 @@ package com.trancong.dexworkspacetouch.feature.car.overlay
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
@@ -25,6 +24,7 @@ import android.widget.TextView
 import androidx.compose.ui.graphics.asAndroidBitmap
 import com.trancong.dexworkspacetouch.feature.car.CarWorkspaceShortcutSlot
 import com.trancong.dexworkspacetouch.platform.launch.android.legacyExternalDisplayWorkArea
+import com.trancong.dexworkspacetouch.ui.design.DwtViewColors
 import com.trancong.dexworkspacetouch.workspace.apppicker.infrastructure.PackageManagerAppIconLoader
 import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppIconLoader
 import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppIconState
@@ -91,7 +91,7 @@ class AndroidCarFloatingDockWindowFactory(context: Context) : CarFloatingDockWin
         )
         val view = LinearLayout(windowContext).apply {
             orientation = LinearLayout.VERTICAL
-            setBackgroundColor(Color.rgb(20, 44, 72))
+            setBackgroundColor(DwtViewColors.Background)
             isFocusable = false
         }
         val params = WindowManager.LayoutParams(
@@ -287,7 +287,7 @@ private class AndroidCarFloatingDockWindow(
         maxLines = 1
         ellipsize = android.text.TextUtils.TruncateAt.END
         gravity = Gravity.CENTER
-        setTextColor(Color.WHITE)
+        setTextColor(DwtViewColors.OnSurface)
         isClickable = true
         isFocusable = false
         minHeight = (56 * density).toInt()
@@ -382,18 +382,18 @@ private class CarFloatingWorkspaceCardView(
     iconLoader: AppIconLoader,
 ) : View(context) {
     private val density = resources.displayMetrics.density
-    private val cardPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.rgb(31, 58, 88) }
+    private val cardPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = DwtViewColors.Surface }
     private val cellPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.rgb(47, 79, 111)
+        color = DwtViewColors.SurfaceAlt
         style = Paint.Style.FILL
     }
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.rgb(126, 169, 210)
+        color = DwtViewColors.Outline
         style = Paint.Style.STROKE
         strokeWidth = density
     }
     private val symbolPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.WHITE
+        color = DwtViewColors.OnSurface
         textAlign = Paint.Align.CENTER
         typeface = android.graphics.Typeface.DEFAULT_BOLD
     }

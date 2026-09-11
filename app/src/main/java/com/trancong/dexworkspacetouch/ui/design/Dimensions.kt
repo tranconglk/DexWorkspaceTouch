@@ -3,6 +3,11 @@ package com.trancong.dexworkspacetouch.ui.design
 import androidx.compose.ui.unit.dp
 
 object Dimensions {
+    val GridContentMaxWidth = 1440.dp
+    val FormContentMaxWidth = 960.dp
+    val ActivationContentMaxWidth = 520.dp
+    val BorderDefault = 1.dp
+    val BorderSelected = 2.dp
     const val WorkspaceAspectRatio = 16f / 10f
     const val MinCellRatio = 0.2f
     const val MaxCellRatio = 0.8f

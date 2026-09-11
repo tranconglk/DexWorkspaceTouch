@@ -1,5 +1,6 @@
 package com.trancong.dexworkspacetouch.update
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +18,13 @@ import java.net.URI
 @Composable
 fun AppUpdateScreen(currentVersion: String, state: AppUpdateUiState, onCheck: () -> Unit,
                     onOpenDownload: (String) -> Unit, onBack: () -> Unit) {
-    Column(Modifier.fillMaxSize().padding(Spacing.L), verticalArrangement = Arrangement.spacedBy(Spacing.M)) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(Spacing.L),
+        verticalArrangement = Arrangement.spacedBy(Spacing.M),
+    ) {
         Text("Cập nhật ứng dụng", style = MaterialTheme.typography.headlineMedium)
         Text("Phiên bản hiện tại: $currentVersion")
         AppUpdatePanel(state, onCheck, onOpenDownload)
