@@ -105,7 +105,7 @@ fun WorkspaceLibraryCard(
                 },
             shape = DesignerShapes.Workspace,
             border = BorderStroke(
-                if (selected || multiSelected) Dimensions.SelectionBorderWidth else Dimensions.CellBorderWidth,
+                if (selected || multiSelected) Dimensions.BorderSelected else Dimensions.BorderDefault,
                 if (selected || multiSelected) DesignerColors.Selection else DesignerColors.CellBorder,
             ),
             colors = CardDefaults.cardColors(
@@ -137,7 +137,10 @@ fun WorkspaceLibraryCard(
                     includeAccessibilitySummary = false,
                     appIconLoader = appIconLoader,
                 )
-                Column(verticalArrangement = Arrangement.spacedBy(Spacing.XXS)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
                     Text(
                         metadata.compactText,
                         style = MaterialTheme.typography.bodySmall,
@@ -158,12 +161,12 @@ fun WorkspaceLibraryCard(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(Spacing.S),
                         ) {
-                            OutlinedButton(
+                            Button(
                                 onClick = onOpen,
                                 enabled = openEnabled,
                                 modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton),
                             ) { Text("Mở") }
-                            Button(
+                            OutlinedButton(
                                 onClick = onEdit,
                                 enabled = editEnabled,
                                 modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton),
@@ -232,7 +235,7 @@ fun WorkspaceLibraryCard(
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(top = Spacing.S, end = Spacing.S)
-                .size(TouchTargets.SecondaryButton)
+                .size(TouchTargets.MinimumInteractive)
                 .zIndex(ZLayers.ActionOverlay)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surfaceContainerHigh)

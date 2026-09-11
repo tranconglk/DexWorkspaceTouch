@@ -1,18 +1,19 @@
 package com.trancong.dexworkspacetouch.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -41,7 +42,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.key
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
@@ -49,18 +49,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.Alignment
 import com.trancong.dexworkspacetouch.ui.design.Dimensions
 import com.trancong.dexworkspacetouch.ui.design.DesignerElevation
+import com.trancong.dexworkspacetouch.ui.design.DesignerShapes
 import com.trancong.dexworkspacetouch.ui.design.Spacing
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryItem
 import com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceLibraryCard
 import com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceMultiSelectToolbar
-import com.trancong.dexworkspacetouch.workspace.library.ui.adaptiveGridColumnCount
-import com.trancong.dexworkspacetouch.workspace.library.ui.centeredGridMetrics
 import com.trancong.dexworkspacetouch.workspace.library.ui.workspaceLibraryInteractionPolicy
-import com.trancong.dexworkspacetouch.workspace.library.ui.chunkCenteredRows
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchStatusDialog
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchUiState
 import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryPersistenceError
@@ -545,67 +543,80 @@ fun HomeScreen(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
-        BoxWithConstraints(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
-            val gridAvailableWidth = (maxWidth.value - Spacing.L.value * 2f).coerceAtLeast(0f)
-            val pinnedColumnCount = adaptiveGridColumnCount(
-                availableWidth = gridAvailableWidth,
-                cardMinWidth = Dimensions.WorkspaceCardMinWidth.value,
-                spacing = Spacing.WorkspaceGrid.value,
-            )
-            val pinnedCardWidth = centeredGridMetrics(
-                availableWidth = gridAvailableWidth,
-                cardMinWidth = Dimensions.WorkspaceCardMinWidth.value,
-                spacing = Spacing.WorkspaceGrid.value,
-                columnCount = pinnedColumnCount,
-            ).cardWidth
-            val pinnedRows = chunkCenteredRows(pinnedWorkspaces, pinnedColumnCount)
+        Box(
+            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            contentAlignment = Alignment.TopCenter,
+        ) {
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(Dimensions.WorkspaceCardMinWidth),
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.widthIn(max = Dimensions.GridContentMaxWidth).fillMaxHeight(),
                 contentPadding = PaddingValues(Spacing.L),
                 horizontalArrangement = Arrangement.spacedBy(Spacing.WorkspaceGrid),
                 verticalArrangement = Arrangement.spacedBy(Spacing.WorkspaceGrid),
             ) {
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                Text("DeX Workspace Manager", style = MaterialTheme.typography.headlineMedium)
-            }
-            item(span = { GridItemSpan(maxLineSpan) }) { Text("Workspace Library") }
-            if (!isMultiSelectMode) item(span = { GridItemSpan(maxLineSpan) }) {
-                OutlinedButton(
-                    onClick = onOpenCar,
-                    modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
-                ) { Text("Open Car mode") }
-            }
-            if (!isMultiSelectMode) item(span = { GridItemSpan(maxLineSpan) }) {
-                OutlinedButton(
-                    onClick = onOpenUpdates,
-                    modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
-                ) { Text("Cập nhật ứng dụng") }
-            }
-            if (!isMultiSelectMode) item(span = { GridItemSpan(maxLineSpan) }) {
-                Button(
-                    onClick = { showTemplatePicker = true },
-                    enabled = interactionPolicy.createEnabled,
-                    modifier = Modifier.fillMaxWidth().height(TouchTargets.PrimaryButton),
-                ) { Text("Tạo bố cục mới") }
-            }
-            if (!hasSourceWorkspaces && !isMultiSelectMode) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    OutlinedButton(
-                        onClick = { showFileSheet = true },
-                        modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
-                    ) { Text("Tệp") }
-                }
-            }
-            if (hasSourceWorkspaces) {
-                if (!isMultiSelectMode) item(span = { GridItemSpan(maxLineSpan) }) {
                     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
                         val wide = maxWidth >= Dimensions.WorkspaceLibraryToolbarWideWidth
+                        if (wide) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                WorkspaceLibraryTitle()
+                                if (!isMultiSelectMode) Row(
+                                    horizontalArrangement = Arrangement.spacedBy(Spacing.S),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    OutlinedButton(
+                                        onClick = onOpenCar,
+                                        modifier = Modifier.height(TouchTargets.SecondaryButton),
+                                    ) { Text("Car Mode") }
+                                    OutlinedButton(
+                                        onClick = onOpenUpdates,
+                                        modifier = Modifier.height(TouchTargets.SecondaryButton),
+                                    ) { Text("Cập nhật") }
+                                    TextButton(
+                                        onClick = { dispatchAboutEvent(AboutDialogEvent.Open) },
+                                        modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                                    ) { Text("Giới thiệu") }
+                                }
+                            }
+                        } else {
+                            Column(verticalArrangement = Arrangement.spacedBy(Spacing.M)) {
+                                WorkspaceLibraryTitle()
+                                if (!isMultiSelectMode) Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(Spacing.S),
+                                ) {
+                                    OutlinedButton(onClick = onOpenCar, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Car Mode") }
+                                    OutlinedButton(onClick = onOpenUpdates, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Cập nhật") }
+                                    TextButton(onClick = { dispatchAboutEvent(AboutDialogEvent.Open) }, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Info") }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!isMultiSelectMode) item(span = { GridItemSpan(maxLineSpan) }) {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = DesignerShapes.Workspace,
+                        color = MaterialTheme.colorScheme.surface,
+                    ) {
+                    BoxWithConstraints(modifier = Modifier.fillMaxWidth().padding(Spacing.M)) {
+                        val wide = maxWidth >= Dimensions.WorkspaceLibraryToolbarWideWidth
+                        val create: @Composable (Modifier) -> Unit = { modifier ->
+                            Button(
+                                onClick = { showTemplatePicker = true },
+                                enabled = interactionPolicy.createEnabled,
+                                modifier = modifier.height(TouchTargets.PrimaryButton),
+                            ) { Text("+ Tạo Workspace") }
+                        }
                         val search: @Composable (Modifier) -> Unit = { modifier ->
                             OutlinedTextField(
                                 value = searchQuery,
                                 onValueChange = onSearchQueryChanged,
-                                label = { Text("Tìm workspace") },
+                                placeholder = { Text("Tìm workspace") },
                                 singleLine = true,
                                 trailingIcon = if (searchQuery.isNotEmpty()) {
                                     {
@@ -640,8 +651,9 @@ fun HomeScreen(
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(Spacing.M),
-                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                                verticalAlignment = Alignment.CenterVertically,
                             ) {
+                                create(Modifier)
                                 search(Modifier.weight(1f))
                                 sort(Modifier)
                                 files(Modifier)
@@ -651,14 +663,17 @@ fun HomeScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalArrangement = Arrangement.spacedBy(Spacing.S),
                             ) {
+                                create(Modifier.widthIn(min = Dimensions.WorkspaceSortButtonMinWidth))
                                 search(Modifier.fillMaxWidth())
-                                sort(Modifier.fillMaxWidth())
-                                files(Modifier.fillMaxWidth())
+                                Row(horizontalArrangement = Arrangement.spacedBy(Spacing.S)) {
+                                    sort(Modifier.weight(1f))
+                                    files(Modifier.weight(1f))
+                                }
                             }
                         }
                     }
+                    }
                 }
-            }
             if (!libraryIsLoading && hasCorruptedWorkspaces) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     Text("Không thể đọc một số workspace.")
@@ -681,12 +696,17 @@ fun HomeScreen(
                 }
             } else if (!hasSourceWorkspaces) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    Text("Chưa có workspace.")
+                    WorkspaceLibraryEmptyState(
+                        title = "Chưa có workspace",
+                        supportingText = "Tạo workspace đầu tiên để sắp xếp ứng dụng trên màn hình DeX.",
+                    )
                 }
             } else if (workspaces.isEmpty()) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.S)) {
-                        Text("Không tìm thấy workspace phù hợp.")
+                    WorkspaceLibraryEmptyState(
+                        title = "Không tìm thấy workspace",
+                        supportingText = "Thử từ khóa khác hoặc xóa bộ lọc tìm kiếm.",
+                    ) {
                         if (searchQuery.trim().isNotEmpty()) {
                             OutlinedButton(
                                 onClick = onClearSearch,
@@ -705,52 +725,34 @@ fun HomeScreen(
                         )
                     }
                 }
-                items(
-                    items = pinnedRows,
-                    key = { row -> "pinned-row-${row.joinToString(separator = ":") { it.id }}" },
-                    span = { GridItemSpan(maxLineSpan) },
-                ) { row ->
-                    Row(
+                items(pinnedWorkspaces, key = { "pinned-${it.id}" }) { workspace ->
+                    WorkspaceLibraryCard(
+                        workspace = workspace,
+                        selected = workspace.id == selectedWorkspaceId,
+                        onSelect = { onWorkspaceSelected(workspace.id) },
+                        onOpen = { onLaunchWorkspace(workspace) },
+                        onEdit = { onEditWorkspace(workspace.id) },
+                        onDuplicate = { onDuplicateWorkspace(workspace.id) },
+                        onPinToggle = { onSetWorkspacePinned(workspace.id, !workspace.isPinned) },
+                        onRename = { showRename(workspace) },
+                        onDelete = { deleteWorkspaceId = workspace.id },
+                        onManage = { managedWorkspaceId = workspace.id },
+                        canDelete = editingWorkspaceId != workspace.id && interactionPolicy.managementEnabled,
+                        openEnabled = launchState !is WorkspaceLaunchUiState.Checking && launchState !is WorkspaceLaunchUiState.Launching,
+                        editEnabled = interactionPolicy.editEnabled,
+                        duplicateEnabled = !libraryWriteInProgress,
+                        pinEnabled = !libraryWriteInProgress,
+                        managementEnabled = interactionPolicy.managementEnabled,
+                        exportEnabled = interactionPolicy.exportEnabled,
+                        onExport = { exportWorkspaceId = workspace.id },
+                        appIconLoader = appIconLoader,
+                        nowEpochMillis = nowEpochMillis,
+                        multiSelectMode = isMultiSelectMode,
+                        multiSelected = workspace.id in selectedWorkspaceIds,
+                        onEnterMultiSelect = { onEnterMultiSelect(workspace.id) },
+                        onToggleMultiSelect = { onToggleMultiSelect(workspace.id) },
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(
-                            Spacing.WorkspaceGrid,
-                            androidx.compose.ui.Alignment.CenterHorizontally,
-                        ),
-                    ) {
-                        row.forEach { workspace ->
-                            key(workspace.id) {
-                                WorkspaceLibraryCard(
-                                                    workspace = workspace,
-                                                    selected = workspace.id == selectedWorkspaceId,
-                                                    onSelect = { onWorkspaceSelected(workspace.id) },
-                                                    onOpen = { onLaunchWorkspace(workspace) },
-                                                    onEdit = { onEditWorkspace(workspace.id) },
-                                                    onDuplicate = { onDuplicateWorkspace(workspace.id) },
-                                                    onPinToggle = { onSetWorkspacePinned(workspace.id, !workspace.isPinned) },
-                                                    onRename = { showRename(workspace) },
-                                                    onDelete = { deleteWorkspaceId = workspace.id },
-                                                    onManage = { managedWorkspaceId = workspace.id },
-                                                    canDelete = editingWorkspaceId != workspace.id &&
-                                                        interactionPolicy.managementEnabled,
-                                                    openEnabled = launchState !is WorkspaceLaunchUiState.Checking &&
-                                                        launchState !is WorkspaceLaunchUiState.Launching,
-                                                    editEnabled = interactionPolicy.editEnabled,
-                                                    duplicateEnabled = !libraryWriteInProgress,
-                                                    pinEnabled = !libraryWriteInProgress,
-                                                    managementEnabled = interactionPolicy.managementEnabled,
-                                                    exportEnabled = interactionPolicy.exportEnabled,
-                                                    onExport = { exportWorkspaceId = workspace.id },
-                                                    appIconLoader = appIconLoader,
-                                                    nowEpochMillis = nowEpochMillis,
-                                                    multiSelectMode = isMultiSelectMode,
-                                                    multiSelected = workspace.id in selectedWorkspaceIds,
-                                                    onEnterMultiSelect = { onEnterMultiSelect(workspace.id) },
-                                                    onToggleMultiSelect = { onToggleMultiSelect(workspace.id) },
-                                    modifier = Modifier.width(pinnedCardWidth.dp),
-                                )
-                            }
-                        }
-                    }
+                    )
                 }
                 if (regularWorkspaces.isNotEmpty()) {
                     item(span = { GridItemSpan(maxLineSpan) }) {
@@ -789,7 +791,46 @@ fun HomeScreen(
                     )
                 }
             }
-            }
+        }
+    }
+}
+}
+
+@Composable
+private fun WorkspaceLibraryTitle() {
+    Column(verticalArrangement = Arrangement.spacedBy(Spacing.XXS)) {
+        Text("Workspace Library", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            "Thiết kế và mở nhanh bố cục ứng dụng trên Samsung DeX",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun WorkspaceLibraryEmptyState(
+    title: String,
+    supportingText: String,
+    action: @Composable () -> Unit = {},
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = DesignerShapes.Workspace,
+        color = MaterialTheme.colorScheme.surface,
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(Spacing.XL),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(Spacing.S),
+        ) {
+            Text(title, style = MaterialTheme.typography.titleLarge)
+            Text(
+                supportingText,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            action()
         }
     }
 }

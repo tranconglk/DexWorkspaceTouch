@@ -44,7 +44,7 @@ object Dimensions {
     val TemplateCardTitleMinHeight = 48.dp
     val TemplateGridMediumBreakpoint = 620.dp
     val TemplateGridLargeBreakpoint = 1000.dp
-    val WorkspaceCardMinHeight = 336.dp
+    val WorkspaceCardMinHeight = 312.dp
     val WorkspaceCardWideActionsWidth = 420.dp
     val WorkspaceLibraryToolbarWideWidth = 720.dp
     val WorkspaceDesignerToolbarWideWidth = 1100.dp
