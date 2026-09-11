@@ -37,6 +37,7 @@ import com.trancong.dexworkspacetouch.workspace.apppicker.infrastructure.Android
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.DefaultInstalledAppCatalog
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.toIdentity
 import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppPickerViewModel
+import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppIconLoader
 import com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryViewModel
 import com.trancong.dexworkspacetouch.platform.launch.android.AndroidWorkspaceLaunchRuntime
 import com.trancong.dexworkspacetouch.workspace.launcher.WorkspaceLaunchRequestFactory
@@ -73,6 +74,7 @@ import com.trancong.dexworkspacetouch.feature.car.CarScreen
 import com.trancong.dexworkspacetouch.feature.car.CarWorkspaceOption
 import com.trancong.dexworkspacetouch.feature.car.CarWorkspaceShortcutSlot
 import com.trancong.dexworkspacetouch.feature.car.resolveCarWorkspaceShortcutRows
+import com.trancong.dexworkspacetouch.feature.car.toCarWorkspacePreview
 import com.trancong.dexworkspacetouch.feature.car.overlay.createCarOverlayPermissionIntent
 import com.trancong.dexworkspacetouch.feature.car.overlay.createActivityCarOverlayHost
 import com.trancong.dexworkspacetouch.feature.car.CarActionEngine
@@ -467,6 +469,7 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
                 repository = application.workspaceRepository,
                 requestFactory = workspaceLaunchRequestFactory,
                 workspaceRuntime = launchRuntime,
+                appIconLoader = application.appIconLoader,
                 onBack = navController::navigateUp,
             )
         }
@@ -543,6 +546,7 @@ private fun CarRoute(
     repository: WorkspaceRepository,
     requestFactory: WorkspaceLaunchRequestFactory,
     workspaceRuntime: WorkspaceLaunchRuntime,
+    appIconLoader: AppIconLoader,
     onBack: () -> Unit,
 ) {
     val floatingDockCoordinator = remember(activity.application) {
@@ -565,6 +569,7 @@ private fun CarRoute(
                 id = workspace.id,
                 name = workspace.name,
                 appCount = workspace.canvas.cells.count { it.app != null },
+                preview = workspace.toCarWorkspacePreview(),
             )
         }
     }
@@ -659,6 +664,7 @@ private fun CarRoute(
         },
         workspaceWorkflowState = workflowState,
         workspaceActionsEnabled = !carWorkflowRunning,
+        appIconLoader = appIconLoader,
     )
 }
 

@@ -30,6 +30,7 @@ import androidx.compose.ui.semantics.semantics
 import com.trancong.dexworkspacetouch.ui.design.Spacing
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingDockControlState
+import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppIconLoader
 
 @Composable
 fun CarScreen(
@@ -55,6 +56,7 @@ fun CarScreen(
     workspaceWorkflowState: CarWorkflowExecutionState<CarWorkspaceShortcutSlot> =
         CarWorkflowExecutionState.Idle,
     workspaceActionsEnabled: Boolean = true,
+    appIconLoader: AppIconLoader? = null,
 ) {
     var selectingShortcutSlot by rememberSaveable {
         mutableStateOf<CarWorkspaceShortcutSlot?>(null)
@@ -91,44 +93,26 @@ fun CarScreen(
                     workspaceWorkflowState !is CarWorkflowExecutionState.Running,
                 onRunSlot = onWorkspaceShortcut,
                 onConfigureSlot = { selectingShortcutSlot = it },
+                appIconLoader = appIconLoader,
             )
-            Column(verticalArrangement = Arrangement.spacedBy(Spacing.S)) {
-                Text(
-                    text = "Floating Dock",
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-                val (dockStatus, dockActionLabel) = when (floatingDockState) {
-                    CarFloatingDockControlState.Hidden -> "Off" to "Show"
-                    is CarFloatingDockControlState.Visible -> "On" to "Hide"
-                    CarFloatingDockControlState.PermissionRequired -> "Permission required" to "Allow"
-                    CarFloatingDockControlState.DisplayUnavailable -> "DeX display not available" to "Show"
-                    is CarFloatingDockControlState.Error -> "Unavailable" to "Show"
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.M),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = dockStatus,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                    OutlinedButton(
-                        onClick = when (floatingDockState) {
-                            is CarFloatingDockControlState.Visible -> onHideFloatingDock
-                            CarFloatingDockControlState.PermissionRequired -> onAllowFloatingDock
-                            else -> onShowFloatingDock
-                        },
-                        modifier = Modifier
-                            .heightIn(min = TouchTargets.SecondaryButton)
-                            .semantics {
-                                contentDescription = "$dockActionLabel Floating Dock"
-                            },
-                    ) {
-                        Text(dockActionLabel)
-                    }
-                }
+            val (dockStatus, dockActionLabel) = when (floatingDockState) {
+                CarFloatingDockControlState.Hidden -> "Off" to "Show"
+                is CarFloatingDockControlState.Visible -> "On" to "Hide"
+                CarFloatingDockControlState.PermissionRequired -> "Permission required" to "Allow"
+                CarFloatingDockControlState.DisplayUnavailable -> "DeX display not available" to "Show"
+                is CarFloatingDockControlState.Error -> "Unavailable" to "Show"
             }
+            CarCompactControlRow(
+                label = "Floating Dock",
+                status = dockStatus,
+                actionLabel = dockActionLabel,
+                actionDescription = "$dockActionLabel Floating Dock",
+                onAction = when (floatingDockState) {
+                    is CarFloatingDockControlState.Visible -> onHideFloatingDock
+                    CarFloatingDockControlState.PermissionRequired -> onAllowFloatingDock
+                    else -> onShowFloatingDock
+                },
+            )
             if (floatingDockState is CarFloatingDockControlState.Error) {
                 Text(
                     text = floatingDockState.message,
@@ -136,37 +120,21 @@ fun CarScreen(
                     color = MaterialTheme.colorScheme.error,
                 )
             }
-            Column(verticalArrangement = Arrangement.spacedBy(Spacing.S)) {
-                Text(
-                    text = "Desktop shortcut",
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.M),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = "Car Dock",
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.weight(1f),
-                    )
-                    OutlinedButton(
-                        onClick = onAddDesktopShortcut,
-                        enabled = desktopShortcutSupported,
-                        modifier = Modifier.heightIn(min = TouchTargets.PrimaryButton),
-                    ) {
-                        Text("Add")
-                    }
-                }
-                val shortcutStatus = desktopShortcutStatus ?: if (!desktopShortcutSupported) {
-                    "Launcher does not support pinned shortcuts"
-                } else {
-                    null
-                }
-                shortcutStatus?.let { status ->
-                    Text(status, style = MaterialTheme.typography.bodyMedium)
-                }
+            CarCompactControlRow(
+                label = "Desktop shortcut",
+                status = "Car Dock",
+                actionLabel = "Add",
+                actionDescription = "Add Car Dock desktop shortcut",
+                actionEnabled = desktopShortcutSupported,
+                onAction = onAddDesktopShortcut,
+            )
+            val shortcutStatus = desktopShortcutStatus ?: if (!desktopShortcutSupported) {
+                "Launcher does not support pinned shortcuts"
+            } else {
+                null
+            }
+            shortcutStatus?.let { status ->
+                Text(status, style = MaterialTheme.typography.bodyMedium)
             }
             CarVisibleShortcutCountSelector(
                 visibleSlotCount = visibleSlotCount,
@@ -229,13 +197,21 @@ private fun CarVisibleShortcutCountSelector(
     visibleSlotCount: Int,
     onVisibleSlotCountChanged: (Int) -> Unit,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(Spacing.S)) {
-        Text("Visible shortcuts", style = MaterialTheme.typography.titleMedium)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.M),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            "Visible shortcuts",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.weight(1f),
+        )
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+                .weight(2f)
                 .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(Spacing.S),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.S, Alignment.End),
         ) {
             (CarWorkspaceShortcutCapacity.MinimumVisible..CarWorkspaceShortcutCapacity.Maximum)
                 .forEach { count ->
@@ -255,6 +231,36 @@ private fun CarVisibleShortcutCountSelector(
                         ) { Text(count.toString()) }
                     }
                 }
+        }
+    }
+}
+
+@Composable
+private fun CarCompactControlRow(
+    label: String,
+    status: String,
+    actionLabel: String,
+    actionDescription: String,
+    onAction: () -> Unit,
+    actionEnabled: Boolean = true,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.M),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(label, style = MaterialTheme.typography.titleMedium)
+            Text(status, style = MaterialTheme.typography.bodyMedium)
+        }
+        OutlinedButton(
+            onClick = onAction,
+            enabled = actionEnabled,
+            modifier = Modifier
+                .heightIn(min = TouchTargets.SecondaryButton)
+                .semantics { contentDescription = actionDescription },
+        ) {
+            Text(actionLabel)
         }
     }
 }

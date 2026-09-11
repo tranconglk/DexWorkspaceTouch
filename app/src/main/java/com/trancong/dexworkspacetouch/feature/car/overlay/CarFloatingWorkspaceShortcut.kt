@@ -2,7 +2,10 @@ package com.trancong.dexworkspacetouch.feature.car.overlay
 
 import com.trancong.dexworkspacetouch.feature.car.CarWorkspaceShortcutSlot
 import com.trancong.dexworkspacetouch.feature.car.CarWorkspaceShortcuts
-import com.trancong.dexworkspacetouch.workspace.apppicker.model.AppIdentity
+import com.trancong.dexworkspacetouch.feature.car.CarWorkspaceNormalizedBounds
+import com.trancong.dexworkspacetouch.feature.car.CarWorkspacePreview
+import com.trancong.dexworkspacetouch.feature.car.CarWorkspacePreviewCell
+import com.trancong.dexworkspacetouch.feature.car.toCarWorkspacePreview
 import com.trancong.dexworkspacetouch.workspace.persistence.domain.Workspace
 
 sealed interface CarFloatingWorkspaceShortcutState {
@@ -26,64 +29,11 @@ data class CarFloatingWorkspaceShortcut(
     }
 }
 
-class CarFloatingWorkspacePreview(cells: List<CarFloatingWorkspacePreviewCell>) {
-    val cells: List<CarFloatingWorkspacePreviewCell> = java.util.Collections.unmodifiableList(cells.toList())
+typealias CarFloatingWorkspacePreview = CarWorkspacePreview
+typealias CarFloatingWorkspacePreviewCell = CarWorkspacePreviewCell
+typealias CarFloatingNormalizedBounds = CarWorkspaceNormalizedBounds
 
-    override fun equals(other: Any?): Boolean =
-        other is CarFloatingWorkspacePreview && cells == other.cells
-
-    override fun hashCode(): Int = cells.hashCode()
-
-    override fun toString(): String = "CarFloatingWorkspacePreview(cells=$cells)"
-}
-
-data class CarFloatingWorkspacePreviewCell(
-    val bounds: CarFloatingNormalizedBounds,
-    val appIdentity: AppIdentity?,
-)
-
-class CarFloatingNormalizedBounds private constructor(
-    val left: Float,
-    val top: Float,
-    val right: Float,
-    val bottom: Float,
-) {
-    override fun equals(other: Any?): Boolean = other is CarFloatingNormalizedBounds &&
-        left == other.left && top == other.top && right == other.right && bottom == other.bottom
-
-    override fun hashCode(): Int = arrayOf(left, top, right, bottom).contentHashCode()
-
-    override fun toString(): String =
-        "CarFloatingNormalizedBounds(left=$left, top=$top, right=$right, bottom=$bottom)"
-
-    companion object {
-        fun normalized(left: Float, top: Float, right: Float, bottom: Float): CarFloatingNormalizedBounds? {
-            if (!left.isFinite() || !top.isFinite() || !right.isFinite() || !bottom.isFinite()) return null
-            val clampedLeft = left.coerceIn(0f, 1f)
-            val clampedTop = top.coerceIn(0f, 1f)
-            val clampedRight = right.coerceIn(0f, 1f)
-            val clampedBottom = bottom.coerceIn(0f, 1f)
-            if (clampedRight <= clampedLeft || clampedBottom <= clampedTop) return null
-            return CarFloatingNormalizedBounds(clampedLeft, clampedTop, clampedRight, clampedBottom)
-        }
-    }
-}
-
-fun Workspace.toCarFloatingPreview(): CarFloatingWorkspacePreview = CarFloatingWorkspacePreview(
-    cells = canvas.cells.mapNotNull { cell ->
-        CarFloatingNormalizedBounds.normalized(
-            cell.bounds.left,
-            cell.bounds.top,
-            cell.bounds.right,
-            cell.bounds.bottom,
-        )?.let { bounds ->
-            CarFloatingWorkspacePreviewCell(
-                bounds = bounds,
-                appIdentity = cell.app?.let { AppIdentity(it.packageName, it.activityName) },
-            )
-        }
-    }.toList(),
-)
+fun Workspace.toCarFloatingPreview(): CarFloatingWorkspacePreview = toCarWorkspacePreview()
 
 object CarFloatingDockGrid {
     const val Columns = 2

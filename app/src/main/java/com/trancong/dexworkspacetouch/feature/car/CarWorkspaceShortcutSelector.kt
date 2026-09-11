@@ -23,6 +23,7 @@ data class CarWorkspaceOption(
     val id: String,
     val name: String,
     val appCount: Int,
+    val preview: CarWorkspacePreview? = null,
 )
 
 data class CarWorkspaceShortcutRow(
@@ -31,7 +32,18 @@ data class CarWorkspaceShortcutRow(
     val statusText: String,
     val appCount: Int? = null,
     val status: CarWorkspaceShortcutStatus,
+    val preview: CarWorkspacePreview? = null,
 )
+
+val CarWorkspaceShortcutRow.dashboardTitle: String
+    get() = statusText
+
+val CarWorkspaceShortcutRow.dashboardAccessibilityLabel: String
+    get() = when (status) {
+        CarWorkspaceShortcutStatus.Configured -> "Open workspace $statusText"
+        CarWorkspaceShortcutStatus.Unconfigured -> "${slot.displayLabel}, not configured"
+        CarWorkspaceShortcutStatus.Unavailable -> "${slot.displayLabel}, workspace unavailable"
+    }
 
 enum class CarWorkspaceShortcutStatus { Configured, Unconfigured, Unavailable }
 
@@ -57,6 +69,7 @@ fun resolveCarWorkspaceShortcutRows(
                 else -> "Workspace unavailable"
             },
             appCount = workspaceId?.let(byId::get)?.appCount,
+            preview = workspaceId?.let(byId::get)?.preview,
             status = when {
                 workspaceId == null -> CarWorkspaceShortcutStatus.Unconfigured
                 byId[workspaceId] != null -> CarWorkspaceShortcutStatus.Configured
@@ -97,59 +110,6 @@ fun CarWorkspaceShortcutSection(
                         overflow = TextOverflow.Ellipsis,
                     )
                     Text(">")
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun CarWorkspaceDashboard(
-    rows: List<CarWorkspaceShortcutRow>,
-    enabled: Boolean,
-    onRunSlot: (CarWorkspaceShortcutSlot) -> Unit,
-    onConfigureSlot: (CarWorkspaceShortcutSlot) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Spacing.M),
-    ) {
-        Text("Workspace dashboard", style = MaterialTheme.typography.titleLarge)
-        rows.chunked(2).forEach { rowItems ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.M),
-            ) {
-                rowItems.forEach { row ->
-                    OutlinedButton(
-                        onClick = {
-                            if (row.status == CarWorkspaceShortcutStatus.Configured) {
-                                onRunSlot(row.slot)
-                            } else {
-                                onConfigureSlot(row.slot)
-                            }
-                        },
-                        enabled = enabled,
-                        modifier = Modifier
-                            .weight(1f)
-                            .heightIn(min = TouchTargets.PrimaryButton),
-                    ) {
-                        Column(horizontalAlignment = Alignment.Start) {
-                            Text(row.slot.displayLabel, style = MaterialTheme.typography.labelLarge)
-                            Text(
-                                row.statusText,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                            row.appCount?.let { count ->
-                                Text("$count apps", style = MaterialTheme.typography.bodySmall)
-                            }
-                        }
-                    }
-                }
-                if (rowItems.size == 1) {
-                    androidx.compose.foundation.layout.Spacer(Modifier.weight(1f))
                 }
             }
         }
