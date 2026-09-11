@@ -6,6 +6,10 @@ the production licensing Worker, the update-delivery Worker, or the cryptographi
 ## Components
 
 - Worker: `dexworkspacetouch-operator`
+- Operator URL: `https://dexworkspacetouch-operator.dex-backend.workers.dev`
+- Access team domain: `dexworkspacetouch.cloudflareaccess.com`
+- Access application AUD: `58fb2050630759d33327cb4a5eb7119c8049fa4b404155de3cbf5692d76c1105`
+- Operator allowlist: `tranconglk@gmail.com`
 - Operational D1: `dexworkspacetouch-fulfillment`
 - UI/API: mobile-first, same-origin, self-contained Worker response
 - Authentication: Cloudflare Access plus server-side Access JWT validation and explicit email allowlist
@@ -20,7 +24,13 @@ browser memory for copy, Web Share, or download.
 Existing local `fulfillment-records/` remain untouched and are not uploaded. The existing
 `license-backend/scripts/fulfillment.mjs` and `admin.mjs` remain emergency/desktop tooling.
 
-Deployment and production smoke instructions are in `operator-portal/README.md`. The Access
-application, allowed identity, D1 database ID, Worker secret, deployment, and production smoke are
-operator-controlled production steps and cannot be considered complete until configured in the
-Cloudflare account.
+The portal uses Cloudflare service bindings for same-account Worker calls: `RELEASES` targets
+`dexworkspacetouch-updates`, and `LICENSE_ADMIN` targets `dexworkspacetouch-license-production`.
+This avoids same-account `workers.dev` subrequest failures while retaining the existing manifest and
+Admin API implementations.
+
+Deployment, fulfillment, recovery, security, and production smoke instructions are maintained in
+`operator-portal/README.md`. The Access AUD, team domain, Worker URL, allowlisted email, Worker names,
+and D1 identifier are non-secret operational identifiers. Access JWTs/cookies, Worker admin tokens,
+plaintext customer License Keys, private signing keys, and Cloudflare credentials must never be
+committed or copied into the runbook.
