@@ -50,7 +50,8 @@ internal object CarFloatingDockVisual {
     const val CollapsedSizeDp = 72
     const val ExpandedWidthDp = 360
     const val OpenDescription = "Open Car Dock"
-    const val CollapseDescription = "Car Dock. Collapse Floating Dock"
+    const val CollapseDescription = "Collapse Floating Dock"
+    const val HideDescription = "Hide Floating Dock"
 }
 
 fun resolveFloatingWorkspaceShortcuts(

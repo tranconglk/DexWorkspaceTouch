@@ -26,6 +26,7 @@ interface CarFloatingDockWindow {
     fun performHandleClickForTest(): Boolean = false
     fun performShortcutClickForTest(slot: CarWorkspaceShortcutSlot): Boolean = false
     fun performCollapseClickForTest(): Boolean = false
+    fun performHideClickForTest(): Boolean = false
     fun positionForTest(): CarFloatingDockPosition? = null
 }
 
@@ -50,6 +51,7 @@ fun interface CarFloatingDockWindowFactory {
         host: CarOverlayHost,
         onShortcut: (CarWorkspaceShortcutSlot) -> Unit,
         onDockStateChanged: () -> Unit,
+        onHideRequested: () -> Unit,
     ): CarFloatingDockWindow?
 }
 
@@ -127,7 +129,12 @@ class CarOverlaySession(
         val suppliedHost = host
             .takeIf { it.display.id != 0 }
             ?: return CarOverlayShowResult.DisplayUnavailable
-        val createdWindow = windowFactory.create(suppliedHost, onShortcut, ::publishState)
+        val createdWindow = windowFactory.create(
+            suppliedHost,
+            onShortcut,
+            ::publishState,
+            ::hide,
+        )
             ?: return CarOverlayShowResult.WindowUnavailable
 
         window = createdWindow
@@ -176,6 +183,9 @@ class CarOverlaySession(
 
     @Synchronized
     internal fun performCollapseClickForTest(): Boolean = window?.performCollapseClickForTest() == true
+
+    @Synchronized
+    internal fun performHideClickForTest(): Boolean = window?.performHideClickForTest() == true
 
     @Synchronized
     internal fun positionForTest(): CarFloatingDockPosition? = window?.positionForTest()

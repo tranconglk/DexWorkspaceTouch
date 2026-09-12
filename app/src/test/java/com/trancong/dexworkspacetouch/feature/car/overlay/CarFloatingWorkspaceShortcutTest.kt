@@ -72,9 +72,10 @@ class CarFloatingWorkspaceShortcutTest {
         assertEquals(360, CarFloatingDockVisual.ExpandedWidthDp)
         assertEquals("Open Car Dock", CarFloatingDockVisual.OpenDescription)
         assertEquals(
-            "Car Dock. Collapse Floating Dock",
+            "Collapse Floating Dock",
             CarFloatingDockVisual.CollapseDescription,
         )
+        assertEquals("Hide Floating Dock", CarFloatingDockVisual.HideDescription)
     }
 
     @Test fun visibleItemsAreAlwaysTheStableLeadingSlots() {

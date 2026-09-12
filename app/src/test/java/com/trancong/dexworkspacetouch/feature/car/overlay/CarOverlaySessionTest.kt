@@ -172,6 +172,25 @@ class CarOverlaySessionTest {
         )
     }
 
+    @Test
+    fun expandedHideRequestUsesSessionHidePath_andCanReopen() {
+        val fixture = Fixture()
+        fixture.session.show(fixture.host) {}
+        fixture.session.performHandleClickForTest()
+
+        assertTrue(fixture.session.performHideClickForTest())
+        assertEquals(CarOverlaySessionState.NotShown, fixture.session.state)
+        assertEquals(1, fixture.factory.windows.single().removes)
+        assertEquals(1, fixture.events.unregisters)
+
+        assertEquals(CarOverlayShowResult.Shown(21), fixture.session.show(fixture.host) {})
+        assertEquals(2, fixture.factory.windows.size)
+        assertEquals(
+            CarOverlaySessionState.Shown(21, CarFloatingDockState.Collapsed),
+            fixture.session.state,
+        )
+    }
+
     private class Fixture(
         permission: Boolean = true,
         hostDisplayId: Int = 21,
@@ -201,10 +220,11 @@ class CarOverlaySessionTest {
             host: CarOverlayHost,
             onShortcut: (CarWorkspaceShortcutSlot) -> Unit,
             onDockStateChanged: () -> Unit,
+            onHideRequested: () -> Unit,
         ): CarFloatingDockWindow? {
             if (rejectCreate) return null
             createdDisplays += host.display.id
-            return FakeWindow(host.display, onShortcut, onDockStateChanged).also {
+            return FakeWindow(host.display, onShortcut, onDockStateChanged, onHideRequested).also {
                 windows += it
             }
         }
@@ -214,6 +234,7 @@ class CarOverlaySessionTest {
         override val display: CarOverlayDisplay,
         private val onAction: (CarWorkspaceShortcutSlot) -> Unit,
         private val onDockStateChanged: () -> Unit,
+        private val onHideRequested: () -> Unit,
     ) : CarFloatingDockWindow {
         var removes = 0
         override var dockState = CarFloatingDockState.Collapsed
@@ -235,13 +256,21 @@ class CarOverlaySessionTest {
             collapse()
             return true
         }
+        override fun performHideClickForTest(): Boolean {
+            onHideRequested()
+            return true
+        }
     }
 
     private class FakeEvents : CarOverlayDisplayEvents {
         private var callback: ((Int) -> Unit)? = null
+        var unregisters = 0
         override fun register(onDisplayRemoved: (Int) -> Unit): CarOverlayDisplayRegistration {
             callback = onDisplayRemoved
-            return CarOverlayDisplayRegistration { callback = null }
+            return CarOverlayDisplayRegistration {
+                unregisters++
+                callback = null
+            }
         }
         fun remove(displayId: Int) = requireNotNull(callback).invoke(displayId)
     }

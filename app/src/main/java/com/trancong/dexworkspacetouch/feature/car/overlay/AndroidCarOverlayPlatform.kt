@@ -71,6 +71,7 @@ class AndroidCarFloatingDockWindowFactory(context: Context) : CarFloatingDockWin
         host: CarOverlayHost,
         onShortcut: (CarWorkspaceShortcutSlot) -> Unit,
         onDockStateChanged: () -> Unit,
+        onHideRequested: () -> Unit,
     ): CarFloatingDockWindow? {
         val androidDisplay = (host as? AndroidCarOverlayHost)?.androidDisplay
             ?.takeIf { it.displayId != Display.DEFAULT_DISPLAY && it.state == Display.STATE_ON }
@@ -119,6 +120,7 @@ class AndroidCarFloatingDockWindowFactory(context: Context) : CarFloatingDockWin
                 initialPosition = initialPosition,
                 onShortcut = onShortcut,
                 onDockStateChanged = onDockStateChanged,
+                onHideRequested = onHideRequested,
                 appIconLoader = appIconLoader,
             ).also(CarFloatingDockWindow::collapse)
         } catch (_: SecurityException) {
@@ -167,12 +169,14 @@ private class AndroidCarFloatingDockWindow(
     initialPosition: CarFloatingDockPosition,
     private val onShortcut: (CarWorkspaceShortcutSlot) -> Unit,
     private val onDockStateChanged: () -> Unit,
+    private val onHideRequested: () -> Unit,
     private val appIconLoader: AppIconLoader,
 ) : CarFloatingDockWindow {
     private val removed = AtomicBoolean(false)
     private val shortcutViews = mutableMapOf<CarWorkspaceShortcutSlot, View>()
     private var handleView: View? = null
     private var collapseView: View? = null
+    private var hideView: View? = null
     private var position = initialPosition
     private var shortcuts: List<CarFloatingWorkspaceShortcut> = emptyList()
     private var actionsEnabled = true
@@ -240,6 +244,7 @@ private class AndroidCarFloatingDockWindow(
         root.removeAllViews()
         shortcutViews.clear()
         collapseView = null
+        hideView = null
         root.background = dockBackground(expanded = false)
         root.addView(dragHandle().also { handleView = it })
         val size = (CarFloatingDockVisual.CollapsedSizeDp * density).toInt()
@@ -268,10 +273,7 @@ private class AndroidCarFloatingDockWindow(
         orientation = LinearLayout.HORIZONTAL
         gravity = Gravity.CENTER_VERTICAL
         setPadding((16 * density).toInt(), 0, (8 * density).toInt(), 0)
-        contentDescription = CarFloatingDockVisual.CollapseDescription
-        isClickable = true
-        isFocusable = false
-        setOnClickListener { collapse() }
+        contentDescription = "Car Dock"
         addView(CarDockBrandIconView(context), LinearLayout.LayoutParams(
             (32 * density).toInt(), (32 * density).toInt(),
         ))
@@ -284,15 +286,34 @@ private class AndroidCarFloatingDockWindow(
         }, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f).apply {
             marginStart = (10 * density).toInt()
         })
-        addView(TextView(context).apply {
-            text = "‹"
-            setTextColor(DwtViewColors.Primary)
-            textSize = 28f
-            gravity = Gravity.CENTER
-        }, LinearLayout.LayoutParams((48 * density).toInt(), LinearLayout.LayoutParams.MATCH_PARENT))
+        addView(headerAction("‹", CarFloatingDockVisual.CollapseDescription, ::collapse).also {
+            collapseView = it
+        })
+        addView(headerAction("×", CarFloatingDockVisual.HideDescription, onHideRequested).also {
+            hideView = it
+        })
         layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             (CarFloatingDockGrid.HeaderHeightDp * density).toInt(),
+        )
+    }
+
+    private fun headerAction(
+        symbol: String,
+        description: String,
+        action: () -> Unit,
+    ): TextView = TextView(root.context).apply {
+        text = symbol
+        contentDescription = description
+        setTextColor(DwtViewColors.Muted)
+        textSize = 28f
+        gravity = Gravity.CENTER
+        isClickable = true
+        isFocusable = true
+        setOnClickListener { action() }
+        layoutParams = LinearLayout.LayoutParams(
+            (48 * density).toInt(),
+            LinearLayout.LayoutParams.MATCH_PARENT,
         )
     }
 
@@ -389,6 +410,8 @@ private class AndroidCarFloatingDockWindow(
         !removed.get() && shortcutViews[slot]?.performClick() == true
     override fun performCollapseClickForTest(): Boolean =
         !removed.get() && collapseView?.performClick() == true
+    override fun performHideClickForTest(): Boolean =
+        !removed.get() && hideView?.performClick() == true
     override fun positionForTest(): CarFloatingDockPosition = position
 }
 
