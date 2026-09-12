@@ -37,6 +37,7 @@ object DwtViewColors {
     val SurfaceAlt = 0xFF202B39.toInt()
     val Primary = 0xFF4DA3FF.toInt()
     val OnSurface = 0xFFF3F7FC.toInt()
+    val Muted = 0xFFB3BFCC.toInt()
     val Outline = 0xFF3A4A5D.toInt()
 }
 

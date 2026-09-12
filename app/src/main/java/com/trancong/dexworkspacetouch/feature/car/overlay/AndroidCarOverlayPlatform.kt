@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.PixelFormat
+import android.graphics.drawable.GradientDrawable
 import android.hardware.display.DisplayManager
 import android.os.Build
 import android.os.Handler
@@ -82,7 +83,7 @@ class AndroidCarFloatingDockWindowFactory(context: Context) : CarFloatingDockWin
         }
         val windowManager = windowContext.getSystemService(WindowManager::class.java)
         val density = windowContext.resources.displayMetrics.density
-        val collapsedSize = (72 * density).toInt()
+        val collapsedSize = (CarFloatingDockVisual.CollapsedSizeDp * density).toInt()
         val workArea = windowManager.carDockWorkArea(windowContext, androidDisplay)
         val initialPosition = CarFloatingDockPositioner.defaultPosition(
             workArea,
@@ -91,7 +92,6 @@ class AndroidCarFloatingDockWindowFactory(context: Context) : CarFloatingDockWin
         )
         val view = LinearLayout(windowContext).apply {
             orientation = LinearLayout.VERTICAL
-            setBackgroundColor(DwtViewColors.Background)
             isFocusable = false
         }
         val params = WindowManager.LayoutParams(
@@ -185,6 +185,8 @@ private class AndroidCarFloatingDockWindow(
         root.removeAllViews()
         handleView = null
         shortcutViews.clear()
+        root.background = dockBackground(expanded = true)
+        root.addView(expandedHeader().also { collapseView = it })
         val grid = GridLayout(root.context).apply {
             columnCount = CarFloatingDockGrid.Columns
             rowCount = CarFloatingDockGrid.rows(shortcuts.size)
@@ -212,11 +214,7 @@ private class AndroidCarFloatingDockWindow(
                     .toInt(),
             ),
         )
-        root.addView(
-            button("Collapse", "Collapse Floating Dock") { collapse() }
-                .also { collapseView = it },
-        )
-        val expandedWidth = (360 * density).toInt()
+        val expandedWidth = (CarFloatingDockVisual.ExpandedWidthDp * density).toInt()
             .coerceAtMost(workArea.right - workArea.left)
         val expandedHeight = (CarFloatingDockGrid.expandedHeightDp(shortcuts.size) * density)
             .toInt()
@@ -242,8 +240,9 @@ private class AndroidCarFloatingDockWindow(
         root.removeAllViews()
         shortcutViews.clear()
         collapseView = null
+        root.background = dockBackground(expanded = false)
         root.addView(dragHandle().also { handleView = it })
-        val size = (72 * density).toInt()
+        val size = (CarFloatingDockVisual.CollapsedSizeDp * density).toInt()
         updateBounds(size, size, wrapHeight = false)
         onDockStateChanged()
     }
@@ -265,47 +264,49 @@ private class AndroidCarFloatingDockWindow(
         }
     }
 
-    private fun button(
-        label: String,
-        accessibilityLabel: String = label,
-        onClick: () -> Unit,
-    ): TextView = configureButton(
-        view = TextView(root.context),
-        label = label,
-        accessibilityLabel = accessibilityLabel,
-        onClick = onClick,
-    )
-
-    private fun <T : TextView> configureButton(
-        view: T,
-        label: String,
-        accessibilityLabel: String,
-        onClick: () -> Unit,
-    ): T = view.apply {
-        text = label
-        contentDescription = accessibilityLabel
-        maxLines = 1
-        ellipsize = android.text.TextUtils.TruncateAt.END
-        gravity = Gravity.CENTER
-        setTextColor(DwtViewColors.OnSurface)
+    private fun expandedHeader(): View = LinearLayout(root.context).apply {
+        orientation = LinearLayout.HORIZONTAL
+        gravity = Gravity.CENTER_VERTICAL
+        setPadding((16 * density).toInt(), 0, (8 * density).toInt(), 0)
+        contentDescription = CarFloatingDockVisual.CollapseDescription
         isClickable = true
         isFocusable = false
-        minHeight = (56 * density).toInt()
-        setOnClickListener { onClick() }
+        setOnClickListener { collapse() }
+        addView(CarDockBrandIconView(context), LinearLayout.LayoutParams(
+            (32 * density).toInt(), (32 * density).toInt(),
+        ))
+        addView(TextView(context).apply {
+            text = "Car Dock"
+            setTextColor(DwtViewColors.OnSurface)
+            textSize = 16f
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
+            gravity = Gravity.CENTER_VERTICAL
+        }, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f).apply {
+            marginStart = (10 * density).toInt()
+        })
+        addView(TextView(context).apply {
+            text = "‹"
+            setTextColor(DwtViewColors.Primary)
+            textSize = 28f
+            gravity = Gravity.CENTER
+        }, LinearLayout.LayoutParams((48 * density).toInt(), LinearLayout.LayoutParams.MATCH_PARENT))
         layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
-            if (label == "CAR") LinearLayout.LayoutParams.MATCH_PARENT else (56 * density).toInt(),
+            (CarFloatingDockGrid.HeaderHeightDp * density).toInt(),
         )
     }
 
-    private fun dragHandle(): TextView {
+    private fun dragHandle(): View {
         val gesture = CarDockDragGesture(ViewConfiguration.get(root.context).scaledTouchSlop.toFloat())
-        return configureButton(
-            view = CarDockDragHandleView(root.context),
-            label = "CAR",
-            accessibilityLabel = "Open Car workspace shortcuts",
-            onClick = ::expand,
-        ).apply {
+        return CarDockDragHandleView(root.context).apply {
+            contentDescription = CarFloatingDockVisual.OpenDescription
+            isClickable = true
+            isFocusable = false
+            setOnClickListener { expand() }
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT,
+            )
             setOnTouchListener { _, event ->
                 val action = when (event.actionMasked) {
                     MotionEvent.ACTION_DOWN -> CarDockTouchAction.Down
@@ -326,7 +327,7 @@ private class AndroidCarFloatingDockWindow(
     }
 
     private fun moveTo(x: Int, y: Int) {
-        val size = (72 * density).toInt()
+        val size = (CarFloatingDockVisual.CollapsedSizeDp * density).toInt()
         position = CarFloatingDockPositioner.clamp(
             x, y, position.edge, workArea, size, size,
         )
@@ -334,7 +335,7 @@ private class AndroidCarFloatingDockWindow(
     }
 
     private fun snapTo(x: Int, y: Int) {
-        val size = (72 * density).toInt()
+        val size = (CarFloatingDockVisual.CollapsedSizeDp * density).toInt()
         position = CarFloatingDockPositioner.snap(x, y, workArea, size, size)
         updatePosition()
     }
@@ -349,7 +350,26 @@ private class AndroidCarFloatingDockWindow(
     private fun updatePosition() {
         params.x = position.x
         params.y = position.y
+        root.background = dockBackground(dockState == CarFloatingDockState.Expanded)
         windowManager.updateViewLayout(root, params)
+    }
+
+    private fun dockBackground(expanded: Boolean): GradientDrawable {
+        val outer = if (expanded) 16f else 18f
+        val edge = if (expanded) 12f else 2f
+        val left = if (position.edge == CarFloatingDockEdge.Left) edge else outer
+        val right = if (position.edge == CarFloatingDockEdge.Right) edge else outer
+        return GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            setColor(DwtViewColors.Surface)
+            setStroke((1 * density).toInt().coerceAtLeast(1), DwtViewColors.Outline)
+            cornerRadii = floatArrayOf(
+                left * density, left * density,
+                right * density, right * density,
+                right * density, right * density,
+                left * density, left * density,
+            )
+        }
     }
 
     override fun remove() {
@@ -372,8 +392,55 @@ private class AndroidCarFloatingDockWindow(
     override fun positionForTest(): CarFloatingDockPosition = position
 }
 
-private class CarDockDragHandleView(context: Context) : TextView(context) {
+private class CarDockDragHandleView(context: Context) : View(context) {
+    private val density = resources.displayMetrics.density
+    private val accentPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = DwtViewColors.Primary }
+    private val cellPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = DwtViewColors.Muted }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        val pressedAlpha = if (isPressed) 255 else 220
+        cellPaint.alpha = pressedAlpha
+        val cell = 10f * density
+        val gap = 4f * density
+        val total = cell * 2 + gap
+        val left = (width - total) / 2f
+        val top = (height - total) / 2f
+        repeat(2) { row ->
+            repeat(2) { column ->
+                val paint = if (row == 0 && column == 0) accentPaint else cellPaint
+                val x = left + column * (cell + gap)
+                val y = top + row * (cell + gap)
+                canvas.drawRoundRect(x, y, x + cell, y + cell, 2.5f * density, 2.5f * density, paint)
+            }
+        }
+    }
+
+    override fun drawableStateChanged() {
+        super.drawableStateChanged()
+        invalidate()
+    }
+
     override fun performClick(): Boolean = super.performClick()
+}
+
+private class CarDockBrandIconView(context: Context) : View(context) {
+    private val density = resources.displayMetrics.density
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = DwtViewColors.Primary }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        val cell = 7f * density
+        val gap = 3f * density
+        val total = cell * 2 + gap
+        val left = (width - total) / 2f
+        val top = (height - total) / 2f
+        repeat(2) { row -> repeat(2) { column ->
+            val x = left + column * (cell + gap)
+            val y = top + row * (cell + gap)
+            canvas.drawRoundRect(x, y, x + cell, y + cell, 2f * density, 2f * density, paint)
+        } }
+    }
 }
 
 private class CarFloatingWorkspaceCardView(
@@ -382,7 +449,7 @@ private class CarFloatingWorkspaceCardView(
     iconLoader: AppIconLoader,
 ) : View(context) {
     private val density = resources.displayMetrics.density
-    private val cardPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = DwtViewColors.Surface }
+    private val cardPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = DwtViewColors.SurfaceAlt }
     private val cellPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = DwtViewColors.SurfaceAlt
         style = Paint.Style.FILL
@@ -407,11 +474,13 @@ private class CarFloatingWorkspaceCardView(
         val card = RectF(outerPadding, outerPadding, width - outerPadding, height - outerPadding)
         val radius = 10f * density
         canvas.drawRoundRect(card, radius, radius, cardPaint)
+        borderPaint.color = if (isPressed) DwtViewColors.Primary else DwtViewColors.Outline
+        borderPaint.strokeWidth = (if (isPressed) 2f else 1f) * density
+        canvas.drawRoundRect(card, radius, radius, borderPaint)
         when (shortcut.state) {
             is CarFloatingWorkspaceShortcutState.Configured -> drawPreview(canvas, card)
             CarFloatingWorkspaceShortcutState.Unconfigured -> drawSymbol(canvas, card, "+")
             is CarFloatingWorkspaceShortcutState.Unavailable -> {
-                canvas.drawRoundRect(card, radius, radius, borderPaint)
                 drawSymbol(canvas, card, "!")
             }
         }
@@ -463,6 +532,11 @@ private class CarFloatingWorkspaceCardView(
         symbolPaint.textSize = 26f * density
         val baseline = card.centerY() - (symbolPaint.ascent() + symbolPaint.descent()) / 2f
         canvas.drawText(symbol, card.centerX(), baseline, symbolPaint)
+    }
+
+    override fun drawableStateChanged() {
+        super.drawableStateChanged()
+        invalidate()
     }
 
     override fun performClick(): Boolean = super.performClick()

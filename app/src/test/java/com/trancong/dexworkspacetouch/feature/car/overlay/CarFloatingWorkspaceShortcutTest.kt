@@ -67,6 +67,16 @@ class CarFloatingWorkspaceShortcutTest {
         )
     }
 
+    @Test fun visualContractKeepsDockCompactAndAccessibilityActionsExplicit() {
+        assertEquals(72, CarFloatingDockVisual.CollapsedSizeDp)
+        assertEquals(360, CarFloatingDockVisual.ExpandedWidthDp)
+        assertEquals("Open Car Dock", CarFloatingDockVisual.OpenDescription)
+        assertEquals(
+            "Car Dock. Collapse Floating Dock",
+            CarFloatingDockVisual.CollapseDescription,
+        )
+    }
+
     @Test fun visibleItemsAreAlwaysTheStableLeadingSlots() {
         val shortcuts = CarWorkspaceShortcuts.defaults()
         (3..8).forEach { count ->

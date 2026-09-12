@@ -38,12 +38,19 @@ fun Workspace.toCarFloatingPreview(): CarFloatingWorkspacePreview = toCarWorkspa
 object CarFloatingDockGrid {
     const val Columns = 2
     const val TileHeightDp = 68
-    const val CollapseHeightDp = 56
+    const val HeaderHeightDp = 56
     fun rows(itemCount: Int): Int = (itemCount + Columns - 1) / Columns
     fun expandedHeightDp(itemCount: Int): Int =
-        rows(itemCount) * TileHeightDp + CollapseHeightDp
+        rows(itemCount) * TileHeightDp + HeaderHeightDp
     fun row(slot: CarWorkspaceShortcutSlot): Int = slot.ordinal / Columns
     fun column(slot: CarWorkspaceShortcutSlot): Int = slot.ordinal % Columns
+}
+
+internal object CarFloatingDockVisual {
+    const val CollapsedSizeDp = 72
+    const val ExpandedWidthDp = 360
+    const val OpenDescription = "Open Car Dock"
+    const val CollapseDescription = "Car Dock. Collapse Floating Dock"
 }
 
 fun resolveFloatingWorkspaceShortcuts(
