@@ -64,7 +64,7 @@ fun CarWorkspaceDashboard(
         modifier = Modifier.fillMaxWidth().padding(Spacing.L),
         verticalArrangement = Arrangement.spacedBy(Spacing.S),
     ) {
-        Text("Workspace dashboard", style = MaterialTheme.typography.headlineSmall)
+        Text("Bảng điều khiển Workspace", style = MaterialTheme.typography.headlineSmall)
         rows.chunked(DashboardColumns).forEach { rowItems ->
             Row(
                 modifier = Modifier.fillMaxWidth(),

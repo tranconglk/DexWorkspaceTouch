@@ -105,9 +105,9 @@ class CarWorkflowExecutionRunner<S>(
 }
 
 internal fun CarActionError.userMessage(): String = when (this) {
-    CarActionError.AppUnavailable -> "App is unavailable."
-    CarActionError.UriUnavailable -> "Link is unavailable."
-    CarActionError.WorkspaceUnavailable -> "Workspace is unavailable."
-    is CarActionError.UnsupportedAction -> "Action is not supported."
-    is CarActionError.ExecutionFailed -> message ?: "Action failed."
+    CarActionError.AppUnavailable -> "Ứng dụng không khả dụng."
+    CarActionError.UriUnavailable -> "Liên kết không khả dụng."
+    CarActionError.WorkspaceUnavailable -> "Workspace không khả dụng."
+    is CarActionError.UnsupportedAction -> "Hành động chưa được hỗ trợ."
+    is CarActionError.ExecutionFailed -> message ?: "Không thể thực hiện hành động."
 }

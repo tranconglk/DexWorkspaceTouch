@@ -254,10 +254,10 @@ class CarWorkspaceShortcutTest {
         assertEquals(CarWorkspaceShortcutSlot.entries.take(6), rows.map { it.slot })
         assertEquals(CarWorkspaceShortcutStatus.Configured, rows[0].status)
         assertEquals(2, rows[0].appCount)
-        assertEquals("Workspace unavailable", rows[1].statusText)
+        assertEquals("Workspace không khả dụng", rows[1].statusText)
         assertEquals(CarWorkspaceShortcutStatus.Unavailable, rows[1].status)
         assertEquals("deleted", rows[1].workspaceId)
-        assertEquals("Not configured", rows[2].statusText)
+        assertEquals("Chưa cấu hình", rows[2].statusText)
         assertEquals(CarWorkspaceShortcutStatus.Unconfigured, rows[2].status)
 
         preferences.setWorkspace(CarWorkspaceShortcutSlot.Slot2, "available")

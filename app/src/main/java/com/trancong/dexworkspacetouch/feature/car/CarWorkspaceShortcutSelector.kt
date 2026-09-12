@@ -45,9 +45,9 @@ val CarWorkspaceShortcutRow.dashboardTitle: String
 
 val CarWorkspaceShortcutRow.dashboardAccessibilityLabel: String
     get() = when (status) {
-        CarWorkspaceShortcutStatus.Configured -> "Open workspace $statusText"
-        CarWorkspaceShortcutStatus.Unconfigured -> "${slot.displayLabel}, not configured"
-        CarWorkspaceShortcutStatus.Unavailable -> "${slot.displayLabel}, workspace unavailable"
+        CarWorkspaceShortcutStatus.Configured -> "Mở Workspace $statusText"
+        CarWorkspaceShortcutStatus.Unconfigured -> "${slot.displayLabel}, chưa cấu hình"
+        CarWorkspaceShortcutStatus.Unavailable -> "${slot.displayLabel}, Workspace không khả dụng"
     }
 
 enum class CarWorkspaceShortcutStatus { Configured, Unconfigured, Unavailable }
@@ -69,9 +69,9 @@ fun resolveCarWorkspaceShortcutRows(
             slot = slot,
             workspaceId = workspaceId,
             statusText = when {
-                workspaceId == null -> "Not configured"
+                workspaceId == null -> "Chưa cấu hình"
                 byId[workspaceId] != null -> byId.getValue(workspaceId).name
-                else -> "Workspace unavailable"
+                else -> "Workspace không khả dụng"
             },
             appCount = workspaceId?.let(byId::get)?.appCount,
             preview = workspaceId?.let(byId::get)?.preview,
@@ -94,7 +94,7 @@ fun CarWorkspaceShortcutSection(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Spacing.S),
     ) {
-        Text("Workspace shortcuts", style = MaterialTheme.typography.titleMedium)
+        Text("Lối tắt Workspace", style = MaterialTheme.typography.titleMedium)
         rows.forEach { row ->
             Surface(
                 onClick = { onSlotSelected(row.slot) },
@@ -139,10 +139,10 @@ fun CarWorkspaceSelectorDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Choose workspace for ${slot.displayLabel}") },
+        title = { Text("Chọn Workspace cho ${slot.displayLabel}") },
         text = {
             if (workspaces.isEmpty()) {
-                Text("No workspaces available")
+                Text("Không có Workspace khả dụng")
             } else {
                 LazyColumn(
                     modifier = Modifier.heightIn(max = TouchTargets.SecondaryButton * 6),
@@ -158,11 +158,11 @@ fun CarWorkspaceSelectorDialog(
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(workspace.name)
                                 Text(
-                                    "${workspace.appCount} apps",
+                                    "${workspace.appCount} ứng dụng",
                                     style = MaterialTheme.typography.bodySmall,
                                 )
                             }
-                            if (workspace.isSelected(selectedWorkspaceId)) Text("Selected")
+                            if (workspace.isSelected(selectedWorkspaceId)) Text("Đang chọn")
                         }
                     }
                 }
@@ -172,14 +172,14 @@ fun CarWorkspaceSelectorDialog(
             TextButton(
                 onClick = onDismiss,
                 modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
-            ) { Text("Close") }
+            ) { Text("Đóng") }
         },
         dismissButton = if (selectedWorkspaceId != null) {
             {
                 TextButton(
                     onClick = onClear,
                     modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
-                ) { Text("Clear") }
+                ) { Text("Xóa chọn") }
             }
         } else {
             null

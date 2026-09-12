@@ -646,10 +646,10 @@ private fun CarRoute(
         desktopShortcutStatus = desktopShortcutStatus,
         onAddDesktopShortcut = {
             desktopShortcutStatus = when (desktopShortcutController.requestPin()) {
-                CarDockPinRequestResult.Requested -> "Shortcut request sent"
+                CarDockPinRequestResult.Requested -> "Đã gửi yêu cầu tạo lối tắt"
                 CarDockPinRequestResult.Unsupported ->
-                    "Launcher does not support pinned shortcuts"
-                CarDockPinRequestResult.Rejected -> "Launcher did not accept the shortcut request"
+                    "Launcher không hỗ trợ ghim lối tắt"
+                CarDockPinRequestResult.Rejected -> "Launcher không chấp nhận yêu cầu tạo lối tắt"
             }
         },
         workspaceShortcutRows = shortcutRows,

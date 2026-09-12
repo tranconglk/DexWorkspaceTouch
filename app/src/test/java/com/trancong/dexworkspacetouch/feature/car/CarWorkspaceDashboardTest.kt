@@ -25,7 +25,7 @@ class CarWorkspaceDashboardTest {
 
         assertEquals(CarWorkspaceShortcutStatus.Configured, row.status)
         assertEquals("Map Music", row.dashboardTitle)
-        assertEquals("Open workspace Map Music", row.dashboardAccessibilityLabel)
+        assertEquals("Mở Workspace Map Music", row.dashboardAccessibilityLabel)
         assertFalse(row.dashboardTitle.contains("Slot"))
         assertFalse(row.dashboardTitle.contains("apps"))
         assertEquals(
@@ -43,12 +43,12 @@ class CarWorkspaceDashboardTest {
         val rows = resolveCarWorkspaceShortcutRows(shortcuts, emptyList(), 3)
 
         assertEquals(CarWorkspaceShortcutStatus.Unconfigured, rows[0].status)
-        assertEquals("Not configured", rows[0].dashboardTitle)
-        assertEquals("Slot 1, not configured", rows[0].dashboardAccessibilityLabel)
+        assertEquals("Chưa cấu hình", rows[0].dashboardTitle)
+        assertEquals("Slot 1, chưa cấu hình", rows[0].dashboardAccessibilityLabel)
         assertNull(rows[0].preview)
         assertEquals(CarWorkspaceShortcutStatus.Unavailable, rows[1].status)
-        assertEquals("Workspace unavailable", rows[1].dashboardTitle)
-        assertEquals("Slot 2, workspace unavailable", rows[1].dashboardAccessibilityLabel)
+        assertEquals("Workspace không khả dụng", rows[1].dashboardTitle)
+        assertEquals("Slot 2, Workspace không khả dụng", rows[1].dashboardAccessibilityLabel)
         assertNull(rows[1].preview)
         assertEquals("deleted", rows[1].workspaceId)
     }

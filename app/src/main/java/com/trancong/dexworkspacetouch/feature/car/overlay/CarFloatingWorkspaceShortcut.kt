@@ -66,12 +66,12 @@ fun resolveFloatingWorkspaceShortcuts(
     when {
         workspaceId == null -> CarFloatingWorkspaceShortcut(
             slot,
-            "${slot.displayLabel} — Not configured",
+            "${slot.displayLabel} — Chưa cấu hình",
             CarFloatingWorkspaceShortcutState.Unconfigured,
         )
         workspace == null -> CarFloatingWorkspaceShortcut(
             slot,
-            "${slot.displayLabel} — Workspace unavailable",
+            "${slot.displayLabel} — Workspace không khả dụng",
             CarFloatingWorkspaceShortcutState.Unavailable(workspaceId),
         )
         else -> CarFloatingWorkspaceShortcut(

@@ -119,14 +119,14 @@ fun CarScreen(
                     .align(Alignment.CenterHorizontally),
             )
             val (dockStatus, dockActionLabel) = when (floatingDockState) {
-                CarFloatingDockControlState.Hidden -> "Off" to "Show"
-                is CarFloatingDockControlState.Visible -> "On" to "Hide"
-                CarFloatingDockControlState.PermissionRequired -> "Permission required" to "Allow"
-                CarFloatingDockControlState.DisplayUnavailable -> "DeX display not available" to "Show"
-                is CarFloatingDockControlState.Error -> "Unavailable" to "Show"
+                CarFloatingDockControlState.Hidden -> "Tắt" to "Hiện"
+                is CarFloatingDockControlState.Visible -> "Bật" to "Ẩn"
+                CarFloatingDockControlState.PermissionRequired -> "Cần cấp quyền" to "Cho phép"
+                CarFloatingDockControlState.DisplayUnavailable -> "Không có màn hình DeX" to "Hiện"
+                is CarFloatingDockControlState.Error -> "Không khả dụng" to "Hiện"
             }
             CarConfigurationSection(
-                title = "Quick access",
+                title = "Truy cập nhanh",
                 supportingText = "Điều khiển lối tắt luôn sẵn sàng trên DeX.",
                 modifier = Modifier
                     .widthIn(max = Dimensions.CarConfigurationMaxWidth)
@@ -152,15 +152,15 @@ fun CarScreen(
                     )
                 }
                 CarCompactControlRow(
-                    label = "Desktop shortcut",
+                    label = "Lối tắt Desktop",
                     status = "Car Dock",
-                    actionLabel = "Add",
-                    actionDescription = "Add Car Dock desktop shortcut",
+                    actionLabel = "Thêm",
+                    actionDescription = "Thêm lối tắt Car Dock vào Desktop",
                     actionEnabled = desktopShortcutSupported,
                     onAction = onAddDesktopShortcut,
                 )
                 val shortcutStatus = desktopShortcutStatus ?: if (!desktopShortcutSupported) {
-                    "Launcher does not support pinned shortcuts"
+                    "Launcher không hỗ trợ ghim lối tắt"
                 } else {
                     null
                 }
@@ -173,7 +173,7 @@ fun CarScreen(
                 }
             }
             CarConfigurationSection(
-                title = "Dashboard configuration",
+                title = "Cấu hình bảng điều khiển",
                 supportingText = "Chọn số lượng và workspace cho từng vị trí.",
                 modifier = Modifier
                     .widthIn(max = Dimensions.CarConfigurationMaxWidth)
@@ -192,7 +192,7 @@ fun CarScreen(
             when (workspaceWorkflowState) {
                 CarWorkflowExecutionState.Idle -> Unit
                 is CarWorkflowExecutionState.Running -> Text(
-                    text = "Opening ${workspaceWorkflowState.source.displayLabel}...",
+                    text = "Đang mở ${workspaceWorkflowState.source.displayLabel}...",
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 is CarWorkflowExecutionState.Error -> Row(
@@ -209,7 +209,7 @@ fun CarScreen(
                         onClick = onDismissError,
                         modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
                     ) {
-                        Text("Dismiss")
+                        Text("Đóng")
                     }
                 }
             }
@@ -279,7 +279,7 @@ private fun CarVisibleShortcutCountSelector(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            "Visible shortcuts",
+            "Số lối tắt hiển thị",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.weight(1f),
         )
@@ -297,8 +297,8 @@ private fun CarVisibleShortcutCountSelector(
                             modifier = Modifier
                                 .heightIn(min = TouchTargets.PrimaryButton)
                                 .semantics {
-                                    contentDescription = "$count visible shortcuts, selected"
-                                    stateDescription = "Selected"
+                                    contentDescription = "$count lối tắt hiển thị, đang chọn"
+                                    stateDescription = "Đang chọn"
                                 },
                         ) { Text(count.toString()) }
                     } else {
@@ -306,7 +306,7 @@ private fun CarVisibleShortcutCountSelector(
                             onClick = { onVisibleSlotCountChanged(count) },
                             modifier = Modifier
                                 .heightIn(min = TouchTargets.PrimaryButton)
-                                .semantics { contentDescription = "$count visible shortcuts" },
+                                .semantics { contentDescription = "$count lối tắt hiển thị" },
                         ) { Text(count.toString()) }
                     }
                 }
