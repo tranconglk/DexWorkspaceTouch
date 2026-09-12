@@ -37,6 +37,7 @@ describe("customer fulfillment", () => {
     const result = await service.create({ orderReference: "ORD-TEST-001" });
     expect(result.record).toMatchObject({ initialReleaseVersion: "1.0.0-test", initialReleaseVersionCode: 42, apkSha256: "a".repeat(64) });
     expect(await readFile(result.deliveryPath, "utf8")).toContain(RELEASE.apkUrl);
+    expect(await readFile(result.deliveryPath, "utf8")).toContain("dexworkspacetouch.support@gmail.com");
   });
   it("rejects a duplicate non-cancelled order", async () => {
     await service.create({ orderReference: "ORD-TEST-001" });

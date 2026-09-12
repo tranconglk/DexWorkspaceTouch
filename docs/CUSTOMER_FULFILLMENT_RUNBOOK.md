@@ -53,6 +53,9 @@ For updates, the customer uses **DexWorkspaceTouch → Kiểm tra cập nhật**
 
 ## Lookup and support
 
+Official customer support email: `dexworkspacetouch.support@gmail.com`. Ask the customer for the
+order reference or customer reference, not a publicly shared License Key.
+
 List local records:
 
 ```powershell

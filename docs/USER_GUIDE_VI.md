@@ -33,9 +33,9 @@ DexWorkspaceTouch giúp bạn tạo và lưu các bố cục nhiều ứng dụn
 5. Chạm từng ô và chọn ứng dụng muốn đặt vào ô đó.
 6. Chọn **Lưu**, đặt tên Workspace rồi xác nhận.
 7. Trở lại Library và chọn **Mở** trên Workspace để chạy thử.
-8. Chọn **Open Car mode** để vào Car Mode.
+8. Chọn **Mở Car Mode** để vào Car Mode.
 9. Gán các Workspace cần dùng vào các Slot.
-10. Trong mục **Floating Dock**, cấp quyền nếu được yêu cầu rồi chọn **Show**.
+10. Trong mục **Floating Dock**, cấp quyền nếu được yêu cầu rồi chọn **Hiện**.
 11. Chạm nút **CAR**, sau đó chạm visual Workspace card muốn chạy.
 
 ## Yêu cầu sử dụng
@@ -275,7 +275,7 @@ Các trạng thái có thể gặp:
 
 - **Đã cấu hình:** hiển thị tên Workspace và số ứng dụng, có thể chạy.
 - **Chưa cấu hình:** Slot chưa được gán; chạm để chọn Workspace.
-- **Không khả dụng:** Slot vẫn giữ liên kết nhưng Workspace tương ứng không còn trong Library; hãy chọn Workspace khác hoặc Clear Slot.
+- **Workspace không khả dụng:** Slot vẫn giữ liên kết nhưng Workspace tương ứng không còn trong Library; hãy chọn Workspace khác hoặc xóa lựa chọn.
 
 Khi một Workspace đang mở, Car Mode không bắt đầu Workspace thứ hai song song.
 
@@ -297,7 +297,7 @@ Trong Car Mode, đến **Visible shortcuts** và chọn một số từ **3** đ
 2. Trong cửa sổ chọn Workspace, chạm Workspace muốn dùng.
 3. Workspace mới được áp dụng ngay cho dashboard và Floating Dock.
 
-Chọn **Clear** để bỏ liên kết của Slot. **Close** đóng cửa sổ mà không thay đổi.
+Chọn **Xóa chọn** để bỏ liên kết của Slot. **Đóng** đóng cửa sổ mà không thay đổi.
 
 Slot được đặt tên ổn định từ **Slot 1** đến **Slot 8**.
 
@@ -305,26 +305,26 @@ Slot được đặt tên ổn định từ **Slot 1** đến **Slot 8**.
 
 Floating Dock là cửa sổ nhỏ luôn nổi trên các ứng dụng khác ở màn hình DeX.
 
-### Show, Hide và Collapse
+### Hiện, Ẩn và Thu gọn
 
-- **Show:** tạo Floating Dock trên màn hình DeX.
-- **Hide:** loại Floating Dock khỏi màn hình.
-- **Collapse:** Floating Dock vẫn hoạt động nhưng chỉ còn nút **CAR**.
+- **Hiện:** tạo Floating Dock trên màn hình DeX.
+- **Ẩn:** loại Floating Dock khỏi màn hình.
+- **Thu gọn:** Floating Dock vẫn hoạt động nhưng chỉ còn nút **CAR**.
 
-Hide và Collapse không giống nhau. Sau Hide, bạn phải Show lại từ Car Mode hoặc dùng shortcut Car Dock trên DeX Desktop.
+Ẩn và Thu gọn không giống nhau. Sau khi Ẩn, bạn phải Hiện lại từ Car Mode hoặc dùng shortcut Car Dock trên DeX Desktop.
 
 ### Sử dụng Floating Dock
 
-1. Trong Car Mode, chọn **Show**.
+1. Trong Car Mode, chọn **Hiện**.
 2. Floating Dock xuất hiện mặc định ở cạnh trái, căn giữa theo chiều dọc.
 3. Chạm **CAR** để mở danh sách visual Workspace cards.
 4. Chạm một card hợp lệ để chạy Workspace.
-5. Floating Dock tự Collapse sau khi nhận lệnh mở Workspace và tiếp tục tồn tại khi DexWorkspaceTouch chạy nền.
-6. Chọn **Collapse** ở cuối danh sách nếu chỉ muốn thu gọn mà không chạy Workspace.
+5. Floating Dock tự thu gọn sau khi nhận lệnh mở Workspace và tiếp tục tồn tại khi DexWorkspaceTouch chạy nền.
+6. Chọn nút **Thu gọn Floating Dock** ở cuối danh sách nếu chỉ muốn thu gọn mà không chạy Workspace.
 
 Khi đang thu gọn, bạn có thể kéo nút **CAR**. Khi thả, Floating Dock snap vào cạnh trái hoặc cạnh phải gần nhất và luôn được giữ trong vùng hiển thị sử dụng được.
 
-Vị trí kéo hiện không được lưu lâu dài. Sau khi Hide rồi Show lại, Floating Dock trở về vị trí mặc định ở cạnh trái, căn giữa dọc. Nếu Android đóng hoàn toàn DexWorkspaceTouch, Floating Dock có thể biến mất; hãy Show lại từ Car Mode hoặc shortcut Car Dock.
+Vị trí kéo hiện không được lưu lâu dài. Sau khi Ẩn rồi Hiện lại, Floating Dock trở về vị trí mặc định ở cạnh trái, căn giữa dọc. Nếu Android đóng hoàn toàn DexWorkspaceTouch, Floating Dock có thể biến mất; hãy Hiện lại từ Car Mode hoặc shortcut Car Dock.
 
 ## Visual Workspace Cards
 
@@ -347,17 +347,17 @@ Toàn vùng        Chia đôi         Ba cột
 - Nếu không tải được icon ứng dụng, card dùng ký hiệu thay thế.
 - Tên Workspace vẫn được giữ trong mô tả hỗ trợ khả năng tiếp cận dù không hiện bằng chữ trên card.
 
-Khi bạn đổi tên, chỉnh bố cục hoặc thay Workspace của Slot, card đang mở được cập nhật mà không cần Hide rồi Show lại.
+Khi bạn đổi tên, chỉnh bố cục hoặc thay Workspace của Slot, card đang mở được cập nhật mà không cần Ẩn rồi Hiện lại.
 
 ## Quyền Floating Dock
 
-Nếu chưa có quyền hiển thị nổi, mục Floating Dock hiện **Permission required** và nút **Allow**.
+Nếu chưa có quyền hiển thị nổi, mục Floating Dock hiện **Cần cấp quyền** và nút **Cho phép**.
 
-1. Chọn **Allow**.
+1. Chọn **Cho phép**.
 2. Android mở trang cài đặt của DexWorkspaceTouch.
 3. Bật **Display over other apps** hoặc tùy chọn tương đương trên thiết bị.
 4. Quay lại DexWorkspaceTouch.
-5. Trạng thái quyền được làm mới tự động; chọn **Show** nếu Floating Dock chưa xuất hiện.
+5. Trạng thái quyền được làm mới tự động; chọn **Hiện** nếu Floating Dock chưa xuất hiện.
 
 Quyền này chỉ cần cho Floating Dock. Không cần dùng ADB hoặc công cụ dành cho nhà phát triển để cấp quyền.
 
@@ -365,16 +365,16 @@ Quyền này chỉ cần cho Floating Dock. Không cần dùng ADB hoặc công 
 
 1. Mở Car Mode trên màn hình DeX.
 2. Trong **Desktop shortcut**, tìm mục **Car Dock**.
-3. Chọn **Add**.
+3. Chọn **Thêm**.
 4. Xác nhận yêu cầu ghim nếu Samsung launcher hiển thị hộp xác nhận.
 
-Nếu launcher hỗ trợ, icon **Car Dock** xuất hiện trên DeX Desktop. Chạm icon để Show hoặc bảo đảm Floating Dock đang hiển thị; đây không phải lệnh Hide hay Toggle.
+Nếu launcher hỗ trợ, icon **Car Dock** xuất hiện trên DeX Desktop. Chạm icon để Hiện hoặc bảo đảm Floating Dock đang hiển thị; đây không phải lệnh Ẩn hay chuyển đổi trạng thái.
 
 - Nếu Dock đã hiện, shortcut không tạo Dock thứ hai.
 - Bạn không cần mở Car Mode trước khi dùng shortcut.
-- Khi ứng dụng chưa chạy, shortcut có thể khởi động phần cần thiết, Show Floating Dock rồi tự đóng màn hình khởi động ngắn.
+- Khi ứng dụng chưa chạy, shortcut có thể khởi động phần cần thiết, Hiện Floating Dock rồi tự đóng màn hình khởi động ngắn.
 - Shortcut được thiết kế cho DeX Desktop. Nếu chạy trên màn hình điện thoại, Floating Dock không được tạo và ứng dụng nhắc bạn mở shortcut trên DeX Desktop.
-- Nếu nút **Add** bị vô hiệu hóa hoặc hiện thông báo không hỗ trợ, launcher hiện tại không hỗ trợ pinned shortcut.
+- Nếu nút **Thêm** bị vô hiệu hóa hoặc hiện thông báo không hỗ trợ, launcher hiện tại không hỗ trợ ghim lối tắt.
 
 ## Cách dùng hằng ngày trên xe
 
@@ -394,7 +394,7 @@ Sau khi đã tạo Workspace, gán Slot, cấp quyền và thêm shortcut:
 - Liên kết Workspace của Slot 1–8 được giữ qua các lần khởi động ứng dụng.
 - Số Slot hiển thị từ 3–8 được giữ qua các lần khởi động.
 - Ẩn Slot không xóa liên kết của Slot đó.
-- Vị trí kéo của Floating Dock hiện không được lưu; Hide rồi Show sẽ đặt lại vị trí.
+- Vị trí kéo của Floating Dock hiện không được lưu; Ẩn rồi Hiện sẽ đặt lại vị trí.
 - Ứng dụng không cung cấp đồng bộ đám mây.
 - Dữ liệu ứng dụng không tham gia cơ chế sao lưu tự động của Android; hãy dùng **Sao lưu Library** khi cần giữ hoặc chuyển dữ liệu.
 
@@ -414,15 +414,15 @@ Sau khi đã tạo Workspace, gán Slot, cấp quyền và thêm shortcut:
 1. Kiểm tra Samsung DeX và màn hình ngoài vẫn đang hoạt động.
 2. Đảm bảo DexWorkspaceTouch hoặc shortcut Car Dock được mở trên DeX Desktop, không phải màn hình điện thoại.
 3. Kiểm tra quyền **Display over other apps**.
-4. Mở lại Car Mode; nếu Dock đang được đánh dấu là On, chọn **Hide**, sau đó **Show** lại.
+4. Mở lại Car Mode; nếu Dock có trạng thái **Bật**, chọn **Ẩn**, sau đó **Hiện** lại.
 
-### Hiện “DeX display not available”
+### Hiện “Không có màn hình DeX”
 
 DexWorkspaceTouch hiện không được gắn với màn hình DeX hợp lệ. Di chuyển hoặc mở lại cửa sổ ứng dụng trên DeX rồi thử lại. Ứng dụng không tự chuyển lệnh mở Workspace sang màn hình điện thoại.
 
-### Workspace unavailable trong Car Mode
+### “Workspace không khả dụng” trong Car Mode
 
-Workspace đã gán cho Slot có thể đã bị xóa khỏi Library. Chạm Slot, chọn Workspace khác hoặc chọn **Clear**.
+Workspace đã gán cho Slot có thể đã bị xóa khỏi Library. Chạm Slot, chọn Workspace khác hoặc chọn **Xóa chọn**.
 
 ### Ứng dụng trong Workspace không mở
 
@@ -441,7 +441,7 @@ Workspace chỉ có thể chạy khi mọi ô đều đã được gán ứng d�
 
 ### Shortcut Car Dock không ghim được
 
-Launcher có thể không hỗ trợ pinned shortcut hoặc đã từ chối yêu cầu. Bạn vẫn có thể dùng **Car Mode → Floating Dock → Show**.
+Launcher có thể không hỗ trợ ghim lối tắt hoặc đã từ chối yêu cầu. Bạn vẫn có thể dùng **Car Mode → Floating Dock → Hiện**.
 
 ### Không nhập hoặc khôi phục được file
 

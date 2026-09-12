@@ -146,6 +146,7 @@ describe("REL-002 operator portal", () => {
   it("generates customer delivery text without internal identifiers", async () => {
     const body = await (await create("DELIVERY")).json() as any;
     expect(body.deliveryText).toContain(manifest.apkUrl); expect(body.deliveryText).toContain(created.licenseKey);
+    expect(body.deliveryText).toContain("dexworkspacetouch.support@gmail.com");
     expect(body.deliveryText).not.toContain(body.record.licenseId); expect(body.deliveryText).not.toContain("admin.test");
   });
 });

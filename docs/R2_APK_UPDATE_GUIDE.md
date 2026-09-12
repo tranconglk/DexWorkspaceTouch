@@ -11,7 +11,7 @@ Tài liệu này mô tả quy trình phát hành một APK DexWorkspaceTouch m�
 - Không dùng `-SkipTests` cho bản production.
 - Không commit APK, output build, keystore hoặc credential.
 
-Ví dụ dưới đây phát hành `1.0.0-beta.7`, `versionCode = 8`. Với bản sau, thay toàn bộ tên phiên bản, version code, tên APK và URL tương ứng.
+Ví dụ dưới đây phát hành `1.0.0-beta.8`, `versionCode = 9`. Với bản sau, thay toàn bộ tên phiên bản, version code, tên APK và URL tương ứng.
 
 ## 1. Mở project và kiểm tra Git
 
@@ -28,8 +28,8 @@ Nếu có thay đổi hoặc file chưa tracked, phải xác định rõ trướ
 Mở `app\build.gradle.kts` và đặt:
 
 ```kotlin
-versionCode = 8
-versionName = "1.0.0-beta.7"
+versionCode = 9
+versionName = "1.0.0-beta.8"
 ```
 
 Kiểm tra lại:
@@ -44,7 +44,7 @@ git diff -- .\app\build.gradle.kts
 PowerShell có thể chặn script bằng Execution Policy. Không cần đổi policy toàn hệ thống; chạy script qua process con với `Bypass` chỉ cho lệnh này:
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\scripts\build-production-release.ps1" -AcknowledgeDirtyWorktree -CreateUpdateManifest -UpdateManifestUrl "https://dexworkspacetouch-updates.dex-backend.workers.dev/update-manifest.json" -ApkUrl "https://dexworkspacetouch-updates.dex-backend.workers.dev/releases/1.0.0-beta.7/DexWorkspaceTouch-1.0.0-beta.7-8.apk" -ReleaseNotes "Cap nhat giao dien CarScreen va cai thien Floating Dock tren Samsung DeX."
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\scripts\build-production-release.ps1" -AcknowledgeDirtyWorktree -CreateUpdateManifest -UpdateManifestUrl "https://dexworkspacetouch-updates.dex-backend.workers.dev/update-manifest.json" -ApkUrl "https://dexworkspacetouch-updates.dex-backend.workers.dev/releases/1.0.0-beta.8/DexWorkspaceTouch-1.0.0-beta.8-9.apk" -ReleaseNotes "Dong bo ban phat hanh beta.8 cho khach hang dau tien."
 ```
 
 Chỉ dùng `-AcknowledgeDirtyWorktree` sau khi đã xem và hiểu toàn bộ thay đổi từ `git status`/`git diff`. Nếu worktree sạch, có thể bỏ tham số này.
@@ -61,7 +61,7 @@ Get-Content .\release-output\update-manifest.json
 Phải có tối thiểu:
 
 ```text
-DexWorkspaceTouch-1.0.0-beta.7-8.apk
+DexWorkspaceTouch-1.0.0-beta.8-9.apk
 update-manifest.json
 release-manifest.json
 SHA256SUMS.txt
@@ -72,7 +72,7 @@ Manifest phải chứa đúng `versionName`, `versionCode` và URL APK của b�
 ## 5. So sánh APK với manifest
 
 ```powershell
-$apk = ".\release-output\DexWorkspaceTouch-1.0.0-beta.7-8.apk"
+$apk = ".\release-output\DexWorkspaceTouch-1.0.0-beta.8-9.apk"
 $manifest = Get-Content ".\release-output\update-manifest.json" -Raw | ConvertFrom-Json
 $apkHash = (Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant()
 $apkSize = (Get-Item $apk).Length
@@ -91,7 +91,7 @@ Không publish nếu hash hoặc kích thước không khớp.
 ## 6. Upload APK lên R2 và publish manifest
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\scripts\publish-production-release.ps1" -BucketName "dexworkspacetouch-releases" -WorkerBaseUrl "https://dexworkspacetouch-updates.dex-backend.workers.dev" -ApkPath ".\release-output\DexWorkspaceTouch-1.0.0-beta.7-8.apk" -ManifestPath ".\release-output\update-manifest.json"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\scripts\publish-production-release.ps1" -BucketName "dexworkspacetouch-releases" -WorkerBaseUrl "https://dexworkspacetouch-updates.dex-backend.workers.dev" -ApkPath ".\release-output\DexWorkspaceTouch-1.0.0-beta.8-9.apk" -ManifestPath ".\release-output\update-manifest.json"
 ```
 
 Script sẽ:
@@ -126,14 +126,14 @@ Invoke-RestMethod "https://dexworkspacetouch-updates.dex-backend.workers.dev/upd
 Kết quả phải có:
 
 ```text
-versionName : 1.0.0-beta.7
-versionCode : 8
+versionName : 1.0.0-beta.8
+versionCode : 9
 ```
 
 Kiểm tra APK versioned:
 
 ```powershell
-Invoke-WebRequest -Method Head "https://dexworkspacetouch-updates.dex-backend.workers.dev/releases/1.0.0-beta.7/DexWorkspaceTouch-1.0.0-beta.7-8.apk"
+Invoke-WebRequest -Method Head "https://dexworkspacetouch-updates.dex-backend.workers.dev/releases/1.0.0-beta.8/DexWorkspaceTouch-1.0.0-beta.8-9.apk"
 ```
 
 Mong đợi HTTP 200 và content type `application/vnd.android.package-archive`.

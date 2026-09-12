@@ -2,7 +2,7 @@
 param(
     [Parameter(Mandatory)][string]$BucketName,
     [Parameter(Mandatory)][string]$WorkerBaseUrl,
-    [string]$ApkPath = 'release-output/DexWorkspaceTouch-1.0.0-beta.4-5.apk',
+    [Parameter(Mandatory)][string]$ApkPath,
     [string]$ManifestPath = 'release-output/update-manifest.json',
     [string]$WranglerPath = 'update-delivery/node_modules/.bin/wrangler.cmd'
 )

@@ -107,7 +107,8 @@ export function deliveryText(release: ProductionRelease, licenseKey: string): st
   return `DEXWORKSPACETOUCH\n\nPhiên bản: ${release.versionName} (${release.versionCode})\n\nTải ứng dụng:\n${release.apkUrl}\n\n` +
     `APK SHA-256:\n${release.apkSha256}\n\nLicense Key:\n${licenseKey}\n\n` +
     "Cài đặt và kích hoạt:\n1. Tải APK từ URL chính thức.\n2. Cài và mở DexWorkspaceTouch.\n3. Nhập chính xác License Key.\n\n" +
-    "Cập nhật: dùng Kiểm tra cập nhật và cài đè APK mới. KHÔNG gỡ ứng dụng trước khi cập nhật.\n";
+    "Cập nhật: dùng Kiểm tra cập nhật và cài đè APK mới. KHÔNG gỡ ứng dụng trước khi cập nhật.\n\n" +
+    "Hỗ trợ: dexworkspacetouch.support@gmail.com. Cung cấp mã đơn hàng/customer reference; không gửi License Key công khai.\n";
 }
 
 function oneTime(record: FulfillmentRecord, release: ProductionRelease, licenseKey: string) {

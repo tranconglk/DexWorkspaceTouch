@@ -152,6 +152,11 @@ fulfillment-records\<fulfillmentId>.json
 
 # HỖ TRỢ SAU BÁN
 
+Kênh hỗ trợ khách hàng chính thức: `dexworkspacetouch.support@gmail.com`.
+
+Yêu cầu khách cung cấp mã đơn hàng hoặc customer reference. Không yêu cầu khách gửi License Key
+qua kênh công khai.
+
 ## Khách đổi điện thoại
 
 Tra record:
@@ -177,7 +182,7 @@ KHÔNG thể lấy lại key cũ.
 Dùng:
 
 ```powershell
-npm.cmd run fulfillment -- replace-license <fulfillmentId>
+npm.cmd run fulfillment -- replace-license <fulfillmentId> --order <newOrderReference> --customer <customerReference> --max-devices 1
 ```
 
 Flow:

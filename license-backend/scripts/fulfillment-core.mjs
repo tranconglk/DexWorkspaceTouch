@@ -204,7 +204,7 @@ export async function writeDeliveryArtifact(outputDirectory, fulfillmentId, rele
     "Cập nhật:\nTrong DexWorkspaceTouch, chọn Kiểm tra cập nhật, tải APK mới và cài đè bản hiện tại. KHÔNG gỡ ứng dụng trước khi cập nhật.\n" +
     "Gỡ ứng dụng có thể xóa workspace, dữ liệu cục bộ, device identity và token đã lưu.\n\n" +
     "Đổi điện thoại hoặc cài lại:\nLiên hệ hỗ trợ để reset thiết bị cũ trước khi kích hoạt trên thiết bị mới.\n\n" +
-    "Hỗ trợ:\nCung cấp mã đơn hàng/customer reference; không gửi License Key công khai.\n\n" +
+    "Hỗ trợ:\nEmail dexworkspacetouch.support@gmail.com và cung cấp mã đơn hàng/customer reference; không gửi License Key công khai.\n\n" +
     "CẢNH BÁO: File này chứa License Key của khách hàng. Hãy lưu/giao an toàn và xóa bản plaintext cục bộ khi không còn cần thiết.\n";
   await writeFile(target, content, { encoding: "utf8", flag: "wx" });
   return target;

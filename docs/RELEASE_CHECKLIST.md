@@ -1,11 +1,15 @@
-# Release Checklist
+# Production Release Checklist
+
+Read current version values from `app/build.gradle.kts` and the generated release manifest. Values
+in historical release notes are evidence only and must not be copied into a new release.
 
 ## Source and metadata
 
 - [ ] Work on `release/1.0-beta`.
 - [ ] Working tree is clean after the approved release commit.
-- [ ] Confirm `versionName=1.0.0-beta.2` and `versionCode=3` exceed every distributed build.
-- [x] Preserve the published `v1.0.0-beta.1` tag; the intended next tag is `v1.0.0-beta.2`.
+- [ ] Confirm `versionName` and `versionCode` match the approved release cut and exceed every distributed build.
+- [ ] Confirm the versioned R2 APK URL has never been used for different bytes.
+- [ ] Fetch the configured remote and confirm the release branch is not behind or diverged.
 - [ ] Confirm app label is `DexWorkspaceTouch`.
 - [x] Replace the placeholder launcher icon with approved adaptive, round, monochrome, legacy, and Android 12 splash resources.
 - [ ] Verify final launcher and splash presentation after reinstall on both Samsung test devices.
@@ -47,43 +51,16 @@
 
 ## Release
 
-- [ ] Review `RELEASE_NOTES_1.0.0_BETA_2.md`, privacy text, known limitations, and rollback notes.
+- [ ] Review the current release notes, privacy text, customer instructions, known limitations, and rollback notes.
 - [ ] Create the release commit only after approval.
 - [ ] Create the corrected annotated tag only after the signed artifact is verified.
 - [ ] Push branch/tag only after approval.
 - [ ] Preserve the previous APK and manual `.dwtbundle` backup for rollback.
+- [ ] Push/back up the verified source before production publication.
+- [ ] Upload a new immutable APK object first and publish `update-manifest.json` last.
+- [ ] Re-fetch the public manifest/APK and compare URL, version, size, SHA-256, and signer.
 
-Release artifact:
-app-release.apk
+Record candidate-specific artifact and device evidence in the active `REL-*` release document, not
+as reusable values in this checklist.
 
-Version:
-1.0.0-beta.2 (3)
-
-APK SHA-256:
-0561D75C39CEEC9AC328AB47C5896B60C6BA7970EFE0BDCA30645D9F66C46B23
-
-Signer certificate SHA-256:
-19AC0EA99125361B3C2083AAA44C8745EBAD9C55FA967642C2B9E5A1086A45E7
-
-Signature:
-APK Signature Scheme v2 verified
-Number of signers: 1
-RSA key size: 4096 bits
-
-
-Version: 1.0.0-beta.2 (3)
-
-APK SHA-256:
-0561D75C39CEEC9AC328AB47C5896B60C6BA7970EFE0BDCA30645D9F66C46B23
-
-Signer certificate SHA-256:
-19AC0EA99125361B3C2083AAA44C8745EBAD9C55FA967642C2B9E5A1086A45E7
-
-Signature:
-APK Signature Scheme v2 verified
-RSA 4096-bit
-1 signer
-
-Device smoke test:
-- S23 Ultra: PASS / PENDING
-- Note 8 ROM Note 9: PASS / PENDING
+Customer support: `dexworkspacetouch.support@gmail.com`.
