@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import com.trancong.dexworkspacetouch.ui.design.Dimensions
+import com.trancong.dexworkspacetouch.ui.design.DesignerElevation
 import com.trancong.dexworkspacetouch.ui.design.Spacing
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import com.trancong.dexworkspacetouch.workspace.designer.state.DesignerContextToolbarState
@@ -35,11 +39,15 @@ fun DesignerContextToolbar(
     onClearSelection: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    BoxWithConstraints(
+    Surface(
         modifier = modifier
             .fillMaxWidth()
             .semantics { contentDescription = "Thanh công cụ thiết kế workspace." },
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        tonalElevation = DesignerElevation.SnapshotCard,
     ) {
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth().padding(Spacing.M)) {
         val policy = designerToolbarLayoutPolicy(
             widthDp = maxWidth.value,
             wideBreakpointDp = Dimensions.WorkspaceDesignerToolbarWideWidth.value,
@@ -92,6 +100,7 @@ fun DesignerContextToolbar(
                 ToolbarStatus(state)
             }
         }
+    }
     }
 }
 
@@ -175,5 +184,10 @@ private fun ToolbarStatus(state: DesignerContextToolbarState, modifier: Modifier
         is DesignerContextToolbarState.Context.Divider -> context.statusText
         else -> state.summary.statusText
     }
-    Text(text = text, modifier = modifier.heightIn(min = Dimensions.DesignerStatusMinHeight))
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier.heightIn(min = Dimensions.DesignerStatusMinHeight),
+    )
 }

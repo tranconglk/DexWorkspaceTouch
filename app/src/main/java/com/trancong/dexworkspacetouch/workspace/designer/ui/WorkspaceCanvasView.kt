@@ -27,6 +27,7 @@ import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvas
 import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceDivider
 import com.trancong.dexworkspacetouch.workspace.designer.model.SplitDirection
 import com.trancong.dexworkspacetouch.workspace.designer.model.dividers
+import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppIconLoader
 import kotlin.math.roundToInt
 
 @Composable
@@ -41,6 +42,7 @@ fun WorkspaceCanvasView(
     onDividerDragEnd: () -> Unit,
     onDividerDragCancel: () -> Unit,
     modifier: Modifier = Modifier,
+    appIconLoader: AppIconLoader? = null,
 ) {
     val canvasShape = DesignerShapes.Workspace
     val dividers = canvas.dividers()
@@ -53,6 +55,7 @@ fun WorkspaceCanvasView(
                     cell = cell,
                     selected = cell.id == selectedCellId,
                     onClick = { onCellActivated(cell.id) },
+                    appIconLoader = appIconLoader,
                     modifier = Modifier.zIndex(ZLayers.Cell),
                 )
             }

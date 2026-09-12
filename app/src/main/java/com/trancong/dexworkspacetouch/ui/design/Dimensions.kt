@@ -30,9 +30,11 @@ object Dimensions {
     val WorkspaceCardMetadataMinHeight = 20.dp
     val WorkspaceCardUpdatedTextMinHeight = 20.dp
     val WorkspacePinIconSize = 24.dp
-    val AppPickerIconSize = 64.dp
-    val AppPickerItemMinWidth = 280.dp
-    val AppPickerItemMinHeight = 168.dp
+    val AppPickerIconSize = 52.dp
+    val AppPickerItemMinWidth = 220.dp
+    val AppPickerItemMinHeight = 120.dp
+    val AppPickerControlsWideWidth = 760.dp
+    val WorkspaceDesignerContentMaxWidth = 1600.dp
     val SnapshotLabelMinWidth = 96.dp
     val SnapshotLabelMinHeight = 56.dp
     val WorkspaceCardMinWidth = 280.dp

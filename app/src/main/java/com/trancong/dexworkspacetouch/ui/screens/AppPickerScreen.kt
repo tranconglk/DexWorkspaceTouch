@@ -2,6 +2,7 @@ package com.trancong.dexworkspacetouch.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -21,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -34,6 +37,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import com.trancong.dexworkspacetouch.ui.design.Dimensions
+import com.trancong.dexworkspacetouch.ui.design.DesignerElevation
+import com.trancong.dexworkspacetouch.ui.design.DwtStatusSurface
+import com.trancong.dexworkspacetouch.ui.design.DwtStatusTone
 import com.trancong.dexworkspacetouch.ui.design.Spacing
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.InstalledApp
@@ -59,37 +65,73 @@ fun AppPickerScreen(
             InvalidAppPickerRoute(onBack, Modifier.padding(innerPadding))
             return@Scaffold
         }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .imePadding()
-                .padding(horizontal = Spacing.L),
+        Box(
+            modifier = Modifier.fillMaxSize().padding(innerPadding).imePadding(),
+            contentAlignment = Alignment.TopCenter,
         ) {
-            TextButton(
-                onClick = onBack,
-                modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
-            ) { Text("Quay lại") }
-            Text(
-                text = "Chọn ứng dụng",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold,
-            )
-            SearchField(state)
-            FilterControls(state)
-            AppPickerBody(
-                state = state,
-                onAppSelected = { app -> onAppSelected(cellId, app.toAssignedApp()) },
-                modifier = Modifier.fillMaxWidth().weight(1f),
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .widthIn(max = Dimensions.GridContentMaxWidth)
+                    .padding(horizontal = Spacing.L),
+                verticalArrangement = Arrangement.spacedBy(Spacing.S),
+            ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Spacing.M),
+            ) {
+                TextButton(
+                    onClick = onBack,
+                    modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                ) { Text("Quay lại") }
+                Text(
+                    text = "Chọn ứng dụng",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+                AppPickerControls(state)
+                AppPickerBody(
+                    state = state,
+                    onAppSelected = { app -> onAppSelected(cellId, app.toAssignedApp()) },
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun SearchField(state: AppPickerViewModel) {
+private fun AppPickerControls(state: AppPickerViewModel) {
+    Surface(
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        tonalElevation = DesignerElevation.SnapshotCard,
+    ) {
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth().padding(Spacing.M)) {
+            if (maxWidth >= Dimensions.AppPickerControlsWideWidth) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.M),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    SearchField(state, Modifier.weight(1f))
+                    FilterControls(state, compact = true)
+                }
+            } else {
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.S)) {
+                    SearchField(state, Modifier.fillMaxWidth())
+                    FilterControls(state, compact = false)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SearchField(state: AppPickerViewModel, modifier: Modifier) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = Spacing.S),
+        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(Spacing.S),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -110,14 +152,15 @@ private fun SearchField(state: AppPickerViewModel) {
 }
 
 @Composable
-private fun FilterControls(state: AppPickerViewModel) {
+private fun FilterControls(state: AppPickerViewModel, compact: Boolean) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(bottom = Spacing.S),
+        modifier = if (compact) Modifier else Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(Spacing.S),
     ) {
-        FilterButton("Tất cả", "Hiển thị tất cả ứng dụng.", AppFilter.ALL, state, Modifier.weight(1f))
-        FilterButton("Người dùng", "Hiển thị ứng dụng người dùng.", AppFilter.USER, state, Modifier.weight(1f))
-        FilterButton("Hệ thống", "Hiển thị ứng dụng hệ thống.", AppFilter.SYSTEM, state, Modifier.weight(1f))
+        val itemModifier: Modifier = if (compact) Modifier else Modifier.weight(1f)
+        FilterButton("Tất cả", "Hiển thị tất cả ứng dụng.", AppFilter.ALL, state, itemModifier)
+        FilterButton("Người dùng", "Hiển thị ứng dụng người dùng.", AppFilter.USER, state, itemModifier)
+        FilterButton("Hệ thống", "Hiển thị ứng dụng hệ thống.", AppFilter.SYSTEM, state, itemModifier)
     }
 }
 
@@ -148,13 +191,14 @@ private fun AppPickerBody(
     val coroutineScope = rememberCoroutineScope()
     when {
         state.state.isLoading -> StatusMessage(
-            "Đang tải ứng dụng...",
-            modifier,
+            title = "Đang tải ứng dụng",
+            modifier = modifier,
             action = { CircularProgressIndicator() },
         )
         state.state.loadFailed -> StatusMessage(
-            message = "Không thể đọc danh sách ứng dụng.",
+            title = "Không thể đọc danh sách ứng dụng",
             modifier = modifier,
+            tone = DwtStatusTone.Error,
             action = {
                 Button(
                     onClick = { coroutineScope.launch { state.retry() } },
@@ -162,8 +206,12 @@ private fun AppPickerBody(
                 ) { Text("Thử lại") }
             },
         )
-        state.state.apps.isEmpty() -> StatusMessage("Không có ứng dụng có thể mở.", modifier)
-        state.filteredApps.isEmpty() -> StatusMessage("Không tìm thấy ứng dụng phù hợp.", modifier)
+        state.state.apps.isEmpty() -> StatusMessage("Không có ứng dụng có thể mở", modifier)
+        state.filteredApps.isEmpty() -> StatusMessage(
+            "Không tìm thấy ứng dụng phù hợp",
+            modifier,
+            supportingText = "Thử đổi từ khóa hoặc bộ lọc.",
+        )
         else -> LazyVerticalGrid(
             columns = GridCells.Adaptive(Dimensions.AppPickerItemMinWidth),
             modifier = modifier,
@@ -198,32 +246,36 @@ private fun InstalledAppItemWithIcon(
 
 @Composable
 private fun StatusMessage(
-    message: String,
+    title: String,
     modifier: Modifier,
+    supportingText: String? = null,
+    tone: DwtStatusTone = DwtStatusTone.Info,
     action: (@Composable () -> Unit)? = null,
 ) {
     Box(modifier, contentAlignment = Alignment.Center) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Spacing.S),
-        ) {
-            Text(message)
-            action?.invoke()
-        }
+        DwtStatusSurface(
+            tone = tone,
+            title = title,
+            supportingText = supportingText,
+            modifier = Modifier.widthIn(max = Dimensions.UpdateContentMaxWidth),
+            trailingContent = action,
+        )
     }
 }
 
 @Composable
 private fun InvalidAppPickerRoute(onBack: () -> Unit, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxSize().padding(Spacing.L),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text("Không thể xác định ô cần gán ứng dụng")
-        TextButton(
-            onClick = onBack,
-            modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
-        ) { Text("Quay lại") }
+    Box(modifier.fillMaxSize().padding(Spacing.L), contentAlignment = Alignment.Center) {
+        DwtStatusSurface(
+            tone = DwtStatusTone.Error,
+            title = "Không thể xác định ô cần gán ứng dụng",
+            modifier = Modifier.widthIn(max = Dimensions.UpdateContentMaxWidth),
+            trailingContent = {
+                TextButton(
+                    onClick = onBack,
+                    modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                ) { Text("Quay lại") }
+            },
+        )
     }
 }

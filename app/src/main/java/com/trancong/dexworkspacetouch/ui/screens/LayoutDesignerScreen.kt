@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedButton
@@ -23,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -35,6 +37,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
 import com.trancong.dexworkspacetouch.ui.design.DesignerElevation
 import com.trancong.dexworkspacetouch.ui.design.Dimensions
 import com.trancong.dexworkspacetouch.ui.design.InteractionZones
@@ -51,12 +54,14 @@ import com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceMergeRes
 import com.trancong.dexworkspacetouch.workspace.designer.model.requiresMergeConfirmation
 import com.trancong.dexworkspacetouch.workspace.designer.state.DesignerContextToolbarState
 import com.trancong.dexworkspacetouch.workspace.designer.ui.layout.fitSize
+import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppIconLoader
 import kotlinx.coroutines.launch
 
 @Composable
 fun LayoutDesignerScreen(
     state: WorkspaceDesignerViewModel,
     isNewWorkspace: Boolean,
+    appIconLoader: AppIconLoader,
     onBack: () -> Unit,
     onOpenAppPicker: (String) -> Unit,
     onSave: (String?) -> Unit,
@@ -139,35 +144,79 @@ fun LayoutDesignerScreen(
                 ),
                 tonalElevation = DesignerElevation.BottomBar,
             ) {
-                Row(
+                BoxWithConstraints(
                     modifier = Modifier.fillMaxWidth().padding(
                         horizontal = Spacing.L,
                         vertical = InteractionZones.DeadZone,
                     ),
-                    horizontalArrangement = Arrangement.spacedBy(InteractionZones.DeadZone),
                 ) {
-                    OutlinedButton(
-                        onClick = {},
-                        modifier = Modifier.weight(1f).height(TouchTargets.PrimaryButton),
-                    ) { Text("Mở") }
-                    Button(
-                        onClick = {
-                            if (isNewWorkspace) showNameDialog = true else onSave(null)
-                        },
-                        modifier = Modifier.weight(1f).height(TouchTargets.PrimaryButton),
-                    ) { Text("Lưu") }
+                    if (maxWidth >= 520.dp) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(InteractionZones.DeadZone),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = "Workspace",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.weight(1f),
+                            )
+                            WorkspaceActionButtons(
+                                isNewWorkspace = isNewWorkspace,
+                                onRequestName = { showNameDialog = true },
+                                onSave = onSave,
+                            )
+                        }
+                    } else {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(InteractionZones.DeadZone),
+                        ) {
+                            WorkspaceActionButtons(
+                                isNewWorkspace = isNewWorkspace,
+                                onRequestName = { showNameDialog = true },
+                                onSave = onSave,
+                                weighted = true,
+                            )
+                        }
+                    }
                 }
             }
         },
     ) { innerPadding ->
+        Box(
+            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            contentAlignment = Alignment.TopCenter,
+        ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .widthIn(max = Dimensions.WorkspaceDesignerContentMaxWidth)
                 .padding(horizontal = Spacing.L),
         ) {
-            TextButton(onClick = onBack) { Text("Quay lại") }
-            Text("Thiết kế workspace")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Spacing.M),
+            ) {
+                TextButton(
+                    onClick = onBack,
+                    modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                ) { Text("Quay lại") }
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Thiết kế workspace",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Text(
+                        text = if (isNewWorkspace) "Workspace mới" else "Chỉnh sửa bố cục hiện tại",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
             DesignerContextToolbar(
                 state = state.toolbarState,
                 onUndo = { state.undo() },
@@ -195,8 +244,11 @@ fun LayoutDesignerScreen(
                         availableHeight = maxHeight.value,
                         aspectRatio = Dimensions.WorkspaceAspectRatio,
                     )
-                    Box(
+                    Surface(
                         modifier = Modifier.size(fittedSize.width.dp, fittedSize.height.dp),
+                        shape = MaterialTheme.shapes.medium,
+                        color = MaterialTheme.colorScheme.surfaceContainerLow,
+                        tonalElevation = DesignerElevation.SnapshotCard,
                     ) {
                         WorkspaceCanvasView(
                             canvas = state.canvas,
@@ -212,13 +264,33 @@ fun LayoutDesignerScreen(
                             onDividerDragRatio = state::updateDividerResize,
                             onDividerDragEnd = { state.commitDividerResize() },
                             onDividerDragCancel = state::cancelDividerResize,
+                            appIconLoader = appIconLoader,
                             modifier = Modifier.fillMaxSize(),
                         )
                     }
                 }
             }
         }
+        }
     }
+}
+
+@Composable
+private fun androidx.compose.foundation.layout.RowScope.WorkspaceActionButtons(
+    isNewWorkspace: Boolean,
+    onRequestName: () -> Unit,
+    onSave: (String?) -> Unit,
+    weighted: Boolean = false,
+) {
+    val buttonModifier = if (weighted) Modifier.weight(1f) else Modifier.widthIn(min = 120.dp)
+    OutlinedButton(
+        onClick = {},
+        modifier = buttonModifier.height(TouchTargets.PrimaryButton),
+    ) { Text("Mở") }
+    Button(
+        onClick = { if (isNewWorkspace) onRequestName() else onSave(null) },
+        modifier = buttonModifier.height(TouchTargets.PrimaryButton),
+    ) { Text("Lưu") }
 }
 
 private fun performMerge(

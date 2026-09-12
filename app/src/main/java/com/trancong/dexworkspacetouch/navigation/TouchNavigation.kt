@@ -488,6 +488,7 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
             LayoutDesignerScreen(
                 state = designerViewModel,
                 isNewWorkspace = libraryViewModel.isCreatingWorkspace,
+                appIconLoader = application.appIconLoader,
                 onBack = {
                     libraryViewModel.finishEditing()
                     navController.navigateUp()
