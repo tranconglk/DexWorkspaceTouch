@@ -1,6 +1,9 @@
 package com.trancong.dexworkspacetouch.feature.car
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -21,18 +24,23 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.trancong.dexworkspacetouch.ui.design.Spacing
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
+import com.trancong.dexworkspacetouch.ui.design.Dimensions
+import com.trancong.dexworkspacetouch.ui.design.DesignerAnimation
 import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppIconLoader
 import com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppIconState
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.AppIdentity
@@ -46,11 +54,17 @@ fun CarWorkspaceDashboard(
     appIconLoader: AppIconLoader? = null,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+    Surface(
         modifier = modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(Spacing.L),
         verticalArrangement = Arrangement.spacedBy(Spacing.S),
     ) {
-        Text("Workspace dashboard", style = MaterialTheme.typography.titleLarge)
+        Text("Workspace dashboard", style = MaterialTheme.typography.headlineSmall)
         rows.chunked(DashboardColumns).forEach { rowItems ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -75,6 +89,7 @@ fun CarWorkspaceDashboard(
             }
         }
     }
+    }
 }
 
 @Composable
@@ -86,16 +101,30 @@ private fun CarWorkspaceDashboardCard(
     modifier: Modifier = Modifier,
 ) {
     val warning = row.status == CarWorkspaceShortcutStatus.Unavailable
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+    val normalColor = when {
+        warning -> MaterialTheme.colorScheme.errorContainer
+        row.status == CarWorkspaceShortcutStatus.Unconfigured -> MaterialTheme.colorScheme.surfaceContainer
+        else -> MaterialTheme.colorScheme.surfaceContainerHigh
+    }
+    val containerColor by animateColorAsState(
+        targetValue = if (pressed) MaterialTheme.colorScheme.primaryContainer else normalColor,
+        animationSpec = tween(DesignerAnimation.FastDurationMillis),
+        label = "carWorkspaceCardPress",
+    )
     Card(
         onClick = onClick,
         enabled = enabled,
-        shape = RoundedCornerShape(16.dp),
+        interactionSource = interactionSource,
+        shape = MaterialTheme.shapes.medium,
+        border = BorderStroke(
+            if (pressed) 2.dp else 1.dp,
+            if (pressed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+        ),
         colors = CardDefaults.cardColors(
-            containerColor = if (warning) {
-                MaterialTheme.colorScheme.errorContainer
-            } else {
-                MaterialTheme.colorScheme.surfaceVariant
-            },
+            containerColor = containerColor,
+            disabledContainerColor = normalColor.copy(alpha = 0.62f),
         ),
         modifier = modifier
             .heightIn(min = DashboardCardMinimumHeight)
@@ -104,7 +133,7 @@ private fun CarWorkspaceDashboardCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Spacing.S),
+                    .padding(Spacing.M),
             verticalArrangement = Arrangement.spacedBy(Spacing.S),
         ) {
             CarWorkspacePreviewSurface(
@@ -136,7 +165,7 @@ private fun CarWorkspacePreviewSurface(
     appIconLoader: AppIconLoader?,
     modifier: Modifier = Modifier,
 ) {
-    val previewShape = RoundedCornerShape(10.dp)
+    val previewShape = MaterialTheme.shapes.small
     val icons = remember(row.preview, appIconLoader) {
         row.preview?.cells.orEmpty().associateWith { cell ->
             cell.appIdentity?.let { identity -> appIconLoader?.loadIcon(identity) }
@@ -145,7 +174,8 @@ private fun CarWorkspacePreviewSurface(
     Box(
         modifier = modifier
             .clip(previewShape)
-            .background(MaterialTheme.colorScheme.surface),
+            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, previewShape),
         contentAlignment = Alignment.Center,
     ) {
         when (row.status) {
@@ -190,25 +220,27 @@ private fun CarWorkspacePreviewSurface(
                     }
                 }
             }
-            CarWorkspaceShortcutStatus.Unconfigured -> Text(
-                text = "+",
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center,
-            )
-            CarWorkspaceShortcutStatus.Unavailable -> Text(
-                text = "!",
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.error,
-                textAlign = TextAlign.Center,
-            )
+            CarWorkspaceShortcutStatus.Unconfigured -> Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(Spacing.XS),
+            ) {
+                Text("+", style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.primary)
+                Text("Chưa cấu hình", style = MaterialTheme.typography.labelLarge)
+            }
+            CarWorkspaceShortcutStatus.Unavailable -> Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(Spacing.XS),
+            ) {
+                Text("!", style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.error)
+                Text("Không khả dụng", style = MaterialTheme.typography.labelLarge)
+            }
         }
     }
 }
 
 private const val DashboardColumns = 2
 private val DashboardCardMinimumHeight = TouchTargets.SecondaryButton + 72.dp
-private val DashboardPreviewHeight = 82.dp
+private val DashboardPreviewHeight = Dimensions.CarDashboardPreviewHeight
 private val PreviewPadding = 5.dp
 private val PreviewCellGap = 2.dp
 private val PreviewIconSize = 34.dp

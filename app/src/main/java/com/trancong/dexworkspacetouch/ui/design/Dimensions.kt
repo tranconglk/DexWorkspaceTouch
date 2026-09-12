@@ -35,6 +35,10 @@ object Dimensions {
     val AppPickerItemMinHeight = 120.dp
     val AppPickerControlsWideWidth = 760.dp
     val WorkspaceDesignerContentMaxWidth = 1600.dp
+    val CarContentMaxWidth = 1600.dp
+    val CarDashboardMaxWidth = 1320.dp
+    val CarConfigurationMaxWidth = 960.dp
+    val CarDashboardPreviewHeight = 112.dp
     val SnapshotLabelMinWidth = 96.dp
     val SnapshotLabelMinHeight = 56.dp
     val WorkspaceCardMinWidth = 280.dp
