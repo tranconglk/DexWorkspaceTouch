@@ -9,6 +9,10 @@ data class DisplayWorkAreaSnapshot(
     val hostWindowMode: HostWindowMode,
     val insetCandidates: List<WorkAreaInsetCandidate> = emptyList(),
     val selectedInsetSource: WorkAreaInsetSource = WorkAreaInsetSource.COMBINED,
+    val displayName: String? = null,
+    val displayType: Int? = null,
+    val displayModeWidthPx: Int? = null,
+    val displayModeHeightPx: Int? = null,
 ) {
     init {
         require(displayId >= 0) { "displayId must not be negative" }

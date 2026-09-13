@@ -87,6 +87,11 @@ import com.trancong.dexworkspacetouch.feature.car.shortcut.CarDockPinRequestResu
 import com.trancong.dexworkspacetouch.feature.car.shortcut.CarDockShortcutPinController
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchRuntime
 import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspaceRepository
+import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.WorkspaceLaunchDiagnosticExport
+import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.prepareLatestExport
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import android.widget.Toast
 
 private object Routes {
     const val Home = "home"
@@ -120,6 +125,7 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
     val transferScope = rememberCoroutineScope()
     var exportMode by rememberSaveable { mutableStateOf<String?>(null) }
     var libraryOutputInProgress by rememberSaveable { mutableStateOf(false) }
+    var pendingDiagnosticExport by remember { mutableStateOf<WorkspaceLaunchDiagnosticExport?>(null) }
 
     fun beginLibraryOutput(): Boolean {
         val transition = beginLibraryOutputAction(
@@ -168,6 +174,25 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
             catch (_: Exception) { transferViewModel.fail(WorkspaceTransferFailure.WRITE_FAILURE) }
         }
         exportMode = null
+    }
+    val diagnosticSaveLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json"),
+    ) { uri ->
+        val export = pendingDiagnosticExport
+        pendingDiagnosticExport = null
+        if (uri != null && export != null) transferScope.launch {
+            val saved = runCatching {
+                withContext(Dispatchers.IO) {
+                    activity.contentResolver.openOutputStream(uri, "w")?.use { it.write(export.bytes) }
+                        ?: error("No output stream")
+                }
+            }.isSuccess
+            Toast.makeText(
+                activity,
+                if (saved) "Đã xuất chẩn đoán Workspace." else "Không thể xuất chẩn đoán Workspace.",
+                Toast.LENGTH_SHORT,
+            ).show()
+        }
     }
     val importLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) transferScope.launch {
@@ -379,7 +404,11 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
     )
     val launchHostToken = remember(activity) { Any() }
     val launchRuntime = remember(activity, launchViewModel.legacyReferenceStore) {
-        AndroidWorkspaceLaunchRuntime(activity, launchViewModel.legacyReferenceStore)
+        AndroidWorkspaceLaunchRuntime(
+            activity,
+            launchViewModel.legacyReferenceStore,
+            application.workspaceLaunchDiagnostics,
+        )
     }
     DisposableEffect(launchRuntime) {
         onDispose { launchViewModel.onHostDisposed(launchHostToken) }
@@ -459,6 +488,23 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
                 onRestoreLibrary = { libraryRestoreLauncher.launch("*/*") },
                 backupLibraryEnabled = libraryViewModel.workspaces.isNotEmpty() && !libraryViewModel.isWriting,
                 diagnosticInfo = createAppDiagnosticInfo(activity),
+                onExportWorkspaceDiagnostics = {
+                    val export = application.workspaceLaunchDiagnostics.prepareLatestExport()
+                    if (export == null) {
+                        Toast.makeText(activity, "Chưa có dữ liệu chẩn đoán Workspace.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        pendingDiagnosticExport = export
+                        diagnosticSaveLauncher.launch(export.fileName)
+                    }
+                },
+                onClearWorkspaceDiagnostics = {
+                    val cleared = application.workspaceLaunchDiagnostics.clear()
+                    Toast.makeText(
+                        activity,
+                        if (cleared) "Đã xóa dữ liệu chẩn đoán Workspace." else "Không thể xóa dữ liệu chẩn đoán.",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                },
                 appIconLoader = application.appIconLoader,
                 nowEpochMillis = com.trancong.dexworkspacetouch.workspace.library.state.SystemWorkspaceClock.nowEpochMillis(),
             )

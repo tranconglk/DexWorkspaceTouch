@@ -163,6 +163,10 @@ class ActivityDisplayWorkAreaProvider(
             },
             insetCandidates = candidates,
             selectedInsetSource = resolution.selectedSource,
+            displayName = display.name,
+            displayType = null,
+            displayModeWidthPx = display.mode.physicalWidth,
+            displayModeHeightPx = display.mode.physicalHeight,
         )
     }
 
@@ -431,6 +435,10 @@ class ActivityDisplayWorkAreaProvider(
             hostWindowMode = hostWindowMode,
             insetCandidates = candidates,
             selectedInsetSource = selection.source,
+            displayName = display.name,
+            displayType = null,
+            displayModeWidthPx = display.mode.physicalWidth,
+            displayModeHeightPx = display.mode.physicalHeight,
         )
     }
 

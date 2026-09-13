@@ -10,6 +10,7 @@ import com.trancong.dexworkspacetouch.workspace.apppicker.model.AppIdentity
 import com.trancong.dexworkspacetouch.workspace.designer.model.NormalizedBounds
 import com.trancong.dexworkspacetouch.workspace.launcher.model.AppLaunchFailureReason
 import com.trancong.dexworkspacetouch.workspace.launcher.model.AppLaunchTarget
+import com.trancong.dexworkspacetouch.workspace.launcher.model.WorkspaceLaunchRequest
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -17,8 +18,40 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.WorkspaceLaunchDiagnosticContext
+import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.WorkspaceLaunchDiagnostics
 
 class AndroidSingleAppLauncherTest {
+    @Test
+    fun `diagnostics failure never blocks a successful launch`() = runBlocking {
+        val platform = FakeSingleAppLaunchPlatform()
+        val diagnostics = object : WorkspaceLaunchDiagnostics {
+            override fun begin(request: WorkspaceLaunchRequest): String = error("diagnostic begin")
+            override fun record(
+                context: WorkspaceLaunchDiagnosticContext,
+                target: AppLaunchTarget,
+                activityInfo: com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.WorkspaceLaunchActivityInfo?,
+                snapshot: DisplayWorkAreaSnapshot?,
+                beforeClampBounds: com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.DiagnosticRect?,
+                requestedPixelBounds: PixelBounds?,
+                marginPx: Int?,
+                intentFlags: Int,
+                launchDisplayId: Int?,
+                launchStartedAtEpochMillis: Long?,
+                launchCompletedAtEpochMillis: Long?,
+                result: String,
+            ) = error("diagnostic record")
+            override fun finish(sessionId: String) = error("diagnostic finish")
+        }
+
+        val result = AndroidSingleAppLauncher(platform, diagnostics = diagnostics).launch(
+            target,
+            WorkspaceLaunchDiagnosticContext("session", 1),
+        )
+
+        assertTrue(result is SingleAppLaunchResult.Success)
+        assertTrue(platform.startCalled)
+    }
     private val target = AppLaunchTarget(
         identity = AppIdentity("com.example.app", "com.example.app.MainActivity"),
         bounds = NormalizedBounds.FullCanvas,

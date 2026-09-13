@@ -9,10 +9,12 @@ import com.trancong.dexworkspacetouch.workspace.launcher.model.WorkspaceLaunchRe
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.LaunchEnvironmentCheck
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.LaunchEnvironmentFailure
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchRuntime
+import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.WorkspaceLaunchDiagnostics
 
 class AndroidWorkspaceLaunchRuntime(
     activity: Activity,
     legacyReferenceStore: LegacyDisplayWorkAreaReferenceStore,
+    diagnostics: WorkspaceLaunchDiagnostics = WorkspaceLaunchDiagnostics.None,
 ) : WorkspaceLaunchRuntime {
     private val host = ActivityForegroundLaunchHost(activity)
     private val providerFactory = { hostActivity: Activity ->
@@ -29,7 +31,9 @@ class AndroidWorkspaceLaunchRuntime(
                 packageManagerAdapter = PackageManagerAdapter(activity.packageManager),
                 workAreaProviderFactory = providerFactory,
             ),
+            diagnostics = diagnostics,
         ),
+        diagnostics = diagnostics,
     )
 
     override fun checkEnvironment(): LaunchEnvironmentCheck {

@@ -16,6 +16,7 @@ import com.trancong.dexworkspacetouch.workspace.launcher.model.AppLaunchTarget
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.WorkspaceLaunchActivityInfo
 
 class ActivitySingleAppLaunchPlatform(
     private val launchHost: ForegroundLaunchHost,
@@ -34,6 +35,15 @@ class ActivitySingleAppLaunchPlatform(
     override fun verifyComponent(identity: AppIdentity): ComponentVerificationResult {
         return verifyLaunchComponent(identity, packageManagerAdapter)
     }
+
+    override fun activityInfo(identity: AppIdentity): WorkspaceLaunchActivityInfo? = runCatching {
+        packageManagerAdapter.getActivityInfo(identity).let {
+            WorkspaceLaunchActivityInfo(it.launchMode, it.documentLaunchMode, it.taskAffinity, null)
+        }
+    }.getOrNull()
+
+    override fun launchDisplayId(expectedDisplayId: Int): Int? =
+        expectedDisplayId.takeIf { displayRoutingMode == LaunchDisplayRoutingMode.EXPLICIT }
 
     override fun reportRejectedBounds(snapshot: DisplayWorkAreaSnapshot, bounds: PixelBounds) {
         Log.w(
@@ -58,8 +68,7 @@ class ActivitySingleAppLaunchPlatform(
             val intent = Intent(Intent.ACTION_MAIN).apply {
                 addCategory(Intent.CATEGORY_LAUNCHER)
                 component = ComponentName(target.identity.packageName, activityName)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+                addFlags(WORKSPACE_LAUNCH_INTENT_FLAGS)
             }
             val rect = bounds.toAndroidRect()
             val options = ActivityOptions.makeBasic().setLaunchBounds(rect).apply {
@@ -131,3 +140,6 @@ enum class LaunchDisplayRoutingMode {
     INHERITED,
     EXPLICIT,
 }
+
+internal const val WORKSPACE_LAUNCH_INTENT_FLAGS: Int =
+    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK

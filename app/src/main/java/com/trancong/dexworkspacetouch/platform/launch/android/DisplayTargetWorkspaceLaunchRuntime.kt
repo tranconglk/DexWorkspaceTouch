@@ -26,10 +26,13 @@ import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceL
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.WorkspaceLaunchActivityInfo
+import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.WorkspaceLaunchDiagnostics
 
 /** Workspace runtime for a process-owned overlay on an explicitly selected external display. */
 class DisplayTargetWorkspaceLaunchRuntime(
     context: Context,
+    diagnostics: WorkspaceLaunchDiagnostics = WorkspaceLaunchDiagnostics.None,
     displayProvider: () -> Display?,
 ) : WorkspaceLaunchRuntime {
     private val applicationContext = context.applicationContext
@@ -37,7 +40,10 @@ class DisplayTargetWorkspaceLaunchRuntime(
         applicationContext,
         displayProvider,
     )
-    private val launcher = AndroidWorkspaceLauncher(AndroidSingleAppLauncher(platform))
+    private val launcher = AndroidWorkspaceLauncher(
+        AndroidSingleAppLauncher(platform, diagnostics = diagnostics),
+        diagnostics = diagnostics,
+    )
 
     override fun checkEnvironment(): LaunchEnvironmentCheck =
         if (platform.currentSnapshot() != null) {
@@ -102,11 +108,23 @@ internal class DisplayTargetSingleAppLaunchPlatform(
             hostWindowBounds = rawBounds,
             density = windowContext.resources.displayMetrics.density,
             hostWindowMode = HostWindowMode.MAXIMIZED,
+            displayName = display.name,
+            displayType = null,
+            displayModeWidthPx = display.mode.physicalWidth,
+            displayModeHeightPx = display.mode.physicalHeight,
         )
     }
 
     override fun verifyComponent(identity: AppIdentity): ComponentVerificationResult =
         verifyLaunchComponent(identity, packageManagerAdapter)
+
+    override fun activityInfo(identity: AppIdentity): WorkspaceLaunchActivityInfo? = runCatching {
+        packageManagerAdapter.getActivityInfo(identity).let {
+            WorkspaceLaunchActivityInfo(it.launchMode, it.documentLaunchMode, it.taskAffinity, null)
+        }
+    }.getOrNull()
+
+    override fun launchDisplayId(expectedDisplayId: Int): Int? = expectedDisplayId
 
     override suspend fun start(
         target: AppLaunchTarget,
@@ -122,8 +140,7 @@ internal class DisplayTargetSingleAppLaunchPlatform(
             val intent = Intent(Intent.ACTION_MAIN).apply {
                 addCategory(Intent.CATEGORY_LAUNCHER)
                 component = ComponentName(target.identity.packageName, activityName)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+                addFlags(WORKSPACE_LAUNCH_INTENT_FLAGS)
             }
             val options = ActivityOptions.makeBasic()
                 .setLaunchBounds(bounds.toAndroidRect())

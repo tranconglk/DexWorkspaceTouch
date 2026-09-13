@@ -10,14 +10,18 @@ import com.trancong.dexworkspacetouch.workspace.launcher.model.WorkspaceLaunchRe
 import com.trancong.dexworkspacetouch.workspace.launcher.model.WorkspaceLaunchResult
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
+import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.WorkspaceLaunchDiagnosticContext
+import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.WorkspaceLaunchDiagnostics
 
 class AndroidWorkspaceLauncher(
     private val singleAppLauncher: SingleAppLauncher,
     private val sequencingPolicy: LaunchSequencingPolicy = LaunchSequencingPolicy(),
     private val launchDelay: LaunchDelay = CoroutineLaunchDelay,
     private val logger: WorkspaceLaunchLogger = WorkspaceLaunchLogger.Android,
+    private val diagnostics: WorkspaceLaunchDiagnostics = WorkspaceLaunchDiagnostics.None,
 ) : WorkspaceLauncher {
     override suspend fun launch(request: WorkspaceLaunchRequest): WorkspaceLaunchResult {
+        val diagnosticSessionId = runCatching { diagnostics.begin(request) }.getOrNull()
         val orderedTargets = request.targets.sortedBy(AppLaunchTarget::order)
         val launchedTargets = mutableListOf<AppLaunchTargetResult>()
         val failedTargets = mutableListOf<AppLaunchFailure>()
@@ -26,7 +30,10 @@ class AndroidWorkspaceLauncher(
             currentCoroutineContext().ensureActive()
             logger.log(target.logPrefix(request.workspaceId) + " start")
 
-            when (val result = singleAppLauncher.launch(target)) {
+            val diagnosticContext = diagnosticSessionId?.let {
+                WorkspaceLaunchDiagnosticContext(it, index + 1)
+            }
+            when (val result = singleAppLauncher.launch(target, diagnosticContext)) {
                 is SingleAppLaunchResult.Success -> {
                     launchedTargets += result.launchedTarget
                     logger.log(target.logPrefix(request.workspaceId) + " SUCCESS")
@@ -56,6 +63,7 @@ class AndroidWorkspaceLauncher(
             }
         }
 
+        diagnosticSessionId?.let { runCatching { diagnostics.finish(it) } }
         return aggregate(launchedTargets, failedTargets)
     }
 

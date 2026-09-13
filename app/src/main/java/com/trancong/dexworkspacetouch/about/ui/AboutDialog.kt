@@ -41,6 +41,8 @@ fun AboutDialog(
     info: AppDiagnosticInfo,
     copySuccessVisible: Boolean,
     onCopy: () -> Unit,
+    onExportWorkspaceDiagnostics: () -> Unit,
+    onClearWorkspaceDiagnostics: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     Dialog(
@@ -109,7 +111,18 @@ fun AboutDialog(
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                         }
-                        AboutActions(onCopy = onCopy, onDismiss = onDismiss)
+                        Text("Chẩn đoán Workspace", style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            "Báo cáo chỉ chứa thông tin kỹ thuật về lần mở Workspace gần nhất và chỉ được xuất khi bạn chọn nơi lưu.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        AboutActions(
+                            onCopy = onCopy,
+                            onExportWorkspaceDiagnostics = onExportWorkspaceDiagnostics,
+                            onClearWorkspaceDiagnostics = onClearWorkspaceDiagnostics,
+                            onDismiss = onDismiss,
+                        )
                     }
                 }
             }
@@ -150,24 +163,41 @@ private fun AboutInfoRow(label: String, value: String) {
 }
 
 @Composable
-private fun AboutActions(onCopy: () -> Unit, onDismiss: () -> Unit) {
+private fun AboutActions(
+    onCopy: () -> Unit,
+    onExportWorkspaceDiagnostics: () -> Unit,
+    onClearWorkspaceDiagnostics: () -> Unit,
+    onDismiss: () -> Unit,
+) {
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
         val wide = maxWidth >= Dimensions.AboutWideLayoutBreakpoint
         if (wide) {
-            Row(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.S, Alignment.End),
+                verticalArrangement = Arrangement.spacedBy(Spacing.S),
             ) {
-                OutlinedButton(
-                    onClick = onDismiss,
-                    modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
-                ) { Text("Đóng") }
-                Button(
-                    onClick = onCopy,
-                    modifier = Modifier
-                        .heightIn(min = TouchTargets.SecondaryButton)
-                        .semantics { contentDescription = "Sao chép thông tin chẩn đoán." },
-                ) { Text("Sao chép thông tin") }
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Spacing.S, Alignment.End)) {
+                    OutlinedButton(
+                        onClick = onClearWorkspaceDiagnostics,
+                        modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                    ) { Text("Xóa chẩn đoán") }
+                    OutlinedButton(
+                        onClick = onExportWorkspaceDiagnostics,
+                        modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                    ) { Text("Xuất chẩn đoán") }
+                }
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Spacing.S, Alignment.End)) {
+                    OutlinedButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                    ) { Text("Đóng") }
+                    Button(
+                        onClick = onCopy,
+                        modifier = Modifier
+                            .heightIn(min = TouchTargets.SecondaryButton)
+                            .semantics { contentDescription = "Sao chép thông tin chẩn đoán." },
+                    ) { Text("Sao chép thông tin") }
+                }
             }
         } else {
             Column(
@@ -181,6 +211,14 @@ private fun AboutActions(onCopy: () -> Unit, onDismiss: () -> Unit) {
                         .heightIn(min = TouchTargets.SecondaryButton)
                         .semantics { contentDescription = "Sao chép thông tin chẩn đoán." },
                 ) { Text("Sao chép thông tin") }
+                OutlinedButton(
+                    onClick = onExportWorkspaceDiagnostics,
+                    modifier = Modifier.fillMaxWidth().heightIn(min = TouchTargets.SecondaryButton),
+                ) { Text("Xuất chẩn đoán Workspace") }
+                OutlinedButton(
+                    onClick = onClearWorkspaceDiagnostics,
+                    modifier = Modifier.fillMaxWidth().heightIn(min = TouchTargets.SecondaryButton),
+                ) { Text("Xóa chẩn đoán Workspace") }
                 OutlinedButton(
                     onClick = onDismiss,
                     modifier = Modifier.fillMaxWidth().heightIn(min = TouchTargets.SecondaryButton),

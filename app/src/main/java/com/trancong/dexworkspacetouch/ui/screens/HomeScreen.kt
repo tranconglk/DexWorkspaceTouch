@@ -137,6 +137,8 @@ fun HomeScreen(
     onRestoreLibrary: () -> Unit = {},
     backupLibraryEnabled: Boolean = true,
     diagnosticInfo: AppDiagnosticInfo,
+    onExportWorkspaceDiagnostics: () -> Unit = {},
+    onClearWorkspaceDiagnostics: () -> Unit = {},
     appIconLoader: AppIconLoader? = null,
     nowEpochMillis: Long = 0L,
 ) {
@@ -424,6 +426,8 @@ fun HomeScreen(
             info = diagnosticInfo,
             copySuccessVisible = showAboutCopySuccess,
             onCopy = { dispatchAboutEvent(AboutDialogEvent.CopyRequested) },
+            onExportWorkspaceDiagnostics = onExportWorkspaceDiagnostics,
+            onClearWorkspaceDiagnostics = onClearWorkspaceDiagnostics,
             onDismiss = { dispatchAboutEvent(AboutDialogEvent.Close) },
         )
     }

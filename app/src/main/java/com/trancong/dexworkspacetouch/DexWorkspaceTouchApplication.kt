@@ -28,6 +28,7 @@ import com.trancong.dexworkspacetouch.license.infrastructure.identity.AndroidDev
 import com.trancong.dexworkspacetouch.update.AppUpdateRepository
 import com.trancong.dexworkspacetouch.update.UpdateManifestClient
 import okhttp3.OkHttpClient
+import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.AndroidWorkspaceLaunchDiagnostics
 
 class DexWorkspaceTouchApplication : Application() {
     lateinit var workspaceRepository: WorkspaceRepository
@@ -41,6 +42,8 @@ class DexWorkspaceTouchApplication : Application() {
     lateinit var licenseRepository: LicenseRepository
         private set
     lateinit var appUpdateRepository: AppUpdateRepository
+        private set
+    lateinit var workspaceLaunchDiagnostics: AndroidWorkspaceLaunchDiagnostics
         private set
     val licenseTimeProvider = LicenseTimeProvider(System::currentTimeMillis)
     val carWorkflowExecutionArbiter = CarWorkflowExecutionArbiter()
@@ -58,6 +61,7 @@ class DexWorkspaceTouchApplication : Application() {
             dao = database.workspaceDao(),
             serializer = DeterministicWorkspaceCanvasJsonSerializer(),
         )
+        workspaceLaunchDiagnostics = AndroidWorkspaceLaunchDiagnostics.create(applicationContext)
         carWorkspaceShortcutPreferences = createCarWorkspaceShortcutPreferences(applicationContext)
         carFloatingDockCoordinator = CarFloatingDockCoordinator.create(
             applicationContext,
@@ -65,6 +69,7 @@ class DexWorkspaceTouchApplication : Application() {
             workspaceRepository,
             carWorkspaceShortcutPreferences,
             carWorkflowExecutionArbiter,
+            workspaceLaunchDiagnostics,
         )
         val trustedKeys = if (BuildConfig.DEBUG && BuildConfig.LICENSE_TRUSTED_PUBLIC_KEYS_JSON == "[]") {
             TrustedLicenseSigningKeys.emptyForDebug()

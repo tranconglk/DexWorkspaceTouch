@@ -15,7 +15,12 @@ class LaunchBoundsCalculator(private val marginPx: Int) {
     fun calculate(
         normalizedBounds: NormalizedBounds,
         workArea: DisplayWorkArea,
-    ): BoundsCalculationResult {
+    ): BoundsCalculationResult = trace(normalizedBounds, workArea).result
+
+    fun trace(
+        normalizedBounds: NormalizedBounds,
+        workArea: DisplayWorkArea,
+    ): LaunchBoundsTrace {
         val left = (
             workArea.originX + normalizedBounds.left * workArea.usableWidth
             ).roundToInt() + marginPx
@@ -35,12 +40,25 @@ class LaunchBoundsCalculator(private val marginPx: Int) {
         val clampedBottom = bottom.coerceIn(workArea.originY, workArea.usableBottom)
 
         if (clampedRight <= clampedLeft || clampedBottom <= clampedTop) {
-            return BoundsCalculationResult.Failure(
-                BoundsCalculationFailureReason.INSUFFICIENT_SPACE,
+            return LaunchBoundsTrace(
+                beforeClamp = RawPixelBounds(left, top, right, bottom),
+                result = BoundsCalculationResult.Failure(
+                    BoundsCalculationFailureReason.INSUFFICIENT_SPACE,
+                ),
             )
         }
-        return BoundsCalculationResult.Success(
-            PixelBounds(clampedLeft, clampedTop, clampedRight, clampedBottom),
+        return LaunchBoundsTrace(
+            beforeClamp = RawPixelBounds(left, top, right, bottom),
+            result = BoundsCalculationResult.Success(
+                PixelBounds(clampedLeft, clampedTop, clampedRight, clampedBottom),
+            ),
         )
     }
 }
+
+data class LaunchBoundsTrace(
+    val beforeClamp: RawPixelBounds,
+    val result: BoundsCalculationResult,
+)
+
+data class RawPixelBounds(val left: Int, val top: Int, val right: Int, val bottom: Int)

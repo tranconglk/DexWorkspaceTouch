@@ -4,11 +4,16 @@ import com.trancong.dexworkspacetouch.platform.launch.bounds.DisplayWorkAreaSnap
 import com.trancong.dexworkspacetouch.platform.launch.bounds.PixelBounds
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.AppIdentity
 import com.trancong.dexworkspacetouch.workspace.launcher.model.AppLaunchTarget
+import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.WorkspaceLaunchActivityInfo
 
 interface SingleAppLaunchPlatform {
     fun currentSnapshot(): DisplayWorkAreaSnapshot?
 
     fun verifyComponent(identity: AppIdentity): ComponentVerificationResult
+
+    fun activityInfo(identity: AppIdentity): WorkspaceLaunchActivityInfo? = null
+
+    fun launchDisplayId(expectedDisplayId: Int): Int? = null
 
     fun reportRejectedBounds(snapshot: DisplayWorkAreaSnapshot, bounds: PixelBounds) = Unit
 

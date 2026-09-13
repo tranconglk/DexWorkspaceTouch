@@ -3,6 +3,7 @@ package com.trancong.dexworkspacetouch.workspace.apppicker.infrastructure
 import android.content.Intent
 import android.content.ComponentName
 import android.content.pm.ApplicationInfo
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.graphics.drawable.Drawable
@@ -21,11 +22,15 @@ class PackageManagerAdapter(
     }
 
     fun verifyActivityExists(identity: AppIdentity) {
+        getActivityInfo(identity)
+    }
+
+    fun getActivityInfo(identity: AppIdentity): ActivityInfo {
         val activityName = requireNotNull(identity.activityName) {
             "activityName is required for launch verification"
         }
         val component = ComponentName(identity.packageName, activityName)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             packageManager.getActivityInfo(component, PackageManager.ComponentInfoFlags.of(0L))
         } else {
             @Suppress("DEPRECATION")

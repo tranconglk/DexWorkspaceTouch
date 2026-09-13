@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.WorkspaceLaunchDiagnostics
 
 sealed interface CarFloatingDockControlState {
     data object Hidden : CarFloatingDockControlState
@@ -153,6 +154,7 @@ class CarFloatingDockCoordinator(
             workspaceRepository: WorkspaceRepository,
             shortcutPreferences: CarWorkspaceShortcutPreferences,
             executionArbiter: CarWorkflowExecutionArbiter,
+            diagnostics: WorkspaceLaunchDiagnostics = WorkspaceLaunchDiagnostics.None,
         ): CarFloatingDockCoordinator {
             val applicationContext = context.applicationContext
             val session = CarOverlaySession(
@@ -172,8 +174,9 @@ class CarFloatingDockCoordinator(
                 repository = workspaceRepository,
                 requestFactory = requestFactory,
                 runtime = DisplayTargetWorkspaceLaunchRuntime(
-                    applicationContext,
-                    displayProvider,
+                    context = applicationContext,
+                    diagnostics = diagnostics,
+                    displayProvider = displayProvider,
                 ),
             )
             val executor = AndroidCarActionExecutor.createForOverlay(
