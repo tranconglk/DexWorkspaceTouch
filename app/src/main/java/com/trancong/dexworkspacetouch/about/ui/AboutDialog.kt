@@ -69,14 +69,13 @@ fun AboutDialog(
                     tonalElevation = DesignerElevation.AboutDialog,
                 ) {
                     Column(
-                        modifier = Modifier.padding(Spacing.L),
+                        modifier = Modifier
+                            .padding(Spacing.L)
+                            .verticalScroll(rememberScrollState()),
                         verticalArrangement = Arrangement.spacedBy(Spacing.M),
                     ) {
                         Text("DexWorkspaceTouch", style = MaterialTheme.typography.headlineSmall)
                         Column(
-                            modifier = Modifier
-                                .weight(1f, fill = false)
-                                .verticalScroll(rememberScrollState()),
                             verticalArrangement = Arrangement.spacedBy(Dimensions.AboutSectionSpacing),
                         ) {
                             AboutSection(
@@ -179,11 +178,15 @@ private fun AboutActions(
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Spacing.S, Alignment.End)) {
                     OutlinedButton(
                         onClick = onClearWorkspaceDiagnostics,
-                        modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                        modifier = Modifier
+                            .heightIn(min = TouchTargets.SecondaryButton)
+                            .semantics { contentDescription = "Xóa chẩn đoán Workspace." },
                     ) { Text("Xóa chẩn đoán") }
                     OutlinedButton(
                         onClick = onExportWorkspaceDiagnostics,
-                        modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
+                        modifier = Modifier
+                            .heightIn(min = TouchTargets.SecondaryButton)
+                            .semantics { contentDescription = "Xuất chẩn đoán Workspace." },
                     ) { Text("Xuất chẩn đoán") }
                 }
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Spacing.S, Alignment.End)) {
@@ -213,11 +216,17 @@ private fun AboutActions(
                 ) { Text("Sao chép thông tin") }
                 OutlinedButton(
                     onClick = onExportWorkspaceDiagnostics,
-                    modifier = Modifier.fillMaxWidth().heightIn(min = TouchTargets.SecondaryButton),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = TouchTargets.SecondaryButton)
+                        .semantics { contentDescription = "Xuất chẩn đoán Workspace." },
                 ) { Text("Xuất chẩn đoán Workspace") }
                 OutlinedButton(
                     onClick = onClearWorkspaceDiagnostics,
-                    modifier = Modifier.fillMaxWidth().heightIn(min = TouchTargets.SecondaryButton),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = TouchTargets.SecondaryButton)
+                        .semantics { contentDescription = "Xóa chẩn đoán Workspace." },
                 ) { Text("Xóa chẩn đoán Workspace") }
                 OutlinedButton(
                     onClick = onDismiss,
