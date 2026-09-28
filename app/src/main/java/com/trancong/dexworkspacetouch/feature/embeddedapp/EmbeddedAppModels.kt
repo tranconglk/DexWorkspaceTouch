@@ -92,3 +92,18 @@ class SessionStopGate {
         requested = false
     }
 }
+
+class SessionStopCoordinator {
+    private var stopRequested = false
+    private var closeRequested = false
+    private var stopFinished = false
+    var logicalStopCount = 0; private set
+    @Synchronized fun requestStop(): Boolean {
+        if (stopRequested) return false
+        stopRequested = true; logicalStopCount++
+        return true
+    }
+    @Synchronized fun requestClose() { closeRequested = true }
+    @Synchronized fun stopCompleted() { stopFinished = true }
+    val mayReleaseLease: Boolean @Synchronized get() = closeRequested && (!stopRequested || stopFinished)
+}

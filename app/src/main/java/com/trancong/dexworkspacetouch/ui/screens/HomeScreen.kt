@@ -132,6 +132,7 @@ fun HomeScreen(
     onOpenUpdates: () -> Unit = {},
     onOpenEmbeddedWaze: () -> Unit = {},
     onOpenEmbeddedCalculator: () -> Unit = {},
+    onOpenEmbeddedDualApp: () -> Unit = {},
     onShareWorkspace: (String) -> Unit = {},
     onSaveWorkspaceToFile: (String) -> Unit = {},
     onImportWorkspace: () -> Unit = {},
@@ -584,6 +585,7 @@ fun HomeScreen(
                                     ) { Text("Cập nhật") }
                                     OutlinedButton(onClick = onOpenEmbeddedWaze, modifier = Modifier.height(TouchTargets.SecondaryButton)) { Text("Embedded Waze") }
                                     OutlinedButton(onClick = onOpenEmbeddedCalculator, modifier = Modifier.height(TouchTargets.SecondaryButton)) { Text("Embedded Calculator") }
+                                    OutlinedButton(onClick = onOpenEmbeddedDualApp, modifier = Modifier.height(TouchTargets.SecondaryButton)) { Text("Embedded Dual App") }
                                     TextButton(
                                         onClick = { dispatchAboutEvent(AboutDialogEvent.Open) },
                                         modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
@@ -601,6 +603,7 @@ fun HomeScreen(
                                     OutlinedButton(onClick = onOpenUpdates, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Cập nhật") }
                                     OutlinedButton(onClick = onOpenEmbeddedWaze, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Waze") }
                                     OutlinedButton(onClick = onOpenEmbeddedCalculator, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Calculator") }
+                                    OutlinedButton(onClick = onOpenEmbeddedDualApp, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Dual") }
                                     TextButton(onClick = { dispatchAboutEvent(AboutDialogEvent.Open) }, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Info") }
                                 }
                             }

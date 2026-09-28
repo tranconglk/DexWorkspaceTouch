@@ -20,15 +20,15 @@ import com.trancong.dexworkspacetouch.feature.embeddedapp.selectNewTargetTask
 import com.trancong.dexworkspacetouch.feature.embeddedapp.selectRecordedTargetTask
 import com.trancong.dexworkspacetouch.feature.embeddedapp.dispatcherReady
 import com.trancong.dexworkspacetouch.feature.embeddedapp.virtualToolType
+import com.trancong.dexworkspacetouch.feature.embeddedapp.VirtualInputOwnership
+import com.trancong.dexworkspacetouch.feature.embeddedapp.VirtualInputOwnershipPhase
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Proxy
 
 /** Disposable TVL-005F2C2 path: exactly one VirtualDevice and one owned display. */
 @android.annotation.SuppressLint("PrivateApi", "NewApi", "WrongConstant")
-object EmbeddedAppVdm {
-    private const val TAG = "TaskViewLab.VDMSurface"
-    private const val TRUSTED_DISPLAY_FLAG = 0x400
+class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
     private var device: Any? = null
     private var displayCallback: Any? = null
     private var receivedSurface: Surface? = null
@@ -41,6 +41,7 @@ object EmbeddedAppVdm {
     private var returnedInput: Any? = null
     private var inputDeviceId = -1
     private var touchClosed = false
+    private val inputOwnership = VirtualInputOwnership(expectedInputDeviceName)
     private var cleanupProgress = CleanupProgress()
 
     private fun type(name: String) = Class.forName(name)
@@ -177,25 +178,27 @@ object EmbeddedAppVdm {
             val token = Binder()
             touchToken = token
             touchClosed = false
+            inputOwnership.creationAttempted()
             val configType = type("android.hardware.input.VirtualTouchscreenConfig")
             val builderType = type("android.hardware.input.VirtualTouchscreenConfig\$Builder")
             val builder = builderType.getConstructor(Int::class.javaPrimitiveType,
                 Int::class.javaPrimitiveType).newInstance(checkNotNull(activeTarget).geometry.width, checkNotNull(activeTarget).geometry.height)
             builderType.getMethod("setInputDeviceName", String::class.java)
-                .invoke(builder, TOUCH_DEVICE_NAME)
+                .invoke(builder, expectedInputDeviceName)
             builderType.getMethod("setVendorId", Int::class.javaPrimitiveType).invoke(builder, 0)
             builderType.getMethod("setProductId", Int::class.javaPrimitiveType).invoke(builder, 0)
             builderType.getMethod("setAssociatedDisplayId", Int::class.javaPrimitiveType)
                 .invoke(builder, displayId)
             val config = builderType.getMethod("build").invoke(builder)
             val deviceType = type("android.companion.virtual.IVirtualDevice")
-            Log.i(TAG, "TVL005F2F1 create touchscreen begin token=$TOUCH_TOKEN_LABEL displayId=$displayId config=${activeTarget?.geometry?.width}x${activeTarget?.geometry?.height} vendor=0 product=0")
+            Log.i(TAG, "create touchscreen begin name=$expectedInputDeviceName displayId=$displayId config=${activeTarget?.geometry?.width}x${activeTarget?.geometry?.height} vendor=0 product=0")
             val createdInput = checkNotNull(deviceType
                 .getMethod("createVirtualTouchscreen", configType, IBinder::class.java)
                 .invoke(activeDevice, config, token)) {
                 "createVirtualTouchscreen returned null IVirtualInputDevice"
             }
             returnedInput = createdInput
+            inputOwnership.handleReturned()
             val inputType = type("android.hardware.input.IVirtualInputDevice")
             val associatedDisplayId = inputType.getMethod("getAssociatedDisplayId")
                 .invoke(createdInput) as Int
@@ -210,8 +213,8 @@ object EmbeddedAppVdm {
             check(descriptorDisplayId == displayId) {
                 "InputDevice display mismatch expected=$displayId actual=$descriptorDisplayId"
             }
-            check(input.name == TOUCH_DEVICE_NAME) {
-                "InputDevice name mismatch expected=$TOUCH_DEVICE_NAME actual=${input.name}"
+            check(input.name == expectedInputDeviceName) {
+                "InputDevice name mismatch expected=$expectedInputDeviceName actual=${input.name}"
             }
             Log.i(TAG, "TVL006A2 touchscreen registered returnedInput=true inputDeviceId=$inputDeviceId " +
                 "associatedDisplayId=$associatedDisplayId descriptorDisplayId=$descriptorDisplayId name=${input.name}")
@@ -219,11 +222,15 @@ object EmbeddedAppVdm {
             return result(true).apply {
                 putInt("displayId", displayId)
                 putInt("inputDeviceId", inputDeviceId)
+                putString("inputDeviceName", expectedInputDeviceName)
                 putInt("associatedDisplayId", associatedDisplayId)
                 putInt("descriptorDisplayId", descriptorDisplayId)
             }
         } catch (error: Throwable) {
             val cause = unwrap(error)
+            val observedNames = runCatching { inputDeviceNames() }
+                .getOrElse { setOf(expectedInputDeviceName) }
+            inputOwnership.creationFailed(observedNames)
             Log.e(TAG, "TVL005F2F1 touchscreen preparation failed", cause)
             return failure(cause)
         } finally {
@@ -331,9 +338,14 @@ object EmbeddedAppVdm {
     }
 
     private fun closeTouchscreen() {
-        if (touchToken == null && returnedInput == null) return
+        if (inputOwnership.phase in setOf(VirtualInputOwnershipPhase.NOT_ATTEMPTED,
+                VirtualInputOwnershipPhase.NOT_CREATED, VirtualInputOwnershipPhase.CLOSED)) return
+        check(inputOwnership.phase != VirtualInputOwnershipPhase.UNCERTAIN) {
+            "Potential input descriptor remains for $expectedInputDeviceName without an owned handle"
+        }
         check(!touchClosed) { "Touchscreen already closed" }
-        val input = checkNotNull(returnedInput) { "Returned IVirtualInputDevice missing at cleanup" }
+        check(inputOwnership.beginClose()) { "Input ownership is not closeable: ${inputOwnership.phase}" }
+        val input = checkNotNull(returnedInput) { "Owned IVirtualInputDevice handle missing at cleanup" }
         val closingInputDeviceId = inputDeviceId
         touchClosed = true
         touchToken = null
@@ -345,7 +357,13 @@ object EmbeddedAppVdm {
         while (inputDevice(closingInputDeviceId) != null && SystemClock.uptimeMillis() < deadline) {
             Thread.sleep(25)
         }
-        val removed = inputDevice(closingInputDeviceId) == null
+        val nameDeadline = SystemClock.uptimeMillis() + 2_000
+        while (expectedInputDeviceName in inputDeviceNames() && SystemClock.uptimeMillis() < nameDeadline) {
+            Thread.sleep(25)
+        }
+        val removed = inputDevice(closingInputDeviceId) == null &&
+            expectedInputDeviceName !in inputDeviceNames()
+        inputOwnership.closeCompleted(descriptorStillPresent = !removed)
         check(removed) { "InputDevice $closingInputDeviceId still registered after close" }
         val activeDevice = checkNotNull(device) { "VirtualDevice closed with touchscreen" }
         val liveDeviceId = type("android.companion.virtual.IVirtualDevice")
@@ -464,6 +482,18 @@ object EmbeddedAppVdm {
         return current
     }
 
-    private const val TOUCH_DEVICE_NAME = "TVL Virtual Touchscreen"
-    private const val TOUCH_TOKEN_LABEL = "TVL Virtual Touchscreen token"
+    private companion object {
+        const val TAG = "TaskViewLab.VDMSurface"
+        const val TRUSTED_DISPLAY_FLAG = 0x400
+    }
+
+    private fun inputDeviceNames(): Set<String> {
+        val globalType = type("android.hardware.input.InputManagerGlobal")
+        val global = globalType.getMethod("getInstance").invoke(null)
+        val ids = globalType.getMethod("getInputDeviceIds").invoke(global) as IntArray
+        return ids.asSequence().mapNotNull { id ->
+            (globalType.getMethod("getInputDevice", Int::class.javaPrimitiveType)
+                .invoke(global, id) as android.view.InputDevice?)?.name
+        }.toSet()
+    }
 }

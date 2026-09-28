@@ -73,6 +73,7 @@ import com.trancong.dexworkspacetouch.about.platform.createAppDiagnosticInfo
 import com.trancong.dexworkspacetouch.feature.car.CarScreen
 import com.trancong.dexworkspacetouch.feature.embeddedcalculator.EmbeddedCalculatorScreen
 import com.trancong.dexworkspacetouch.feature.embeddedwaze.EmbeddedWazeScreen
+import com.trancong.dexworkspacetouch.feature.embeddeddual.EmbeddedDualAppScreen
 import com.trancong.dexworkspacetouch.feature.car.CarWorkspaceOption
 import com.trancong.dexworkspacetouch.feature.car.CarWorkspaceShortcutSlot
 import com.trancong.dexworkspacetouch.feature.car.resolveCarWorkspaceShortcutRows
@@ -101,6 +102,7 @@ private object Routes {
     const val Updates = "updates"
     const val EmbeddedWaze = "embedded-waze"
     const val EmbeddedCalculator = "embedded-calculator"
+    const val EmbeddedDualApp = "embedded-dual-app"
     const val LayoutDesigner = "layout-designer"
     const val AppPicker = "app-picker"
 }
@@ -422,6 +424,9 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
         composable(Routes.EmbeddedCalculator) {
             EmbeddedCalculatorScreen(activity = activity, onBack = { navController.popBackStack() })
         }
+        composable(Routes.EmbeddedDualApp) {
+            EmbeddedDualAppScreen(activity = activity, onBack = { navController.popBackStack() })
+        }
         composable(Routes.Home) {
             HomeScreen(
                 workspaces = libraryViewModel.visibleWorkspaces,
@@ -491,6 +496,7 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
                 onOpenUpdates = { navController.navigate(Routes.Updates) },
                 onOpenEmbeddedWaze = { navController.navigate(Routes.EmbeddedWaze) },
                 onOpenEmbeddedCalculator = { navController.navigate(Routes.EmbeddedCalculator) },
+                onOpenEmbeddedDualApp = { navController.navigate(Routes.EmbeddedDualApp) },
                 onShareWorkspace = { id -> exportMode = "share"; transferViewModel.prepareExport(id) },
                 onSaveWorkspaceToFile = { id -> exportMode = "save"; transferViewModel.prepareExport(id) },
                 onImportWorkspace = { importLauncher.launch("*/*") },

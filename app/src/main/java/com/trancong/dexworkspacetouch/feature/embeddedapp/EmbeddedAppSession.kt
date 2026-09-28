@@ -1,16 +1,10 @@
-﻿package com.trancong.dexworkspacetouch.feature.embeddedapp
+package com.trancong.dexworkspacetouch.feature.embeddedapp
 
-import android.content.ComponentName
 import android.content.Context
-import android.content.ServiceConnection
-import android.content.pm.PackageManager
 import android.os.Handler
-import android.os.IBinder
 import android.os.Looper
 import android.view.Surface
-import com.trancong.dexworkspacetouch.BuildConfig
 import com.trancong.dexworkspacetouch.feature.embeddedapp.remote.IEmbeddedAppService
-import rikka.shizuku.Shizuku
 import java.util.concurrent.Executors
 
 data class EmbeddedAppState(
@@ -22,84 +16,62 @@ data class EmbeddedAppState(
 )
 
 class EmbeddedAppSession(
-    private val context: Context,
+    context: Context,
     private val target: EmbeddedAppTarget,
     private val changed: (EmbeddedAppState) -> Unit,
 ) {
+    val sessionId = newEmbeddedAppSessionId()
     private val main = Handler(Looper.getMainLooper())
     private val worker = Executors.newSingleThreadExecutor()
-    private val stopGate = SessionStopGate()
-    private val args = Shizuku.UserServiceArgs(ComponentName(context.packageName,
-        "com.trancong.dexworkspacetouch.feature.embeddedapp.remote.EmbeddedAppUserService"))
-        .daemon(false).processNameSuffix("embedded_app").tag("dwt-vdm-002")
-        .version(BuildConfig.VERSION_CODE + 1001).debuggable(BuildConfig.DEBUG)
+    private val stopCoordinator = SessionStopCoordinator()
+    private val connectionCoordinator = SessionConnectionCoordinator()
+    private val manager = EmbeddedAppServiceConnectionManager.get(context)
+    private var lease: EmbeddedAppServiceLease? = null
     private var state = EmbeddedAppState()
     private var remote: IEmbeddedAppService? = null
-    private var connection: ServiceConnection? = null
     private var closed = false
-    private val received = Shizuku.OnBinderReceivedListener { refreshPermission() }
-    private val permission = Shizuku.OnRequestPermissionResultListener { code, result ->
-        if (code == REQUEST) {
-            if (result == PackageManager.PERMISSION_GRANTED) bind()
-            else update(state.copy(status = "Shizuku permission denied"))
+    @Volatile private var startedRemotely = false
+    private val listener = object : EmbeddedAppServiceListener {
+        override fun onServiceReady(service: IEmbeddedAppService) {
+            connectionCoordinator.serviceReady()
+            remote = service
+            val uid = runCatching { service.uid }.getOrDefault(-1)
+            update(state.copy(shellReady = uid == 2000, busy = false,
+                status = if (uid == 2000) "Shell UID 2000 ready" else "Unexpected remote UID $uid"))
+        }
+        override fun onServiceDisconnected() {
+            connectionCoordinator.serviceDied()
+            remote = null
+            update(EmbeddedAppState(status = "Shell UserService disconnected / REMOTE_DIED"))
         }
     }
 
-    fun start() {
-        Shizuku.addBinderReceivedListenerSticky(received)
-        Shizuku.addRequestPermissionResultListener(permission)
-        changed(state)
-    }
+    fun start() { changed(state) }
 
     fun connect() {
-        if (!Shizuku.pingBinder()) return update(state.copy(status = "Shizuku is unavailable"))
-        if (Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) {
-            Shizuku.requestPermission(REQUEST)
-        } else bind()
-    }
-
-    private fun refreshPermission() {
-        if (!closed && Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) bind()
-    }
-
-    private fun bind() {
-        if (connection != null || closed) return
+        if (closed) return
+        if (!connectionCoordinator.beginConnect()) return
         update(state.copy(busy = true, status = "Connecting shell UserService"))
-        val newConnection = object : ServiceConnection {
-            override fun onServiceConnected(name: ComponentName, binder: IBinder) {
-                remote = IEmbeddedAppService.Stub.asInterface(binder)
-                val uid = runCatching { remote!!.uid }.getOrDefault(-1)
-                update(state.copy(shellReady = uid == 2000, busy = false,
-                    status = if (uid == 2000) "Shell UID 2000 ready" else "Unexpected remote UID $uid"))
-            }
-
-            override fun onServiceDisconnected(name: ComponentName) {
-                remote = null
-                connection = null
-                update(EmbeddedAppState(status = "Shell UserService disconnected"))
-            }
-        }
-        connection = newConnection
-        runCatching { Shizuku.bindUserService(args, newConnection) }.onFailure {
-            connection = null
-            update(state.copy(busy = false, status = "Bind failed: ${it.message}"))
-        }
+        val owned = lease ?: manager.acquire(sessionId, listener).also { lease = it }
+        owned.connect()
     }
 
     fun startSession(surface: Surface) {
         val service = remote ?: return update(state.copy(status = "Connect Shizuku first"))
         if (!surface.isValid) return update(state.copy(status = "Surface is not valid"))
         update(state.copy(busy = true, status = "Creating trusted VDM session"))
+        val ownedLease = lease ?: return update(state.copy(busy = false, status = "Connect Shizuku first"))
+        ownedLease.operationStarted()
         worker.execute {
             val geometry = target.geometry
-            val result = runCatching { service.startSession(surface, target.packageName,
+            val result = runCatching { service.startSession(sessionId.value, surface, target.packageName,
                 target.componentName, geometry.width, geometry.height, geometry.densityDpi) }
+            startedRemotely = result.getOrNull()?.getBoolean("success") == true
+            ownedLease.operationFinished(terminal = !startedRemotely)
             main.post {
                 result.fold({ bundle ->
                     if (bundle.getBoolean("success")) {
-                        stopGate.reset()
-                        update(state.copy(busy = false, active = true,
-                            displayId = bundle.getInt("displayId"),
+                        update(state.copy(busy = false, active = true, displayId = bundle.getInt("displayId"),
                             status = "App launched on trusted display ${bundle.getInt("displayId")}"))
                     } else update(state.copy(busy = false,
                         status = bundle.getString("exception") ?: "Session start failed"))
@@ -112,7 +84,7 @@ class EmbeddedAppSession(
         val service = remote ?: return
         if (!state.active) return
         worker.execute {
-            val result = runCatching { service.sendTouch(action, x, y, pressure, time) }.getOrNull()
+            val result = runCatching { service.sendTouch(sessionId.value, action, x, y, pressure, time) }.getOrNull()
             if (result?.getBoolean("success") != true) main.post {
                 update(state.copy(status = result?.getString("exception") ?: "Touch delivery failed"))
             }
@@ -122,32 +94,40 @@ class EmbeddedAppSession(
     fun stop() {
         val service = remote
         if (service == null) return update(state.copy(active = false, displayId = -1))
-        if (!stopGate.request()) return
+        if (!stopCoordinator.requestStop()) return
+        val ownedLease = lease ?: return
+        ownedLease.operationStarted()
         update(state.copy(busy = true, status = "Stopping embedded session"))
         worker.execute {
-            val result = runCatching { service.stopSession() }.getOrNull()
-            main.post {
-                update(EmbeddedAppState(shellReady = true,
-                    status = if (result?.getBoolean("success") == true) "Embedded session stopped"
-                    else result?.getString("exception") ?: "Cleanup failed"))
-            }
+            val result = runCatching { service.stopSession(sessionId.value) }.getOrNull()
+            val stopped = result?.getBoolean("success") == true
+            startedRemotely = !stopped
+            stopCoordinator.stopCompleted()
+            ownedLease.operationFinished(terminal = stopped)
+            main.post { update(EmbeddedAppState(shellReady = true,
+                status = if (result?.getBoolean("success") == true) "Embedded session stopped"
+                else result?.getString("exception") ?: "Cleanup failed")) }
         }
     }
 
     fun close() {
         if (closed) return
         closed = true
-        if (state.active && stopGate.request()) runCatching { remote?.stopSession() }
-        connection?.let { runCatching { Shizuku.unbindUserService(args, it, true) } }
-        Shizuku.removeBinderReceivedListener(received)
-        Shizuku.removeRequestPermissionResultListener(permission)
-        worker.shutdownNow()
+        stopCoordinator.requestClose()
+        worker.execute {
+            val ownedLease = lease
+            if (startedRemotely && stopCoordinator.requestStop() && ownedLease != null) {
+                ownedLease.operationStarted()
+                val stopped = runCatching { remote?.stopSession(sessionId.value) }.getOrNull()
+                    ?.getBoolean("success") == true
+                startedRemotely = !stopped
+                stopCoordinator.stopCompleted()
+                ownedLease.operationFinished(terminal = stopped)
+            }
+            if (stopCoordinator.mayReleaseLease) { ownedLease?.close(); lease = null }
+        }
+        worker.shutdown()
     }
 
-    private fun update(value: EmbeddedAppState) {
-        state = value
-        if (!closed) changed(value)
-    }
-
-    private companion object { const val REQUEST = 7101 }
+    private fun update(value: EmbeddedAppState) { state = value; if (!closed) changed(value) }
 }
