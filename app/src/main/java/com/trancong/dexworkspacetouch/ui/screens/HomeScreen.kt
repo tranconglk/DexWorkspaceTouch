@@ -131,6 +131,7 @@ fun HomeScreen(
     onOpenCar: () -> Unit = {},
     onOpenUpdates: () -> Unit = {},
     onOpenEmbeddedWaze: () -> Unit = {},
+    onOpenEmbeddedCalculator: () -> Unit = {},
     onShareWorkspace: (String) -> Unit = {},
     onSaveWorkspaceToFile: (String) -> Unit = {},
     onImportWorkspace: () -> Unit = {},
@@ -563,13 +564,13 @@ fun HomeScreen(
                     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
                         val wide = maxWidth >= Dimensions.WorkspaceLibraryToolbarWideWidth
                         if (wide) {
-                            Row(
+                            Column(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically,
+                                verticalArrangement = Arrangement.spacedBy(Spacing.S),
                             ) {
                                 WorkspaceLibraryTitle()
                                 if (!isMultiSelectMode) Row(
+                                    modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.spacedBy(Spacing.S),
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
@@ -582,6 +583,7 @@ fun HomeScreen(
                                         modifier = Modifier.height(TouchTargets.SecondaryButton),
                                     ) { Text("Cập nhật") }
                                     OutlinedButton(onClick = onOpenEmbeddedWaze, modifier = Modifier.height(TouchTargets.SecondaryButton)) { Text("Embedded Waze") }
+                                    OutlinedButton(onClick = onOpenEmbeddedCalculator, modifier = Modifier.height(TouchTargets.SecondaryButton)) { Text("Embedded Calculator") }
                                     TextButton(
                                         onClick = { dispatchAboutEvent(AboutDialogEvent.Open) },
                                         modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
@@ -598,6 +600,7 @@ fun HomeScreen(
                                     OutlinedButton(onClick = onOpenCar, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Car Mode") }
                                     OutlinedButton(onClick = onOpenUpdates, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Cập nhật") }
                                     OutlinedButton(onClick = onOpenEmbeddedWaze, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Waze") }
+                                    OutlinedButton(onClick = onOpenEmbeddedCalculator, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Calculator") }
                                     TextButton(onClick = { dispatchAboutEvent(AboutDialogEvent.Open) }, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Info") }
                                 }
                             }
