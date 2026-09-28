@@ -1,4 +1,4 @@
-package com.trancong.dexworkspacetouch.feature.embeddedwaze.remote
+package com.trancong.dexworkspacetouch.feature.embeddedapp.remote
 import android.os.SystemClock
 internal data class SessionAssociation(val id:Int,val mac:String)
 internal object AssociationShell {

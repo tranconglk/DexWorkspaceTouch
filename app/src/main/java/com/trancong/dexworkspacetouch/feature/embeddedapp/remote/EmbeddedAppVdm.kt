@@ -1,4 +1,4 @@
-package com.trancong.dexworkspacetouch.feature.embeddedwaze.remote
+package com.trancong.dexworkspacetouch.feature.embeddedapp.remote
 
 import android.app.ActivityManager
 import android.content.AttributionSource
@@ -12,18 +12,21 @@ import android.os.Process
 import android.os.SystemClock
 import android.util.Log
 import android.view.Surface
-import android.graphics.Rect
-import com.trancong.dexworkspacetouch.feature.embeddedwaze.isWazeMainActivity
-import com.trancong.dexworkspacetouch.feature.embeddedwaze.dispatcherReady
-import com.trancong.dexworkspacetouch.feature.embeddedwaze.tapPoint
-import com.trancong.dexworkspacetouch.feature.embeddedwaze.virtualToolType
+import com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppTarget
+import com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppTaskCandidate
+import com.trancong.dexworkspacetouch.feature.embeddedapp.CleanupProgress
+import com.trancong.dexworkspacetouch.feature.embeddedapp.CleanupStep
+import com.trancong.dexworkspacetouch.feature.embeddedapp.selectNewTargetTask
+import com.trancong.dexworkspacetouch.feature.embeddedapp.selectRecordedTargetTask
+import com.trancong.dexworkspacetouch.feature.embeddedapp.dispatcherReady
+import com.trancong.dexworkspacetouch.feature.embeddedapp.virtualToolType
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Proxy
 
 /** Disposable TVL-005F2C2 path: exactly one VirtualDevice and one owned display. */
 @android.annotation.SuppressLint("PrivateApi", "NewApi", "WrongConstant")
-object EmbeddedWazeVdm {
+object EmbeddedAppVdm {
     private const val TAG = "TaskViewLab.VDMSurface"
     private const val TRUSTED_DISPLAY_FLAG = 0x400
     private var device: Any? = null
@@ -32,11 +35,13 @@ object EmbeddedWazeVdm {
     private var displayId = -1
     private var deviceId = -1
     private var beforeTaskIds = emptySet<Int>()
-    private var wazeMode = false
+    private var activeTarget: EmbeddedAppTarget? = null
+    private var activeTaskId = -1
     private var touchToken: IBinder? = null
     private var returnedInput: Any? = null
     private var inputDeviceId = -1
     private var touchClosed = false
+    private var cleanupProgress = CleanupProgress()
 
     private fun type(name: String) = Class.forName(name)
 
@@ -77,16 +82,16 @@ object EmbeddedWazeVdm {
     }
 
     @Synchronized
-    fun create(surface: Surface, width: Int, height: Int, densityDpi: Int,
-        associationId: Int): Bundle {
+    fun create(surface: Surface, target: EmbeddedAppTarget, associationId: Int): Bundle {
         val identity = Binder.clearCallingIdentity()
         try {
             check(Process.myUid() == 2000) { "Requires shell UID 2000" }
             check(device == null) { "VDM Surface probe already active" }
+            check(activeTarget == null) { "Previous VDM session references were not released" }
             check(surface.isValid) { "Received Surface is invalid" }
-            require(width == 900 && height == 675 && densityDpi == 320) {
-                "Unexpected display config ${width}x$height density=$densityDpi"
-            }
+            val (width, height, densityDpi) = target.geometry
+            activeTarget = target
+            cleanupProgress = CleanupProgress()
             require(associationId > 0) { "Association ID must be positive" }
             receivedSurface = surface
             beforeTaskIds = runningTasks().map { it.taskId }.toSet()
@@ -136,16 +141,25 @@ object EmbeddedWazeVdm {
     }
 
     @Synchronized
-    fun launchWaze(): Bundle {
+    fun launchTarget(): Bundle {
         check(device != null && displayId > 0) { "Gate A display is not active" }
         check(receivedSurface?.isValid == true) { "Received Surface became invalid" }
-        check(!wazeMode) { "Waze launch already attempted" }
-        wazeMode = true
-        Log.i(TAG, "Waze launch begin displayId=$displayId surfaceValid=${receivedSurface?.isValid}")
-        return ShellDisplayLaunch.launchComponent(displayId, "com.waze",
-            "com.waze.FreeMapAppActivity", true).also {
-            Log.i(TAG, "Waze launch result=${it.getInt("result")} success=${it.getBoolean("success")}")
+        val target = checkNotNull(activeTarget) { "Embedded target is missing" }
+        Log.i(TAG, "target launch begin component=${target.componentName} displayId=$displayId surfaceValid=${receivedSurface?.isValid}")
+        return ShellDisplayLaunch.launch(displayId, target).also {
+            Log.i(TAG, "target launch result=${it.getInt("result")} success=${it.getBoolean("success")}")
+            if (it.getBoolean("success")) activeTaskId = awaitLaunchedTargetTask(target).taskId
         }
+    }
+
+    private fun awaitLaunchedTargetTask(target: EmbeddedAppTarget): EmbeddedAppTaskCandidate {
+        val deadline = SystemClock.uptimeMillis() + 3_000
+        do {
+            val candidate = selectNewTargetTask(taskCandidates(), beforeTaskIds, target, displayId)
+            if (candidate != null) return candidate
+            Thread.sleep(25)
+        } while (SystemClock.uptimeMillis() < deadline)
+        error("Explicit target task did not appear for ${target.componentName} on display $displayId")
     }
 
     @Synchronized
@@ -166,7 +180,7 @@ object EmbeddedWazeVdm {
             val configType = type("android.hardware.input.VirtualTouchscreenConfig")
             val builderType = type("android.hardware.input.VirtualTouchscreenConfig\$Builder")
             val builder = builderType.getConstructor(Int::class.javaPrimitiveType,
-                Int::class.javaPrimitiveType).newInstance(900, 675)
+                Int::class.javaPrimitiveType).newInstance(checkNotNull(activeTarget).geometry.width, checkNotNull(activeTarget).geometry.height)
             builderType.getMethod("setInputDeviceName", String::class.java)
                 .invoke(builder, TOUCH_DEVICE_NAME)
             builderType.getMethod("setVendorId", Int::class.javaPrimitiveType).invoke(builder, 0)
@@ -175,7 +189,7 @@ object EmbeddedWazeVdm {
                 .invoke(builder, displayId)
             val config = builderType.getMethod("build").invoke(builder)
             val deviceType = type("android.companion.virtual.IVirtualDevice")
-            Log.i(TAG, "TVL005F2F1 create touchscreen begin token=$TOUCH_TOKEN_LABEL displayId=$displayId config=900x675 vendor=0 product=0")
+            Log.i(TAG, "TVL005F2F1 create touchscreen begin token=$TOUCH_TOKEN_LABEL displayId=$displayId config=${activeTarget?.geometry?.width}x${activeTarget?.geometry?.height} vendor=0 product=0")
             val createdInput = checkNotNull(deviceType
                 .getMethod("createVirtualTouchscreen", configType, IBinder::class.java)
                 .invoke(activeDevice, config, token)) {
@@ -222,7 +236,8 @@ object EmbeddedWazeVdm {
         val identity = Binder.clearCallingIdentity()
         return try {
             check(Process.myUid() == 2000)
-            require(action in 0..3 && x in 0f..900f && y in 0f..675f)
+            val geometry = checkNotNull(activeTarget).geometry
+            require(action in 0..3 && x in 0f..geometry.width.toFloat() && y in 0f..geometry.height.toFloat())
             val input = checkNotNull(returnedInput) { "Virtual touchscreen is not active" }
             val builderType = type("android.hardware.input.VirtualTouchEvent\$Builder")
             val builder = builderType.getConstructor().newInstance()
@@ -246,55 +261,69 @@ object EmbeddedWazeVdm {
         var removedTaskId = -1
         var error: Throwable? = null
         try {
-            try { closeTouchscreen() }
-            catch (failure: Throwable) {
-                error = unwrap(failure)
-                Log.e(TAG, "touchscreen unregister failed", error)
+            fun attempt(step: CleanupStep, label: String, action: () -> Unit) {
+                if (cleanupProgress.next() != step) return
+                try { action() }
+                catch (failure: Throwable) {
+                    val cause = unwrap(failure)
+                    if (error == null) error = cause
+                    Log.e(TAG, "$label failed", cause)
+                } finally { cleanupProgress.complete(step) }
             }
-            if (displayId > 0) {
-                val matches = runningTasks().filter {
-                    if (wazeMode) it.taskId !in beforeTaskIds && it.baseActivity?.packageName == "com.waze"
-                    else it.taskId !in beforeTaskIds && taskDisplayId(it) == displayId &&
-                        it.baseActivity?.packageName == "com.trancong.taskviewlab" &&
-                        (it.topActivity?.className == "com.trancong.taskviewlab.ProbeTargetActivity" ||
-                            it.baseActivity?.className == "com.trancong.taskviewlab.ProbeTargetActivity")
-                }
-                check(matches.size <= 1) { "Ambiguous probe tasks ${matches.map { it.taskId }}" }
-                matches.singleOrNull()?.let {
-                    check(removeTask(it.taskId)) { "removeTask(${it.taskId}) returned false" }
-                    removedTaskId = it.taskId
-                    Log.i(TAG, "target removeTask success taskId=$removedTaskId displayId=$displayId")
+            attempt(CleanupStep.INPUT, "touchscreen unregister") { closeTouchscreen() }
+            attempt(CleanupStep.TASK, "target cleanup") {
+                if (displayId > 0) {
+                    val target = checkNotNull(activeTarget) { "Embedded target is missing" }
+                    val tasks = runningTasks()
+                    val candidate = selectRecordedTargetTask(taskCandidates(tasks), activeTaskId,
+                        target, displayId)
+                    candidate?.let { selected ->
+                        check(removeTask(selected.taskId)) {
+                            "removeTask(${selected.taskId}) returned false"
+                        }
+                        removedTaskId = selected.taskId
+                        Log.i(TAG, "target removeTask success taskId=$removedTaskId displayId=$displayId")
+                    }
                 }
             }
-        } catch (failure: Throwable) {
-            error = unwrap(failure)
-            Log.e(TAG, "target cleanup failed", error)
+            attempt(CleanupStep.DEVICE, "VirtualDevice close") { closeDevice() }
         } finally {
-            try { closeDevice() }
-            catch (failure: Throwable) {
-                if (error == null) error = unwrap(failure)
-                Log.e(TAG, "VirtualDevice close failed", unwrap(failure))
-            }
             Binder.restoreCallingIdentity(identity)
         }
         return if (error == null) result(true).apply { putInt("removedTaskId", removedTaskId) }
         else failure(checkNotNull(error)).apply { putInt("removedTaskId", removedTaskId) }
     }
 
+    @Synchronized
+    fun finishCleanupAfterAssociation() {
+        if (cleanupProgress.next() == CleanupStep.ASSOCIATION) {
+            cleanupProgress.complete(CleanupStep.ASSOCIATION)
+        }
+        if (cleanupProgress.next() == CleanupStep.REFERENCES) {
+            releaseReferences()
+            cleanupProgress.complete(CleanupStep.REFERENCES)
+        }
+    }
+
     private fun closeDevice() {
-        device?.let {
+        val closing = device
+        device = null
+        closing?.let {
             Log.i(TAG, "IVirtualDevice.close begin deviceId=$deviceId displayId=$displayId")
             type("android.companion.virtual.IVirtualDevice").getMethod("close").invoke(it)
             Log.i(TAG, "IVirtualDevice.close success")
         }
-        device = null
+    }
+
+    private fun releaseReferences() {
         displayCallback = null
         receivedSurface?.release()
         receivedSurface = null
         displayId = -1
         deviceId = -1
         beforeTaskIds = emptySet()
-        wazeMode = false
+        activeTarget = null
+        activeTaskId = -1
         touchToken = null
         returnedInput = null
         inputDeviceId = -1
@@ -305,15 +334,19 @@ object EmbeddedWazeVdm {
         if (touchToken == null && returnedInput == null) return
         check(!touchClosed) { "Touchscreen already closed" }
         val input = checkNotNull(returnedInput) { "Returned IVirtualInputDevice missing at cleanup" }
+        val closingInputDeviceId = inputDeviceId
         touchClosed = true
-        Log.i(TAG, "TVL006A2 IVirtualInputDevice.close begin inputDeviceId=$inputDeviceId")
+        touchToken = null
+        returnedInput = null
+        inputDeviceId = -1
+        Log.i(TAG, "TVL006A2 IVirtualInputDevice.close begin inputDeviceId=$closingInputDeviceId")
         type("android.hardware.input.IVirtualInputDevice").getMethod("close").invoke(input)
         val deadline = SystemClock.uptimeMillis() + 2_000
-        while (inputDevice(inputDeviceId) != null && SystemClock.uptimeMillis() < deadline) {
+        while (inputDevice(closingInputDeviceId) != null && SystemClock.uptimeMillis() < deadline) {
             Thread.sleep(25)
         }
-        val removed = inputDevice(inputDeviceId) == null
-        check(removed) { "InputDevice $inputDeviceId still registered after close" }
+        val removed = inputDevice(closingInputDeviceId) == null
+        check(removed) { "InputDevice $closingInputDeviceId still registered after close" }
         val activeDevice = checkNotNull(device) { "VirtualDevice closed with touchscreen" }
         val liveDeviceId = type("android.companion.virtual.IVirtualDevice")
             .getMethod("getDeviceId").invoke(activeDevice) as Int
@@ -322,9 +355,6 @@ object EmbeddedWazeVdm {
         }
         Log.i(TAG, "TVL006A2 IVirtualInputDevice.close success count=1 descriptorRemoved=true " +
             "virtualDeviceAlive=true deviceId=$liveDeviceId displayId=$displayId")
-        touchToken = null
-        returnedInput = null
-        inputDeviceId = -1
     }
 
     private fun inputDevice(id: Int): android.view.InputDevice? {
@@ -363,12 +393,11 @@ object EmbeddedWazeVdm {
             val windowSection = windows.substringAfter("Display: mDisplayId=$expectedDisplayId", "")
                 .substringBefore("Display: mDisplayId=")
             val layoutIdle = windowSection.contains("mLayoutNeeded=false")
-            val targetRunning = runningTasks().any {
+            val target = activeTarget
+            val targetRunning = target != null && runningTasks().any {
                 taskDisplayId(it) == expectedDisplayId && it.isVisible &&
-                    if (wazeMode) isWazeMainActivity(it.topActivity?.packageName,
-                        it.topActivity?.className)
-                    else it.topActivity?.className ==
-                        "com.trancong.taskviewlab.ProbeTargetActivity"
+                    it.topActivity?.packageName == target.packageName &&
+                    it.topActivity?.className == target.componentName
             }
             last = "focusedDisplay=$focusedDisplay focusedWindow=$focusedWindow targetWindow=${targetLine != null} " +
                 "touchable=$touchable transitionIdle=$transitionIdle layoutIdle=$layoutIdle resumedVisible=$targetRunning"
@@ -395,24 +424,6 @@ object EmbeddedWazeVdm {
         return text
     }
 
-    private fun touchEvent(action: Int, x: Float, y: Float, eventTimeNanos: Long): Any {
-        val builderType = type("android.hardware.input.VirtualTouchEvent\$Builder")
-        val builder = builderType.getConstructor().newInstance()
-        builderType.getMethod("setPointerId", Int::class.javaPrimitiveType).invoke(builder, 0)
-        builderType.getMethod("setToolType", Int::class.javaPrimitiveType)
-            .invoke(builder, virtualToolType(action))
-        builderType.getMethod("setAction", Int::class.javaPrimitiveType).invoke(builder, action)
-        builderType.getMethod("setX", Float::class.javaPrimitiveType).invoke(builder, x)
-        builderType.getMethod("setY", Float::class.javaPrimitiveType).invoke(builder, y)
-        if (action == 0) {
-            builderType.getMethod("setPressure", Float::class.javaPrimitiveType)
-                .invoke(builder, 255f)
-        }
-        builderType.getMethod("setEventTimeNanos", Long::class.javaPrimitiveType)
-            .invoke(builder, eventTimeNanos)
-        return checkNotNull(builderType.getMethod("build").invoke(builder))
-    }
-
     @Suppress("UNCHECKED_CAST")
     private fun runningTasks(): List<ActivityManager.RunningTaskInfo> {
         val manager = type("android.app.ActivityTaskManager").getMethod("getService").invoke(null)
@@ -424,6 +435,13 @@ object EmbeddedWazeVdm {
 
     private fun taskDisplayId(task: ActivityManager.RunningTaskInfo): Int =
         task.javaClass.getField("displayId").getInt(task)
+
+    private fun taskCandidates(tasks: List<ActivityManager.RunningTaskInfo> = runningTasks()) =
+        tasks.map {
+            EmbeddedAppTaskCandidate(it.taskId, taskDisplayId(it),
+                it.baseActivity?.packageName ?: it.topActivity?.packageName,
+                it.topActivity?.className ?: it.baseActivity?.className)
+        }
 
     private fun removeTask(taskId: Int): Boolean {
         val manager = type("android.app.ActivityTaskManager").getMethod("getService").invoke(null)
