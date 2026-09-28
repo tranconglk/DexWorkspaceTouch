@@ -19,11 +19,13 @@ data class WorkspaceLaunchRequest(
 }
 
 data class AppLaunchTarget(
+    val sourceCellId: String,
     val identity: AppIdentity,
     val bounds: NormalizedBounds,
     val order: Int,
 ) {
     init {
+        require(sourceCellId.isNotBlank()) { "sourceCellId must not be blank" }
         require(order >= 0) { "order must be non-negative" }
     }
 }

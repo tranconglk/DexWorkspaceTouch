@@ -53,6 +53,7 @@ class AndroidSingleAppLauncherTest {
         assertTrue(platform.startCalled)
     }
     private val target = AppLaunchTarget(
+        sourceCellId = "cell",
         identity = AppIdentity("com.example.app", "com.example.app.MainActivity"),
         bounds = NormalizedBounds.FullCanvas,
         order = 0,

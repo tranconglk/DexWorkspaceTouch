@@ -178,7 +178,7 @@ class WorkspaceLaunchViewModelTest {
         val assignedApp = AssignedApp(identity.packageName, identity.activityName!!, "Example")
         val canvas = WorkspaceCanvas(listOf(WorkspaceCell("cell", NormalizedBounds.FullCanvas, assignedApp)))
         val item = WorkspaceLibraryItem("workspace", "Workspace", canvas, 1)
-        val target = AppLaunchTarget(identity, NormalizedBounds.FullCanvas, 0)
+        val target = AppLaunchTarget("cell", identity, NormalizedBounds.FullCanvas, 0)
         val request = WorkspaceLaunchRequest(item.id, item.name, listOf(target))
         val ready = LaunchReadiness.Ready(request)
         val success = WorkspaceLaunchResult.Success(listOf(AppLaunchTargetResult(target)))

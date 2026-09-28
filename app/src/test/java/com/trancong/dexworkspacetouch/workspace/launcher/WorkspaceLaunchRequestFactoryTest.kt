@@ -31,6 +31,7 @@ class WorkspaceLaunchRequestFactoryTest {
 
         assertEquals("workspace-7", result.request.workspaceId)
         assertEquals("Travel", result.request.workspaceName)
+        assertEquals(listOf("top", "bottom"), result.request.targets.map { it.sourceCellId })
         assertEquals(listOf(0, 1), result.request.targets.map { it.order })
         assertEquals(listOf(top, bottom), result.request.targets.map { it.bounds })
         assertEquals(
@@ -141,6 +142,7 @@ class WorkspaceLaunchRequestFactoryTest {
         ) as LaunchReadiness.Ready
 
         assertEquals(listOf(identity, identity), result.request.targets.map { it.identity })
+        assertEquals(listOf("left", "right"), result.request.targets.map { it.sourceCellId })
     }
 
     @Test

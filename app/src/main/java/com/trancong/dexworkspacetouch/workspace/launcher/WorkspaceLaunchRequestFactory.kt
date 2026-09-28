@@ -59,6 +59,7 @@ class WorkspaceLaunchRequestFactory(
 
         val targets = canvas.cells.mapIndexed { index, cell ->
             AppLaunchTarget(
+                sourceCellId = cell.id,
                 identity = resolvedIdentities[index],
                 bounds = cell.bounds,
                 order = index,

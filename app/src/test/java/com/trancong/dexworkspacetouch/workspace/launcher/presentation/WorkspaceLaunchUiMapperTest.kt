@@ -34,6 +34,7 @@ class WorkspaceLaunchUiMapperTest {
 
     private fun failure(order: Int, technical: String) = AppLaunchFailure(
         AppLaunchTarget(
+            "cell-$order",
             AppIdentity("com.example.$order", "Activity$order"),
             NormalizedBounds.FullCanvas,
             order,

@@ -252,7 +252,7 @@ class AndroidWorkspaceLauncherTest {
     private fun target(
         order: Int,
         identity: AppIdentity = AppIdentity("com.example.$order", "Activity$order"),
-    ) = AppLaunchTarget(identity, NormalizedBounds.FullCanvas, order)
+    ) = AppLaunchTarget("cell-$order", identity, NormalizedBounds.FullCanvas, order)
 
     private fun success(target: AppLaunchTarget) =
         SingleAppLaunchResult.Success(AppLaunchTargetResult(target))

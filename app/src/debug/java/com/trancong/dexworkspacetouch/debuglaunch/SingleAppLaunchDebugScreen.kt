@@ -157,6 +157,7 @@ fun SingleAppLaunchDebugScreen(
                         return@Button
                     }
                     val target = AppLaunchTarget(
+                        sourceCellId = "debug-single-app",
                         identity = app.identity,
                         bounds = selectedPreset.bounds,
                         order = 0,

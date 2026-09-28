@@ -14,10 +14,16 @@ import org.junit.Test
 
 class WorkspaceLaunchModelsTest {
     private val target = AppLaunchTarget(
-        AppIdentity("com.example", "MainActivity"),
-        NormalizedBounds.FullCanvas,
+        sourceCellId = "cell",
+        identity = AppIdentity("com.example", "MainActivity"),
+        bounds = NormalizedBounds.FullCanvas,
         order = 0,
     )
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `blank source cell id is rejected`() {
+        target.copy(sourceCellId = " ")
+    }
 
     @Test(expected = IllegalArgumentException::class)
     fun `blank workspace id is rejected`() {
