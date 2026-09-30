@@ -11,6 +11,122 @@ value class EmbeddedAppSessionId(val value: String) {
 fun newEmbeddedAppSessionId(): EmbeddedAppSessionId =
     EmbeddedAppSessionId(UUID.randomUUID().toString())
 
+enum class EmbeddedSessionPhase {
+    IDLE, CONNECTING, READY, STARTING, ACTIVE,
+    STOPPING, STOPPED, FAILED, CLEANUP_INCOMPLETE, REMOTE_DIED,
+}
+
+data class EmbeddedSessionFailure(val code: String, val message: String?)
+
+data class EmbeddedSessionSnapshot(
+    val phase: EmbeddedSessionPhase,
+    val displayId: Int = -1,
+    val failure: EmbeddedSessionFailure? = null,
+)
+
+data class EmbeddedTouchEvent(
+    val action: Int,
+    val x: Float,
+    val y: Float,
+    val pressure: Float,
+    val eventTimeNanos: Long,
+)
+
+class EmbeddedAppLifecycleCoordinator {
+    private val transitions = mutableListOf<EmbeddedSessionSnapshot>()
+    private var stopRequested = false
+    private var closeRequested = false
+
+    var snapshot = EmbeddedSessionSnapshot(EmbeddedSessionPhase.IDLE)
+        private set
+    val history: List<EmbeddedSessionSnapshot> get() = transitions.toList()
+    var remoteStopRequestCount: Int = 0
+        private set
+
+    @Synchronized fun beginConnect(): Boolean {
+        if (snapshot.phase != EmbeddedSessionPhase.IDLE) return false
+        transition(EmbeddedSessionSnapshot(EmbeddedSessionPhase.CONNECTING))
+        return true
+    }
+
+    @Synchronized fun serviceReady() {
+        if (snapshot.phase == EmbeddedSessionPhase.CONNECTING) {
+            transition(EmbeddedSessionSnapshot(EmbeddedSessionPhase.READY))
+        }
+    }
+
+    @Synchronized fun beginStart(): Boolean {
+        if (snapshot.phase != EmbeddedSessionPhase.READY) return false
+        transition(EmbeddedSessionSnapshot(EmbeddedSessionPhase.STARTING))
+        return true
+    }
+
+    @Synchronized fun startSucceeded(displayId: Int): Boolean {
+        if (snapshot.phase == EmbeddedSessionPhase.STARTING) {
+            transition(EmbeddedSessionSnapshot(EmbeddedSessionPhase.ACTIVE, displayId))
+            return true
+        }
+        return false
+    }
+
+    @Synchronized fun startFailed(failure: EmbeddedSessionFailure): Boolean {
+        if (snapshot.phase == EmbeddedSessionPhase.STARTING) {
+            transition(EmbeddedSessionSnapshot(EmbeddedSessionPhase.FAILED, failure = failure))
+            return true
+        }
+        return false
+    }
+
+    @Synchronized fun rejectStart(failure: EmbeddedSessionFailure): Boolean {
+        if (snapshot.phase != EmbeddedSessionPhase.READY && snapshot.phase != EmbeddedSessionPhase.STARTING) return false
+        transition(EmbeddedSessionSnapshot(EmbeddedSessionPhase.FAILED, failure = failure))
+        return true
+    }
+
+    @Synchronized fun requestStop(): Boolean {
+        if (isTerminal() || stopRequested) return false
+        stopRequested = true
+        remoteStopRequestCount++
+        transition(EmbeddedSessionSnapshot(EmbeddedSessionPhase.STOPPING))
+        return true
+    }
+
+    @Synchronized fun requestClose(): Boolean {
+        if (isTerminal() || closeRequested) return false
+        closeRequested = true
+        if (!stopRequested) requestStop()
+        return true
+    }
+
+    @Synchronized fun cleanupSucceeded(leaseReleased: Boolean) {
+        if (snapshot.phase != EmbeddedSessionPhase.STOPPING || !leaseReleased) return
+        transition(EmbeddedSessionSnapshot(EmbeddedSessionPhase.STOPPED))
+    }
+
+    @Synchronized fun cleanupFailed(failure: EmbeddedSessionFailure) {
+        if (snapshot.phase == EmbeddedSessionPhase.STOPPING) {
+            transition(EmbeddedSessionSnapshot(EmbeddedSessionPhase.CLEANUP_INCOMPLETE, failure = failure))
+        }
+    }
+
+    @Synchronized fun remoteDied() {
+        if (!isTerminal()) transition(EmbeddedSessionSnapshot(EmbeddedSessionPhase.REMOTE_DIED))
+    }
+
+    private fun isTerminal(): Boolean = snapshot.phase in setOf(
+        EmbeddedSessionPhase.STOPPED,
+        EmbeddedSessionPhase.FAILED,
+        EmbeddedSessionPhase.CLEANUP_INCOMPLETE,
+        EmbeddedSessionPhase.REMOTE_DIED,
+    )
+
+    private fun transition(next: EmbeddedSessionSnapshot) {
+        if (snapshot == next || isTerminal()) return
+        snapshot = next
+        transitions += next
+    }
+}
+
 enum class RemoteSessionPhase { RESERVED, STARTING, ACTIVE, FAILED, STOPPING, STOPPED }
 
 data class EmbeddedAppServiceState(

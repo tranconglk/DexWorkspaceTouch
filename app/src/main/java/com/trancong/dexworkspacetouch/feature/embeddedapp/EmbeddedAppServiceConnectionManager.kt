@@ -44,6 +44,18 @@ class FinalRemovalCoordinator(
         if (terminal) nonTerminal.remove(id)
         maybeFinalizeServiceRemoval()
     }
+    @Synchronized fun reconcileAbsent(
+        id: String,
+        sameService: Boolean,
+        sessionAbsent: Boolean,
+        remoteState: EmbeddedAppServiceState?,
+    ): Boolean {
+        if (!sameService || !sessionAbsent || remoteState?.provesEmpty != true ||
+            inFlight.isNotEmpty() || id !in nonTerminal) return false
+        nonTerminal.remove(id)
+        maybeFinalizeServiceRemoval()
+        return true
+    }
     @Synchronized fun release(id: String) {
         leases.remove(id)
         maybeFinalizeServiceRemoval()
@@ -82,6 +94,7 @@ class EmbeddedAppServiceConnectionManager private constructor(context: Context) 
         .daemon(false).processNameSuffix("embedded_app").tag("dwt-vdm-002")
         .version(BuildConfig.VERSION_CODE + 1001).debuggable(BuildConfig.DEBUG)
     private var remote: IEmbeddedAppService? = null
+    private var serviceGeneration = 0L
     private var connection: ServiceConnection? = null
     private var listenersInstalled = false
     private val received = Shizuku.OnBinderReceivedListener { requestBindIfPermitted() }
@@ -99,13 +112,16 @@ class EmbeddedAppServiceConnectionManager private constructor(context: Context) 
             Shizuku.addRequestPermissionResultListener(permission)
             listenersInstalled = true
         }
-        remote?.let(listener::onServiceReady)
         return EmbeddedAppServiceLease(this, sessionId.value)
     }
 
     @Synchronized internal fun connect(lease: EmbeddedAppServiceLease) {
         check(bookkeeper.mayBind(lease.sessionId)) { "Binding requires an owning lease" }
-        if (remote != null || connection != null) return
+        remote?.let {
+            listeners[lease.sessionId]?.onServiceReady(it)
+            return
+        }
+        if (connection != null) return
         if (!Shizuku.pingBinder()) return
         if (Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) Shizuku.requestPermission(REQUEST)
         else bind()
@@ -119,6 +135,27 @@ class EmbeddedAppServiceConnectionManager private constructor(context: Context) 
         finalization.operationFinished(lease.sessionId, terminal)
     }
 
+    @Synchronized internal fun generationFor(service: IEmbeddedAppService): Long? =
+        serviceGeneration.takeIf { remote === service }
+
+    @Synchronized internal fun reconcileAbsentSession(
+        lease: EmbeddedAppServiceLease,
+        service: IEmbeddedAppService,
+        generation: Long?,
+    ): Boolean {
+        if (generation == null || serviceGeneration != generation || remote !== service ||
+            !finalization.owns(lease.sessionId) || service.asBinder()?.isBinderAlive != true) return false
+        val sessionState = runCatching { service.getSessionState(lease.sessionId) }.getOrNull()
+        val absent = sessionState?.getBoolean("success") == false &&
+            sessionState.getString("failureCode") == "UNKNOWN_SESSION" &&
+            sessionState.getString("sessionId") == lease.sessionId
+        if (!absent) return false
+        val state = queryRemoteState()
+        if (serviceGeneration != generation || remote !== service ||
+            service.asBinder()?.isBinderAlive != true) return false
+        return finalization.reconcileAbsent(lease.sessionId, true, true, state)
+    }
+
     @Synchronized private fun requestBindIfPermitted() {
         if (bookkeeper.leaseCount > 0 && Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) bind()
     }
@@ -128,12 +165,20 @@ class EmbeddedAppServiceConnectionManager private constructor(context: Context) 
         val created = object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName, binder: IBinder) {
                 val service = IEmbeddedAppService.Stub.asInterface(binder)
-                synchronized(this@EmbeddedAppServiceConnectionManager) { remote = service }
-                listeners.values.toList().forEach { it.onServiceReady(service) }
+                synchronized(this@EmbeddedAppServiceConnectionManager) {
+                    if (connection !== this) return
+                    serviceGeneration++
+                    remote = service
+                    listeners.values.toList().forEach { it.onServiceReady(service) }
+                }
             }
             override fun onServiceDisconnected(name: ComponentName) {
-                synchronized(this@EmbeddedAppServiceConnectionManager) { remote = null; connection = null }
-                listeners.values.toList().forEach { it.onServiceDisconnected() }
+                synchronized(this@EmbeddedAppServiceConnectionManager) {
+                    if (connection !== this) return
+                    serviceGeneration++
+                    remote = null; connection = null
+                    listeners.values.toList().forEach { it.onServiceDisconnected() }
+                }
             }
         }
         connection = created
@@ -151,14 +196,20 @@ class EmbeddedAppServiceConnectionManager private constructor(context: Context) 
         val service = remote ?: return null
         val bundle = runCatching { service.serviceState }.getOrNull()
             ?.takeIf { it.getBoolean("success") } ?: return null
-        return EmbeddedAppServiceState(bundle.getInt("activeSessionCount"),
-            bundle.getInt("startingSessionCount"), bundle.getInt("stoppingSessionCount"),
-            bundle.getInt("liveResourceSessionCount"))
+        val keys = listOf("activeSessionCount", "startingSessionCount",
+            "stoppingSessionCount", "liveResourceSessionCount")
+        if (keys.any { !bundle.containsKey(it) }) return null
+        return runCatching {
+            EmbeddedAppServiceState(bundle.getInt("activeSessionCount"),
+                bundle.getInt("startingSessionCount"), bundle.getInt("stoppingSessionCount"),
+                bundle.getInt("liveResourceSessionCount"))
+        }.getOrNull()
     }
 
     @Synchronized private fun removeService() {
         val bound = connection ?: return
         Shizuku.unbindUserService(args, bound, true)
+        serviceGeneration++
         remote = null; connection = null; uninstallListeners()
     }
 

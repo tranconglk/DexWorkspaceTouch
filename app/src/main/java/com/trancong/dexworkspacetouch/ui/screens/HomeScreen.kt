@@ -133,6 +133,7 @@ fun HomeScreen(
     onOpenEmbeddedWaze: () -> Unit = {},
     onOpenEmbeddedCalculator: () -> Unit = {},
     onOpenEmbeddedDualApp: () -> Unit = {},
+    onOpenEmbeddedWorkspaceRunner: () -> Unit = {},
     onShareWorkspace: (String) -> Unit = {},
     onSaveWorkspaceToFile: (String) -> Unit = {},
     onImportWorkspace: () -> Unit = {},
@@ -586,6 +587,7 @@ fun HomeScreen(
                                     OutlinedButton(onClick = onOpenEmbeddedWaze, modifier = Modifier.height(TouchTargets.SecondaryButton)) { Text("Embedded Waze") }
                                     OutlinedButton(onClick = onOpenEmbeddedCalculator, modifier = Modifier.height(TouchTargets.SecondaryButton)) { Text("Embedded Calculator") }
                                     OutlinedButton(onClick = onOpenEmbeddedDualApp, modifier = Modifier.height(TouchTargets.SecondaryButton)) { Text("Embedded Dual App") }
+                                    OutlinedButton(onClick = onOpenEmbeddedWorkspaceRunner, modifier = Modifier.height(TouchTargets.SecondaryButton)) { Text("Embedded Workspace Runner (Experimental)") }
                                     TextButton(
                                         onClick = { dispatchAboutEvent(AboutDialogEvent.Open) },
                                         modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
@@ -604,6 +606,7 @@ fun HomeScreen(
                                     OutlinedButton(onClick = onOpenEmbeddedWaze, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Waze") }
                                     OutlinedButton(onClick = onOpenEmbeddedCalculator, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Calculator") }
                                     OutlinedButton(onClick = onOpenEmbeddedDualApp, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Dual") }
+                                    OutlinedButton(onClick = onOpenEmbeddedWorkspaceRunner, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Runner") }
                                     TextButton(onClick = { dispatchAboutEvent(AboutDialogEvent.Open) }, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Info") }
                                 }
                             }
