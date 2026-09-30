@@ -20,5 +20,6 @@ class NormalizedBoundsTest {
         assertThrows(IllegalArgumentException::class.java) { NormalizedBounds(0f, 0f, 1.1f, 1f) }
         assertThrows(IllegalArgumentException::class.java) { NormalizedBounds(0.5f, 0f, 0.5f, 1f) }
         assertThrows(IllegalArgumentException::class.java) { NormalizedBounds(0f, 0.5f, 1f, 0.5f) }
+        assertThrows(IllegalArgumentException::class.java) { NormalizedBounds(Float.NaN, 0f, 1f, 1f) }
     }
 }

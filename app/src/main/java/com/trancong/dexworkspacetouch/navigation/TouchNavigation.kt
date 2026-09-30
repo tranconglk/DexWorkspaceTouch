@@ -26,6 +26,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -75,6 +77,7 @@ import com.trancong.dexworkspacetouch.feature.embeddedcalculator.EmbeddedCalcula
 import com.trancong.dexworkspacetouch.feature.embeddedwaze.EmbeddedWazeScreen
 import com.trancong.dexworkspacetouch.feature.embeddeddual.EmbeddedDualAppScreen
 import com.trancong.dexworkspacetouch.feature.embeddedworkspace.EmbeddedWorkspaceRunnerScreen
+import com.trancong.dexworkspacetouch.feature.embeddedworkspace.EmbeddedWorkspaceLayoutScreen
 import com.trancong.dexworkspacetouch.feature.car.CarWorkspaceOption
 import com.trancong.dexworkspacetouch.feature.car.CarWorkspaceShortcutSlot
 import com.trancong.dexworkspacetouch.feature.car.resolveCarWorkspaceShortcutRows
@@ -105,6 +108,7 @@ private object Routes {
     const val EmbeddedCalculator = "embedded-calculator"
     const val EmbeddedDualApp = "embedded-dual-app"
     const val EmbeddedWorkspaceRunner = "embedded-workspace-runner"
+    const val EmbeddedWorkspaceLayout = "embedded-workspace-layout"
     const val LayoutDesigner = "layout-designer"
     const val AppPicker = "app-picker"
 }
@@ -432,6 +436,18 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
         composable(Routes.EmbeddedWorkspaceRunner) {
             EmbeddedWorkspaceRunnerScreen(activity = activity, onBack = { navController.popBackStack() })
         }
+        composable(
+            "${Routes.EmbeddedWorkspaceLayout}/{workspaceId}",
+            arguments = listOf(navArgument("workspaceId") { type = NavType.StringType }),
+        ) { entry ->
+            EmbeddedWorkspaceLayoutScreen(
+                activity = activity,
+                workspaceId = entry.arguments?.getString("workspaceId").orEmpty(),
+                repository = application.workspaceRepository,
+                requestFactory = workspaceLaunchRequestFactory,
+                onBack = { navController.popBackStack() },
+            )
+        }
         composable(Routes.Home) {
             HomeScreen(
                 workspaces = libraryViewModel.visibleWorkspaces,
@@ -503,6 +519,9 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
                 onOpenEmbeddedCalculator = { navController.navigate(Routes.EmbeddedCalculator) },
                 onOpenEmbeddedDualApp = { navController.navigate(Routes.EmbeddedDualApp) },
                 onOpenEmbeddedWorkspaceRunner = { navController.navigate(Routes.EmbeddedWorkspaceRunner) },
+                onOpenEmbeddedWorkspaceLayout = { id ->
+                    navController.navigate("${Routes.EmbeddedWorkspaceLayout}/${Uri.encode(id)}")
+                },
                 onShareWorkspace = { id -> exportMode = "share"; transferViewModel.prepareExport(id) },
                 onSaveWorkspaceToFile = { id -> exportMode = "save"; transferViewModel.prepareExport(id) },
                 onImportWorkspace = { importLauncher.launch("*/*") },

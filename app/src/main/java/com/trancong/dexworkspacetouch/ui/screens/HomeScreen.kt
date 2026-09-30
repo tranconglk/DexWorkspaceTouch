@@ -134,6 +134,7 @@ fun HomeScreen(
     onOpenEmbeddedCalculator: () -> Unit = {},
     onOpenEmbeddedDualApp: () -> Unit = {},
     onOpenEmbeddedWorkspaceRunner: () -> Unit = {},
+    onOpenEmbeddedWorkspaceLayout: (String) -> Unit = {},
     onShareWorkspace: (String) -> Unit = {},
     onSaveWorkspaceToFile: (String) -> Unit = {},
     onImportWorkspace: () -> Unit = {},
@@ -593,6 +594,11 @@ fun HomeScreen(
                                         modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
                                     ) { Text("Giới thiệu") }
                                 }
+                                OutlinedButton(
+                                    onClick = { selectedWorkspaceId?.let(onOpenEmbeddedWorkspaceLayout) },
+                                    enabled = selectedWorkspaceId != null,
+                                    modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
+                                ) { Text("Embedded Workspace Layout (Experimental)") }
                             }
                         } else {
                             Column(verticalArrangement = Arrangement.spacedBy(Spacing.M)) {
@@ -609,6 +615,11 @@ fun HomeScreen(
                                     OutlinedButton(onClick = onOpenEmbeddedWorkspaceRunner, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Runner") }
                                     TextButton(onClick = { dispatchAboutEvent(AboutDialogEvent.Open) }, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Info") }
                                 }
+                                OutlinedButton(
+                                    onClick = { selectedWorkspaceId?.let(onOpenEmbeddedWorkspaceLayout) },
+                                    enabled = selectedWorkspaceId != null,
+                                    modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
+                                ) { Text("Layout (Experimental)") }
                             }
                         }
                     }
