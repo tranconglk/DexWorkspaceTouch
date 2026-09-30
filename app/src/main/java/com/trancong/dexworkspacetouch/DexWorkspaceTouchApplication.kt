@@ -29,6 +29,8 @@ import com.trancong.dexworkspacetouch.update.AppUpdateRepository
 import com.trancong.dexworkspacetouch.update.UpdateManifestClient
 import okhttp3.OkHttpClient
 import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.AndroidWorkspaceLaunchDiagnostics
+import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGate
+import kotlinx.coroutines.Job
 
 class DexWorkspaceTouchApplication : Application() {
     lateinit var workspaceRepository: WorkspaceRepository
@@ -48,6 +50,11 @@ class DexWorkspaceTouchApplication : Application() {
     val licenseTimeProvider = LicenseTimeProvider(System::currentTimeMillis)
     val carWorkflowExecutionArbiter = CarWorkflowExecutionArbiter()
     private val processScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    val embeddedProductRunGate = EmbeddedProductRunGate()
+
+    fun createEmbeddedProductRunScope(): CoroutineScope = CoroutineScope(
+        SupervisorJob(processScope.coroutineContext[Job]) + Dispatchers.Main.immediate,
+    )
 
     override fun onCreate() {
         super.onCreate()

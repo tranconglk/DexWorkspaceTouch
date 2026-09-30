@@ -126,6 +126,9 @@ fun HomeScreen(
     onDismissBatchFeedback: () -> Unit = {},
     launchState: WorkspaceLaunchUiState,
     onLaunchWorkspace: (WorkspaceLibraryItem) -> Unit,
+    onOpenEmbeddedWorkspace: (String) -> Unit = {},
+    workspaceRunActionsEnabled: Boolean = true,
+    productRunStatus: String? = null,
     onCancelLaunch: () -> Unit,
     onDismissLaunchResult: () -> Unit,
     onOpenCar: () -> Unit = {},
@@ -701,6 +704,11 @@ fun HomeScreen(
                     }
                     }
                 }
+            if (productRunStatus != null) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Text(productRunStatus, color = MaterialTheme.colorScheme.error)
+                }
+            }
             if (!libraryIsLoading && hasCorruptedWorkspaces) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     Text("Không thể đọc một số workspace.")
@@ -758,6 +766,7 @@ fun HomeScreen(
                         selected = workspace.id == selectedWorkspaceId,
                         onSelect = { onWorkspaceSelected(workspace.id) },
                         onOpen = { onLaunchWorkspace(workspace) },
+                        onOpenEmbedded = { onOpenEmbeddedWorkspace(workspace.id) },
                         onEdit = { onEditWorkspace(workspace.id) },
                         onDuplicate = { onDuplicateWorkspace(workspace.id) },
                         onPinToggle = { onSetWorkspacePinned(workspace.id, !workspace.isPinned) },
@@ -765,7 +774,8 @@ fun HomeScreen(
                         onDelete = { deleteWorkspaceId = workspace.id },
                         onManage = { managedWorkspaceId = workspace.id },
                         canDelete = editingWorkspaceId != workspace.id && interactionPolicy.managementEnabled,
-                        openEnabled = launchState !is WorkspaceLaunchUiState.Checking && launchState !is WorkspaceLaunchUiState.Launching,
+                        openEnabled = workspaceRunActionsEnabled && launchState !is WorkspaceLaunchUiState.Checking && launchState !is WorkspaceLaunchUiState.Launching,
+                        embeddedOpenEnabled = workspaceRunActionsEnabled,
                         editEnabled = interactionPolicy.editEnabled,
                         duplicateEnabled = !libraryWriteInProgress,
                         pinEnabled = !libraryWriteInProgress,
@@ -792,6 +802,7 @@ fun HomeScreen(
                         selected = workspace.id == selectedWorkspaceId,
                         onSelect = { onWorkspaceSelected(workspace.id) },
                         onOpen = { onLaunchWorkspace(workspace) },
+                        onOpenEmbedded = { onOpenEmbeddedWorkspace(workspace.id) },
                         onEdit = { onEditWorkspace(workspace.id) },
                         onDuplicate = { onDuplicateWorkspace(workspace.id) },
                         onPinToggle = { onSetWorkspacePinned(workspace.id, !workspace.isPinned) },
@@ -800,8 +811,9 @@ fun HomeScreen(
                         onManage = { managedWorkspaceId = workspace.id },
                         canDelete = editingWorkspaceId != workspace.id &&
                             interactionPolicy.managementEnabled,
-                        openEnabled = launchState !is WorkspaceLaunchUiState.Checking &&
+                        openEnabled = workspaceRunActionsEnabled && launchState !is WorkspaceLaunchUiState.Checking &&
                             launchState !is WorkspaceLaunchUiState.Launching,
+                        embeddedOpenEnabled = workspaceRunActionsEnabled,
                         editEnabled = interactionPolicy.editEnabled,
                         duplicateEnabled = !libraryWriteInProgress,
                         pinEnabled = !libraryWriteInProgress,

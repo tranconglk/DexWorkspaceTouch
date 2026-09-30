@@ -78,6 +78,10 @@ import com.trancong.dexworkspacetouch.feature.embeddedwaze.EmbeddedWazeScreen
 import com.trancong.dexworkspacetouch.feature.embeddeddual.EmbeddedDualAppScreen
 import com.trancong.dexworkspacetouch.feature.embeddedworkspace.EmbeddedWorkspaceRunnerScreen
 import com.trancong.dexworkspacetouch.feature.embeddedworkspace.EmbeddedWorkspaceLayoutScreen
+import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductScreen
+import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductRouting
+import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase
+import com.trancong.dexworkspacetouch.workspace.library.model.toLibraryItem
 import com.trancong.dexworkspacetouch.feature.car.CarWorkspaceOption
 import com.trancong.dexworkspacetouch.feature.car.CarWorkspaceShortcutSlot
 import com.trancong.dexworkspacetouch.feature.car.resolveCarWorkspaceShortcutRows
@@ -109,6 +113,7 @@ private object Routes {
     const val EmbeddedDualApp = "embedded-dual-app"
     const val EmbeddedWorkspaceRunner = "embedded-workspace-runner"
     const val EmbeddedWorkspaceLayout = "embedded-workspace-layout"
+    const val EmbeddedWorkspaceProduct = "embedded-workspace"
     const val LayoutDesigner = "layout-designer"
     const val AppPicker = "app-picker"
 }
@@ -120,6 +125,13 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
     val currentRoute = currentBackStackEntry?.destination?.route
     val designerViewModel: WorkspaceDesignerViewModel = viewModel()
     val application = activity.application as DexWorkspaceTouchApplication
+    val productGateState by application.embeddedProductRunGate.state.collectAsState()
+    val productRouting = remember(navController, application) {
+        EmbeddedWorkspaceProductRouting(application.embeddedProductRunGate) { id ->
+            navController.navigate("${Routes.EmbeddedWorkspaceProduct}/${Uri.encode(id)}")
+        }
+    }
+    val productNavigationScope = rememberCoroutineScope()
     val appUpdateViewModel: AppUpdateViewModel = viewModel(
         factory = AppUpdateViewModel.factory(application.appUpdateRepository),
     )
@@ -437,6 +449,28 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
             EmbeddedWorkspaceRunnerScreen(activity = activity, onBack = { navController.popBackStack() })
         }
         composable(
+            "${Routes.EmbeddedWorkspaceProduct}/{workspaceId}",
+            arguments = listOf(navArgument("workspaceId") { type = NavType.StringType }),
+        ) { entry ->
+            EmbeddedWorkspaceProductScreen(
+                activity = activity,
+                workspaceId = entry.arguments?.getString("workspaceId").orEmpty(),
+                application = application,
+                repository = application.workspaceRepository,
+                requestFactory = workspaceLaunchRequestFactory,
+                onBack = { navController.popBackStack() },
+                onOpenClassic = { id ->
+                    productNavigationScope.launch {
+                        val current = application.workspaceRepository.getById(id) ?: return@launch
+                        val dispatched = productRouting.openClassic {
+                            launchViewModel.launchWorkspace(current.toLibraryItem(), launchRuntime, launchHostToken)
+                        }
+                        if (dispatched) navController.popBackStack()
+                    }
+                },
+            )
+        }
+        composable(
             "${Routes.EmbeddedWorkspaceLayout}/{workspaceId}",
             arguments = listOf(navArgument("workspaceId") { type = NavType.StringType }),
         ) { entry ->
@@ -509,8 +543,15 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
                 onDismissBatchFeedback = libraryViewModel::dismissBatchFeedback,
                 launchState = launchViewModel.state,
                 onLaunchWorkspace = { workspace ->
-                    launchViewModel.launchWorkspace(workspace, launchRuntime, launchHostToken)
+                    productRouting.openClassic {
+                        launchViewModel.launchWorkspace(workspace, launchRuntime, launchHostToken)
+                    }
                 },
+                onOpenEmbeddedWorkspace = { id -> productRouting.openEmbedded(id) },
+                workspaceRunActionsEnabled = productGateState == ProductRunPhase.IDLE,
+                productRunStatus = if (productGateState == ProductRunPhase.CLEANUP_BLOCKED) {
+                    "Cleanup Embedded chưa được xác nhận. Tạm khóa mở Workspace; kiểm tra chẩn đoán Embedded."
+                } else null,
                 onCancelLaunch = launchViewModel::cancelLaunch,
                 onDismissLaunchResult = launchViewModel::dismissResult,
                 onOpenCar = { navController.navigate(Routes.Car) },
