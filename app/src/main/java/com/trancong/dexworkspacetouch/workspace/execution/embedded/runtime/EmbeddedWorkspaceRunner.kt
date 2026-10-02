@@ -14,14 +14,18 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class EmbeddedWorkspaceRunner(
-    private val preflight: EmbeddedWorkspacePreflight,
-    private val sessionFactory: EmbeddedWorkspaceSessionFactory,
+    preflight: EmbeddedWorkspacePreflight,
+    sessionFactory: EmbeddedWorkspaceSessionFactory,
     private val timeoutPolicy: EmbeddedWorkspaceRunnerTimeoutPolicy,
     scope: CoroutineScope,
-    private val dispatcher: CoroutineDispatcher,
+    dispatcher: CoroutineDispatcher,
 ) {
     private val events = Channel<Event>(Channel.UNLIMITED)
-    private val runnerScope = CoroutineScope(scope.coroutineContext + SupervisorJob() + dispatcher)
+    private val admissionLock = Any()
+    private var runnerScope: CoroutineScope? = CoroutineScope(scope.coroutineContext + SupervisorJob() + dispatcher)
+    private var preflight: EmbeddedWorkspacePreflight? = preflight
+    private var sessionFactory: EmbeddedWorkspaceSessionFactory? = sessionFactory
+    private var terminalSources: Set<String> = emptySet()
 
     private var phase = EmbeddedWorkspaceRunnerPhase.IDLE
     private var startAttempted = false
@@ -49,7 +53,7 @@ class EmbeddedWorkspaceRunner(
     private var cleanupWaitJob: Job? = null
 
     init {
-        runnerScope.launch {
+        checkNotNull(runnerScope).launch {
             for (event in events) {
                 handle(event)
             }
@@ -57,20 +61,23 @@ class EmbeddedWorkspaceRunner(
     }
 
     suspend fun start(request: EmbeddedWorkspaceExecutionRequest): EmbeddedWorkspaceRunResult {
+        if (cachedTerminal() != null) return EmbeddedWorkspaceRunResult.DuplicateCall
         val reply = CompletableDeferred<EmbeddedWorkspaceRunResult>()
-        events.send(Event.Start(request, reply))
+        admit(Event.Start(request, reply))
         return reply.await()
     }
 
     suspend fun stop(): EmbeddedWorkspaceRunResult {
+        cachedTerminal()?.let { return it }
         val reply = CompletableDeferred<EmbeddedWorkspaceRunResult>()
-        events.send(Event.Stop(reply))
+        admit(Event.Stop(reply))
         return reply.await()
     }
 
     suspend fun surfaceLost(sourceCellId: String): EmbeddedWorkspaceRunResult {
+        cachedTerminal()?.let { return it }
         val reply = CompletableDeferred<EmbeddedWorkspaceRunResult>()
-        events.send(Event.SurfaceLost(sourceCellId, reply))
+        admit(Event.SurfaceLost(sourceCellId, reply))
         return reply.await()
     }
 
@@ -79,8 +86,29 @@ class EmbeddedWorkspaceRunner(
         event: EmbeddedTouchEvent,
     ): EmbeddedWorkspaceTouchResult {
         val reply = CompletableDeferred<EmbeddedWorkspaceTouchResult>()
-        events.send(Event.Touch(sourceCellId, event, reply))
+        admit(Event.Touch(sourceCellId, event, reply))
         return reply.await()
+    }
+
+    private fun cachedTerminal(): EmbeddedWorkspaceRunResult? = synchronized(admissionLock) { terminalResult }
+
+    /** Publication and enqueue are one boundary; replies/external work run outside its lock. */
+    private fun admit(event: Event) {
+        val terminal = synchronized(admissionLock) {
+            terminalResult.also { if (it == null) check(events.trySend(event).isSuccess) }
+        }
+        if (terminal != null) resolveTerminal(event, terminal)
+    }
+
+    private fun resolveTerminal(event: Event, result: EmbeddedWorkspaceRunResult) {
+        when (event) {
+            is Event.Start -> event.reply.complete(EmbeddedWorkspaceRunResult.DuplicateCall)
+            is Event.Stop -> event.reply.complete(result)
+            is Event.SurfaceLost -> event.reply.complete(result)
+            is Event.Touch -> event.reply.complete(EmbeddedWorkspaceTouchResult.Rejected(event.sourceCellId,
+                if (event.sourceCellId in terminalSources) "NOT_ACTIVE" else "UNKNOWN_SOURCE"))
+            is Event.Snapshot, is Event.PhaseTimeout, is Event.CleanupTimeout -> Unit
+        }
     }
 
     private fun handle(event: Event) {
@@ -104,12 +132,11 @@ class EmbeddedWorkspaceRunner(
         startReply = event.reply
         phase = EmbeddedWorkspaceRunnerPhase.PREFLIGHT
 
-        when (val result = preflight.prepare(event.request)) {
+        when (val result = checkNotNull(preflight).prepare(event.request)) {
             is EmbeddedWorkspacePreflightResult.Rejected -> {
                 val rejected = EmbeddedWorkspaceRunResult.PreflightRejected(result.rejection)
                 phase = EmbeddedWorkspaceRunnerPhase.FAILED_CLEAN
-                terminalResult = rejected
-                event.reply.complete(rejected)
+                terminate(rejected)
             }
 
             is EmbeddedWorkspacePreflightResult.Prepared -> {
@@ -138,7 +165,7 @@ class EmbeddedWorkspaceRunner(
         if (phase == EmbeddedWorkspaceRunnerPhase.IDLE) {
             val stopped = EmbeddedWorkspaceRunResult.Stopped(emptyList(), emptyList())
             phase = EmbeddedWorkspaceRunnerPhase.STOPPED
-            terminalResult = stopped
+            terminate(stopped)
             event.reply.complete(stopped)
             return
         }
@@ -184,6 +211,7 @@ class EmbeddedWorkspaceRunner(
     }
 
     private fun handleSnapshot(event: Event.Snapshot) {
+        if (terminalResult != null) return
         val item = ownedItems[event.sourceCellId] ?: return
         item.latestSnapshot = event.snapshot
 
@@ -274,8 +302,8 @@ class EmbeddedWorkspaceRunner(
         currentStartupSourceId = sourceCellId
 
         val handle = try {
-            sessionFactory.create(prepared.target) { snapshot ->
-                events.trySend(Event.Snapshot(sourceCellId, snapshot))
+            checkNotNull(sessionFactory).create(prepared.target) { snapshot ->
+                admit(Event.Snapshot(sourceCellId, snapshot))
             }
         } catch (failure: Exception) {
             beginCleanup(
@@ -290,6 +318,7 @@ class EmbeddedWorkspaceRunner(
         val item = OwnedItem(prepared, handle)
         ownedItems[sourceCellId] = item
 
+        schedulePhaseTimeout(sourceCellId, PhaseWaitKind.READY)
         try {
             handle.connect()
         } catch (failure: Exception) {
@@ -301,7 +330,6 @@ class EmbeddedWorkspaceRunner(
             )
             return
         }
-        schedulePhaseTimeout(sourceCellId, PhaseWaitKind.READY)
     }
 
     private fun onReady(item: OwnedItem) {
@@ -348,9 +376,9 @@ class EmbeddedWorkspaceRunner(
             PhaseWaitKind.READY -> timeoutPolicy.readyTimeout
             PhaseWaitKind.ACTIVE -> timeoutPolicy.activeTimeout
         }
-        phaseWaitJob = runnerScope.launch {
+        phaseWaitJob = checkNotNull(runnerScope).launch {
             delay(timeout)
-            events.send(Event.PhaseTimeout(sourceCellId, kind, token))
+            admit(Event.PhaseTimeout(sourceCellId, kind, token))
         }
     }
 
@@ -398,9 +426,9 @@ class EmbeddedWorkspaceRunner(
         }
 
         val token = ++cleanupWaitToken
-        cleanupWaitJob = runnerScope.launch {
+        cleanupWaitJob = checkNotNull(runnerScope).launch {
             delay(timeoutPolicy.cleanupTimeout)
-            events.send(Event.CleanupTimeout(sourceCellId, token))
+            admit(Event.CleanupTimeout(sourceCellId, token))
         }
 
         runCatching { item.handle.stop() }
@@ -482,10 +510,42 @@ class EmbeddedWorkspaceRunner(
             is EmbeddedWorkspaceRunResult.RecoveryRequired -> EmbeddedWorkspaceRunnerPhase.RECOVERY_REQUIRED
             else -> EmbeddedWorkspaceRunnerPhase.FAILED_CLEAN
         }
-        terminalResult = result
+        terminate(result)
+    }
+
+    private fun terminate(result: EmbeddedWorkspaceRunResult) {
+        // The result is already a complete value copy. Close admission before detaching handles.
+        synchronized(admissionLock) {
+            terminalSources = ownedItems.keys.toSet()
+            terminalResult = result
+            events.close()
+        }
+        ownedItems.values.forEach { runCatching { it.handle.detachNotifications() } }
         startReply?.let { if (!it.isCompleted) it.complete(result) }
+        startReply = null
         terminalWaiters.forEach { if (!it.isCompleted) it.complete(result) }
         terminalWaiters.clear()
+        while (true) resolveTerminal(events.tryReceive().getOrNull() ?: break, result)
+        preparedItems = emptyList()
+        ownedItems.clear()
+        nextStartIndex = 0
+        currentStartupSourceId = null
+        cleanupActive = false
+        cleanupReason = null
+        cleanupOrder = emptyList()
+        cleanupIndex = 0
+        currentCleanupSourceId = null
+        cleanupOutcomes.clear()
+        clearPhaseWait()
+        phaseWaitToken++
+        cleanupWaitJob?.cancel()
+        cleanupWaitJob = null
+        cleanupWaitToken++
+        preflight = null
+        sessionFactory = null
+        val terminatingScope = runnerScope
+        runnerScope = null
+        terminatingScope?.coroutineContext?.get(Job)?.cancel()
     }
 
     private fun stopResult(

@@ -1,0 +1,746 @@
+﻿[
+    {
+        "Path":  "AGENTS.md",
+        "Hash":  "9598AFDC69FBCD7FC7E032D0919711C5ECCB300DF0835588570D0B87F4909B6B"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedStartIpcTask.kt",
+        "Hash":  "179AF1EFB670CCCF65348616DE498CF721C01E55752FABD41B07A391D401A237"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedProductDiagnosticFormatter.kt",
+        "Hash":  "156C71FE949268C5AA3EA96EF4DB52FA7D271D7FBDA847767AF36709234AF6B7"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedProductDiagnostics.kt",
+        "Hash":  "BFFE1051D19B66EF90954242223348572D2AD46CC6FD2A6289E7802097A4D373"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedProductIssue.kt",
+        "Hash":  "B696479AE8258AB06D859A9EA8F9D98E1737C34FCBBA1581AE0B6A89F2963334"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedProductRecovery.kt",
+        "Hash":  "5D97D9642F001CE5346386C6CBD1ADE4C4F5732FBE66F98274566D7023F1BC14"
+    },
+    {
+        "Path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/embeddedapp/ConnectionBoundaryFixture.kt",
+        "Hash":  "B0801F54F963D0078EC819830FAA10AE75450B358161B58D8A7AD6F829138AC0"
+    },
+    {
+        "Path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedAppStartIsolationTest.kt",
+        "Hash":  "3BDFF1B0A8FBA29E18B967B7E03B1FB89F6C7AC8B9523E2517DDF55716BB2B66"
+    },
+    {
+        "Path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedCleanupBlockedUxTest.kt",
+        "Hash":  "330E91366E6B2936EA470BA1ECE0AD72B2671D026E047D1740F10442429DECEF"
+    },
+    {
+        "Path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedProductDiagnosticFormatterTest.kt",
+        "Hash":  "5939E4ADF20E4FF50C53DE4F54A2D4A17D452522764A75C719EF27B5E311D332"
+    },
+    {
+        "Path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedProductIssueTest.kt",
+        "Hash":  "2CF3313FD6027774BE25091A27EBF793BE0628D94FD33770ADB4AECB823276C6"
+    },
+    {
+        "Path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedProductLifecycleTest.kt",
+        "Hash":  "6B3164B18C38C5C95F9F8CFF033C4FCFEEC45CDF351B0B40D38D088ADADEB628"
+    },
+    {
+        "Path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedShizukuRefreshTest.kt",
+        "Hash":  "947CBA1AC6E944245FFACB8AD0D448B6D6AE3FFE796AB55F66AFC6634F1BFEA0"
+    },
+    {
+        "Path":  "app/src/test/java/com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/EmbeddedWorkspaceConnectionBoundaryIntegrationTest.kt",
+        "Hash":  "CE8971175A9B3710EF64FD2A1153690618D63CADD5774789DB2E12E821551067"
+    },
+    {
+        "Path":  "app/src/test/java/com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/EmbeddedWorkspaceHungStartIntegrationTest.kt",
+        "Hash":  "90189F62350589060BACF1379709D2ACF256C24394EDA0B6F0EE4EE66F8D2DB4"
+    },
+    {
+        "Path":  "docs/compat/COMP-012R_HISTORY_ASSISTED_REUSE_DESIGN.md",
+        "Hash":  "607580FC690FAD3639F1D385D7F4377E2A33BF77145AC6B9A3FFB42142633B59"
+    },
+    {
+        "Path":  "docs/superpowers/plans/2026-10-01-dwt-vdm-009-embedded-product-hardening.md",
+        "Hash":  "C8B2CA18DEEF8591BE6A9E6B492EF11C2B46330DC405B6A3919EFBD1C34E8BDB"
+    },
+    {
+        "Path":  "docs/superpowers/plans/2026-10-01-dwt-vdm-009r-i-process-death-recovery-implementation.md",
+        "Hash":  "BA88ABF321AA735EE8BAAEE4278E60F4022876795C019257EFFC140B3EC0DAD7"
+    },
+    {
+        "Path":  "docs/superpowers/specs/2026-10-01-dwt-vdm-009-embedded-product-hardening-design.md",
+        "Hash":  "2549A08BC1BE5B3421C78C6526516C812C218F1119B33029D46FDF461C6B3C0E"
+    },
+    {
+        "Path":  "docs/superpowers/specs/2026-10-01-dwt-vdm-009-in-process-scope-amendment.md",
+        "Hash":  "AB58379004030A53BF3ABE5DA1173355496DEF782060D86B1F93EB28C399F4BC"
+    },
+    {
+        "Path":  "docs/superpowers/specs/2026-10-01-dwt-vdm-009-task3-ui-independent-cleanup-boundary.md",
+        "Hash":  "C1E82F320606FFC88312FBAA4231F6A02418FC1957807A73F666E67F436BD0BB"
+    },
+    {
+        "Path":  "docs/superpowers/specs/2026-10-01-dwt-vdm-009-task3c-bounded-connect-boundary.md",
+        "Hash":  "07C36D421B7F2DC594AA55E63C6C0DF95163C4C54EA7DD31B6F3BEA7BE57DD9C"
+    },
+    {
+        "Path":  "docs/superpowers/specs/2026-10-01-dwt-vdm-009-task3e-start-terminal-boundary.md",
+        "Hash":  "8266978606E5275D32941FDD107AE45776DC5EFB5B85618709BD3D8F97D9D772"
+    },
+    {
+        "Path":  "docs/superpowers/specs/2026-10-01-dwt-vdm-009r-a-association-root-recovery-design.md",
+        "Hash":  "30223C18BC33A1602F959865322DA1FB257B59887B6354C6D066A76FF0E8F57C"
+    },
+    {
+        "Path":  "docs/superpowers/specs/2026-10-01-dwt-vdm-009r-d-process-death-recovery-decision.md",
+        "Hash":  "C1FC1F4D714F815912AF0CCFD21969175ACFDFFAAF5F770B1EE76576C7F453E2"
+    },
+    {
+        "Path":  "docs/superpowers/specs/2026-10-01-dwt-vdm-009r-process-death-ownership-recovery-design.md",
+        "Hash":  "F61941CD5F58775E1F47398D4E12B51568C0169AB7CB3154177CEAB8BE0330B7"
+    },
+    {
+        "Path":  "experiments/dwt-vdm-009r-i-platform-probe/app/build.gradle.kts",
+        "Hash":  "BF82D8604BBDC6C9A5A09EC8C50290DE9176A03F38D4ECC4CF8DF0E76A91750E"
+    },
+    {
+        "Path":  "experiments/dwt-vdm-009r-i-platform-probe/app/src/main/AndroidManifest.xml",
+        "Hash":  "763732F1141090C81D67CF0A878DD782885E5A1D141BB0824142BF436B678974"
+    },
+    {
+        "Path":  "experiments/dwt-vdm-009r-i-platform-probe/app/src/main/aidl/com/trancong/dexworkspacetouch/recoveryprobe/IRecoveryProbeService.aidl",
+        "Hash":  "2FE4E5912424884E224513A056C5AC63A9DF8C29581C245B045540CC2A9BD4B2"
+    },
+    {
+        "Path":  "experiments/dwt-vdm-009r-i-platform-probe/app/src/main/java/com/trancong/dexworkspacetouch/recoveryprobe/DeclaredRootProbe.java",
+        "Hash":  "DF73C79965862D065C1C1EC1B48B048AEA65B8C94E2899935364257739CE1634"
+    },
+    {
+        "Path":  "experiments/dwt-vdm-009r-i-platform-probe/app/src/main/java/com/trancong/dexworkspacetouch/recoveryprobe/ExactAssociationProbe.java",
+        "Hash":  "9FCD903E3FC30948350D304EA1A29E2F56317874F947392F4CA228C64D7A553D"
+    },
+    {
+        "Path":  "experiments/dwt-vdm-009r-i-platform-probe/app/src/main/java/com/trancong/dexworkspacetouch/recoveryprobe/ProbeEvidence.java",
+        "Hash":  "06B88E7E9B94CE807FE47923E644B2B278DAA1195272649C66D85A6CF964E5E4"
+    },
+    {
+        "Path":  "experiments/dwt-vdm-009r-i-platform-probe/app/src/main/java/com/trancong/dexworkspacetouch/recoveryprobe/RecoveryProbeActivity.java",
+        "Hash":  "897BD60359A161D103CD4E0C14EF3EC128F7D1954B23FC75CD8A641B52BE82B8"
+    },
+    {
+        "Path":  "experiments/dwt-vdm-009r-i-platform-probe/app/src/main/java/com/trancong/dexworkspacetouch/recoveryprobe/RecoveryProbeUserService.java",
+        "Hash":  "C96294EC0BD4610CF4C958CE4A95E63F05947A0D01381C0387FD801842E66B7B"
+    },
+    {
+        "Path":  "experiments/dwt-vdm-009r-i-platform-probe/app/src/test/java/com/trancong/dexworkspacetouch/recoveryprobe/ExactProbeClassificationTest.java",
+        "Hash":  "87F0EE6F84FB727928F6FC8200FA625A176974A19D0570BCCA6C9AB96B17EBCB"
+    },
+    {
+        "Path":  "experiments/dwt-vdm-009r-i-platform-probe/build.gradle.kts",
+        "Hash":  "6CABEE94AAC88993ACAD319E7195667E26033F4BD00D157E1AEAC7C1CA9710CE"
+    },
+    {
+        "Path":  "experiments/dwt-vdm-009r-i-platform-probe/settings.gradle.kts",
+        "Hash":  "CF2C64C3A6DA22C1357DED453D51C976623EDDF57EEA80A608A51F2500C3762C"
+    },
+    {
+        "Path":  "smoke-output/dwt006-after-start.png",
+        "Hash":  "EBDCA88D695D4880C3D5D13645E63ABF4DD543C5814A74AC25F88451AC8D7DAB"
+    },
+    {
+        "Path":  "smoke-output/dwt006-before.png",
+        "Hash":  "E2D3194512F1D00FABA772245111F82E35967A8F2850EEB1A22DB8796BF85143"
+    },
+    {
+        "Path":  "smoke-output/dwt006-fresh-blocker.png",
+        "Hash":  "5905C6C0ACAA37E212C96CEA8E426729BE2F0B595E32A141096CCB1E4CBE087E"
+    },
+    {
+        "Path":  "smoke-output/dwt006-phone-after.png",
+        "Hash":  "5DEE2D8A3CBAC5483472A90C19816A36E3C97814835B748C5FBC6FCF0414E9A0"
+    },
+    {
+        "Path":  "smoke-output/dwt006-revalidation-after-start.png",
+        "Hash":  "1587F7D3F3DED3BD465C0663AE11BAAAD0A7D449AA0D65B97106A1407D74F78B"
+    },
+    {
+        "Path":  "smoke-output/dwt006-revalidation-after-stop.png",
+        "Hash":  "3C7307809AF9BCD995EC48A519FFB8C07C3B8FDE9F79BB462A8D108AA40F27C3"
+    },
+    {
+        "Path":  "smoke-output/dwt006-revalidation-calculator-56.png",
+        "Hash":  "E5DE34C94BBA0D0585A15ED71527AA1F201590AA8F64348BC0AC4EB55CE48EAB"
+    },
+    {
+        "Path":  "smoke-output/dwt006-revalidation-home.png",
+        "Hash":  "86823C916E12A292573B04769560FC8256A8E4234F4B4DC0A1A2817697C7D948"
+    },
+    {
+        "Path":  "smoke-output/dwt006-revalidation-ready.png",
+        "Hash":  "77018F45273264F42652977424A1F5A041FA6F663C5F4CFD3EEDF68F01595B4A"
+    },
+    {
+        "Path":  "smoke-output/dwt006-revalidation-waze-interaction.png",
+        "Hash":  "9945085C96304C054DAB2EAFACA2CA566992AD2AEADC0783E8D9B088E3E43DF4"
+    },
+    {
+        "Path":  "verification/dwt-vdm-005-final/a-interactive-after-stop-b.png",
+        "Hash":  "B59AA9B741305CACF474370F42A2EC7F700040A0B51810C0F26DE599C46B99A8"
+    },
+    {
+        "Path":  "verification/dwt-vdm-005-final/after-stop-a.png",
+        "Hash":  "9E9DD8DE62994238A1780C758475F0A4829A9386E1A261CCF161AEAFE2A1846C"
+    },
+    {
+        "Path":  "verification/dwt-vdm-005-final/after-stop-b.png",
+        "Hash":  "F4146A1417B3009F71E24EBA810E10946735E334A84AAEA0F4AD4A5C3AD940EA"
+    },
+    {
+        "Path":  "verification/dwt-vdm-005-final/calculator-56.png",
+        "Hash":  "AE7F72EA05AFB0A42F47A69DC8860ED3AB41765B4095C085FF940DF1457C5958"
+    },
+    {
+        "Path":  "verification/dwt-vdm-005-final/cancel-result.png",
+        "Hash":  "39A90C3FD311E4D2DCCA579EA5103952ABDB3DA0CCC30CB7EF66EB6E2145DC8D"
+    },
+    {
+        "Path":  "verification/dwt-vdm-005-final/connect-check.png",
+        "Hash":  "606A49E003299DCE8F41923D86887D0E0E2B8BEF0161D7A63CABEA6FE9D4C4E5"
+    },
+    {
+        "Path":  "verification/dwt-vdm-005-final/dual-initial.png",
+        "Hash":  "E74C64260B5A789D93531FE3AF6C2CE83A7C74FD1FA8BDEA6AE4D4DCCFFE844F"
+    },
+    {
+        "Path":  "verification/dwt-vdm-005-final/home.png",
+        "Hash":  "B7034DC81D8A723C3C57CF940DA23064BC0BFBC8E7446FA6B940FD749687715C"
+    },
+    {
+        "Path":  "verification/dwt-vdm-005-final/ready.png",
+        "Hash":  "606A49E003299DCE8F41923D86887D0E0E2B8BEF0161D7A63CABEA6FE9D4C4E5"
+    },
+    {
+        "Path":  "verification/dwt-vdm-005-final/rerun-a-active.png",
+        "Hash":  "C5984CBDAACAE20EB3EC925B4BE3F1778EE8ABB8C1AE49009C95D5E576A9227C"
+    },
+    {
+        "Path":  "verification/dwt-vdm-005-final/rerun-ab-active.png",
+        "Hash":  "54ADBAA9AFE0F35C29ED039E0FAC6B650A2C905DE16564543613C483D47A3298"
+    },
+    {
+        "Path":  "verification/dwt-vdm-005-final/rerun-ready.png",
+        "Hash":  "1D213031B16161CD0DAC72704DB4CE564D22D28A1D3069E6F6910E62C49D8267"
+    },
+    {
+        "Path":  "verification/dwt-vdm-005-final/stopped-clean.png",
+        "Hash":  "9254C60517359359DB146215C6411ED46C209DF5095F5311B2B002F93F580064"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/dex-action.png",
+        "Hash":  "39B239D88FC42824C5446E036006FCE84E80E2F5134C8629B028E7D4E8DB47EF"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/dex-active.png",
+        "Hash":  "AC0B5106D1B4F91CDC11C8A9B78246B438A9C9A7BC1CE71EB23F777578866A28"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/dex-after-shizuku.png",
+        "Hash":  "C49E8B45E4B62691406282CB92AB74150953A7CD72ED90E15EE420A1016D283B"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/dex-current.png",
+        "Hash":  "ECCE7511BE8C7E8EF073440B8769213B99D1699A5B8E4B70A92ACD41BF18A9B5"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/dex-prestart.png",
+        "Hash":  "3757B86BB519CAE9B6226F5FE32A4C36B1CCFFBF80054CE8D8C310B5A0218F9D"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/dex-ready.png",
+        "Hash":  "061B2344F4086D48AB9F575A981ADF858C1C0AD23C0354618D1EF541470F4074"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/dex-refresh.png",
+        "Hash":  "1550F25DAD0288A7747DCD070346C1AFCB3CE5F0EF2C2300045B0CDDA5823549"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/dex-route.png",
+        "Hash":  "434259429890083B2DD6E6A303EC3CBB6947AAF97BDDCE3517F95B3689E21ACF"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/dex-route2.png",
+        "Hash":  "94D07664FB2668A07C0A562AEA28454FC0E907DE371C55449791ADD534A757A7"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/dex-selected.png",
+        "Hash":  "CD5CBDAE86014D2D435CCA49BEF62FD9B31677AE011B00FE213EFFF3D7379312"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-0-process-death.md",
+        "Hash":  "222AFAC681BB77869A12A352E3D80ACAEE1A13672D3C4DDAEBE1100CE1427A51"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-3b-gate-operation-ordering.md",
+        "Hash":  "2CC28BD07871EDA7DC9C560A7AB0244E89C5CCE3591295230A51212A9341D0C6"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-3g-client-start-isolation.md",
+        "Hash":  "46C7937FBCC0C26FDCBEE61238DFE19C6F2E522B67A83487079808BC97FF6D7B"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-4-route-lifecycle.md",
+        "Hash":  "0421905C6972E13737274FFF869E7F3A0BB355CF29FFD8CD96F7974FE1742156"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-5-cleanup-blocked-ux.md",
+        "Hash":  "E595C2DC60D073EC87DD2A684CDB9B967D91D8B8BD83B440DBD7862114577DFD"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-5-green.xml",
+        "Hash":  "849C10E2B67CA24E26F7029681AD978EED4CFCBC018BFF37050078762311B9F1"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-5-red.xml",
+        "Hash":  "76F0528CC146EA32776025BF1589AC2ACA009F24CB278E79A623C6081E927A20"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-5-scoped-diff.patch",
+        "Hash":  "E232ED833D89EDD067D350E1478ADE239F83E4CF51C91B49170A4415F589028E"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-5-surface-copy-red.xml",
+        "Hash":  "35DC1092F14F94809A8ED379A1D70667D0F6EA9267A5D34545C74F418436F4E1"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-baseline.json",
+        "Hash":  "B9671541BC4B11982BB62BFF0D52CA5688BED19CF8B8CCC40F0E4B01BABE2866"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-diff-check-stderr.txt",
+        "Hash":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-diff-check.txt",
+        "Hash":  "5BC1399A70034DFF67A052D09A1A4FC2A36D1E652FEE85822CC42A4556EC692C"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-gate-before.txt",
+        "Hash":  "4212163734DF64362E54D379E2D5D970ECAB4A68177FE937E7C41CBC8DA15970"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-gate.diff",
+        "Hash":  "E18FFE554CB54B21E0F4E2B8FE3CA22978CE35A4B3673C91B946C61B03EC52A1"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-green.xml",
+        "Hash":  "4AB783E3F8B8F7ED25D1D4B0CF4597241BC29BA3D6B1C9061EEE0912244DE0D2"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-javap.txt",
+        "Hash":  "236F3868AA1C0B8479D1CA806F3EE3B16F7CF3771BE98EC7B76103294C7FAE7A"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-new-files-whitespace.txt",
+        "Hash":  "EA4DACE3B97D61AD6F9FB5D3341A141F9E5A2793852ED8F842A61F1830DBBBB0"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-red.xml",
+        "Hash":  "251A1BA3A3D4CCA42D3BDF53E570E3C7455FD075849295AF4605450F73B2FD5D"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-regression-TEST-com.tr-MDT2MILG5Q83M.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest.xml",
+        "Hash":  "E7F6DB18FB3E84A7196E70231855260A49F7A940AF1BBE743A81010876BD424E"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-regression-TEST-com.tranc-9E5MMSLPOVUAG.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductRoutingTest.xml",
+        "Hash":  "FBBB7739A0A0839C96B9F12C37B88BF6FE10C075DAD09A738F3FB877DCE63068"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-regression-TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest.xml",
+        "Hash":  "3707C10AF62D78D74C4D17ADFC192CB5F9FBD7BB0F1E2D6ABA8FAB3984207EA0"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-regression-TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest.xml",
+        "Hash":  "75B05CA8196DF8CDC9AFB2AD228490C1F567E15EAF98A280A0CF04523E90CF70"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-regression-TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest.xml",
+        "Hash":  "D96F3179BCF24191644ADDE04CE77CE5B139F896481E3345FD27A5B257177675"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-regression-TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest.xml",
+        "Hash":  "702CEE1CC6D747C4BC4CC92E2588E151A809D33C89C902015C633DED8771BBBB"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-regression-TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedShizukuRefreshTest.xml",
+        "Hash":  "0773870A231591B1C0F4C6C4F8CC2CE0C320E329707B8C49A3179A4990D7C311"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-regression-TEST-com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.EmbeddedWorkspaceRunnerTest.xml",
+        "Hash":  "FC33CD73AF2B7E7B2E406D657C9B22ACF0AED83532821B3E128FFE310461A376"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-regression-summary.json",
+        "Hash":  "0EDAD2E847FF0D8DBD0342EEDB90ACC42BEF36C212D36E2838BBAA90782F6EB9"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-scope-audit.txt",
+        "Hash":  "00C5262A01345E54B493394A9152BE524C876B6D06C6DD1CB8B7EE4F31F7B5C0"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-screen-before.txt",
+        "Hash":  "C4485088838B8B73E6E782970059C2391F26FA0A33D1AC36CF0D717C4AE52B42"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-screen.diff",
+        "Hash":  "A1DB9FFB853EC5F325EB41FACDD06314818D22B300E964953970D8ABDD9A0FE7"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-security-audit.txt",
+        "Hash":  "AF8971C5357F44E31B32F573522498039F7A1DAEEB18BC02AB5DD8999DBEAE2D"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009/task-6-typed-diagnostics.md",
+        "Hash":  "15190A06A5A78C707DC55A5C835AF02F2256109643AC7769C0AA97A5D274B250"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-a/prior-api-inventory.json",
+        "Hash":  "133B0E26E54C7F26C812D22C16AA5141B27645FCEC04026D36F98D5E747B25FE"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-a/protected-paths-before.json",
+        "Hash":  "6FA35A66FBEB9C964BF75915293BFBEFCA8C229F1C4D71CA540C7818C2C58864"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-a/spec-before-p1.md",
+        "Hash":  "C0B9911823FA5D61678CCF58E44C10AC8F8A9CC1C4FB3941E558F7A8D3E40C5E"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-a/task-p1-association-root-feasibility.md",
+        "Hash":  "F76A65493A017958E0C2A66BB52F1C40287A51CFEEE1EA74773678E38DFE5404"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-a/tracked-diff-before.patch",
+        "Hash":  "978405D179F75133D303B330C110D78C933977D08451DE1933260B2D1F51A416"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-a/verification-checks.txt",
+        "Hash":  "7F3BD5AFB5C96C1675EAB9349748A121A77A236FD68BB164D089B3035E6DFAA7"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-i/ExactProbeClassificationTest.xml",
+        "Hash":  "C27B3A857478CEBC79CA3EF511FC977D1AF9632242868A417ECAA852A3177D29"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-i/baseline-associations.txt",
+        "Hash":  "9BCC4FE3CA7522832F22114990CA1EE85B2542BD0335D7EF528C18ABF2E3E9DA"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-i/baseline-virtualdevice.txt",
+        "Hash":  "1D106C67EA43E39A7E55560E0D089F98D7B7FB9C50F2C4D7DB74E37F8E1EE269"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-i/final-associations.txt",
+        "Hash":  "9BCC4FE3CA7522832F22114990CA1EE85B2542BD0335D7EF528C18ABF2E3E9DA"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-i/final-virtualdevice.txt",
+        "Hash":  "1D106C67EA43E39A7E55560E0D089F98D7B7FB9C50F2C4D7DB74E37F8E1EE269"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-i/permission-screen.png",
+        "Hash":  "8C723677FB5391B13B76034E46CDFEA8F9410E7758355492EC6AC3377AAE3CB3"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-i/preconditions.txt",
+        "Hash":  "CEB95059FA120413BEA53DDAEE7F80A2FDB7705550BA42E15748AA528A7E082B"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-i/probe-artifact.txt",
+        "Hash":  "7A179F23FF48092A5D749EB0FC99279BF53A39E459FF6C653DAA354F8DBC90A9"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-i/probe-events.jsonl",
+        "Hash":  "31A8629155F42205E8BA38B5FF03D2F07AB10706AEE874AB150AABCEEA8D113D"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-i/protected-paths-before-device-proof.json",
+        "Hash":  "0C582FD7BEFE9B066B5EA47FBEE600A87B51E910B05FE26E2FCDBE53B7629602"
+    },
+    {
+        "Path":  "verification/dwt-vdm-009r-i/task-0-platform-feasibility.md",
+        "Hash":  "A16FC36562237BE01CAB692A156439E2D18A03E107779F18813E36081B8AB75C"
+    },
+    {
+        "Path":  "verification/dwt005-a-active.xml",
+        "Hash":  "D372692309D6555CA8C73A8AC3FBDC4808636061EEA5763C3197485B8CF91524"
+    },
+    {
+        "Path":  "verification/dwt005-a-connected.xml",
+        "Hash":  "1E9C423625589EA4F326D0D5129D036FE3E9B05E746FDE29E59E279030F1F216"
+    },
+    {
+        "Path":  "verification/dwt005-a-interactive.png",
+        "Hash":  "4F1455F0B5682DB55B2042C1A7C32573B5E1445562C6BF91D2B3094903A678B6"
+    },
+    {
+        "Path":  "verification/dwt005-a-ready.xml",
+        "Hash":  "6CC549F274911B8BEEDF85E73DB15257CC522DC20532FB383D6CE0413BEE7E4C"
+    },
+    {
+        "Path":  "verification/dwt005-after-stop-b.png",
+        "Hash":  "96391DAD0E26643A147FC7A1ACC732F8A40B536C7E47A8ACA5056E11A8AC64FD"
+    },
+    {
+        "Path":  "verification/dwt005-b-pane.xml",
+        "Hash":  "D372692309D6555CA8C73A8AC3FBDC4808636061EEA5763C3197485B8CF91524"
+    },
+    {
+        "Path":  "verification/dwt005-both.png",
+        "Hash":  "2D66E10A2D9ACFE4B923E5490B292BD02819892C3D69312A382CD4C8880AE20D"
+    },
+    {
+        "Path":  "verification/dwt005-dual-r1.xml",
+        "Hash":  "F78BF5EFC3773999FE4811103D988C6DE4491BFCE38F3DE0EF0AA13081DB7990"
+    },
+    {
+        "Path":  "verification/dwt005-dual.png",
+        "Hash":  "8DA441076CE254874C2EE485EC3E1765D8B67778836DD8D656E343F2D6B7195E"
+    },
+    {
+        "Path":  "verification/dwt005-dual.xml",
+        "Hash":  "AA01F871A413703C0A0445F996F18E52BDFB85F6E6EC7A5C759F79101B0B2D29"
+    },
+    {
+        "Path":  "verification/dwt005-home.png",
+        "Hash":  "1DDCEBF3D0F36D5EB943DB356114766E4522B84F767B6A3BD0BD202665D9D20B"
+    },
+    {
+        "Path":  "verification/dwt005-host-scroll.xml",
+        "Hash":  "8FFC696BCDF477157DF022E03608DA82439CA66533BDADFDF389B52623DEE361"
+    },
+    {
+        "Path":  "verification/dwt005-host-scroll2.xml",
+        "Hash":  "8DE90864CD6AA420DDCA23A901562F60235FB978820806407C11C1DFBC3097D1"
+    },
+    {
+        "Path":  "verification/dwt005-host-scroll3.xml",
+        "Hash":  "8DE90864CD6AA420DDCA23A901562F60235FB978820806407C11C1DFBC3097D1"
+    },
+    {
+        "Path":  "verification/dwt005-host21.png",
+        "Hash":  "087B0C2EA7BB7AE22DE47BB1EDAEFDD21D436588C5804036CF4D470D2A6AA8E2"
+    },
+    {
+        "Path":  "verification/dwt005-ready.png",
+        "Hash":  "F9648F5CEF3BB1E89051CF26132BAC0BBF43687A6A8414126F1D3F93DF09B77E"
+    },
+    {
+        "Path":  "verification/dwt005-touch-b.png",
+        "Hash":  "D1763D88841976A8BDCA44E4F13BC2C531026DF564FA238DEF379EF9D94432E5"
+    },
+    {
+        "Path":  "verification/dwt005.xml",
+        "Hash":  "4C1AC8927D974B869D56EAC925187C7DBA41A1FC4979488460EC2D1199AAC112"
+    },
+    {
+        "Path":  "verification/dwt007-after-start.png",
+        "Hash":  "BC64BFE4B074C18F618BFD4C2C13E35B84C58BCE5D3F5CFC64EF05B769A1529D"
+    },
+    {
+        "Path":  "verification/dwt007-assign.png",
+        "Hash":  "107719547C40A855A93921B74D76A472260B0C57DFD94ECE29CE43E805DEE5A9"
+    },
+    {
+        "Path":  "verification/dwt007-cal-state.png",
+        "Hash":  "EA4DCED2299565F1FC57CF0F0FD0C40D9309C373693DE27A6DBED6987EB3BFE2"
+    },
+    {
+        "Path":  "verification/dwt007-calculator-56.png",
+        "Hash":  "464D09AE25ED4C67E40B3CF8075E0AD2F25E3862E559C567A57EDE942DD043DD"
+    },
+    {
+        "Path":  "verification/dwt007-calibrated.png",
+        "Hash":  "7822FC4FD89E7D5F107FCDA65385CF63C8B2D4CA2FDCF23C675F71E4B2879DD8"
+    },
+    {
+        "Path":  "verification/dwt007-canvas.png",
+        "Hash":  "F8E4ED47C6AEFCBDA354F9A3AB4A64D9F09C1E0ED4CF8FD7FAD86726C7637F17"
+    },
+    {
+        "Path":  "verification/dwt007-canvas.xml",
+        "Hash":  "0C1F66B654830D74C807161918654E62C860CFF7C197065BF42A57A9E2C547A7"
+    },
+    {
+        "Path":  "verification/dwt007-current.png",
+        "Hash":  "21A59B6FCCEDA6524074AC0854CBAFC27A243FB7B26562734B3BCAEEE43C1B92"
+    },
+    {
+        "Path":  "verification/dwt007-current.xml",
+        "Hash":  "FA1A535FB81783829D08CEB5ABC7A25DBBA69854C4B5DA20BF327F165B953DA9"
+    },
+    {
+        "Path":  "verification/dwt007-diagnostic.png",
+        "Hash":  "61C4980F6FDBB1949C543B763C5A037B9422262D391CF694004B23653E7CD6B8"
+    },
+    {
+        "Path":  "verification/dwt007-editor.png",
+        "Hash":  "270EA82A853C63B24F4184E5F34B370D9C89204E35462428834496218CECC452"
+    },
+    {
+        "Path":  "verification/dwt007-editor.xml",
+        "Hash":  "6E0727B7EDD2DD339BBD9524A682E35C215EE5CB18E86D5D170069F3D7253F89"
+    },
+    {
+        "Path":  "verification/dwt007-forensic.png",
+        "Hash":  "E922174E681C26C90D3B979041664062429EF41CA3BA0A352642DDC94BF46646"
+    },
+    {
+        "Path":  "verification/dwt007-fresh.png",
+        "Hash":  "DEF262AAEC30F797EAC6D9505CEB68C53D38647A8EB1E15373C1ADD1E9076195"
+    },
+    {
+        "Path":  "verification/dwt007-library.png",
+        "Hash":  "1AC561D4E9598151008365096510960CC9D4EBBCF6EE50E66A82D2911D42DC77"
+    },
+    {
+        "Path":  "verification/dwt007-picker.png",
+        "Hash":  "7A8B8C7103EB922DA0C27B68A8A8883D294F61682AFDF108BCC90611E8B3171A"
+    },
+    {
+        "Path":  "verification/dwt007-pre.png",
+        "Hash":  "191077720844EBEAC14B5771274F280A20D9BB7CE6FD324C17279648EF57F723"
+    },
+    {
+        "Path":  "verification/dwt007-pre.xml",
+        "Hash":  "98F66B04263B43CA0E2EDBDF99E4B67B268E09921760923E8708246ACED99FD7"
+    },
+    {
+        "Path":  "verification/dwt007-prestart.png",
+        "Hash":  "E38963DD3254CFB032465E7F7FAD6C73816CA34FE3C1CE1708EAC68DE9B659D0"
+    },
+    {
+        "Path":  "verification/dwt007-ratio.png",
+        "Hash":  "35984FF31E5860ED17222F477A762BB92F4016D04090674306E7E708401BEDB8"
+    },
+    {
+        "Path":  "verification/dwt007-ratio.xml",
+        "Hash":  "AFDFB9939B4D82C5E0AFF1458051ADDA2BA6F6BC3ACCF62A349A8BDA8B955ADA"
+    },
+    {
+        "Path":  "verification/dwt007-resize.png",
+        "Hash":  "959CEE87399C0F53B72016D16D3A7C148422B487080908AEC0B9E976D88FAF0A"
+    },
+    {
+        "Path":  "verification/dwt007-return.png",
+        "Hash":  "B890D04B9CBDCBF3CFB37E5340EA7B529D905979E777DDEBD3164F6BDA3EE3BA"
+    },
+    {
+        "Path":  "verification/dwt007-save.png",
+        "Hash":  "6C3FDBACF79DE419E628EF34B04787F48160308108DAB3F2E9367253DB5D74DD"
+    },
+    {
+        "Path":  "verification/dwt007-selected.png",
+        "Hash":  "3D39B34F8CE0A570F609AC2FC52224F754766B1AA8CF3008586130AB5CFFFEC4"
+    },
+    {
+        "Path":  "verification/dwt007-stopped.png",
+        "Hash":  "70FE435209D461DF311E451CD629A7AD760C2F2890022F2061B11F14BD2AD906"
+    },
+    {
+        "Path":  "verification/dwt007-waze-pan.png",
+        "Hash":  "1B395C944FC84DB3FAAB6BCF994C9E057039E16F1F34405B815877D423315EAE"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedAppServiceConnectionManager.kt",
+        "Hash":  "5973244070FC50832F856A5A1BE63C416E3F6D6E62AC0F82FB67D8F15BFF9035"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedAppSession.kt",
+        "Hash":  "82EFED0115D6F6D926B201632290CDD15A4F2EDA0AE1A655DA7E72559233A22C"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedAppSessionState.kt",
+        "Hash":  "8718678C3D2C55BBD41B24958E862F36D93B63BFE2AA5F65F58977A109CFCC6D"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/AndroidEmbeddedCapabilityProbe.kt",
+        "Hash":  "EC1460B21FAFE86046941FCC19FECEBD7F90D49A221FF929F07A6A92EC487F67"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedProductRunGate.kt",
+        "Hash":  "D8929D94B87FD1324F78A2D3F26FF2F7855DCA10F2AA0AB88E98119B589193DA"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedWorkspaceProductController.kt",
+        "Hash":  "CF64E6331C87E8DC1538BE711F45AA2EC10EEB51AA045DC291CCBC4AE72B3234"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedWorkspaceProductScreen.kt",
+        "Hash":  "5389BB1122B25E515419E369EFEA6598038DE1C3C6303DB745F353C613FEAEFB"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedWorkspaceReadiness.kt",
+        "Hash":  "05114B0BD26ACC3A740E491BE31EC7398FEC437A7E58FBBDBC24DF708BF19D9F"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/navigation/TouchNavigation.kt",
+        "Hash":  "0E8CCC9D68A21966D07E64D7729B6A5421DB0B84AF7549AD2ACF3C1325F51E33"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/ui/screens/HomeScreen.kt",
+        "Hash":  "ACCCFAF040FBED9B8D50B478F18F807008F54A45154FF752D5D1EBC164A39001"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/AndroidEmbeddedWorkspaceSessionFactory.kt",
+        "Hash":  "0B598E6BE031243A3CE9F0956BBDBFA2060C810947914BDBA661542ADBAE660D"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/EmbeddedWorkspaceRunner.kt",
+        "Hash":  "CD8EEF6AD354D9EDC6CCA762B19DC75D9A754BC626316FF6D03E1421F6E17672"
+    },
+    {
+        "Path":  "app/src/main/java/com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/EmbeddedWorkspaceSessionPort.kt",
+        "Hash":  "3F4874D33B44AC4274EF2E78EA2E825FA4181E17880ACABDA27E9D69D3BEC36F"
+    },
+    {
+        "Path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedAppServiceConnectionManagerTest.kt",
+        "Hash":  "E36AFBD41E1A6FE81745A0714371F7A16CD73BC5C9E92552BD801F971B625B2F"
+    },
+    {
+        "Path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedAppSessionBoundaryTest.kt",
+        "Hash":  "E5D06166077E9A6ACE2A837A0C6BDF722C2C9866FB2B9DB4433C04ACB8B43C76"
+    },
+    {
+        "Path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedProductRunGateTest.kt",
+        "Hash":  "0C02DBB6598883B8F5616FAACE4DE4DEBBF8AD18F89726910CAFE2A9B001ACEE"
+    },
+    {
+        "Path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedWorkspaceProductControllerTest.kt",
+        "Hash":  "E9D524C53ED974662221837CDC354A443588E86E35AEC1C0CEFC53A2871B3A1F"
+    },
+    {
+        "Path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedWorkspaceReadinessTest.kt",
+        "Hash":  "AD3EA665ABEAF8AE44DBC1BA33DCC1B0A04FF45917376237BDC9DD45B947C412"
+    },
+    {
+        "Path":  "app/src/test/java/com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/AndroidEmbeddedWorkspaceSessionAdapterTest.kt",
+        "Hash":  "3126E6275358E273C79B292A929D86560C1B2B0FB28F07875A19B8C27604DC4F"
+    },
+    {
+        "Path":  "app/src/test/java/com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/EmbeddedWorkspaceRunnerTest.kt",
+        "Hash":  "AAD421D77F93DB5723D3118F42FF6313678F4EF53CA6CDDDF993A82760A1B927"
+    },
+    {
+        "Path":  "experiments/shizuku-task-probe/app/src/main/java/com/trancong/dexworkspacetouch/shizukuprobe/MainActivity.java",
+        "Hash":  "5BCC29BBDDCA13C1D5487BD10AF0BA72485183A43BE08549FC9DC8046FB19E03"
+    },
+    {
+        "Path":  "experiments/shizuku-task-probe/app/src/main/java/com/trancong/dexworkspacetouch/shizukuprobe/ProbeUserService.java",
+        "Hash":  "D4BE7B055A2D352DF3651F7649E4BAAB55FC7A8C5F111D76EF878BED9706494C"
+    }
+]

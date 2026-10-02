@@ -12,6 +12,7 @@ import com.trancong.dexworkspacetouch.workspace.execution.embedded.EmbeddedWorks
 import com.trancong.dexworkspacetouch.workspace.execution.embedded.EmbeddedWorkspacePlanItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
@@ -20,6 +21,8 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Assert.assertSame
+import org.junit.Assert.assertNull
 import org.junit.Test
 import kotlin.time.Duration.Companion.seconds
 
@@ -30,6 +33,137 @@ class EmbeddedWorkspaceRunnerTest {
         activeTimeout = 30.seconds,
         cleanupTimeout = 20.seconds,
     )
+
+    @Test fun `every true terminal clears runtime graph and ends root job while cache remains usable`() = runTest {
+        for (form in listOf("preflight", "idle", "clean", "incomplete", "recovery", "rollback")) {
+            val factory = readyActiveFactory("A")
+            if (form == "clean" || form == "rollback") {
+                factory.behavior("A").cleanupSnapshot = EmbeddedSessionSnapshot(EmbeddedSessionPhase.STOPPED)
+            }
+            if (form == "rollback") factory.behavior("A").startSnapshot = EmbeddedSessionSnapshot(
+                EmbeddedSessionPhase.FAILED, failure = EmbeddedSessionFailure("PRIMARY", "failure"),
+            )
+            val runner = runner(factory, this)
+            val root = (field(runner, "runnerScope") as CoroutineScope).coroutineContext[Job]!!
+            val terminal = when (form) {
+                "preflight" -> runner.start(request(listOf("A" to FakeSurface(false))))
+                "idle" -> runner.stop()
+                "rollback" -> runner.start(request("A"))
+                else -> {
+                    assertTrue(runner.start(request("A")) is EmbeddedWorkspaceRunResult.Started)
+                    if (form == "recovery") {
+                        factory.handle("A").emit(EmbeddedSessionSnapshot(EmbeddedSessionPhase.REMOTE_DIED))
+                        runCurrent()
+                    }
+                    val stopped = async { runner.stop() }
+                    runCurrent()
+                    if (form == "incomplete") { advanceTimeBy(20_000); runCurrent() }
+                    stopped.await()
+                }
+            }
+            runCurrent()
+            when (form) {
+                "preflight" -> assertTrue(terminal is EmbeddedWorkspaceRunResult.PreflightRejected)
+                "idle", "clean" -> assertTrue(terminal is EmbeddedWorkspaceRunResult.Stopped)
+                "incomplete" -> assertTrue(terminal is EmbeddedWorkspaceRunResult.CleanupIncomplete)
+                "recovery" -> assertTrue(terminal is EmbeddedWorkspaceRunResult.RecoveryRequired)
+                "rollback" -> {
+                    val failed = terminal as EmbeddedWorkspaceRunResult.StartFailed
+                    assertEquals("PRIMARY", failed.failure.code)
+                    assertTrue(failed.allOwnedSessionsClean)
+                    assertEquals("session-A", failed.partialReceipt?.sessionId?.value)
+                }
+            }
+            assertRuntimeDetached(runner, root)
+            assertSame(terminal, runner.stop())
+            assertSame(terminal, runner.surfaceLost("A"))
+            assertEquals(EmbeddedWorkspaceRunResult.DuplicateCall, runner.start(request("A")))
+            assertEquals(EmbeddedWorkspaceTouchResult.Rejected("unknown", "UNKNOWN_SOURCE"),
+                runner.sendTouch("unknown", touch()))
+            if (form !in listOf("preflight", "idle")) {
+                assertEquals(EmbeddedWorkspaceTouchResult.Rejected("A", "NOT_ACTIVE"), runner.sendTouch("A", touch()))
+                factory.handle("A").emit(EmbeddedSessionSnapshot(EmbeddedSessionPhase.ACTIVE, 99))
+                runCurrent()
+                assertSame(terminal, runner.stop())
+                assertEquals(1, factory.handle("A").detachCalls)
+            }
+        }
+    }
+
+    @Test fun `queued Stop SurfaceLost duplicate Start and Touch all resolve across terminal admission`() = runTest {
+        val factory = readyActiveFactory("A")
+        factory.behavior("A").cleanupSnapshot = EmbeddedSessionSnapshot(EmbeddedSessionPhase.STOPPED)
+        val runner = runner(factory, this)
+        val root = (field(runner, "runnerScope") as CoroutineScope).coroutineContext[Job]!!
+        runner.start(request("A"))
+        var copiedBeforeClear = false
+        factory.behavior("A").onDetach = {
+            copiedBeforeClear = field(runner, "terminalResult") is EmbeddedWorkspaceRunResult.Stopped &&
+                (field(runner, "ownedItems") as Map<*, *>).isNotEmpty()
+        }
+        val stop = async { runner.stop() }
+        val lost = async { runner.surfaceLost("A") }
+        val duplicate = async { runner.start(request("B")) }
+        val knownTouch = async { runner.sendTouch("A", touch()) }
+        val unknownTouch = async { runner.sendTouch("missing", touch()) }
+        runCurrent()
+        val terminal = stop.await()
+        assertSame(terminal, lost.await())
+        assertEquals(EmbeddedWorkspaceRunResult.DuplicateCall, duplicate.await())
+        assertTrue(knownTouch.isCompleted && unknownTouch.isCompleted)
+        assertEquals(EmbeddedWorkspaceTouchResult.Rejected("missing", "UNKNOWN_SOURCE"), unknownTouch.await())
+        assertTrue(copiedBeforeClear)
+        assertRuntimeDetached(runner, root)
+        assertEquals(listOf("A"), factory.created)
+        assertEquals(1, factory.handle("A").closeCalls)
+    }
+
+    private fun field(runner: EmbeddedWorkspaceRunner, name: String): Any? =
+        runner.javaClass.getDeclaredField(name).apply { isAccessible = true }.get(runner)
+
+    @Test fun `terminal publication serves concurrent callers while detach is still running`() = runTest {
+        val factory = readyActiveFactory("A")
+        factory.behavior("A").cleanupSnapshot = EmbeddedSessionSnapshot(EmbeddedSessionPhase.STOPPED)
+        val runner = runner(factory, this)
+        val root = (field(runner, "runnerScope") as CoroutineScope).coroutineContext[Job]!!
+        runner.start(request("A"))
+        val callers = java.util.concurrent.Executors.newFixedThreadPool(4)
+        var resolved = false
+        factory.behavior("A").onDetach = {
+            assertFalse(Thread.holdsLock(checkNotNull(field(runner, "admissionLock"))))
+            val stop = callers.submit<EmbeddedWorkspaceRunResult> { kotlinx.coroutines.runBlocking { runner.stop() } }
+            val lost = callers.submit<EmbeddedWorkspaceRunResult> { kotlinx.coroutines.runBlocking { runner.surfaceLost("A") } }
+            val start = callers.submit<EmbeddedWorkspaceRunResult> { kotlinx.coroutines.runBlocking { runner.start(request("B")) } }
+            val touch = callers.submit<EmbeddedWorkspaceTouchResult> { kotlinx.coroutines.runBlocking { runner.sendTouch("A", touch()) } }
+            assertSame(field(runner, "terminalResult"), stop.get(2, java.util.concurrent.TimeUnit.SECONDS))
+            assertSame(stop.get(), lost.get(2, java.util.concurrent.TimeUnit.SECONDS))
+            assertEquals(EmbeddedWorkspaceRunResult.DuplicateCall, start.get(2, java.util.concurrent.TimeUnit.SECONDS))
+            assertEquals(EmbeddedWorkspaceTouchResult.Rejected("A", "NOT_ACTIVE"), touch.get(2, java.util.concurrent.TimeUnit.SECONDS))
+            resolved = true
+        }
+        try {
+            runner.stop(); runCurrent()
+            assertTrue(resolved)
+            assertRuntimeDetached(runner, root)
+        } finally { callers.shutdownNow() }
+    }
+
+    private fun assertRuntimeDetached(runner: EmbeddedWorkspaceRunner, root: Job) {
+        assertTrue("Runner root must terminate", root.isCompleted)
+        assertTrue(root.children.none())
+        assertTrue((field(runner, "preparedItems") as List<*>).isEmpty())
+        assertTrue((field(runner, "ownedItems") as Map<*, *>).isEmpty())
+        assertTrue((field(runner, "cleanupOrder") as List<*>).isEmpty())
+        assertTrue((field(runner, "cleanupOutcomes") as List<*>).isEmpty())
+        assertTrue((field(runner, "terminalWaiters") as List<*>).isEmpty())
+        for (name in listOf("currentStartupSourceId", "currentCleanupSourceId", "startReply",
+            "phaseWaitJob", "cleanupWaitJob", "preflight", "sessionFactory", "runnerScope")) {
+            assertNull("Terminal holder $name", field(runner, name))
+        }
+        @Suppress("UNCHECKED_CAST")
+        val channel = field(runner, "events") as kotlinx.coroutines.channels.Channel<Any>
+        assertTrue("No pending request/Surface payload", channel.tryReceive().isClosed)
+    }
 
     @Test
     fun `sequential start retains synchronous callbacks and requires every item active`() = runTest {
@@ -303,6 +437,25 @@ class EmbeddedWorkspaceRunnerTest {
         assertEquals(0, factory.handle("A").stopCalls)
     }
 
+    @Test
+    fun `terminal cleanup detaches notifications and late READY cannot restart`() = runTest {
+        val factory = FakeFactory()
+        val runner = runner(factory, this)
+        val start = async { runner.start(request("A")) }
+        runCurrent()
+        val stop = async { runner.stop() }
+        runCurrent()
+        advanceTimeBy(20_000); runCurrent()
+        val result = stop.await()
+        assertTrue(result is EmbeddedWorkspaceRunResult.CleanupIncomplete)
+        assertEquals(result, start.await())
+        assertEquals(1, factory.handle("A").detachCalls)
+        factory.handle("A").emit(EmbeddedSessionSnapshot(EmbeddedSessionPhase.READY))
+        runCurrent()
+        assertEquals(0, factory.handle("A").startCalls)
+        assertEquals(result, runner.stop())
+    }
+
     private fun runner(factory: FakeFactory, scope: CoroutineScope) =
         EmbeddedWorkspaceRunner(
             preflight = EmbeddedWorkspacePreflight { EmbeddedAppGeometry(900, 675, 320) },
@@ -352,6 +505,7 @@ class EmbeddedWorkspaceRunnerTest {
         var startSnapshot: EmbeddedSessionSnapshot? = null,
         var cleanupSnapshot: EmbeddedSessionSnapshot? = null,
         var onConnect: () -> Unit = {},
+        var onDetach: () -> Unit = {},
     )
 
     private class FakeFactory(
@@ -386,6 +540,9 @@ class EmbeddedWorkspaceRunnerTest {
         var stopCalls = 0
         var closeCalls = 0
         var touchCalls = 0
+        var detachCalls = 0
+
+        override fun detachNotifications() { detachCalls++; behavior.onDetach() }
 
         override fun connect() {
             events += "connect:" + id

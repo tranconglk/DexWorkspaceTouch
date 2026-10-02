@@ -1,0 +1,370 @@
+[
+    {
+        "id":  "AndroidGradlePluginVersion",
+        "severity":  "Warning",
+        "category":  "Correctness",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\gradle\\wrapper\\gradle-wrapper.properties:4"
+                      ]
+    },
+    {
+        "id":  "AndroidGradlePluginVersion",
+        "severity":  "Warning",
+        "category":  "Correctness",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\gradle\\libs.versions.toml:2"
+                      ]
+    },
+    {
+        "id":  "GradleDependency",
+        "severity":  "Warning",
+        "category":  "Correctness",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\gradle\\libs.versions.toml:4"
+                      ]
+    },
+    {
+        "id":  "GradleDependency",
+        "severity":  "Warning",
+        "category":  "Correctness",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\gradle\\libs.versions.toml:7"
+                      ]
+    },
+    {
+        "id":  "GradleDependency",
+        "severity":  "Warning",
+        "category":  "Correctness",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\gradle\\libs.versions.toml:8"
+                      ]
+    },
+    {
+        "id":  "GradleDependency",
+        "severity":  "Warning",
+        "category":  "Correctness",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\gradle\\libs.versions.toml:10"
+                      ]
+    },
+    {
+        "id":  "GradleDependency",
+        "severity":  "Warning",
+        "category":  "Correctness",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\gradle\\libs.versions.toml:10"
+                      ]
+    },
+    {
+        "id":  "GradleDependency",
+        "severity":  "Warning",
+        "category":  "Correctness",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\gradle\\libs.versions.toml:10"
+                      ]
+    },
+    {
+        "id":  "GradleDependency",
+        "severity":  "Warning",
+        "category":  "Correctness",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\gradle\\libs.versions.toml:10"
+                      ]
+    },
+    {
+        "id":  "NewerVersionAvailable",
+        "severity":  "Warning",
+        "category":  "Correctness",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\gradle\\libs.versions.toml:3"
+                      ]
+    },
+    {
+        "id":  "NewerVersionAvailable",
+        "severity":  "Warning",
+        "category":  "Correctness",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\gradle\\libs.versions.toml:15"
+                      ]
+    },
+    {
+        "id":  "NewerVersionAvailable",
+        "severity":  "Warning",
+        "category":  "Correctness",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\gradle\\libs.versions.toml:16"
+                      ]
+    },
+    {
+        "id":  "ModifierParameter",
+        "severity":  "Warning",
+        "category":  "Correctness",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\car\\CarWorkspaceDashboard.kt:55"
+                      ]
+    },
+    {
+        "id":  "ModifierParameter",
+        "severity":  "Warning",
+        "category":  "Correctness",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\ui\\design\\DwtStatusSurface.kt:33"
+                      ]
+    },
+    {
+        "id":  "ModifierParameter",
+        "severity":  "Warning",
+        "category":  "Correctness",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\workspace\\library\\ui\\WorkspaceLibraryCard.kt:67"
+                      ]
+    },
+    {
+        "id":  "DiscouragedApi",
+        "severity":  "Warning",
+        "category":  "Correctness",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\platform\\launch\\android\\LegacyExternalDisplayWorkArea.kt:43"
+                      ]
+    },
+    {
+        "id":  "HardwareIds",
+        "severity":  "Warning",
+        "category":  "Security",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\license\\infrastructure\\identity\\AndroidDeviceIdentityProvider.kt:28"
+                      ]
+    },
+    {
+        "id":  "DrawAllocation",
+        "severity":  "Warning",
+        "category":  "Performance",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\car\\overlay\\AndroidCarOverlayPlatform.kt:497"
+                      ]
+    },
+    {
+        "id":  "ObsoleteSdkInt",
+        "severity":  "Warning",
+        "category":  "Performance",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\license\\activation\\AndroidApplicationIdentityProvider.kt:19"
+                      ]
+    },
+    {
+        "id":  "ObsoleteSdkInt",
+        "severity":  "Warning",
+        "category":  "Performance",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\license\\activation\\AndroidApplicationIdentityProvider.kt:33"
+                      ]
+    },
+    {
+        "id":  "ObsoleteSdkInt",
+        "severity":  "Warning",
+        "category":  "Performance",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\res\\mipmap-anydpi-v26:"
+                      ]
+    },
+    {
+        "id":  "ViewConstructor",
+        "severity":  "Warning",
+        "category":  "Usability",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\car\\overlay\\AndroidCarOverlayPlatform.kt:469"
+                      ]
+    },
+    {
+        "id":  "UseKtx",
+        "severity":  "Warning",
+        "category":  "Productivity",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\car\\platform\\AndroidCarActionExecutor.kt:190"
+                      ]
+    },
+    {
+        "id":  "UseKtx",
+        "severity":  "Warning",
+        "category":  "Productivity",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\car\\overlay\\AndroidCarOverlayPermission.kt:11"
+                      ]
+    },
+    {
+        "id":  "UseKtx",
+        "severity":  "Warning",
+        "category":  "Productivity",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\license\\infrastructure\\identity\\AndroidDeviceKeyManager.kt:121"
+                      ]
+    },
+    {
+        "id":  "UseKtx",
+        "severity":  "Warning",
+        "category":  "Productivity",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\car\\CarWorkspaceShortcutPreferences.kt:71"
+                      ]
+    },
+    {
+        "id":  "UseKtx",
+        "severity":  "Warning",
+        "category":  "Productivity",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\license\\infrastructure\\identity\\LicenseDeviceIdentityPreferences.kt:33"
+                      ]
+    },
+    {
+        "id":  "UseKtx",
+        "severity":  "Warning",
+        "category":  "Productivity",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\license\\activation\\LicenseTokenStore.kt:21"
+                      ]
+    },
+    {
+        "id":  "UseKtx",
+        "severity":  "Warning",
+        "category":  "Productivity",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\license\\activation\\LicenseTokenStore.kt:25"
+                      ]
+    },
+    {
+        "id":  "UseKtx",
+        "severity":  "Warning",
+        "category":  "Productivity",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\MainActivity.kt:61"
+                      ]
+    },
+    {
+        "id":  "UseKtx",
+        "severity":  "Warning",
+        "category":  "Productivity",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\MainActivity.kt:98"
+                      ]
+    },
+    {
+        "id":  "UseKtx",
+        "severity":  "Warning",
+        "category":  "Productivity",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\navigation\\TouchNavigation.kt:694"
+                      ]
+    },
+    {
+        "id":  "UseTomlInstead",
+        "severity":  "Warning",
+        "category":  "Productivity",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\build.gradle.kts:161"
+                      ]
+    },
+    {
+        "id":  "UseTomlInstead",
+        "severity":  "Warning",
+        "category":  "Productivity",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\build.gradle.kts:162"
+                      ]
+    },
+    {
+        "id":  "ClickableViewAccessibility",
+        "severity":  "Warning",
+        "category":  "Accessibility",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\embeddedcalculator\\EmbeddedCalculatorScreen.kt:77"
+                      ]
+    },
+    {
+        "id":  "ClickableViewAccessibility",
+        "severity":  "Warning",
+        "category":  "Accessibility",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\embeddedcalculator\\EmbeddedCalculatorScreen.kt:77"
+                      ]
+    },
+    {
+        "id":  "ClickableViewAccessibility",
+        "severity":  "Warning",
+        "category":  "Accessibility",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\embeddeddual\\EmbeddedDualAppScreen.kt:51"
+                      ]
+    },
+    {
+        "id":  "ClickableViewAccessibility",
+        "severity":  "Warning",
+        "category":  "Accessibility",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\embeddeddual\\EmbeddedDualAppScreen.kt:51"
+                      ]
+    },
+    {
+        "id":  "ClickableViewAccessibility",
+        "severity":  "Warning",
+        "category":  "Accessibility",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\embeddedwaze\\EmbeddedWazeScreen.kt:77"
+                      ]
+    },
+    {
+        "id":  "ClickableViewAccessibility",
+        "severity":  "Warning",
+        "category":  "Accessibility",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\embeddedwaze\\EmbeddedWazeScreen.kt:77"
+                      ]
+    },
+    {
+        "id":  "ClickableViewAccessibility",
+        "severity":  "Warning",
+        "category":  "Accessibility",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\embeddedworkspace\\EmbeddedWorkspaceRenderer.kt:117"
+                      ]
+    },
+    {
+        "id":  "ClickableViewAccessibility",
+        "severity":  "Warning",
+        "category":  "Accessibility",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\embeddedworkspace\\EmbeddedWorkspaceRenderer.kt:117"
+                      ]
+    },
+    {
+        "id":  "ClickableViewAccessibility",
+        "severity":  "Warning",
+        "category":  "Accessibility",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\embeddedworkspace\\EmbeddedWorkspaceRenderer.kt:136"
+                      ]
+    },
+    {
+        "id":  "ClickableViewAccessibility",
+        "severity":  "Warning",
+        "category":  "Accessibility",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\embeddedworkspace\\EmbeddedWorkspaceRunnerScreen.kt:191"
+                      ]
+    },
+    {
+        "id":  "ClickableViewAccessibility",
+        "severity":  "Warning",
+        "category":  "Accessibility",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\embeddedworkspace\\EmbeddedWorkspaceRunnerScreen.kt:191"
+                      ]
+    },
+    {
+        "id":  "SetTextI18n",
+        "severity":  "Warning",
+        "category":  "Internationalization",
+        "locations":  [
+                          "D:\\AndroidStudioProjects\\DexWorkspaceTouch\\app\\src\\main\\java\\com\\trancong\\dexworkspacetouch\\feature\\car\\overlay\\AndroidCarOverlayPlatform.kt:281"
+                      ]
+    }
+]

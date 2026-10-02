@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.EmbeddedWorkspaceRunnerTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-10-02T03:35:22.613Z" hostname="NUC" time="0.016">
+  <properties/>
+  <testcase name="every true terminal clears runtime graph and ends root job while cache remains usable" classname="com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.EmbeddedWorkspaceRunnerTest" time="0.016"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,229 @@
+﻿Compiled from "EmbeddedProductRunGate.kt"
+public final class com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGate {
+  private final java.util.concurrent.locks.ReentrantLock lock;
+  private final kotlinx.coroutines.flow.MutableStateFlow<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase> mutableState;
+  private final kotlinx.coroutines.flow.StateFlow<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase> state;
+  private final kotlinx.coroutines.flow.MutableStateFlow<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunStatus> mutableStatus;
+  private final kotlinx.coroutines.flow.StateFlow<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunStatus> status;
+  private long generationSequence;
+  private long operationSequence;
+  private boolean classicDispatching;
+  public static final int $stable;
+  public com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGate();
+  public final kotlinx.coroutines.flow.StateFlow<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase> getState();
+  public final kotlinx.coroutines.flow.StateFlow<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunStatus> getStatus();
+  public final <T> T createExecutionIfIdle$app(kotlin.jvm.functions.Function0<? extends T>);
+  public final boolean canEnterEmbedded();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.RunToken tryAcquireEmbedded(java.lang.String);
+  public final boolean tryDispatchClassic(kotlin.jvm.functions.Function0<kotlin.Unit>);
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunOperation startOperation(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.RunToken);
+  public final boolean markInvoked(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunOperation);
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductNoAllocationProof preRunnerRejection(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunOperation);
+  public final boolean releaseWithoutAllocation(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductNoAllocationProof);
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunOperation markStopping(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunOperation);
+  public final boolean markUncertain(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunOperation);
+  public final boolean recordMissingStartResult(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunOperation);
+  public final boolean acceptResult(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunOperation, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductExecutionValue);
+  private final boolean matches(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunOperation, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunStatus);
+  private final void publish(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunStatus);
+  private final <T> T withGate(java.util.concurrent.locks.ReentrantLock, kotlin.jvm.functions.Function0<? extends T>);
+  static {};
+}
+Compiled from "EmbeddedProductRunGate.kt"
+public final class com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunStatus {
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.RunToken token;
+  private final long generation;
+  private final java.lang.Long startOperationId;
+  private final java.lang.Long cleanupOperationId;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductInvocationCategory invocationCategory;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase phase;
+  private final boolean stopRequested;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductResultKind resultKind;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssue issue;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.AllocationEvidence allocationEvidence;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence cleanupEvidence;
+  private final java.util.List<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductItemStatus> items;
+  private final java.util.List<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductCleanupStatus> cleanupOutcomes;
+  public static final int $stable;
+  public com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunStatus(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.RunToken, long, java.lang.Long, java.lang.Long, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductInvocationCategory, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase, boolean, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductResultKind, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssue, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.AllocationEvidence, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence, java.util.List<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductItemStatus>, java.util.List<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductCleanupStatus>);
+  public com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunStatus(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.RunToken, long, java.lang.Long, java.lang.Long, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductInvocationCategory, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase, boolean, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductResultKind, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssue, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.AllocationEvidence, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence, java.util.List, java.util.List, int, kotlin.jvm.internal.DefaultConstructorMarker);
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.RunToken getToken();
+  public final long getGeneration();
+  public final java.lang.Long getStartOperationId();
+  public final java.lang.Long getCleanupOperationId();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductInvocationCategory getInvocationCategory();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase getPhase();
+  public final boolean getStopRequested();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductResultKind getResultKind();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssue getIssue();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.AllocationEvidence getAllocationEvidence();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence getCleanupEvidence();
+  public final java.util.List<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductItemStatus> getItems();
+  public final java.util.List<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductCleanupStatus> getCleanupOutcomes();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.RunToken component1();
+  public final long component2();
+  public final java.lang.Long component3();
+  public final java.lang.Long component4();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductInvocationCategory component5();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase component6();
+  public final boolean component7();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductResultKind component8();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssue component9();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.AllocationEvidence component10();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence component11();
+  public final java.util.List<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductItemStatus> component12();
+  public final java.util.List<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductCleanupStatus> component13();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunStatus copy(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.RunToken, long, java.lang.Long, java.lang.Long, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductInvocationCategory, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase, boolean, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductResultKind, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssue, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.AllocationEvidence, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence, java.util.List<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductItemStatus>, java.util.List<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductCleanupStatus>);
+  public static com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunStatus copy$default(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunStatus, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.RunToken, long, java.lang.Long, java.lang.Long, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductInvocationCategory, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase, boolean, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductResultKind, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssue, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.AllocationEvidence, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence, java.util.List, java.util.List, int, java.lang.Object);
+  public java.lang.String toString();
+  public int hashCode();
+  public boolean equals(java.lang.Object);
+  public com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunStatus();
+  static {};
+}
+Compiled from "EmbeddedProductRunGate.kt"
+public final class com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.RunToken {
+  private final java.lang.String workspaceId;
+  public static final int $stable;
+  public com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.RunToken(java.lang.String);
+  public final java.lang.String getWorkspaceId();
+  static {};
+}
+Compiled from "EmbeddedProductRunGate.kt"
+public final class com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductItemStatus {
+  private final java.lang.String sourceCellId;
+  private final java.lang.String sessionId;
+  private final java.lang.String packageName;
+  private final java.lang.String componentName;
+  private final int order;
+  private final com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedSessionPhase phase;
+  private final int displayId;
+  public static final int $stable;
+  public com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductItemStatus(java.lang.String, java.lang.String, java.lang.String, java.lang.String, int, com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedSessionPhase, int);
+  public final java.lang.String getSourceCellId();
+  public final java.lang.String getSessionId();
+  public final java.lang.String getPackageName();
+  public final java.lang.String getComponentName();
+  public final int getOrder();
+  public final com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedSessionPhase getPhase();
+  public final int getDisplayId();
+  public final java.lang.String component1();
+  public final java.lang.String component2();
+  public final java.lang.String component3();
+  public final java.lang.String component4();
+  public final int component5();
+  public final com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedSessionPhase component6();
+  public final int component7();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductItemStatus copy(java.lang.String, java.lang.String, java.lang.String, java.lang.String, int, com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedSessionPhase, int);
+  public static com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductItemStatus copy$default(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductItemStatus, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int, com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedSessionPhase, int, int, java.lang.Object);
+  public java.lang.String toString();
+  public int hashCode();
+  public boolean equals(java.lang.Object);
+  static {};
+}
+Compiled from "EmbeddedProductRunGate.kt"
+public final class com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductCleanupStatus {
+  private final java.lang.String sourceCellId;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence evidence;
+  private final java.lang.String failureCode;
+  public static final int $stable;
+  public com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductCleanupStatus(java.lang.String, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence, java.lang.String);
+  public final java.lang.String getSourceCellId();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence getEvidence();
+  public final java.lang.String getFailureCode();
+  public final java.lang.String component1();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence component2();
+  public final java.lang.String component3();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductCleanupStatus copy(java.lang.String, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence, java.lang.String);
+  public static com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductCleanupStatus copy$default(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductCleanupStatus, java.lang.String, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence, java.lang.String, int, java.lang.Object);
+  public java.lang.String toString();
+  public int hashCode();
+  public boolean equals(java.lang.Object);
+  static {};
+}
+Compiled from "EmbeddedProductDiagnostics.kt"
+public final class com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnostics {
+  public static final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnostics$Companion Companion;
+  private final long snapshotEpochMillis;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId workspaceId;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase phase;
+  private final long generation;
+  private final java.lang.Long startOperationId;
+  private final java.lang.Long cleanupOperationId;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductInvocationCategory invocationCategory;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductResultKind resultKind;
+  private final java.lang.String issueCode;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId issueSourceCellId;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedCause blockedCause;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.AllocationEvidence allocationEvidence;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence cleanupEvidence;
+  private final java.util.List<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticItem> items;
+  private final int omittedItemCount;
+  private final java.util.List<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticCleanup> cleanupOutcomes;
+  private final int omittedCleanupCount;
+  public static final int $stable;
+  private static final int MAX_ENTRIES;
+  private static final java.util.Set<java.lang.String> cleanupFailureCodes;
+  private com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnostics(long, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase, long, java.lang.Long, java.lang.Long, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductInvocationCategory, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductResultKind, java.lang.String, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedCause, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.AllocationEvidence, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence, java.util.List<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticItem>, int, java.util.List<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticCleanup>, int);
+  public final long getSnapshotEpochMillis();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId getWorkspaceId();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase getPhase();
+  public final long getGeneration();
+  public final java.lang.Long getStartOperationId();
+  public final java.lang.Long getCleanupOperationId();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductInvocationCategory getInvocationCategory();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductResultKind getResultKind();
+  public final java.lang.String getIssueCode();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId getIssueSourceCellId();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedCause getBlockedCause();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.AllocationEvidence getAllocationEvidence();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence getCleanupEvidence();
+  public final java.util.List<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticItem> getItems();
+  public final int getOmittedItemCount();
+  public final java.util.List<com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticCleanup> getCleanupOutcomes();
+  public final int getOmittedCleanupCount();
+  public com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnostics(long, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase, long, java.lang.Long, java.lang.Long, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductInvocationCategory, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductResultKind, java.lang.String, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedCause, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.AllocationEvidence, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence, java.util.List, int, java.util.List, int, kotlin.jvm.internal.DefaultConstructorMarker);
+  public static final java.util.Set access$getCleanupFailureCodes$cp();
+  static {};
+}
+Compiled from "EmbeddedProductDiagnostics.kt"
+public final class com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId {
+  public static final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId$Companion Companion;
+  private final java.lang.String value;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticProvenance provenance;
+  public static final int $stable;
+  private static final int MAX_ID_CHARS;
+  private com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId(java.lang.String, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticProvenance);
+  public final java.lang.String getValue();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticProvenance getProvenance();
+  public com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId(java.lang.String, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticProvenance, kotlin.jvm.internal.DefaultConstructorMarker);
+  static {};
+}
+Compiled from "EmbeddedProductDiagnostics.kt"
+public final class com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticItem {
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId sourceCellId;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId ownedSessionId;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId displayId;
+  private final int order;
+  private final com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedSessionPhase phase;
+  public static final int $stable;
+  public com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticItem(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId, int, com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedSessionPhase);
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId getSourceCellId();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId getOwnedSessionId();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId getDisplayId();
+  public final int getOrder();
+  public final com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedSessionPhase getPhase();
+  static {};
+}
+Compiled from "EmbeddedProductDiagnostics.kt"
+public final class com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticCleanup {
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId sourceCellId;
+  private final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence evidence;
+  private final java.lang.String failureCode;
+  public static final int $stable;
+  public com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticCleanup(com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId, com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence, java.lang.String);
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedDiagnosticId getSourceCellId();
+  public final com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.CleanupEvidence getEvidence();
+  public final java.lang.String getFailureCode();
+  static {};
+}

@@ -6,6 +6,32 @@ import android.os.Looper
 import android.view.Surface
 import com.trancong.dexworkspacetouch.feature.embeddedapp.remote.IEmbeddedAppService
 import java.util.concurrent.Executors
+import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
+
+internal data class UidCompletion(val identity: ConnectionIdentity, val operation: Long, val uid: Int?, val error: String?)
+
+/** No session, listener, UI callback or consumer is loaded across the Binder call. */
+internal class UidVerificationTask(
+    private val service: IEmbeddedAppService,
+    private val identity: ConnectionIdentity,
+    private val operation: Long,
+    private val destination: DetachableMailbox<UidCompletion>,
+) : Runnable {
+    override fun run() {
+        val value = try {
+            UidCompletion(identity, operation, service.uid, null)
+        } catch (_: Exception) {
+            UidCompletion(identity, operation, null, "UID_VERIFICATION_FAILED")
+        }
+        destination.offer(value)
+    }
+}
+
+private fun embeddedMainExecutor(): Executor {
+    val handler = Handler(Looper.getMainLooper())
+    return Executor { task -> handler.post(task) }
+}
 
 data class EmbeddedAppState(
     val shellReady: Boolean = false,
@@ -15,95 +41,221 @@ data class EmbeddedAppState(
     val displayId: Int = -1,
 )
 
-class EmbeddedAppSession(
-    context: Context,
+class EmbeddedAppSession internal constructor(
     private val target: EmbeddedAppTarget,
-    private val lifecycleChanged: (EmbeddedSessionSnapshot) -> Unit = {},
-    private val changed: (EmbeddedAppState) -> Unit,
+    private val manager: EmbeddedAppServiceConnectionManager,
+    private val main: Executor,
+    private val worker: ExecutorService,
+    private val verifier: WorkAdmission,
+    lifecycleChanged: (EmbeddedSessionSnapshot) -> Unit = {},
+    changed: (EmbeddedAppState) -> Unit,
+    private val startLane: WorkAdmission = EmbeddedConnectionLanes.start,
+    private val startCompletionExecutor: Executor = EmbeddedConnectionLanes.notificationExecutor,
 ) {
+    constructor(
+        context: Context,
+        target: EmbeddedAppTarget,
+        lifecycleChanged: (EmbeddedSessionSnapshot) -> Unit = {},
+        changed: (EmbeddedAppState) -> Unit,
+    ) : this(target, EmbeddedAppServiceConnectionManager.get(context), embeddedMainExecutor(),
+        Executors.newSingleThreadExecutor(), EmbeddedConnectionLanes.verifier, lifecycleChanged, changed)
+
     val sessionId = newEmbeddedAppSessionId()
-    private val main = Handler(Looper.getMainLooper())
-    private val worker = Executors.newSingleThreadExecutor()
+    private val stateLock = Any()
+    private sealed interface Notification {
+        data class Lifecycle(val value: EmbeddedSessionSnapshot) : Notification
+        data class State(val value: EmbeddedAppState) : Notification
+    }
+    private val notifications = DetachableMailbox<Notification>(main) { event ->
+        when (event) {
+            is Notification.Lifecycle -> lifecycleChanged(event.value)
+            is Notification.State -> changed(event.value)
+        }
+    }
     private val stopCoordinator = SessionStopCoordinator()
     private val connectionCoordinator = SessionConnectionCoordinator()
     private val lifecycle = EmbeddedAppLifecycleCoordinator()
-    private val manager = EmbeddedAppServiceConnectionManager.get(context)
-    private var lease: EmbeddedAppServiceLease? = null
-    private var state = EmbeddedAppState()
-    private var remote: IEmbeddedAppService? = null
-    private var closed = false
+    @Volatile private var lease: EmbeddedAppServiceLease? = null
+    @Volatile private var state = EmbeddedAppState()
+    @Volatile private var remote: IEmbeddedAppService? = null
+    @Volatile private var closed = false
+    @Volatile private var stopping = false
+    private var connectionOperation = 0L
+    private var candidate: EmbeddedConnectionEvent.Ready? = null
+    private var uidMailbox: DetachableMailbox<UidCompletion>? = null
+    @Volatile private var startSubmitted = false
     @Volatile private var startedRemotely = false
+    @Volatile private var cleanupConfirmed = false
+    private var startOperation: Long? = null
+    private var startMailbox: DetachableMailbox<StartCompletion>? = null
+    private val ingress = DetachableMailbox<EmbeddedConnectionEvent>(main, ::onConnectionEvent)
     private val listener = object : EmbeddedAppServiceListener {
-        override fun onServiceReady(service: IEmbeddedAppService) {
-            connectionCoordinator.serviceReady()
-            remote = service
-            lifecycle.serviceReady()
-            publishLifecycle()
-            val uid = runCatching { service.uid }.getOrDefault(-1)
-            update(state.copy(shellReady = uid == 2000, busy = false,
-                status = if (uid == 2000) "Shell UID 2000 ready" else "Unexpected remote UID $uid"))
+        override fun onConnectionEvent(event: EmbeddedConnectionEvent) { ingress.offer(event) }
+    }
+
+    fun start() { notifications.offer(Notification.State(state)) }
+
+    fun connect() {
+        val owned = try {
+            synchronized(stateLock) {
+                if (closed || stopping || !connectionCoordinator.beginConnect()) return
+                lifecycle.beginConnect()
+                connectionOperation++
+                lease ?: manager.acquire(sessionId, listener).also { lease = it }
+            }
+        } catch (_: IllegalStateException) {
+            connectionRejected("CONNECTION_ADMISSION_REJECTED")
+            return
         }
-        override fun onServiceDisconnected() {
-            connectionCoordinator.serviceDied()
-            lifecycle.remoteDied()
-            publishLifecycle()
-            remote = null
-            update(EmbeddedAppState(status = "Shell UserService disconnected / REMOTE_DIED"))
+        publishLifecycle()
+        update(state.copy(busy = true, status = "Connecting shell UserService"))
+        try {
+            owned.connect()
+        } catch (_: IllegalStateException) {
+            connectionRejected("CONNECTION_REQUEST_REJECTED")
         }
     }
 
-    fun start() { changed(state) }
-
-    fun connect() {
-        if (closed) return
-        if (!connectionCoordinator.beginConnect()) return
-        lifecycle.beginConnect()
+    private fun connectionRejected(code: String) {
+        synchronized(stateLock) {
+            invalidateConnection()
+            lifecycle.connectionFailed(EmbeddedSessionFailure(code, "Connection request rejected"))
+        }
         publishLifecycle()
-        update(state.copy(busy = true, status = "Connecting shell UserService"))
-        val owned = lease ?: manager.acquire(sessionId, listener).also { lease = it }
-        owned.connect()
+        update(state.copy(busy = false, status = "Connection request rejected"))
+    }
+
+    private fun onConnectionEvent(event: EmbeddedConnectionEvent) {
+        var task: UidVerificationTask? = null
+        synchronized(stateLock) {
+            if (lease?.accepts(event) != true) return
+            when (event) {
+                is EmbeddedConnectionEvent.Ready -> {
+                    if (closed || stopping) return
+                    if (lifecycle.snapshot.phase != EmbeddedSessionPhase.CONNECTING) return
+                    uidMailbox?.detach()
+                    candidate = event
+                    val operation = ++connectionOperation
+                    val mailbox = DetachableMailbox<UidCompletion>(main, ::onUidCompleted)
+                    uidMailbox = mailbox
+                    task = UidVerificationTask(event.service, event.identity, operation, mailbox)
+                }
+                is EmbeddedConnectionEvent.Disconnected -> {
+                    invalidateConnection()
+                    remote = null
+                    connectionCoordinator.serviceDied()
+                    lifecycle.remoteDied()
+                }
+                is EmbeddedConnectionEvent.Failed -> {
+                    if (closed || stopping) return
+                    invalidateConnection()
+                    lifecycle.connectionFailed(EmbeddedSessionFailure(event.code, "Connection request failed"))
+                }
+            }
+        }
+        if (task != null) {
+            if (!verifier.tryExecute(checkNotNull(task))) {
+                onUidCompleted(UidCompletion(event.identity, connectionOperation, null, "UID_CAPACITY_EXHAUSTED"))
+            }
+        } else {
+            publishLifecycle()
+            update(state.copy(shellReady = false, busy = false, status = "Shell UserService unavailable"))
+        }
+    }
+
+    private fun onUidCompleted(value: UidCompletion) {
+        synchronized(stateLock) {
+            val exact = candidate ?: return
+            if (closed || stopping || value.operation != connectionOperation || exact.identity != value.identity ||
+                lease?.accepts(exact) != true || lifecycle.snapshot.phase != EmbeddedSessionPhase.CONNECTING) return
+            if (!exact.readiness.claim()) return
+            uidMailbox?.detach(); uidMailbox = null
+            if (value.error != null || value.uid != 2000) {
+                lifecycle.connectionFailed(EmbeddedSessionFailure(value.error ?: "UNEXPECTED_SERVICE_UID",
+                    "Exact UserService UID verification failed"))
+                candidate = null
+            } else {
+                remote = exact.service
+                connectionCoordinator.serviceReady()
+                lifecycle.serviceReady()
+            }
+        }
+        publishLifecycle()
+        val ready = lifecycle.snapshot.phase == EmbeddedSessionPhase.READY
+        update(state.copy(shellReady = ready, busy = false,
+            status = if (ready) "Shell UID 2000 ready" else "UserService UID verification failed"))
+    }
+
+    /** Local invalidation does not interrupt/join Binder or claim cleanup success. */
+    private fun invalidateConnection() {
+        connectionOperation++
+        uidMailbox?.detach(); uidMailbox = null; candidate = null
+    }
+
+    fun detachNotifications() {
+        synchronized(stateLock) {
+            stopping = true
+            invalidateConnection()
+            startMailbox?.detach(); startMailbox = null
+        }
+        ingress.detach()
+        notifications.detach()
+        lease?.detachNotifications()
     }
 
     fun startSession(surface: Surface) {
-        val service = remote ?: return rejectStart("REMOTE_UNAVAILABLE", "Connect Shizuku first")
-        if (runCatching { surface.isValid }.getOrDefault(false).not()) {
-            return rejectStart("SURFACE_INVALID", "Surface is not valid")
+        val (task, ownedLease) = synchronized(stateLock) {
+            if (closed || stopping) return
+            val service = remote ?: return rejectStart("REMOTE_UNAVAILABLE", "Connect Shizuku first")
+            if (!runCatching { surface.isValid }.getOrDefault(false)) {
+                return rejectStart("SURFACE_INVALID", "Surface is not valid")
+            }
+            val ownedLease = lease ?: return rejectStart("START_REJECTED", "Connection lease unavailable")
+            if (!lifecycle.beginStart()) return
+            // Record may-allocate before the lane can execute any Binder work.
+            val operation = ownedLease.operationStarted()
+            startSubmitted = true
+            startOperation = operation
+            val destination = DetachableMailbox(startCompletionExecutor, ::onStartCompleted)
+            startMailbox = destination
+            val geometry = target.geometry
+            StartIpcTask(service, sessionId.value, target.packageName, target.componentName,
+                geometry.width, geometry.height, geometry.densityDpi, surface, operation, destination) to ownedLease
         }
-        val ownedLease = lease ?: return rejectStart("START_REJECTED", "Connection lease unavailable")
-        if (!lifecycle.beginStart()) return
         publishLifecycle()
         update(state.copy(busy = true, status = "Creating trusted VDM session"))
-        ownedLease.operationStarted()
-        worker.execute {
-            val geometry = target.geometry
-            val result = runCatching { service.startSession(sessionId.value, surface, target.packageName,
-                target.componentName, geometry.width, geometry.height, geometry.densityDpi) }
-            // A failed remote call can still have reserved the session or acquired resources.
+        if (!startLane.tryExecute(task)) {
+            // Rejected admission guarantees that this task never entered Start transport.
+            ownedLease.operationFinished(terminal = true, operation = task.operation)
+            synchronized(stateLock) {
+                if (startOperation != task.operation) return
+                startSubmitted = false; startOperation = null
+                startMailbox?.detach(); startMailbox = null
+            }
+            rejectStart("START_CAPACITY_EXHAUSTED", "Start execution capacity exhausted")
+        }
+    }
+
+    private fun onStartCompleted(value: StartCompletion) {
+        synchronized(stateLock) {
+            if (startMailbox == null || startOperation != value.operation) return
+            startMailbox?.detach(); startMailbox = null; startOperation = null
+            // Failure/exception may still have allocated. Detachment deliberately leaves this
+            // operation pending in the manager instead of accepting a late completion as clean.
             startedRemotely = true
-            ownedLease.operationFinished(terminal = false)
-            main.post {
-                result.fold({ bundle ->
-                    if (bundle.getBoolean("success")) {
-                        if (lifecycle.startSucceeded(bundle.getInt("displayId"))) {
-                            publishLifecycle()
-                            update(state.copy(busy = false, active = true, displayId = bundle.getInt("displayId"),
-                                status = "App launched on trusted display ${bundle.getInt("displayId")}"))
-                        }
-                    } else {
-                        val message = bundle.getString("exception") ?: "Session start failed"
-                        if (lifecycle.startFailed(EmbeddedSessionFailure("START_FAILED", message))) {
-                            publishLifecycle()
-                            update(state.copy(busy = false, status = message))
-                        }
-                    }
-                }, {
-                    if (lifecycle.startFailed(EmbeddedSessionFailure("START_FAILED", it.message))) {
-                        publishLifecycle()
-                        update(state.copy(busy = false, status = "Session start failed: ${it.message}"))
-                    }
-                })
+            lease?.operationFinished(terminal = false, operation = value.operation)
+            if (closed || stopping) return
+            if (value.success) {
+                if (!lifecycle.startSucceeded(value.displayId)) return
+                state = state.copy(busy = false, active = true, displayId = value.displayId,
+                    status = "App launched on trusted display ${value.displayId}")
+            } else {
+                if (!lifecycle.startFailed(EmbeddedSessionFailure("START_FAILED", value.error))) return
+                state = state.copy(busy = false, status = value.error ?: "Session start failed")
             }
         }
+        publishLifecycle()
+        notifications.offer(Notification.State(state))
     }
 
     fun sendTouch(event: EmbeddedTouchEvent) = touch(
@@ -119,16 +271,19 @@ class EmbeddedAppSession(
         if (!state.active) return
         worker.execute {
             val result = runCatching { service.sendTouch(sessionId.value, action, x, y, pressure, time) }.getOrNull()
-            if (result?.getBoolean("success") != true) main.post {
+            if (result?.getBoolean("success") != true) main.execute {
                 update(state.copy(status = result?.getString("exception") ?: "Touch delivery failed"))
             }
         }
     }
 
     fun stop() {
+        synchronized(stateLock) { stopping = true; invalidateConnection() }
         val service = remote
         if (!lifecycle.requestStop()) return
         publishLifecycle()
+        // No Start was submitted: only Close's acknowledged local lease release can prove clean.
+        if (!startSubmitted) return
         if (service == null) {
             lifecycle.cleanupFailed(EmbeddedSessionFailure("REMOTE_UNAVAILABLE", "Remote service unavailable"))
             publishLifecycle()
@@ -136,16 +291,17 @@ class EmbeddedAppSession(
         }
         if (!stopCoordinator.requestStop()) return
         val ownedLease = lease ?: return
-        ownedLease.operationStarted()
+        val operation = ownedLease.operationStarted()
         update(state.copy(busy = true, status = "Stopping embedded session"))
         val generation = manager.generationFor(service)
         worker.execute {
             val result = runCatching { service.stopSession(sessionId.value) }.getOrNull()
-            val stopped = result?.getBoolean("success") == true
+            val remoteStopped = result?.getBoolean("success") == true
             stopCoordinator.stopCompleted()
-            ownedLease.operationFinished(terminal = stopped)
-            val verifiedAbsent = !stopped &&
+            val stopped = ownedLease.operationFinished(terminal = remoteStopped, operation = operation)
+            val verifiedAbsent = !remoteStopped &&
                 manager.reconcileAbsentSession(ownedLease, service, generation)
+            cleanupConfirmed = stopped || verifiedAbsent
             startedRemotely = !stopped && !verifiedAbsent
             if (!stopped && !verifiedAbsent) {
                 lifecycle.cleanupFailed(EmbeddedSessionFailure(
@@ -154,31 +310,34 @@ class EmbeddedAppSession(
                 ))
                 publishLifecycle()
             }
-            main.post { update(EmbeddedAppState(shellReady = true,
+            main.execute { update(EmbeddedAppState(shellReady = true,
                 status = if (stopped || verifiedAbsent) "Embedded session stopped"
                 else result?.getString("exception") ?: "Cleanup failed")) }
         }
     }
 
     fun close() {
-        if (closed) return
-        closed = true
+        synchronized(stateLock) {
+            if (closed) return
+            closed = true; stopping = true; invalidateConnection()
+        }
         lifecycle.requestClose()
         publishLifecycle()
         stopCoordinator.requestClose()
         worker.execute {
             val ownedLease = lease
-            var cleanupSucceeded = !startedRemotely
-            if (startedRemotely && stopCoordinator.requestStop() && ownedLease != null) {
-                ownedLease.operationStarted()
+            var cleanupSucceeded = !startSubmitted || cleanupConfirmed
+            if (startSubmitted && !cleanupConfirmed && stopCoordinator.requestStop() && ownedLease != null) {
+                val operation = ownedLease.operationStarted()
                 val service = remote
                 val generation = service?.let(manager::generationFor)
-                val stopped = runCatching { service?.stopSession(sessionId.value) }.getOrNull()
+                val remoteStopped = runCatching { service?.stopSession(sessionId.value) }.getOrNull()
                     ?.getBoolean("success") == true
                 stopCoordinator.stopCompleted()
-                ownedLease.operationFinished(terminal = stopped)
-                val verifiedAbsent = !stopped && service != null &&
+                val stopped = ownedLease.operationFinished(terminal = remoteStopped, operation = operation)
+                val verifiedAbsent = !remoteStopped && service != null &&
                     manager.reconcileAbsentSession(ownedLease, service, generation)
+                cleanupConfirmed = stopped || verifiedAbsent
                 startedRemotely = !stopped && !verifiedAbsent
                 cleanupSucceeded = stopped || verifiedAbsent
             }
@@ -193,12 +352,12 @@ class EmbeddedAppSession(
         worker.shutdown()
     }
 
-    private fun update(value: EmbeddedAppState) { state = value; if (!closed) changed(value) }
+    private fun update(value: EmbeddedAppState) { state = value; if (!closed) notifications.offer(Notification.State(value)) }
     private fun rejectStart(code: String, message: String) {
         if (lifecycle.rejectStart(EmbeddedSessionFailure(code, message))) {
             publishLifecycle()
             update(state.copy(busy = false, status = message))
         }
     }
-    private fun publishLifecycle() = lifecycleChanged(lifecycle.snapshot)
+    private fun publishLifecycle() { notifications.offer(Notification.Lifecycle(lifecycle.snapshot)) }
 }

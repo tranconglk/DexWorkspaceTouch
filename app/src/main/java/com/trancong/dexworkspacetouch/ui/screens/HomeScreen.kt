@@ -77,6 +77,23 @@ import com.trancong.dexworkspacetouch.about.presentation.AppDiagnosticInfo
 import com.trancong.dexworkspacetouch.about.presentation.formatAppDiagnostics
 import com.trancong.dexworkspacetouch.about.presentation.reduceAboutDialog
 import com.trancong.dexworkspacetouch.about.ui.AboutDialog
+import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunStatus
+import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.cleanupBlockedUi
+import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedStatus
+
+internal enum class HomeEmbeddedProofControl(val label: String) {
+    WAZE("Embedded Waze"),
+    CALCULATOR("Embedded Calculator"),
+    DUAL_APP("Embedded Dual App"),
+    RUNNER("Embedded Workspace Runner (Experimental)"),
+    WORKSPACE_LAYOUT("Embedded Workspace Layout (Experimental)"),
+}
+
+internal data class HomeEmbeddedProofMenu(val isOpen: Boolean = false) {
+    val controls: List<HomeEmbeddedProofControl> get() = if (isOpen) HomeEmbeddedProofControl.entries else emptyList()
+    fun open() = copy(isOpen = true)
+    fun close() = copy(isOpen = false)
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -128,7 +145,8 @@ fun HomeScreen(
     onLaunchWorkspace: (WorkspaceLibraryItem) -> Unit,
     onOpenEmbeddedWorkspace: (String) -> Unit = {},
     workspaceRunActionsEnabled: Boolean = true,
-    productRunStatus: String? = null,
+    productRunStatus: ProductRunStatus? = null,
+    onViewEmbeddedStatus: (String) -> Unit = {},
     onCancelLaunch: () -> Unit,
     onDismissLaunchResult: () -> Unit,
     onOpenCar: () -> Unit = {},
@@ -150,6 +168,7 @@ fun HomeScreen(
     appIconLoader: AppIconLoader? = null,
     nowEpochMillis: Long = 0L,
 ) {
+    val blockedUi = productRunStatus?.cleanupBlockedUi()
     var managedWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
     var renameWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
     var renameText by rememberSaveable { mutableStateOf("") }
@@ -160,6 +179,7 @@ fun HomeScreen(
     var showFileSheet by rememberSaveable { mutableStateOf(false) }
     var showAboutDialog by rememberSaveable { mutableStateOf(false) }
     var showAboutCopySuccess by rememberSaveable { mutableStateOf(false) }
+    var proofMenu by remember { mutableStateOf(HomeEmbeddedProofMenu()) }
     var exportWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
     var showBatchDeleteConfirmation by rememberSaveable { mutableStateOf(false) }
     val templateCatalog = remember { WorkspaceTemplateCatalog.default() }
@@ -199,6 +219,7 @@ fun HomeScreen(
             showFileSheet = false
             showAboutDialog = false
             showAboutCopySuccess = false
+            proofMenu = proofMenu.close()
             showTemplatePicker = false
         } else {
             showBatchDeleteConfirmation = false
@@ -429,6 +450,39 @@ fun HomeScreen(
         }
     }
 
+    if (proofMenu.isOpen) {
+        ModalBottomSheet(onDismissRequest = { proofMenu = proofMenu.close() }) {
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(Spacing.L),
+                verticalArrangement = Arrangement.spacedBy(Spacing.S),
+            ) {
+                Text("Nhà phát triển (Thử nghiệm)", style = MaterialTheme.typography.titleLarge)
+                Text("Các proof Embedded dành cho kiểm thử có chủ đích. Chọn một proof để mở giao diện kiểm thử.")
+                if (!workspaceRunActionsEnabled) {
+                    Text("Proof Embedded đang bị chặn bởi trạng thái phiên hiện tại. Có thể xem trạng thái từ Workspace Library.")
+                }
+                proofMenu.controls.forEach { control ->
+                    OutlinedButton(
+                        onClick = {
+                            proofMenu = proofMenu.close()
+                            when (control) {
+                                HomeEmbeddedProofControl.WAZE -> onOpenEmbeddedWaze()
+                                HomeEmbeddedProofControl.CALCULATOR -> onOpenEmbeddedCalculator()
+                                HomeEmbeddedProofControl.DUAL_APP -> onOpenEmbeddedDualApp()
+                                HomeEmbeddedProofControl.RUNNER -> onOpenEmbeddedWorkspaceRunner()
+                                HomeEmbeddedProofControl.WORKSPACE_LAYOUT -> selectedWorkspaceId?.let(onOpenEmbeddedWorkspaceLayout)
+                            }
+                        },
+                        enabled = workspaceRunActionsEnabled &&
+                            (control != HomeEmbeddedProofControl.WORKSPACE_LAYOUT || selectedWorkspaceId != null),
+                        modifier = Modifier.fillMaxWidth().heightIn(min = TouchTargets.SecondaryButton),
+                    ) { Text(control.label) }
+                }
+                if (selectedWorkspaceId == null) Text("Chọn workspace trong Library để kiểm thử Workspace Layout.")
+            }
+        }
+    }
+
     if (showAboutDialog) {
         AboutDialog(
             info = diagnosticInfo,
@@ -588,20 +642,15 @@ fun HomeScreen(
                                         onClick = onOpenUpdates,
                                         modifier = Modifier.height(TouchTargets.SecondaryButton),
                                     ) { Text("Cập nhật") }
-                                    OutlinedButton(onClick = onOpenEmbeddedWaze, modifier = Modifier.height(TouchTargets.SecondaryButton)) { Text("Embedded Waze") }
-                                    OutlinedButton(onClick = onOpenEmbeddedCalculator, modifier = Modifier.height(TouchTargets.SecondaryButton)) { Text("Embedded Calculator") }
-                                    OutlinedButton(onClick = onOpenEmbeddedDualApp, modifier = Modifier.height(TouchTargets.SecondaryButton)) { Text("Embedded Dual App") }
-                                    OutlinedButton(onClick = onOpenEmbeddedWorkspaceRunner, modifier = Modifier.height(TouchTargets.SecondaryButton)) { Text("Embedded Workspace Runner (Experimental)") }
                                     TextButton(
                                         onClick = { dispatchAboutEvent(AboutDialogEvent.Open) },
                                         modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
                                     ) { Text("Giới thiệu") }
                                 }
-                                OutlinedButton(
-                                    onClick = { selectedWorkspaceId?.let(onOpenEmbeddedWorkspaceLayout) },
-                                    enabled = selectedWorkspaceId != null,
+                                if (!isMultiSelectMode) OutlinedButton(
+                                    onClick = { proofMenu = proofMenu.open() },
                                     modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
-                                ) { Text("Embedded Workspace Layout (Experimental)") }
+                                ) { Text("Nhà phát triển (Thử nghiệm)") }
                             }
                         } else {
                             Column(verticalArrangement = Arrangement.spacedBy(Spacing.M)) {
@@ -612,17 +661,12 @@ fun HomeScreen(
                                 ) {
                                     OutlinedButton(onClick = onOpenCar, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Car Mode") }
                                     OutlinedButton(onClick = onOpenUpdates, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Cập nhật") }
-                                    OutlinedButton(onClick = onOpenEmbeddedWaze, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Waze") }
-                                    OutlinedButton(onClick = onOpenEmbeddedCalculator, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Calculator") }
-                                    OutlinedButton(onClick = onOpenEmbeddedDualApp, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Dual") }
-                                    OutlinedButton(onClick = onOpenEmbeddedWorkspaceRunner, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Runner") }
                                     TextButton(onClick = { dispatchAboutEvent(AboutDialogEvent.Open) }, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Info") }
                                 }
-                                OutlinedButton(
-                                    onClick = { selectedWorkspaceId?.let(onOpenEmbeddedWorkspaceLayout) },
-                                    enabled = selectedWorkspaceId != null,
+                                if (!isMultiSelectMode) OutlinedButton(
+                                    onClick = { proofMenu = proofMenu.open() },
                                     modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
-                                ) { Text("Layout (Experimental)") }
+                                ) { Text("Nhà phát triển (Thử nghiệm)") }
                             }
                         }
                     }
@@ -704,9 +748,9 @@ fun HomeScreen(
                     }
                     }
                 }
-            if (productRunStatus != null) {
+            if (blockedUi != null) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    Text(productRunStatus, color = MaterialTheme.colorScheme.error)
+                    EmbeddedCleanupBlockedStatus(blockedUi, onViewStatus = onViewEmbeddedStatus)
                 }
             }
             if (!libraryIsLoading && hasCorruptedWorkspaces) {

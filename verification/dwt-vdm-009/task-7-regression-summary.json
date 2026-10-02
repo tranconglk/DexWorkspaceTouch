@@ -1,0 +1,58 @@
+﻿[
+    {
+        "Name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest",
+        "Tests":  32,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest",
+        "Tests":  24,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductRoutingTest",
+        "Tests":  3,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest",
+        "Tests":  29,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest",
+        "Tests":  17,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest",
+        "Tests":  22,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest",
+        "Tests":  16,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedShizukuRefreshTest",
+        "Tests":  14,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    }
+]

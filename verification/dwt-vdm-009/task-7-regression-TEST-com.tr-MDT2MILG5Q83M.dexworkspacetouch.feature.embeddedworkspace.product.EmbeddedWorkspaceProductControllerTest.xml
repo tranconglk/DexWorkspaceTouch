@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" tests="24" skipped="0" failures="0" errors="0" timestamp="2026-10-02T04:03:13.478Z" hostname="NUC" time="0.048">
+  <properties/>
+  <testcase name="preRunnerRendererChangeHasNoInvocationAndAuthoritativeRelease" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.001"/>
+  <testcase name="cleanupCancellationDoesNotStrandStopping" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.001"/>
+  <testcase name="startPlusBackRecordsStopIntentBeforePendingStartReturns" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.002"/>
+  <testcase name="doubleStartReturnsBusyWhileFirstInvocationIsPending" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.002"/>
+  <testcase name="invokedNullStartRemainsUncertainAndBlocksBothModes" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.001"/>
+  <testcase name="invocationIsRecordedBeforeExecutionAndExceptionIsCopiedAsUncertain" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.002"/>
+  <testcase name="hostDisposalKeepsCleanupWorkUntilItReturnsIncomplete" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.002"/>
+  <testcase name="actionWithoutStartNeverInvokesExecutionAndAbsentShizukuReportsReason" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.001"/>
+  <testcase name="doubleBackSharesExactCleanupIdentityAndDisposeJoinsIt" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.003"/>
+  <testcase name="task3gTerminatedRunnerCacheFeedsBlockedProductAndLateStartStaysFenced" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.005"/>
+  <testcase name="backWaitsForCleanupResultBeforeAllowingClassic" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.002"/>
+  <testcase name="applicationStatusSurvivesDroppedControllerAndExecutionReferences" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.002"/>
+  <testcase name="missingStartCallbackAndMissingCleanupResultRemainBlockedAfterDispose" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.002"/>
+  <testcase name="staleControllerCallbacksCannotMutateItsStatusOrNewerRun" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.001"/>
+  <testcase name="surfaceLossResultBlocksProductGate" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.001"/>
+  <testcase name="recreatedRouteCannotPopPastPreviousBlockedOwnership" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.001"/>
+  <testcase name="terminalNotificationResolvesPendingStartAndDropsRouteWaiter" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.002"/>
+  <testcase name="backWhileActiveWaitsForCleanClose" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.001"/>
+  <testcase name="exactPreflightRejectedIsAcceptedAfterInvocation" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.001"/>
+  <testcase name="executionCancellationAfterInvocationRemainsUncertain" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.001"/>
+  <testcase name="recreatedRouteCannotPopWhilePreviousRunActiveOrStopping" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.002"/>
+  <testcase name="doubleBackAndDisposeJoinOneBlockedCleanup" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.003"/>
+  <testcase name="incompleteCleanupKeepsGateBlockedAfterExit" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.002"/>
+  <testcase name="missingOrExceptionalStartJoinsOneCleanupBeforeDroppingRuntime" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

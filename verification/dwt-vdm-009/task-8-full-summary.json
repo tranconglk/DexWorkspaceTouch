@@ -1,0 +1,1262 @@
+[
+    {
+        "name":  "com.trancong.dexworkspacetouch.about.presentation.AboutDialogStateTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.338Z",
+        "xml_sha256":  "6F05C68B32C805541E481256FD773B08EE9FBCFFC2E336A35230D5ED54A903B6"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.about.presentation.AppDiagnosticFormatterTest",
+        "tests":  13,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.358Z",
+        "xml_sha256":  "A67253C390552B39E9149839BE658F09FBAA03774CC4F4F72BB55D2D8C7A35D0"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.branding.BrandingResourceContractTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.389Z",
+        "xml_sha256":  "A74F35F9DF175557E8592F0199EF93D76212C08E7FE9C28E15EC2F8415BD589E"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.debugbenchmark.WorkspaceBenchmarkDataGeneratorTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.400Z",
+        "xml_sha256":  "1F65494C5851269ABA8FBCC337FBB5D740E595D2E5ABB0562B22FB86789F3DE7"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.car.CarActionEngineTest",
+        "tests":  8,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.468Z",
+        "xml_sha256":  "0558A798F75085145437DD57DE244266CF442C5BC8AD330671A378A96CF466C2"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.car.CarActionTest",
+        "tests":  6,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.562Z",
+        "xml_sha256":  "8779D15361147BB53893510A24F977CDD02789CB14D407D8CCD6E131535D9471"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.car.CarWorkflowExecutionRunnerTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.566Z",
+        "xml_sha256":  "31485A2FCA54390249408BB6071BFC8B429DD366CA147C2AD38AE9008FC658C9"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.car.CarWorkspaceDashboardTest",
+        "tests":  6,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.603Z",
+        "xml_sha256":  "D02506B5DF95FD78E6BAA33ED463838140CBBEDC8E174D41DEB1D36E60A50714"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.car.CarWorkspaceShortcutTest",
+        "tests":  13,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.618Z",
+        "xml_sha256":  "2A1089153131F61F1C53EEE7101659F315B2C48A9106D5F1D27E02A7C8CC6D19"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingDockCoordinatorTest",
+        "tests":  8,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.628Z",
+        "xml_sha256":  "129FEB1C74A8753644B74E3C3D9C43909F527E703A1BE9A7122B6780E6CFAE84"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingDockPositionTest",
+        "tests":  7,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.697Z",
+        "xml_sha256":  "7A0CA2681EECCD1E1ED1D20FB505A5338E7B6A0256B95DB48779D932455FBE8A"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingWorkspacePreviewTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.702Z",
+        "xml_sha256":  "B9DC83289A83ACD6D15692020131E35F95FFB908AFD4B933F10AD51DA0B458B3"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingWorkspaceShortcutTest",
+        "tests":  6,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.705Z",
+        "xml_sha256":  "D4E8A791E3E2E053650DFC266BBF1D5919BDB74A36F4F5EA510558AE749AA665"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.car.overlay.CarOverlaySessionTest",
+        "tests":  10,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.710Z",
+        "xml_sha256":  "327D63896D6FA7D8A42BFC03DF60412E37D36C662AB0C9B38623BDBF135ECEBB"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.car.platform.AndroidCarActionExecutorTest",
+        "tests":  13,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.746Z",
+        "xml_sha256":  "13AFFD3CC1B93C1752E660049C2DCEA9A1BC5044C6F12ED6B691667FA39BD454"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest",
+        "tests":  10,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.777Z",
+        "xml_sha256":  "CB9DBEFB9FEA36888D0318D904633F1F50307E224C6C5250DA8ABDEEE3C1D0CF"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.car.shortcut.CarDockShortcutTest",
+        "tests":  6,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.801Z",
+        "xml_sha256":  "ADF3C2688FB9DABEF3A40DE0F8B7566CC83505A2D526DB762CA50F197666C617"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppLifecycleCoordinatorTest",
+        "tests":  10,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.810Z",
+        "xml_sha256":  "D601A9070C27D1E4CB4624F8239D7D1A818F6B55A75E5F8A37BA80ED650F1249"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppModelsTest",
+        "tests":  8,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.814Z",
+        "xml_sha256":  "1826CFF3F77F4607D76C2C56C924A369531699A1CA77677735454AB61BDFF757"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppRemotePolicyTest",
+        "tests":  7,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.817Z",
+        "xml_sha256":  "866884B2FD5CB550F2D5389655AA9EE1B407A0D853771BE602632CDD0FF1203D"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppServiceConnectionManagerTest",
+        "tests":  27,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.825Z",
+        "xml_sha256":  "3B3F2393EB27BF065EEC3B50B61CF56F582C3CF5862419B6E7CAFF0DCC7391F1"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppSessionBoundaryTest",
+        "tests":  11,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.864Z",
+        "xml_sha256":  "7BAAA2915021F4012F170D42B7B89B27DC1384BC8509BDC1821CBE8F02EFD6B1"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppSessionPolicyTest",
+        "tests":  2,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.881Z",
+        "xml_sha256":  "60AC3EFDFD95496EEA68A475970B46265A10EDE9F9F7766E20A42425240BE0DE"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppSessionStateTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.883Z",
+        "xml_sha256":  "04D9A656A3E75DB510CF219A046387E2EA0654FB56673DBC9573785DAD533DAB"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppStartIsolationTest",
+        "tests":  5,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.885Z",
+        "xml_sha256":  "12DB3E48EC2E336EA2937BB9023C0BB57053B39DBB636FEDED685DEAEC33F320"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedapp.RemoteSessionRegistryTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.898Z",
+        "xml_sha256":  "CE3572D7968451AC9AFD04EAC7A1AD28419A4293E7A51D60963A0828E5E8D964"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedapp.SessionConnectionCoordinatorTest",
+        "tests":  6,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.901Z",
+        "xml_sha256":  "B6B7DB03555BBEB3AB2B8DC2F813A9AC03DF04CA197BA1F0D632ED2AE70D7929"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedapp.SessionStopCoordinatorTest",
+        "tests":  1,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.903Z",
+        "xml_sha256":  "71151159B3E614471EAE47C1E459FFD3E1C165662CF46C6203A16421C297C5D7"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedapp.VirtualInputOwnershipTest",
+        "tests":  6,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.905Z",
+        "xml_sha256":  "4E47F7A4C6916807FBF1C7D0FA40D9781C0F591F8A51C3F4F8A2EB48209D9267"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedcalculator.CalculatorEmbeddedTargetTest",
+        "tests":  1,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.909Z",
+        "xml_sha256":  "04DD4406AA3599046E85AF5E082AF5B22B02B77A81F920ECBDD95430A1FB7D84"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddeddual.EmbeddedDualAppControllerTest",
+        "tests":  2,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.911Z",
+        "xml_sha256":  "5918D597B357F3229922CA256F343A2E30363E730E4BC8FA6F227F81377FAD1D"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedwaze.WazeEmbeddedTargetTest",
+        "tests":  1,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.912Z",
+        "xml_sha256":  "586DECF916123185B82065BA0EE03E85F9BCCE9DA412CBF2D1F7AA8BA0A10791"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.EmbeddedWorkspaceLayoutRouteTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.914Z",
+        "xml_sha256":  "FEA153A5B7925E5E90978A20C79D4563DC6F7DBDFE350BF33CE41D06774B486B"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.EmbeddedWorkspaceProofPlanTest",
+        "tests":  2,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.954Z",
+        "xml_sha256":  "111E064F20F61278AA4639E77C9E925E85DE4973D798FA76BD770AEDFE53040F"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.EmbeddedWorkspaceRendererCoordinatorTest",
+        "tests":  7,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:17.959Z",
+        "xml_sha256":  "4DF57E91C13B43ADAC90F3E7E379032D34BAC54855814A9AF447668B70C1A627"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.EmbeddedWorkspaceRunnerControllerTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:18.015Z",
+        "xml_sha256":  "E55A5738FA0846F82EDE7A6500FE081B2520B68B1BEE3652193B0BD9FF7BD0E4"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest",
+        "tests":  29,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:18.031Z",
+        "xml_sha256":  "B7021670EC90C14A6D7AE5C4B26CC8B0000D390124028724CEC8A7EA8844D5BF"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest",
+        "tests":  32,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:18.082Z",
+        "xml_sha256":  "E302E016BE584A54DA2612652B3D2EBA40B27224A998888C364B1B6CEC6F0C1F"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest",
+        "tests":  17,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:18.150Z",
+        "xml_sha256":  "3D825FA8AD5D29FE0D32C1DB6F3F927F38D77FDE6143029FF2C202719CAD8DBF"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest",
+        "tests":  22,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:18.174Z",
+        "xml_sha256":  "1D8ABEF95DE757DF121DF25AA6202D8BEC40AC14E43A73DA13F41D4A6733BE1A"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest",
+        "tests":  16,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:18.272Z",
+        "xml_sha256":  "E9A3BC3A7F8DB91971311DB936716D38CED84869582A964703D5FA9F979381DB"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest",
+        "tests":  65,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:18.298Z",
+        "xml_sha256":  "19BC784C11F0B5496E33CFF7297328DC33BA3DB3CEEF726787BB9F0FC7EB7A18"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedShizukuRefreshTest",
+        "tests":  14,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:18.313Z",
+        "xml_sha256":  "B3D581D8BEDB63F5FB526273A6023884F00BAC86987D7003E2F4A40FBAD09E9B"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceEligibilityTest",
+        "tests":  5,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:18.339Z",
+        "xml_sha256":  "F56161F524D7C33F6F98F3C99232C2D73C29D5FFB8559E84E26303DFFC0DBEC4"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest",
+        "tests":  24,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:18.344Z",
+        "xml_sha256":  "9D1185014661D1457405D2C0F1C33961C1FEB41A9273CD2F2F22AC3A5D9856CE"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductRoutingTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:18.397Z",
+        "xml_sha256":  "38B55215965DAA669EE9314BC6404A6B76F706ABFD389A1E0000C36D1AAFD06E"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceReadinessTest",
+        "tests":  9,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:18.403Z",
+        "xml_sha256":  "8338D6BB7C86DAA34E332A9A021DEB3D5685EE3EB0F0A2F41372559BB9F263F7"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.golden.GoldenWorkspaceWorkflowTest",
+        "tests":  15,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:18.409Z",
+        "xml_sha256":  "85C296402303FFF916F448DE7220DB656E2BF3834364084BF2CFD3637B4BB17D"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.license.activation.DefaultLicenseRepositoryTest",
+        "tests":  11,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:18.496Z",
+        "xml_sha256":  "C89AAF17747C4AE2BEF709D799F2ED19C7847E2E1ABE9DF867B8A527DF463446"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.license.activation.LicenseTokenVerifierTest",
+        "tests":  9,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:18.526Z",
+        "xml_sha256":  "A54A3EB08D7B5E6667A965E4B58595B632DE758242EF7DB9ECD28DB3EC651061"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.license.activation.OkHttpLicenseApiClientTest",
+        "tests":  6,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:21.715Z",
+        "xml_sha256":  "E40E339694D4AA4EDDF594CE6848DCB2F51E8E47D68A54647B1B79BF184C0D95"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.license.domain.LicenseKeyTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.280Z",
+        "xml_sha256":  "F304A7604CFD840AFE2092B6A0A1F39BD8D72F41E9C21768075A7C2E4049C652"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.license.domain.LicenseModelsTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.284Z",
+        "xml_sha256":  "6901F5C54F75B8D7EA6050E6956CF0D678D5C06F90155CDC133FFD5D5B0F9A7A"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.license.domain.LicenseStateTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.293Z",
+        "xml_sha256":  "54440FF61B54DD224021B27919649BA7C753543CC764EE7325482E767D56ABFC"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.license.domain.LicenseTokenClaimsTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.300Z",
+        "xml_sha256":  "CE3EE8D9638695689586CFA0B9B7FA6590DB3D099706A85224FFC3D497827161"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.license.identity.DefaultDeviceIdentityProviderTest",
+        "tests":  2,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.305Z",
+        "xml_sha256":  "20988E9C6DE5B3704D9CFD59C10CC46E5B0E14FB03CFD6D56341363EA8363C13"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.license.identity.DeviceFingerprintTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.318Z",
+        "xml_sha256":  "75FA8E11E5687A2048D6C6AA20676C33E2EC010FDA0D0A501F2C744EBA178636"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.license.identity.DeviceKeyContractTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.325Z",
+        "xml_sha256":  "79E2F61CCFA1BA59FBECE44894596E4ACCCC4BE67593C7BE07210F3088D1BFA2"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.license.runtime.LicenseRuntimeCoordinatorTest",
+        "tests":  14,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.336Z",
+        "xml_sha256":  "F709A85FE4EE31D0DF5AB2328BD22E8CFB41AEA8B570C4DA73E957ACECAE3F86"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.license.ui.LicenseActivationCredentialProtectionTest",
+        "tests":  2,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.405Z",
+        "xml_sha256":  "1C324F8F440FDCD09C887878447539978B9409408F69DBEBE50AFF19D51B3957"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.license.ui.LicenseActivationPresentationTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.464Z",
+        "xml_sha256":  "D1DFF08CDDA02BA7AA940C062AF41228C15F901B407A5F1FF88096A1D94EB3E6"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.license.ui.LicenseGatePolicyTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.467Z",
+        "xml_sha256":  "8C8E8F27A4FCBB939BF56923F171EB51289DD06BC7F2727DF7C443433365A886"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.platform.launch.android.AndroidSingleAppLauncherTest",
+        "tests":  12,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.470Z",
+        "xml_sha256":  "9E6158FE369FBF29F3EC3AB47EC848DF6B0D07F3514D633EBE38F3CE3B158296"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.platform.launch.android.AndroidWorkspaceLauncherTest",
+        "tests":  20,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.512Z",
+        "xml_sha256":  "03072A98850A086C8C402CB78BA04CA78D682351437D56C1D01FEAA1F6DE06C1"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.platform.launch.android.LegacyExternalDisplayWorkAreaTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.536Z",
+        "xml_sha256":  "CDEDCD22CD31C2F9A39AED593AFB14B9838872BD2E7A3FA3749E566D3962F0A2"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.platform.launch.bounds.DisplayMetricsDeltaEvaluatorTest",
+        "tests":  9,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.539Z",
+        "xml_sha256":  "0BD16CC66E2A8BF7A22199C508C81980E2F9778BEA8E0B3E76C31EB2F2B3A139"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.platform.launch.bounds.DisplayWorkAreaSnapshotTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.547Z",
+        "xml_sha256":  "A472DD7BDF6C05F4C351E4AE8B0A860C489CE3635E16FAFD9F929EADB0F7C05C"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.platform.launch.bounds.DisplayWorkAreaTest",
+        "tests":  5,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.558Z",
+        "xml_sha256":  "494FAD56950B31A6C904E997ED9760E19EAFEA617C2BC7789053CFFFBCA52CF0"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.platform.launch.bounds.LaunchBoundsCalculatorTest",
+        "tests":  14,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.563Z",
+        "xml_sha256":  "B91779E514EE7E1BC9F5D91BEAAF24E8404DA4A00C758632E5EF4BB76A9D34FD"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.platform.launch.bounds.LaunchBoundsSanityTest",
+        "tests":  7,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.566Z",
+        "xml_sha256":  "CD7A34BE5F3F2575D43198728F88AC271FF35ADF8DF8A4DCEAAA33C9F8093820"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.platform.launch.bounds.LaunchMarginTest",
+        "tests":  7,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.570Z",
+        "xml_sha256":  "5C86CC72313C67BBA55B3FF40EE2D764781D3D7BEEE0277976A6ABD5539FA11A"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.platform.launch.bounds.LegacyDisplayWorkAreaReferenceStoreTest",
+        "tests":  20,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.575Z",
+        "xml_sha256":  "01BE4D3FFE4950E529FDEA2F25AD64F46F7D726EB4D984BEE227620CB2ED114A"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.platform.launch.bounds.PixelBoundsTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.582Z",
+        "xml_sha256":  "29BB92E6E8370DAC23144EC90F7AEEBB566D1D924B9003B1CC62EF88CE9DA654"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.platform.launch.bounds.WorkAreaInsetResolverTest",
+        "tests":  13,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.584Z",
+        "xml_sha256":  "0FF4171643AE5DB018E088F5D9E77B77CD92D11D17CE9EB9CE3D6B0936BB7140"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.ui.design.DwtDesignSystemTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.591Z",
+        "xml_sha256":  "086A8303D3A4E4DDC534AEACEE8162936ACFA46C2C2100BE95BC44FAC189ED24"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.update.AppUpdatePresentationTest",
+        "tests":  2,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.673Z",
+        "xml_sha256":  "8FC167848363C625194BDA76E77405D002AEF85A166F3411E1A05C57A768DF96"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.update.AppUpdateViewModelTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.682Z",
+        "xml_sha256":  "3DA54E69D5AE5B21EA0B65A267E104182A99DBAA4F4227E8A8ED94E3A6B81CF4"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.update.UpdateManifestClientTest",
+        "tests":  5,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.701Z",
+        "xml_sha256":  "A72A84F3DFB77C6080954A2FB9542FE86767E16AA4517BAE5EF41CBE9230483C"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.apppicker.infrastructure.SafeCachedLoaderTest",
+        "tests":  6,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.811Z",
+        "xml_sha256":  "919A41BAA3A21F6C7318400EF3C27961AE0BC52F10C4648D5314B58DE57D0851"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.apppicker.model.AppIdentityStableKeyTest",
+        "tests":  6,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.820Z",
+        "xml_sha256":  "DB0DC0453EA8519F29C73F649B93FFD23A15E9C9254A377559900A9A85986659"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.apppicker.model.InstalledAppCatalogTest",
+        "tests":  6,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.823Z",
+        "xml_sha256":  "481FE15CBB6BFFA6FBCC62FE7F328D6478A4CCC7C08ABD415F50A4C7B81D6AE2"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.apppicker.model.InstalledAppTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.829Z",
+        "xml_sha256":  "44A2367C37CF99ABEB7D9C50DAF557420723F2BDC04E3E97D96FFD285EE1AB9A"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppPickerViewModelTest",
+        "tests":  12,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.833Z",
+        "xml_sha256":  "3A5CE3E97A61259A600821E7CA5D708BE43593063ACE315CC7B38ADFE0595958"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.model.AssignedAppTest",
+        "tests":  2,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.856Z",
+        "xml_sha256":  "85C2FBE48C258026FEC08981213B09F5E4DE0B88B9C4B138661B56FED99809F4"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.model.DividerSnapEngineTest",
+        "tests":  8,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.858Z",
+        "xml_sha256":  "D5819CFFD67AB2FD08A869889DA2A1E7EFCCFA0914E1025E5F69F8BA47CCD901"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.model.NormalizedBoundsTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.865Z",
+        "xml_sha256":  "4CADB35B35AE929CF8B9F24CC09214F605796786447EBCA6C21BE0F88CC7ACD7"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasAssignmentsTest",
+        "tests":  6,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.869Z",
+        "xml_sha256":  "823FE2EDAA51B6AEC6387D3CEF2324CF6281212CB8E41299C54117857C4CBCFB"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasDividerTest",
+        "tests":  7,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.873Z",
+        "xml_sha256":  "59471C6D66D43F4B967F1C7E345D9F03E7EE9BAA27BD843335C25EAB85B59822"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasEditorMergeTest",
+        "tests":  17,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.883Z",
+        "xml_sha256":  "435658078AEEF8F964E1C92BDBBEA7A7C0E5141B49106F53CE5F67CE70A7E8C9"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasEditorTest",
+        "tests":  9,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.890Z",
+        "xml_sha256":  "BAFA84B45FC3E8EB8FF8A0093445C2612F3251797EECEDAA23260A88914C53C0"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.897Z",
+        "xml_sha256":  "97AD8CE8F01A3D79D0F67C6D859C2F8AF934D78716B0D49D694AF9C179426A79"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasValidatorTest",
+        "tests":  7,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.903Z",
+        "xml_sha256":  "598451AB77139183CEF54F349906F5A126FABEF736B556BF7D9270F9AC56D9C9"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceLimitsTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.912Z",
+        "xml_sha256":  "A8A8461B9F8D5D9A279B9F14185D545747AB2C6804AC7F129CA657DEA6FCCD17"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.state.DesignerContextToolbarStateTest",
+        "tests":  6,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.917Z",
+        "xml_sha256":  "61237C34FBE6CBA817A6C81CB2CB97F1699D241A596A98DC8AC40EDBA98329BA"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerMergeTest",
+        "tests":  6,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.931Z",
+        "xml_sha256":  "D23F52A5B57F5CF7212CE4152657FE5443264BF8BAD3CEB9F414F1DA0BFFBE16"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerStateHolderTest",
+        "tests":  26,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.940Z",
+        "xml_sha256":  "1D76D420CEE22483019BDD604653B095944569D0EABDEA92F2104F90774B03D6"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerViewModelTest",
+        "tests":  14,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.963Z",
+        "xml_sha256":  "0A73A874CB28847BA5EA593B5A0FC2D498914663BB99467877A8154BA3869CE5"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.ui.DividerDragRatioTest",
+        "tests":  6,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.973Z",
+        "xml_sha256":  "EA8A5D39F22716222F06F5149A0EB06D8F7EEDA11AC3547735F4FFF9D2F20257"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.ui.layout.FittedCanvasSizeTest",
+        "tests":  7,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.987Z",
+        "xml_sha256":  "C441EA3B244F2E72903F92EFBFF4F86EA35A436482782159DB92CEA6BC725333"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.ui.WorkspaceActionSafeAreaTest",
+        "tests":  5,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.977Z",
+        "xml_sha256":  "243D50864830EDF1EDF248D9C4B3696F0C3E55EFB4F52B40AEB64BC548B8AE53"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.designer.ui.WorkspaceCanvasPlacementTest",
+        "tests":  7,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.982Z",
+        "xml_sha256":  "E6E44ABEF51F0FC1E42C379AB6F9A34954CA49F64F1544D69A048C12F07A0342"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.execution.embedded.EmbeddedWorkspacePlannerTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.003Z",
+        "xml_sha256":  "EAFA7D8DF1C37F2E50F6C6E77894AB03904A1E45282FCD9DDC24B4ABA9EF3D92"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.execution.embedded.layout.EmbeddedPaneTouchMapperTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.006Z",
+        "xml_sha256":  "071DABBB3E47946A4B8EC75DA9CF53BB7F0E2E392673FC6C9E2E64068C0CDE78"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.execution.embedded.layout.EmbeddedWorkspaceLayoutMapperTest",
+        "tests":  5,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.009Z",
+        "xml_sha256":  "E4B4314D57D16181A16F89480367B7DE4B4A7CC13E5B391597D2F15A9EF4FEEB"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.AndroidEmbeddedWorkspaceSessionAdapterTest",
+        "tests":  11,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.020Z",
+        "xml_sha256":  "693A4CE6B57924C97D2E8999E968076833C5BE6B6581BEC9A4F5D3EBDBB2012A"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.EmbeddedWorkspaceConnectionBoundaryIntegrationTest",
+        "tests":  6,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.046Z",
+        "xml_sha256":  "84782B12975E9A642894A02AD79431CB6745A802CFA3CB2056D3B4143CF224B4"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.EmbeddedWorkspaceHungStartIntegrationTest",
+        "tests":  1,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.097Z",
+        "xml_sha256":  "91189FB99C0A8BB13B2C3E4C5D9DBD8D894FE9A1BDF85583BE18B23AFE540FFD"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.EmbeddedWorkspacePreflightTest",
+        "tests":  11,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.119Z",
+        "xml_sha256":  "BF4C428BB994A0B9E7146F1F30C10E94CB7B1C55ADB01FF9CDA1C38CAB58E1D1"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.EmbeddedWorkspaceRunnerTest",
+        "tests":  19,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.135Z",
+        "xml_sha256":  "15CE34DAF14FD33E617F22AECF116770B71E949E3ACCC0E97A1E77E84C46C2B4"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.execution.WorkspaceRunPlannerTest",
+        "tests":  5,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:22.993Z",
+        "xml_sha256":  "797AD2B4C3CE1EC4F62987CAE668AE2F48B3EFC4A031C174508B98405567FF25"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.externaltransfer.ExternalTransferDetectorTest",
+        "tests":  5,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.270Z",
+        "xml_sha256":  "89664BA96B34A429A2E83024A7F7E8FEF5B41ED53BDF5DA52151AEFEBA5CF12C"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.externaltransfer.ExternalTransferIntentParserTest",
+        "tests":  10,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.293Z",
+        "xml_sha256":  "88564F69BB24227298D1C3B7A847E338F862FA3C994403229602C6642EA02742"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.WorkspaceLaunchDiagnosticFormatterTest",
+        "tests":  4,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.314Z",
+        "xml_sha256":  "44D0EDA1DA5E972061C64061390CE219EC96F491293BAEEF7F62B7AD676050FB"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchUiMapperTest",
+        "tests":  2,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.487Z",
+        "xml_sha256":  "216DB3745B07AC0056CC28F0C5A170E54FA766E069A2C47456EC400BB15783C2"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest",
+        "tests":  15,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.495Z",
+        "xml_sha256":  "A9693F643F734A4DDACA95FCF59E45B0DD364341459D44705CE049E452229FCF"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.launcher.WorkspaceLaunchModelsTest",
+        "tests":  7,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.301Z",
+        "xml_sha256":  "203B9118DC5E8488F644D6B75D49D0EE2F47CFAD4BDBC6B087CAA9FFFDCB9F00"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.launcher.WorkspaceLaunchRequestFactoryTest",
+        "tests":  12,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.305Z",
+        "xml_sha256":  "4ADAFA144800ACF2CC5AC2E4E84AA869913B9616A29A4A1B62C938811D59CB0B"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryMapperTest",
+        "tests":  2,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.514Z",
+        "xml_sha256":  "ABB8D98CFE111AB7E4B15C5D8CBAEB6B3064B905ED0D6105FA42F841FFD0EB46"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceDuplicateNamePolicyTest",
+        "tests":  5,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.516Z",
+        "xml_sha256":  "6A42419186E857A959908B952D87CFBFD57E6E9336D063BD4D9A2AE4CA1FBBEC"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryProjectionTest",
+        "tests":  7,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.523Z",
+        "xml_sha256":  "10EA52E536CC1E3B6A8A90BC4D156A27EF67558EB7C60E5435E03F2485CBD9E6"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryViewModelTest",
+        "tests":  46,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.533Z",
+        "xml_sha256":  "B7F90F0C5C55778A57E7AB5CEE9AEBDA034F32BB594BB0FF5B05827AB175B98E"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.library.ui.CenteredGridRowLayoutTest",
+        "tests":  12,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.632Z",
+        "xml_sha256":  "E73DFBE46CD109D8A3F230BDBAE6A32597B53ABDB999797B95491CCEFBD133E6"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceCardMetadataTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.636Z",
+        "xml_sha256":  "050D61FFD37201A1F3544656C2AA50868CB1B74C96C5E891C70D7079F04F0F7A"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceLibraryInteractionPolicyTest",
+        "tests":  2,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.647Z",
+        "xml_sha256":  "7D164B1B2680AF547BF4FF4FC023A9BD78E1754C54C23955DFF24FB766261BCB"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.librarytransfer.LibraryOutputActionStateTest",
+        "tests":  2,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.649Z",
+        "xml_sha256":  "DBA244BF162D0154699E71140235C69A283BDCD05F249505866C117367BD990C"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibraryBundleSerializerTest",
+        "tests":  7,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.653Z",
+        "xml_sha256":  "712B32F321B43BA04128A060CF2C2333CF0E7A58345CC03837C1505FFD97A79E"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibraryTransferPoliciesTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.809Z",
+        "xml_sha256":  "E81C1DBE7950266FE26AD707AA104B5B7319DEE6D4DEB0A29704BA9368D89A04"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibraryTransferViewModelTest",
+        "tests":  10,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.820Z",
+        "xml_sha256":  "23F8554531F68ADBB14DA3A5428FFEEC20E36E26A331D0F4B249CE55023FFA54"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.persistence.domain.WorkspaceTest",
+        "tests":  5,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.846Z",
+        "xml_sha256":  "9B6D21499FF0843C193A6F70CA8732D6FBAC2C5C817E3ECD6BF994D01B846796"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.persistence.repository.RoomWorkspaceRepositoryTest",
+        "tests":  15,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.852Z",
+        "xml_sha256":  "E55FFECB41A97D393478695EE2534685C17E18DB0D2AD4D9E0C171ED6869A299"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.persistence.room.WorkspaceEntityMapperTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.934Z",
+        "xml_sha256":  "CEFD655ED74344878A55D84A9DA3F490098E175B3F5E9C330FE5F13506452825"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.persistence.serialization.WorkspaceCanvasSerializerTest",
+        "tests":  14,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.938Z",
+        "xml_sha256":  "3249AFA0BC002631CAD7B6B5DBE446B576527E5F5778E0ADF0ABA6867BB11D5E"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.snapshot.ui.WorkspaceSnapshotDescriptionTest",
+        "tests":  5,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.951Z",
+        "xml_sha256":  "43C33B3999CE73A627BC7403F0DE4716F7FEE51FCE2741A58436B5510EC5461A"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.snapshot.ui.WorkspaceSnapshotIconPolicyTest",
+        "tests":  2,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.956Z",
+        "xml_sha256":  "16065347C37AD94880B03264F7BBC5159CCE2311AFFC75EC0B59945574E5BE06"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.templates.ui.WorkspaceTemplateDialogLayoutTest",
+        "tests":  6,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.977Z",
+        "xml_sha256":  "8088D8677994672DDF91F57E7C3293BE93481F005968C8E5AE557ECA81E8CA6A"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.templates.WorkspaceTemplateCatalogTest",
+        "tests":  7,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.960Z",
+        "xml_sha256":  "C5F25DB3590DF1980179682F66F604EAE50300A4B88F2B789829F9B867605A2C"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.templates.WorkspaceTemplateFactoryTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.972Z",
+        "xml_sha256":  "551D74B05E12A955940BFDBC87C03B739F4EB389EA6C5E263D5C92678F544369"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.templates.WorkspaceTemplateSignatureTest",
+        "tests":  2,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.976Z",
+        "xml_sha256":  "A50D0AC989F132C8F3DA7CE381DEC8EDBAF8674F2A1C2A687C4C6695E706E630"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferPoliciesTest",
+        "tests":  3,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.981Z",
+        "xml_sha256":  "DC4D44FFFD683AA965EC53B35B7F2580C9F159AB4DDE7E8436A6882D955EF04C"
+    },
+    {
+        "name":  "com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferSerializerTest",
+        "tests":  8,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0,
+        "timestamp":  "2026-10-02T04:23:23.984Z",
+        "xml_sha256":  "1D6732197C365080A0CD4151A21AD55C8FB94BFDCABE375881884A489B22A8ED"
+    }
+]

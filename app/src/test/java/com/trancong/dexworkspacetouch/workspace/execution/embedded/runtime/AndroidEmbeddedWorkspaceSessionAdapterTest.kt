@@ -149,6 +149,19 @@ class AndroidEmbeddedWorkspaceSessionAdapterTest {
         assertEquals(listOf("callback:READY", "connect-return"), provider.created.single().session.events)
     }
 
+    @Test
+    fun `notification detach drops late observer events without invoking cleanup`() {
+        val provider = FakeSessionProvider()
+        val snapshots = mutableListOf<EmbeddedSessionSnapshot>()
+        val handle = factory(provider).create(target(), snapshots::add)
+        val session = provider.created.single().session
+        handle.detachNotifications()
+        session.emit(EmbeddedSessionSnapshot(EmbeddedSessionPhase.READY))
+        assertEquals(emptyList<EmbeddedSessionSnapshot>(), snapshots)
+        assertEquals(0, session.stopCalls)
+        assertEquals(0, session.closeCalls)
+    }
+
     private fun factory(provider: FakeSessionProvider) = AndroidEmbeddedWorkspaceSessionFactory(
         applicationContext = context(),
         sessionProvider = provider,
@@ -197,6 +210,7 @@ class AndroidEmbeddedWorkspaceSessionAdapterTest {
         var touchEvent: EmbeddedTouchEvent? = null
         var stopCalls = 0
         var closeCalls = 0
+        fun emit(snapshot: EmbeddedSessionSnapshot) = observer(snapshot)
 
         override fun connect() {
             syncConnectSnapshot?.let {

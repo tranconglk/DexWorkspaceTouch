@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" tests="22" skipped="0" failures="0" errors="0" timestamp="2026-10-02T03:35:21.936Z" hostname="NUC" time="0.127">
+  <properties/>
+  <testcase name="recreateAfterBlockedSurvivesDroppingOldRuntime" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.016"/>
+  <testcase name="doubleBackAndRecreationDoNotPopNewHost" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.008"/>
+  <testcase name="disposedIdleHostClosesLocalExecutionAndDropsReadinessWithoutToken" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.003"/>
+  <testcase name="readinessAndOldShizukuCallbacksCannotChangeOwnershipAfterRecreation" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.006"/>
+  <testcase name="oldTerminalCleanAfterRecreationUpdatesOnlyExactGate" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.004"/>
+  <testcase name="pendingStartBackAndRecreationJoinOneCleanupWithoutOldNavigation" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.004"/>
+  <testcase name="classicDispatchCannotConstructEmbeddedHostEvenAtIdle" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.001"/>
+  <testcase name="oldTerminalUncertainAfterRecreationKeepsGateBlocked" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.004"/>
+  <testcase name="preRunnerRejectionAlsoClosesPreparedRunnerWithoutAnotherGateOperation" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.011"/>
+  <testcase name="oldLateStartedAfterNewHostCannotActivateOrRelease" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.005"/>
+  <testcase name="cleanTerminalAllowsOneFreshRunOnlyAfterUserStart" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.003"/>
+  <testcase name="backAfterDisposeCannotRetainOrInvokeOldNavigation" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.004"/>
+  <testcase name="recreateWhileStartingDoesNotReplaceExecution" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.005"/>
+  <testcase name="everyNonIdlePhaseRejectsFactoryBeforeAnyAllocationOrToken" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.007"/>
+  <testcase name="hungStartDisposeRecreatesBlockedUiAfterBoundedLocalTerminalWithoutHandle" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.02"/>
+  <testcase name="backBeforeStartJoinsDisposeAndTerminatesPreparedRunnerWithoutToken" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.002"/>
+  <testcase name="doubleBackPopsOnceAfterCleanWhileHostIsAlive" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.004"/>
+  <testcase name="staleCleanupCallbackCannotReleaseNewerRun" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.004"/>
+  <testcase name="disposeBeforeCleanupTerminalKeepsObserverValueOnly" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.004"/>
+  <testcase name="recreateWhileActiveDoesNotReplaceExecution" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.002"/>
+  <testcase name="recreateWhileStoppingDoesNotReplaceExecution" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.005"/>
+  <testcase name="oldTerminalIncompleteAfterRecreationUpdatesOnlyExactGate" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

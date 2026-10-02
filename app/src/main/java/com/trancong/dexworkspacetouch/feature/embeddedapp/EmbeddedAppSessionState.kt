@@ -2,6 +2,62 @@ package com.trancong.dexworkspacetouch.feature.embeddedapp
 
 import java.util.UUID
 import java.security.MessageDigest
+import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.Executor
+import java.util.concurrent.RejectedExecutionException
+import java.util.concurrent.SynchronousQueue
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
+
+internal fun interface WorkAdmission {
+    fun tryExecute(task: Runnable): Boolean
+}
+
+/** Fixed resources; rejection never waits, retries or runs on the caller. */
+internal class BoundedExecutionLane(name: String, workers: Int, queued: Int) : WorkAdmission {
+    private val executor = ThreadPoolExecutor(
+        workers, workers, 0L, TimeUnit.MILLISECONDS,
+        if (queued == 0) SynchronousQueue() else ArrayBlockingQueue(queued),
+        { task -> Thread(task, name).apply { isDaemon = true } },
+        ThreadPoolExecutor.AbortPolicy(),
+    )
+    override fun tryExecute(task: Runnable): Boolean = try {
+        executor.execute(task)
+        true
+    } catch (_: RejectedExecutionException) {
+        false
+    }
+}
+
+internal object EmbeddedConnectionLanes {
+    val transport: WorkAdmission = BoundedExecutionLane("embedded-transport", 1, 8)
+    val verifier: WorkAdmission = BoundedExecutionLane("embedded-uid", 2, 0)
+    val start: WorkAdmission = BoundedExecutionLane("embedded-start", 2, 0)
+    val finalization: WorkAdmission = BoundedExecutionLane("embedded-finalization", 1, 8)
+    private val notifications = BoundedExecutionLane("embedded-notification", 2, 32)
+    val notificationExecutor = Executor { task ->
+        if (!notifications.tryExecute(task)) throw RejectedExecutionException("Notification capacity exhausted")
+    }
+}
+
+/** Pending IPC/queued delivery retains this destination, never a loaded consumer. */
+internal class DetachableMailbox<T>(private val executor: Executor, consumer: (T) -> Unit) {
+    private val consumer = AtomicReference<((T) -> Unit)?>(consumer)
+    fun offer(value: T): Boolean {
+        if (consumer.get() == null) return false
+        return try {
+            executor.execute(Delivery(this, value))
+            true
+        } catch (_: RejectedExecutionException) {
+            false
+        }
+    }
+    fun detach() { consumer.set(null) }
+    private class Delivery<T>(val mailbox: DetachableMailbox<T>, val value: T) : Runnable {
+        override fun run() { mailbox.consumer.get()?.invoke(value) }
+    }
+}
 
 @JvmInline
 value class EmbeddedAppSessionId(val value: String) {
@@ -53,6 +109,12 @@ class EmbeddedAppLifecycleCoordinator {
         if (snapshot.phase == EmbeddedSessionPhase.CONNECTING) {
             transition(EmbeddedSessionSnapshot(EmbeddedSessionPhase.READY))
         }
+    }
+
+    @Synchronized fun connectionFailed(failure: EmbeddedSessionFailure): Boolean {
+        if (snapshot.phase != EmbeddedSessionPhase.CONNECTING) return false
+        transition(EmbeddedSessionSnapshot(EmbeddedSessionPhase.FAILED, failure = failure))
+        return true
     }
 
     @Synchronized fun beginStart(): Boolean {

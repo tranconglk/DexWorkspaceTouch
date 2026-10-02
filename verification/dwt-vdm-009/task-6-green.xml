@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" tests="32" skipped="0" failures="0" errors="0" timestamp="2026-10-02T03:34:30.741Z" hostname="NUC" time="0.218">
+  <properties/>
+  <testcase name="stoppingFormatsSafely" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.059"/>
+  <testcase name="unsafeIdentifierCannotInjectLinesOrBrokenSurrogates" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.002"/>
+  <testcase name="explicitCopyWritesExactlyOnceAndNeverMutatesBlockedGate" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.031"/>
+  <testcase name="longIdentifiersAreOmittedRatherThanAmbiguouslyShortened" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.002"/>
+  <testcase name="noClipboardWriteBeforeTapEvenAfterRepeatedFormatting" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.001"/>
+  <testcase name="recoveryRequiredRemoteDiedUsesCopiedValues" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.001"/>
+  <testcase name="cleanupTimeoutIsCopiedAsValueEvidence" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.001"/>
+  <testcase name="snapshotFormatsAfterControllerAndExecutionAreDropped" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.093"/>
+  <testcase name="identifierWithoutProvenanceRemainsUnknown" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.0"/>
+  <testcase name="listAndTotalOutputHaveExplicitBounds" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.004"/>
+  <testcase name="noVdmTaskOrRemoteResourceIdIsInferred" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.0"/>
+  <testcase name="blankReceiptIdentifiersRemainUnknown" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.0"/>
+  <testcase name="utcDoesNotDependOnLocaleOrTimeZone" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.001"/>
+  <testcase name="entireDtoGraphContainsOnlyFinalValueFields" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.005"/>
+  <testcase name="absentSnapshotHasExplicitMessageAndCannotCopy" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.001"/>
+  <testcase name="idleCanonicalOutputAndStableFieldOrder" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.001"/>
+  <testcase name="inputCollectionMutationCannotChangeSnapshot" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.002"/>
+  <testcase name="consumerCannotMutateSnapshotLists" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.0"/>
+  <testcase name="exactHeader" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.001"/>
+  <testcase name="startingFormatsSafely" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.0"/>
+  <testcase name="cleanupIncompleteCanonicalBlockedCauseAndEvidence" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.001"/>
+  <testcase name="arbitraryUnknownFailureCodeIsNotDumped" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.0"/>
+  <testcase name="recoveryRequiredWithoutRemoteEvidenceRemainsUncertain" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.0"/>
+  <testcase name="laterTransitionCannotMutateAlreadyCopiedSnapshot" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.0"/>
+  <testcase name="failureMessageAndStackTraceAreNeverCopied" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.0"/>
+  <testcase name="staleOldCallbackCannotAlterSnapshotOrCurrentGate" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.0"/>
+  <testcase name="repeatedFormattingIsExactlyDeterministic" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.002"/>
+  <testcase name="activeCanonicalOutputHasOnlyProvenanceBackedIds" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.0"/>
+  <testcase name="timeoutCodeOnCleanOutcomeDoesNotInventTimeoutCause" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.0"/>
+  <testcase name="suppliedSnapshotTimeIsTheOnlyTimeUsed" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.001"/>
+  <testcase name="licenseAndSecurityMaterialInUnallowlistedFieldsIsOmitted" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.0"/>
+  <testcase name="cleanupOutcomeUncertainIsRepresented" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

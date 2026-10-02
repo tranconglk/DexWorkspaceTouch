@@ -7,6 +7,8 @@ import com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppSessionId
 import com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppTarget
 import com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedSessionSnapshot
 import com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedTouchEvent
+import com.trancong.dexworkspacetouch.feature.embeddedapp.DetachableMailbox
+import java.util.concurrent.Executor
 
 interface AndroidEmbeddedAppSessionProvider {
     fun create(
@@ -24,6 +26,7 @@ interface AndroidEmbeddedAppSession {
     fun sendTouch(event: EmbeddedTouchEvent)
     fun stop()
     fun close()
+    fun detachNotifications() {}
 }
 
 class AndroidEmbeddedWorkspaceSessionFactory(
@@ -34,8 +37,9 @@ class AndroidEmbeddedWorkspaceSessionFactory(
         target: EmbeddedAppTarget,
         observer: (EmbeddedSessionSnapshot) -> Unit,
     ): EmbeddedWorkspaceSessionHandle {
-        val session = sessionProvider.create(applicationContext, target, observer)
-        return AndroidEmbeddedWorkspaceSessionHandle(session)
+        val notifications = DetachableMailbox(Executor { it.run() }, observer)
+        val session = sessionProvider.create(applicationContext, target) { notifications.offer(it) }
+        return AndroidEmbeddedWorkspaceSessionHandle(session, notifications)
     }
 }
 
@@ -55,7 +59,7 @@ private object ProductionAndroidEmbeddedAppSessionProvider : AndroidEmbeddedAppS
     }
 }
 
-private class ProductionAndroidEmbeddedAppSession(
+internal class ProductionAndroidEmbeddedAppSession(
     private val delegate: EmbeddedAppSession,
 ) : AndroidEmbeddedAppSession {
     override val sessionId: EmbeddedAppSessionId
@@ -70,10 +74,12 @@ private class ProductionAndroidEmbeddedAppSession(
     override fun stop() = delegate.stop()
 
     override fun close() = delegate.close()
+    override fun detachNotifications() = delegate.detachNotifications()
 }
 
 private class AndroidEmbeddedWorkspaceSessionHandle(
     private val session: AndroidEmbeddedAppSession,
+    private val notifications: DetachableMailbox<EmbeddedSessionSnapshot>,
 ) : EmbeddedWorkspaceSessionHandle {
     override val sessionId: EmbeddedAppSessionId
         get() = session.sessionId
@@ -95,4 +101,8 @@ private class AndroidEmbeddedWorkspaceSessionHandle(
     override fun stop() = session.stop()
 
     override fun close() = session.close()
+    override fun detachNotifications() {
+        notifications.detach()
+        session.detachNotifications()
+    }
 }

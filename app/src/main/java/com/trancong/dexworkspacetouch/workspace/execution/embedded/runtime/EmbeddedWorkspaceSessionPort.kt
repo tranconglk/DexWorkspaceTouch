@@ -14,11 +14,14 @@ interface EmbeddedWorkspaceSessionFactory {
 
 interface EmbeddedWorkspaceSessionHandle {
     val sessionId: EmbeddedAppSessionId
+    /** Bounded local/enqueue request. READY/FAILED/death arrive through the factory observer. */
     fun connect()
     fun start(surface: EmbeddedWorkspaceExecutionSurface)
     fun sendTouch(event: EmbeddedTouchEvent): Boolean
     fun stop()
     fun close()
+    /** Drops consumers independently of pending IPC; does not acknowledge cleanup. */
+    fun detachNotifications() {}
 }
 
 sealed interface EmbeddedWorkspaceTouchResult {

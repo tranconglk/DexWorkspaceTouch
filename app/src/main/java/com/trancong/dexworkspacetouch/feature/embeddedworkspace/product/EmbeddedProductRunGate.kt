@@ -2,31 +2,222 @@ package com.trancong.dexworkspacetouch.feature.embeddedworkspace.product
 
 import com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.EmbeddedWorkspaceCleanupOutcome
 import com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.EmbeddedWorkspaceRunResult
+import com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedSessionPhase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.concurrent.locks.ReentrantLock
+import java.util.Collections
 
 enum class ProductRunPhase { IDLE, STARTING, ACTIVE, STOPPING, CLEANUP_BLOCKED }
 
 class RunToken internal constructor(val workspaceId: String)
 
+enum class ProductOperationKind { START, CLEANUP }
+enum class ProductInvocationCategory { NOT_INVOKED, PRE_RUNNER_REJECTED, INVOKED, RESULT_OR_UNCERTAIN }
+enum class ProductResultKind { STARTED, PREFLIGHT_REJECTED, START_FAILED, STOPPED, INCOMPLETE, RECOVERY_REQUIRED, UNCERTAIN }
+
+data class ProductRunOperation(
+    val token: RunToken,
+    val generation: Long,
+    val operationId: Long,
+    val kind: ProductOperationKind,
+)
+
+class ProductNoAllocationProof internal constructor(internal val operation: ProductRunOperation)
+
+data class ProductItemStatus(
+    val sourceCellId: String,
+    val sessionId: String,
+    val packageName: String,
+    val componentName: String,
+    val order: Int,
+    val phase: EmbeddedSessionPhase,
+    val displayId: Int,
+)
+
+data class ProductCleanupStatus(val sourceCellId: String, val evidence: CleanupEvidence, val failureCode: String?)
+
+data class ProductRunStatus(
+    val token: RunToken? = null,
+    val generation: Long = 0,
+    val startOperationId: Long? = null,
+    val cleanupOperationId: Long? = null,
+    val invocationCategory: ProductInvocationCategory = ProductInvocationCategory.NOT_INVOKED,
+    val phase: ProductRunPhase = ProductRunPhase.IDLE,
+    val stopRequested: Boolean = false,
+    val resultKind: ProductResultKind? = null,
+    val issue: EmbeddedProductIssue? = null,
+    val allocationEvidence: AllocationEvidence = AllocationEvidence.NONE_CONFIRMED,
+    val cleanupEvidence: CleanupEvidence = CleanupEvidence.NOT_NEEDED,
+    val items: List<ProductItemStatus> = emptyList(),
+    val cleanupOutcomes: List<ProductCleanupStatus> = emptyList(),
+)
+
+enum class EmbeddedCleanupBlockedCause { INCOMPLETE, REMOTE_DIED, RECOVERY_REQUIRED, UNCERTAIN, TIMEOUT, UNKNOWN }
+enum class EmbeddedCleanupBlockedAction { BACK, VIEW_STATUS }
+
+data class EmbeddedCleanupBlockedUi(
+    val title: String,
+    val message: String,
+    val reason: String,
+    val scopeMessage: String,
+    val supportGuidance: String,
+    val cause: EmbeddedCleanupBlockedCause,
+    val evidence: ProductRunStatus,
+    val permittedActions: Set<EmbeddedCleanupBlockedAction>,
+)
+
+internal fun ProductRunStatus.cleanupBlockedCause(): EmbeddedCleanupBlockedCause? {
+    if (phase != ProductRunPhase.CLEANUP_BLOCKED) return null
+    return when {
+        cleanupOutcomes.any { it.failureCode == "CLEANUP_TIMEOUT" &&
+            it.evidence in setOf(CleanupEvidence.INCOMPLETE, CleanupEvidence.UNCERTAIN) } -> EmbeddedCleanupBlockedCause.TIMEOUT
+        issue is EmbeddedProductIssue.RuntimeCleanupIncomplete -> EmbeddedCleanupBlockedCause.INCOMPLETE
+        issue is EmbeddedProductIssue.RemoteDied -> EmbeddedCleanupBlockedCause.REMOTE_DIED
+        resultKind == ProductResultKind.RECOVERY_REQUIRED -> EmbeddedCleanupBlockedCause.RECOVERY_REQUIRED
+        issue is EmbeddedProductIssue.CleanupOutcomeUncertain -> EmbeddedCleanupBlockedCause.UNCERTAIN
+        else -> EmbeddedCleanupBlockedCause.UNKNOWN
+    }
+}
+
+// Chỉ chiếu bản sao giá trị; không đọc capability, controller hoặc runtime.
+fun ProductRunStatus.cleanupBlockedUi(): EmbeddedCleanupBlockedUi? {
+    val cause = cleanupBlockedCause() ?: return null
+    val unresolvedCodes = cleanupOutcomes.filter {
+        it.evidence == CleanupEvidence.INCOMPLETE || it.evidence == CleanupEvidence.UNCERTAIN
+    }.mapNotNull { it.failureCode?.takeIf(String::isNotBlank) }
+    val reason = when (cause) {
+        EmbeddedCleanupBlockedCause.INCOMPLETE -> "Kết quả dọn phiên trước chưa đầy đủ; chưa thể xác nhận đã dọn sạch."
+        EmbeddedCleanupBlockedCause.REMOTE_DIED -> "Kết nối phiên trước đã mất; kết quả dọn từ phía dịch vụ chưa được xác nhận."
+        EmbeddedCleanupBlockedCause.RECOVERY_REQUIRED -> "Phiên trước cần được kiểm tra thêm; chưa thể xác nhận kết quả dọn."
+        EmbeddedCleanupBlockedCause.UNCERTAIN -> "Kết quả dọn phiên trước chưa rõ; chưa thể xác nhận đã dọn sạch."
+        EmbeddedCleanupBlockedCause.TIMEOUT -> "Quá thời gian chờ xác nhận dọn phiên (CLEANUP_TIMEOUT); kết quả vẫn chưa được xác nhận."
+        EmbeddedCleanupBlockedCause.UNKNOWN -> when (issue) {
+            is EmbeddedProductIssue.SurfaceLost -> "Vùng hiển thị phiên trước đã mất; kết quả dọn chưa rõ."
+            else -> issue?.message()?.let {
+                "$it Kết quả dọn phiên trước chưa rõ."
+            } ?: "Nguyên nhân dọn phiên chưa rõ${unresolvedCodes.firstOrNull()?.let { " (mã $it)" }.orEmpty()}; chưa thể xác nhận đã dọn sạch."
+        }
+    }
+    return EmbeddedCleanupBlockedUi(
+        title = "Chưa xác nhận dọn Embedded",
+        message = "Phiên Embedded trước chưa thể xác nhận đã dọn sạch. DWT đã kết thúc giao diện chạy cũ; Embedded mới và Classic đang bị chặn để tránh xung đột.",
+        reason = reason,
+        scopeMessage = "Trạng thái này chỉ áp dụng trong lần chạy DWT hiện tại khi ứng dụng còn giữ bằng chứng chưa được giải quyết.",
+        supportGuidance = "Không có thao tác thử dọn lại hoặc mở khóa tại đây. Nếu cần hỗ trợ, hãy mô tả tình huống xảy ra trước thông báo này.",
+        cause = cause,
+        evidence = copy(items = immutableCopy(items), cleanupOutcomes = immutableCopy(cleanupOutcomes)),
+        permittedActions = Collections.unmodifiableSet(buildSet {
+            add(EmbeddedCleanupBlockedAction.BACK)
+            if (!token?.workspaceId.isNullOrBlank()) add(EmbeddedCleanupBlockedAction.VIEW_STATUS)
+        }),
+    )
+}
+
+// Chỉ DTO đã copy được đi qua Application gate; không giữ result/runtime handle gốc.
+class ProductExecutionValue private constructor(
+    val kind: ProductResultKind,
+    val issue: EmbeddedProductIssue?,
+    val allocationEvidence: AllocationEvidence,
+    val cleanupEvidence: CleanupEvidence,
+    val items: List<ProductItemStatus>,
+    val cleanupOutcomes: List<ProductCleanupStatus>,
+    val authoritativeClean: Boolean,
+) {
+    companion object {
+        fun from(result: EmbeddedWorkspaceRunResult?): ProductExecutionValue {
+            val mapped = EmbeddedProductRecoveryMapper.result(result, ProductRunPhase.STARTING, false)
+            val receipts = when (result) {
+                is EmbeddedWorkspaceRunResult.Started -> result.receipts
+                is EmbeddedWorkspaceRunResult.StartFailed -> result.receipts + listOfNotNull(result.partialReceipt)
+                is EmbeddedWorkspaceRunResult.Stopped -> result.receipts
+                is EmbeddedWorkspaceRunResult.CleanupIncomplete -> result.receipts
+                is EmbeddedWorkspaceRunResult.RecoveryRequired -> result.receipts
+                else -> emptyList()
+            }
+            val outcomes = when (result) {
+                is EmbeddedWorkspaceRunResult.StartFailed -> result.rollbackOutcomes
+                is EmbeddedWorkspaceRunResult.Stopped -> result.cleanupOutcomes
+                is EmbeddedWorkspaceRunResult.CleanupIncomplete -> result.cleanupOutcomes
+                is EmbeddedWorkspaceRunResult.RecoveryRequired -> result.cleanupOutcomes
+                else -> emptyList()
+            }
+            val ownedIds = receipts.map { it.sourceCellId }
+            val cleanupIds = outcomes.map { it.sourceCellId }
+            val exactClean = ownedIds.size == ownedIds.toSet().size &&
+                cleanupIds.size == cleanupIds.toSet().size && cleanupIds.toSet() == ownedIds.toSet() &&
+                outcomes.all { it is EmbeddedWorkspaceCleanupOutcome.Clean }
+            val clean = when (result) {
+                is EmbeddedWorkspaceRunResult.PreflightRejected -> true
+                is EmbeddedWorkspaceRunResult.StartFailed -> result.allOwnedSessionsClean && exactClean
+                is EmbeddedWorkspaceRunResult.Stopped -> exactClean
+                else -> false
+            }
+            val kind = when (result) {
+                is EmbeddedWorkspaceRunResult.Started -> ProductResultKind.STARTED
+                is EmbeddedWorkspaceRunResult.PreflightRejected -> ProductResultKind.PREFLIGHT_REJECTED
+                is EmbeddedWorkspaceRunResult.StartFailed -> ProductResultKind.START_FAILED
+                is EmbeddedWorkspaceRunResult.Stopped -> ProductResultKind.STOPPED
+                is EmbeddedWorkspaceRunResult.CleanupIncomplete -> ProductResultKind.INCOMPLETE
+                is EmbeddedWorkspaceRunResult.RecoveryRequired -> ProductResultKind.RECOVERY_REQUIRED
+                else -> ProductResultKind.UNCERTAIN
+            }
+            val cleanup = when {
+                kind == ProductResultKind.PREFLIGHT_REJECTED -> CleanupEvidence.NOT_NEEDED
+                clean -> CleanupEvidence.CLEAN_CONFIRMED
+                mapped.cleanupEvidence == CleanupEvidence.CLEAN_CONFIRMED -> CleanupEvidence.UNCERTAIN
+                else -> mapped.cleanupEvidence
+            }
+            return ProductExecutionValue(kind, if (clean && kind == ProductResultKind.STOPPED) null else mapped.issue,
+                if (clean && receipts.isEmpty()) AllocationEvidence.NONE_CONFIRMED else mapped.allocationEvidence,
+                cleanup,
+                immutableCopy(receipts.map { ProductItemStatus(it.sourceCellId, it.sessionId.value,
+                    it.packageName, it.componentName, it.order, it.phase, it.displayId) }),
+                immutableCopy(outcomes.map { outcome ->
+                    when (outcome) {
+                        is EmbeddedWorkspaceCleanupOutcome.Clean -> ProductCleanupStatus(outcome.sourceCellId, CleanupEvidence.CLEAN_CONFIRMED, null)
+                        is EmbeddedWorkspaceCleanupOutcome.Incomplete -> ProductCleanupStatus(outcome.sourceCellId, CleanupEvidence.INCOMPLETE, outcome.failure?.code)
+                        is EmbeddedWorkspaceCleanupOutcome.RecoveryRequired -> ProductCleanupStatus(outcome.sourceCellId, CleanupEvidence.UNCERTAIN, outcome.failure?.code)
+                    }
+                }), clean)
+        }
+    }
+}
+
+private fun <T> immutableCopy(values: List<T>): List<T> = Collections.unmodifiableList(ArrayList(values))
+
 class EmbeddedProductRunGate {
     private val lock = ReentrantLock()
     private val mutableState = MutableStateFlow(ProductRunPhase.IDLE)
     val state: StateFlow<ProductRunPhase> = mutableState.asStateFlow()
-    private var owner: RunToken? = null
+    private val mutableStatus = MutableStateFlow(ProductRunStatus())
+    val status: StateFlow<ProductRunStatus> = mutableStatus.asStateFlow()
+    private var generationSequence = 0L
+    private var operationSequence = 0L
     private var classicDispatching = false
 
-    fun canEnterEmbedded(): Boolean = lock.withGate { owner == null && !classicDispatching }
+    // Factory đồng bộ thuộc route; gate không lưu factory hoặc graph trả về.
+    // Kiểm tra trước cả controller/renderer/Surface allocation, không acquire token cũ.
+    internal fun <T : Any> createExecutionIfIdle(create: () -> T): T? = lock.withGate {
+        if (mutableStatus.value.token != null || mutableStatus.value.phase != ProductRunPhase.IDLE || classicDispatching) null
+        else create()
+    }
+
+    fun canEnterEmbedded(): Boolean = lock.withGate {
+        mutableStatus.value.token == null && mutableStatus.value.phase == ProductRunPhase.IDLE && !classicDispatching
+    }
 
     fun tryAcquireEmbedded(workspaceId: String): RunToken? {
         if (!lock.tryLock()) return null
         return try {
-            if (owner != null || classicDispatching || workspaceId.isBlank()) null
+            if (mutableStatus.value.token != null || classicDispatching || workspaceId.isBlank()) null
             else RunToken(workspaceId).also {
-                owner = it
-                mutableState.value = ProductRunPhase.STARTING
+                generationSequence = Math.incrementExact(generationSequence)
+                operationSequence = Math.incrementExact(operationSequence)
+                publish(ProductRunStatus(token = it, generation = generationSequence,
+                    startOperationId = operationSequence, phase = ProductRunPhase.STARTING,
+                    allocationEvidence = AllocationEvidence.UNKNOWN, cleanupEvidence = CleanupEvidence.UNCERTAIN))
             }
         } finally { lock.unlock() }
     }
@@ -34,7 +225,7 @@ class EmbeddedProductRunGate {
     fun tryDispatchClassic(dispatch: () -> Unit): Boolean {
         if (!lock.tryLock()) return false
         return try {
-            if (owner != null || classicDispatching) false
+            if (mutableStatus.value.token != null || mutableStatus.value.phase != ProductRunPhase.IDLE || classicDispatching) false
             else {
                 classicDispatching = true
                 try { dispatch() } finally { classicDispatching = false }
@@ -43,42 +234,107 @@ class EmbeddedProductRunGate {
         } finally { lock.unlock() }
     }
 
-    fun markStopping(token: RunToken) = lock.withGate {
-        if (owner === token && mutableState.value != ProductRunPhase.CLEANUP_BLOCKED) {
-            mutableState.value = ProductRunPhase.STOPPING
+    fun startOperation(token: RunToken): ProductRunOperation? = lock.withGate {
+        val current = mutableStatus.value
+        if (current.token !== token) null else ProductRunOperation(token, current.generation,
+            checkNotNull(current.startOperationId), ProductOperationKind.START)
+    }
+
+    fun markInvoked(operation: ProductRunOperation): Boolean = lock.withGate {
+        val current = mutableStatus.value
+        if (!matches(operation, current) || operation.kind != ProductOperationKind.START ||
+            current.invocationCategory != ProductInvocationCategory.NOT_INVOKED || current.stopRequested) false
+        else { publish(current.copy(invocationCategory = ProductInvocationCategory.INVOKED)); true }
+    }
+
+    fun preRunnerRejection(operation: ProductRunOperation): ProductNoAllocationProof? = lock.withGate {
+        val current = mutableStatus.value
+        if (!matches(operation, current) || operation.kind != ProductOperationKind.START ||
+            current.invocationCategory != ProductInvocationCategory.NOT_INVOKED || current.stopRequested) null
+        else {
+            publish(current.copy(invocationCategory = ProductInvocationCategory.PRE_RUNNER_REJECTED))
+            ProductNoAllocationProof(operation)
         }
     }
 
-    fun markUncertain(token: RunToken) = lock.withGate {
-        if (owner === token) mutableState.value = ProductRunPhase.CLEANUP_BLOCKED
-    }
-
-    fun releaseWithoutAllocation(token: RunToken) = lock.withGate {
-        if (owner === token) release()
-    }
-
-    fun acceptResult(token: RunToken, result: EmbeddedWorkspaceRunResult) = lock.withGate {
-        if (owner !== token) return@withGate
-        when (result) {
-            is EmbeddedWorkspaceRunResult.Started -> mutableState.value = ProductRunPhase.ACTIVE
-            is EmbeddedWorkspaceRunResult.PreflightRejected -> release()
-            is EmbeddedWorkspaceRunResult.StartFailed -> {
-                if (result.allOwnedSessionsClean) release()
-                else mutableState.value = ProductRunPhase.CLEANUP_BLOCKED
-            }
-            is EmbeddedWorkspaceRunResult.Stopped -> {
-                if (result.cleanupOutcomes.all { it is EmbeddedWorkspaceCleanupOutcome.Clean }) release()
-                else mutableState.value = ProductRunPhase.CLEANUP_BLOCKED
-            }
-            is EmbeddedWorkspaceRunResult.CleanupIncomplete,
-            is EmbeddedWorkspaceRunResult.RecoveryRequired,
-            EmbeddedWorkspaceRunResult.DuplicateCall -> mutableState.value = ProductRunPhase.CLEANUP_BLOCKED
+    fun releaseWithoutAllocation(proof: ProductNoAllocationProof): Boolean = lock.withGate {
+        val current = mutableStatus.value
+        if (!matches(proof.operation, current) || proof.operation.kind != ProductOperationKind.START ||
+            current.invocationCategory != ProductInvocationCategory.PRE_RUNNER_REJECTED || current.stopRequested) false
+        else {
+            publish(current.copy(token = null, phase = ProductRunPhase.IDLE,
+                allocationEvidence = AllocationEvidence.NONE_CONFIRMED, cleanupEvidence = CleanupEvidence.NOT_NEEDED))
+            true
         }
     }
 
-    private fun release() {
-        owner = null
-        mutableState.value = ProductRunPhase.IDLE
+    fun markStopping(start: ProductRunOperation): ProductRunOperation? = lock.withGate {
+        val current = mutableStatus.value
+        if (!matches(start, current) || start.kind != ProductOperationKind.START ||
+            current.phase == ProductRunPhase.CLEANUP_BLOCKED) return@withGate null
+        val operationId = current.cleanupOperationId ?: Math.incrementExact(operationSequence).also { operationSequence = it }
+        publish(current.copy(stopRequested = true, cleanupOperationId = operationId, phase = ProductRunPhase.STOPPING,
+            invocationCategory = if (current.invocationCategory == ProductInvocationCategory.INVOKED)
+                ProductInvocationCategory.RESULT_OR_UNCERTAIN else current.invocationCategory))
+        ProductRunOperation(start.token, start.generation, operationId, ProductOperationKind.CLEANUP)
+    }
+
+    fun markUncertain(operation: ProductRunOperation): Boolean = acceptResult(operation, ProductExecutionValue.from(null))
+
+    fun recordMissingStartResult(start: ProductRunOperation): Boolean = lock.withGate {
+        val current = mutableStatus.value
+        if (!matches(start, current) || start.kind != ProductOperationKind.START || current.stopRequested ||
+            current.phase != ProductRunPhase.STARTING || current.invocationCategory != ProductInvocationCategory.INVOKED) false
+        else {
+            // Thiếu reply không phải terminal/detach acknowledgement của runtime. Cleanup ban đầu vẫn cần được phép.
+            publish(current.copy(invocationCategory = ProductInvocationCategory.RESULT_OR_UNCERTAIN,
+                resultKind = ProductResultKind.UNCERTAIN, issue = EmbeddedProductIssue.CleanupOutcomeUncertain(),
+                allocationEvidence = AllocationEvidence.UNKNOWN, cleanupEvidence = CleanupEvidence.UNCERTAIN))
+            true
+        }
+    }
+
+    fun acceptResult(operation: ProductRunOperation, result: ProductExecutionValue): Boolean = lock.withGate {
+        val current = mutableStatus.value
+        if (!matches(operation, current) || current.phase == ProductRunPhase.CLEANUP_BLOCKED ||
+            current.invocationCategory !in setOf(ProductInvocationCategory.INVOKED, ProductInvocationCategory.RESULT_OR_UNCERTAIN)) {
+            return@withGate false
+        }
+        // Khi đã có Stop intent, chỉ exact cleanup operation được quyết định terminal.
+        if (operation.kind == ProductOperationKind.START && current.stopRequested) return@withGate false
+        if (result.kind == ProductResultKind.STARTED &&
+            (operation.kind != ProductOperationKind.START || current.phase != ProductRunPhase.STARTING)) return@withGate false
+        if (result.kind == ProductResultKind.PREFLIGHT_REJECTED && current.items.isNotEmpty()) return@withGate false
+        val knownOwnedIds = current.items.map { it.sourceCellId }.toSet()
+        val terminalOwnedIds = result.items.map { it.sourceCellId }.toSet()
+        val clean = result.authoritativeClean && terminalOwnedIds.containsAll(knownOwnedIds)
+        val phase = when {
+            result.kind == ProductResultKind.STARTED -> ProductRunPhase.ACTIVE
+            clean -> ProductRunPhase.IDLE
+            else -> ProductRunPhase.CLEANUP_BLOCKED
+        }
+        val evidence = if (!clean && result.cleanupEvidence == CleanupEvidence.CLEAN_CONFIRMED) CleanupEvidence.UNCERTAIN
+            else result.cleanupEvidence
+        publish(current.copy(token = if (phase == ProductRunPhase.IDLE) null else current.token,
+            phase = phase, invocationCategory = ProductInvocationCategory.RESULT_OR_UNCERTAIN,
+            resultKind = result.kind, issue = result.issue,
+            allocationEvidence = result.allocationEvidence, cleanupEvidence = evidence,
+            items = immutableCopy(if (result.items.isEmpty() && !clean) current.items else result.items),
+            cleanupOutcomes = immutableCopy(result.cleanupOutcomes)))
+        true
+    }
+
+    private fun matches(operation: ProductRunOperation, current: ProductRunStatus): Boolean =
+        current.token === operation.token && current.generation == operation.generation &&
+            operation.operationId == when (operation.kind) {
+                ProductOperationKind.START -> current.startOperationId
+                ProductOperationKind.CLEANUP -> current.cleanupOperationId
+            }
+
+    private fun publish(value: ProductRunStatus) {
+        mutableStatus.value = value
+        // Collector có thể acquire run mới ngay khi nhận IDLE; không publish lại phase của run cũ.
+        mutableState.value = mutableStatus.value.phase
     }
 
     private inline fun <T> ReentrantLock.withGate(action: () -> T): T {

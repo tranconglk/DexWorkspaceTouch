@@ -81,6 +81,7 @@ import com.trancong.dexworkspacetouch.feature.embeddedworkspace.EmbeddedWorkspac
 import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductScreen
 import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductRouting
 import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase
+import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGate
 import com.trancong.dexworkspacetouch.workspace.library.model.toLibraryItem
 import com.trancong.dexworkspacetouch.feature.car.CarWorkspaceOption
 import com.trancong.dexworkspacetouch.feature.car.CarWorkspaceShortcutSlot
@@ -104,7 +105,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import android.widget.Toast
 
-private object Routes {
+internal object Routes {
     const val Home = "home"
     const val Car = "car"
     const val Updates = "updates"
@@ -118,6 +119,55 @@ private object Routes {
     const val AppPicker = "app-picker"
 }
 
+internal enum class EmbeddedProofRoute(val pattern: String) {
+    WAZE(Routes.EmbeddedWaze),
+    CALCULATOR(Routes.EmbeddedCalculator),
+    DUAL_APP(Routes.EmbeddedDualApp),
+    RUNNER(Routes.EmbeddedWorkspaceRunner),
+    WORKSPACE_LAYOUT("${Routes.EmbeddedWorkspaceLayout}/{workspaceId}"),
+}
+
+// Seam đồng bộ của dispatch và destination; không lưu callback vào Application.
+internal inline fun enterEmbeddedProofRoute(
+    gate: EmbeddedProductRunGate,
+    route: EmbeddedProofRoute,
+    content: () -> Unit,
+): Boolean {
+    // Cả năm route đều cấp phát execution; kiểm tra lại tại click và destination.
+    when (route) {
+        EmbeddedProofRoute.WAZE, EmbeddedProofRoute.CALCULATOR, EmbeddedProofRoute.DUAL_APP,
+        EmbeddedProofRoute.RUNNER, EmbeddedProofRoute.WORKSPACE_LAYOUT ->
+            if (!gate.canEnterEmbedded()) return false
+    }
+    content()
+    return true
+}
+
+@Composable
+private fun EmbeddedProofDestination(
+    gate: EmbeddedProductRunGate,
+    route: EmbeddedProofRoute,
+    onBack: () -> Unit,
+    onViewStatus: (String) -> Unit,
+    content: @Composable () -> Unit,
+) {
+    // Quan sát để loại nội dung proof khi gate đổi; admission vẫn đọc gate mới nhất.
+    val status by gate.status.collectAsState()
+    if (!enterEmbeddedProofRoute(gate, route) { content() }) {
+        AlertDialog(
+            onDismissRequest = onBack,
+            title = { Text("Proof Embedded đang bị chặn") },
+            text = { Text("Trạng thái phiên: ${status.phase}. Proof không thể mở khi phiên sản phẩm chưa kết thúc an toàn.") },
+            confirmButton = { TextButton(onClick = onBack) { Text("Quay lại") } },
+            dismissButton = {
+                status.token?.workspaceId?.let { id ->
+                    TextButton(onClick = { onViewStatus(id) }) { Text("Xem trạng thái Embedded") }
+                }
+            },
+        )
+    }
+}
+
 @Composable
 fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTransferViewModel) {
     val navController = rememberNavController()
@@ -125,13 +175,27 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
     val currentRoute = currentBackStackEntry?.destination?.route
     val designerViewModel: WorkspaceDesignerViewModel = viewModel()
     val application = activity.application as DexWorkspaceTouchApplication
-    val productGateState by application.embeddedProductRunGate.state.collectAsState()
+    val productGateStatus by application.embeddedProductRunGate.status.collectAsState()
+    val productGateState = productGateStatus.phase
     val productRouting = remember(navController, application) {
         EmbeddedWorkspaceProductRouting(application.embeddedProductRunGate) { id ->
             navController.navigate("${Routes.EmbeddedWorkspaceProduct}/${Uri.encode(id)}")
         }
     }
     val productNavigationScope = rememberCoroutineScope()
+    fun openProof(route: EmbeddedProofRoute, workspaceId: String? = null) {
+        val destination = if (route == EmbeddedProofRoute.WORKSPACE_LAYOUT) {
+            workspaceId?.let { "${Routes.EmbeddedWorkspaceLayout}/${Uri.encode(it)}" } ?: return
+        } else route.pattern
+        if (!enterEmbeddedProofRoute(application.embeddedProductRunGate, route) {
+                navController.navigate(destination)
+            }) {
+            Toast.makeText(activity, "Proof Embedded đang bị chặn bởi trạng thái phiên hiện tại.", Toast.LENGTH_SHORT).show()
+        }
+    }
+    val viewProofProductStatus: (String) -> Unit = { id ->
+        navController.navigate("${Routes.EmbeddedWorkspaceProduct}/${Uri.encode(id)}")
+    }
     val appUpdateViewModel: AppUpdateViewModel = viewModel(
         factory = AppUpdateViewModel.factory(application.appUpdateRepository),
     )
@@ -438,15 +502,29 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
         onDispose { launchViewModel.onHostDisposed(launchHostToken) }
     }
     NavHost(navController = navController, startDestination = Routes.Home) {
-        composable(Routes.EmbeddedWaze) { EmbeddedWazeScreen(activity = activity, onBack = { navController.popBackStack() }) }
-        composable(Routes.EmbeddedCalculator) {
-            EmbeddedCalculatorScreen(activity = activity, onBack = { navController.popBackStack() })
+        composable(EmbeddedProofRoute.WAZE.pattern) {
+            EmbeddedProofDestination(application.embeddedProductRunGate, EmbeddedProofRoute.WAZE,
+                { navController.popBackStack() }, viewProofProductStatus) {
+                EmbeddedWazeScreen(activity = activity, onBack = { navController.popBackStack() })
+            }
         }
-        composable(Routes.EmbeddedDualApp) {
-            EmbeddedDualAppScreen(activity = activity, onBack = { navController.popBackStack() })
+        composable(EmbeddedProofRoute.CALCULATOR.pattern) {
+            EmbeddedProofDestination(application.embeddedProductRunGate, EmbeddedProofRoute.CALCULATOR,
+                { navController.popBackStack() }, viewProofProductStatus) {
+                EmbeddedCalculatorScreen(activity = activity, onBack = { navController.popBackStack() })
+            }
         }
-        composable(Routes.EmbeddedWorkspaceRunner) {
-            EmbeddedWorkspaceRunnerScreen(activity = activity, onBack = { navController.popBackStack() })
+        composable(EmbeddedProofRoute.DUAL_APP.pattern) {
+            EmbeddedProofDestination(application.embeddedProductRunGate, EmbeddedProofRoute.DUAL_APP,
+                { navController.popBackStack() }, viewProofProductStatus) {
+                EmbeddedDualAppScreen(activity = activity, onBack = { navController.popBackStack() })
+            }
+        }
+        composable(EmbeddedProofRoute.RUNNER.pattern) {
+            EmbeddedProofDestination(application.embeddedProductRunGate, EmbeddedProofRoute.RUNNER,
+                { navController.popBackStack() }, viewProofProductStatus) {
+                EmbeddedWorkspaceRunnerScreen(activity = activity, onBack = { navController.popBackStack() })
+            }
         }
         composable(
             "${Routes.EmbeddedWorkspaceProduct}/{workspaceId}",
@@ -471,16 +549,19 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
             )
         }
         composable(
-            "${Routes.EmbeddedWorkspaceLayout}/{workspaceId}",
+            EmbeddedProofRoute.WORKSPACE_LAYOUT.pattern,
             arguments = listOf(navArgument("workspaceId") { type = NavType.StringType }),
         ) { entry ->
-            EmbeddedWorkspaceLayoutScreen(
-                activity = activity,
-                workspaceId = entry.arguments?.getString("workspaceId").orEmpty(),
-                repository = application.workspaceRepository,
-                requestFactory = workspaceLaunchRequestFactory,
-                onBack = { navController.popBackStack() },
-            )
+            EmbeddedProofDestination(application.embeddedProductRunGate, EmbeddedProofRoute.WORKSPACE_LAYOUT,
+                { navController.popBackStack() }, viewProofProductStatus) {
+                EmbeddedWorkspaceLayoutScreen(
+                    activity = activity,
+                    workspaceId = entry.arguments?.getString("workspaceId").orEmpty(),
+                    repository = application.workspaceRepository,
+                    requestFactory = workspaceLaunchRequestFactory,
+                    onBack = { navController.popBackStack() },
+                )
+            }
         }
         composable(Routes.Home) {
             HomeScreen(
@@ -549,20 +630,23 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
                 },
                 onOpenEmbeddedWorkspace = { id -> productRouting.openEmbedded(id) },
                 workspaceRunActionsEnabled = productGateState == ProductRunPhase.IDLE,
-                productRunStatus = if (productGateState == ProductRunPhase.CLEANUP_BLOCKED) {
-                    "Cleanup Embedded chưa được xác nhận. Tạm khóa mở Workspace; kiểm tra chẩn đoán Embedded."
-                } else null,
+                productRunStatus = productGateStatus,
+                onViewEmbeddedStatus = { id ->
+                    val current = application.embeddedProductRunGate.status.value
+                    if (current.phase == ProductRunPhase.CLEANUP_BLOCKED && current.token?.workspaceId == id) {
+                        // Điều hướng xem status, không admission Start hoặc nhả gate.
+                        navController.navigate("${Routes.EmbeddedWorkspaceProduct}/${Uri.encode(id)}")
+                    }
+                },
                 onCancelLaunch = launchViewModel::cancelLaunch,
                 onDismissLaunchResult = launchViewModel::dismissResult,
                 onOpenCar = { navController.navigate(Routes.Car) },
                 onOpenUpdates = { navController.navigate(Routes.Updates) },
-                onOpenEmbeddedWaze = { navController.navigate(Routes.EmbeddedWaze) },
-                onOpenEmbeddedCalculator = { navController.navigate(Routes.EmbeddedCalculator) },
-                onOpenEmbeddedDualApp = { navController.navigate(Routes.EmbeddedDualApp) },
-                onOpenEmbeddedWorkspaceRunner = { navController.navigate(Routes.EmbeddedWorkspaceRunner) },
-                onOpenEmbeddedWorkspaceLayout = { id ->
-                    navController.navigate("${Routes.EmbeddedWorkspaceLayout}/${Uri.encode(id)}")
-                },
+                onOpenEmbeddedWaze = { openProof(EmbeddedProofRoute.WAZE) },
+                onOpenEmbeddedCalculator = { openProof(EmbeddedProofRoute.CALCULATOR) },
+                onOpenEmbeddedDualApp = { openProof(EmbeddedProofRoute.DUAL_APP) },
+                onOpenEmbeddedWorkspaceRunner = { openProof(EmbeddedProofRoute.RUNNER) },
+                onOpenEmbeddedWorkspaceLayout = { id -> openProof(EmbeddedProofRoute.WORKSPACE_LAYOUT, id) },
                 onShareWorkspace = { id -> exportMode = "share"; transferViewModel.prepareExport(id) },
                 onSaveWorkspaceToFile = { id -> exportMode = "save"; transferViewModel.prepareExport(id) },
                 onImportWorkspace = { importLauncher.launch("*/*") },

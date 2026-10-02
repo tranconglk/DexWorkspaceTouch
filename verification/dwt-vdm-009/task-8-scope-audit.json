@@ -1,0 +1,44 @@
+{
+    "baseline_files":  818,
+    "mutated":  [
+
+                ],
+    "new_nonignored_paths":  [
+                                 "verification/dwt-vdm-009/local-gate.md",
+                                 "verification/dwt-vdm-009/task-8-baseline.json",
+                                 "verification/dwt-vdm-009/task-8-diff-check.txt",
+                                 "verification/dwt-vdm-009/task-8-focused-summary.json",
+                                 "verification/dwt-vdm-009/task-8-full-summary.json",
+                                 "verification/dwt-vdm-009/task-8-lint-summary.json",
+                                 "verification/dwt-vdm-009/task-8-scope-audit.json",
+                                 "verification/dwt-vdm-009/task-8-value-graph-javap.txt"
+                             ],
+    "unexpected":  [
+
+                   ],
+    "new_artifacts":  [
+                          "local-gate.md",
+                          "task-8-baseline.json",
+                          "task-8-diff-check.txt",
+                          "task-8-focused.log",
+                          "task-8-focused-cache.log",
+                          "task-8-focused-summary.json",
+                          "task-8-full-gate.log",
+                          "task-8-full-summary.json",
+                          "task-8-lint-summary.json",
+                          "task-8-scope-audit.json",
+                          "task-8-value-graph-javap.txt"
+                      ],
+    "index_unchanged":  true,
+    "branch_unchanged":  true,
+    "head_unchanged":  true,
+    "report_head_exact":  true,
+    "report_whitespace_findings":  0,
+    "missing_evidence_links":  [
+
+                               ],
+    "secret_candidate_locations":  [
+
+                                   ],
+    "production_test_fixes":  0
+}

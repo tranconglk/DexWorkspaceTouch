@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" tests="65" skipped="0" failures="0" errors="0" timestamp="2026-10-02T04:01:11.410Z" hostname="NUC" time="0.074">
+  <properties/>
+  <testcase name="openingDeveloperSectionAloneAllocatesNothingAndHasOnlyValueState[embedded-waze]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.03"/>
+  <testcase name="directRestoredDestinationUsesCurrentGateWithoutMenuOrOldRuntime[embedded-waze]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="deliberateDeveloperEntryExposesProofControlAndCloseHidesIt[embedded-waze]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="startingDirectEntryRejectsBeforeEveryAllocation[embedded-waze]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="cleanupBlockedDirectEntryRejectsBeforeEveryAllocation[embedded-waze]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="exactDirectRouteRemainsDefinedAndIdleAdmitsExistingBehavior[embedded-waze]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="blockedProofActionsPreserveEvidenceAndDiagnosticCopyRemainsUsable[embedded-waze]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.021"/>
+  <testcase name="ownershipAcquiredBetweenNavigationAndDestinationRejectsAllocation[embedded-waze]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="staleDeveloperClickRechecksEveryNonIdlePhaseBeforeDispatch[embedded-waze]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="classicDispatchInProgressAlsoRejectsDirectProof[embedded-waze]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="stoppingDirectEntryRejectsBeforeEveryAllocation[embedded-waze]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="activeDirectEntryRejectsBeforeEveryAllocation[embedded-waze]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="ordinaryHomeDoesNotExposeProofControl[embedded-waze]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="openingDeveloperSectionAloneAllocatesNothingAndHasOnlyValueState[embedded-calculator]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="directRestoredDestinationUsesCurrentGateWithoutMenuOrOldRuntime[embedded-calculator]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="deliberateDeveloperEntryExposesProofControlAndCloseHidesIt[embedded-calculator]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="startingDirectEntryRejectsBeforeEveryAllocation[embedded-calculator]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="cleanupBlockedDirectEntryRejectsBeforeEveryAllocation[embedded-calculator]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="exactDirectRouteRemainsDefinedAndIdleAdmitsExistingBehavior[embedded-calculator]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="blockedProofActionsPreserveEvidenceAndDiagnosticCopyRemainsUsable[embedded-calculator]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="ownershipAcquiredBetweenNavigationAndDestinationRejectsAllocation[embedded-calculator]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="staleDeveloperClickRechecksEveryNonIdlePhaseBeforeDispatch[embedded-calculator]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="classicDispatchInProgressAlsoRejectsDirectProof[embedded-calculator]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="stoppingDirectEntryRejectsBeforeEveryAllocation[embedded-calculator]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="activeDirectEntryRejectsBeforeEveryAllocation[embedded-calculator]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="ordinaryHomeDoesNotExposeProofControl[embedded-calculator]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="openingDeveloperSectionAloneAllocatesNothingAndHasOnlyValueState[embedded-dual-app]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="directRestoredDestinationUsesCurrentGateWithoutMenuOrOldRuntime[embedded-dual-app]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="deliberateDeveloperEntryExposesProofControlAndCloseHidesIt[embedded-dual-app]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="startingDirectEntryRejectsBeforeEveryAllocation[embedded-dual-app]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="cleanupBlockedDirectEntryRejectsBeforeEveryAllocation[embedded-dual-app]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="exactDirectRouteRemainsDefinedAndIdleAdmitsExistingBehavior[embedded-dual-app]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="blockedProofActionsPreserveEvidenceAndDiagnosticCopyRemainsUsable[embedded-dual-app]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="ownershipAcquiredBetweenNavigationAndDestinationRejectsAllocation[embedded-dual-app]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="staleDeveloperClickRechecksEveryNonIdlePhaseBeforeDispatch[embedded-dual-app]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="classicDispatchInProgressAlsoRejectsDirectProof[embedded-dual-app]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="stoppingDirectEntryRejectsBeforeEveryAllocation[embedded-dual-app]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="activeDirectEntryRejectsBeforeEveryAllocation[embedded-dual-app]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="ordinaryHomeDoesNotExposeProofControl[embedded-dual-app]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="openingDeveloperSectionAloneAllocatesNothingAndHasOnlyValueState[embedded-workspace-runner]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="directRestoredDestinationUsesCurrentGateWithoutMenuOrOldRuntime[embedded-workspace-runner]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="deliberateDeveloperEntryExposesProofControlAndCloseHidesIt[embedded-workspace-runner]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="startingDirectEntryRejectsBeforeEveryAllocation[embedded-workspace-runner]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="cleanupBlockedDirectEntryRejectsBeforeEveryAllocation[embedded-workspace-runner]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="exactDirectRouteRemainsDefinedAndIdleAdmitsExistingBehavior[embedded-workspace-runner]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="blockedProofActionsPreserveEvidenceAndDiagnosticCopyRemainsUsable[embedded-workspace-runner]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="ownershipAcquiredBetweenNavigationAndDestinationRejectsAllocation[embedded-workspace-runner]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="staleDeveloperClickRechecksEveryNonIdlePhaseBeforeDispatch[embedded-workspace-runner]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="classicDispatchInProgressAlsoRejectsDirectProof[embedded-workspace-runner]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="stoppingDirectEntryRejectsBeforeEveryAllocation[embedded-workspace-runner]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="activeDirectEntryRejectsBeforeEveryAllocation[embedded-workspace-runner]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="ordinaryHomeDoesNotExposeProofControl[embedded-workspace-runner]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="openingDeveloperSectionAloneAllocatesNothingAndHasOnlyValueState[embedded-workspace-layout/{workspaceId}]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="directRestoredDestinationUsesCurrentGateWithoutMenuOrOldRuntime[embedded-workspace-layout/{workspaceId}]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="deliberateDeveloperEntryExposesProofControlAndCloseHidesIt[embedded-workspace-layout/{workspaceId}]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="startingDirectEntryRejectsBeforeEveryAllocation[embedded-workspace-layout/{workspaceId}]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="cleanupBlockedDirectEntryRejectsBeforeEveryAllocation[embedded-workspace-layout/{workspaceId}]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="exactDirectRouteRemainsDefinedAndIdleAdmitsExistingBehavior[embedded-workspace-layout/{workspaceId}]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="blockedProofActionsPreserveEvidenceAndDiagnosticCopyRemainsUsable[embedded-workspace-layout/{workspaceId}]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="ownershipAcquiredBetweenNavigationAndDestinationRejectsAllocation[embedded-workspace-layout/{workspaceId}]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="staleDeveloperClickRechecksEveryNonIdlePhaseBeforeDispatch[embedded-workspace-layout/{workspaceId}]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.001"/>
+  <testcase name="classicDispatchInProgressAlsoRejectsDirectProof[embedded-workspace-layout/{workspaceId}]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="stoppingDirectEntryRejectsBeforeEveryAllocation[embedded-workspace-layout/{workspaceId}]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="activeDirectEntryRejectsBeforeEveryAllocation[embedded-workspace-layout/{workspaceId}]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <testcase name="ordinaryHomeDoesNotExposeProofControl[embedded-workspace-layout/{workspaceId}]" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

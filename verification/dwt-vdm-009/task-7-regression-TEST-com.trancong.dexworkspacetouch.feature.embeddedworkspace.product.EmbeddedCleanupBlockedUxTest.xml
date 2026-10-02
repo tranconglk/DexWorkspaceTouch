@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" tests="29" skipped="0" failures="0" errors="0" timestamp="2026-10-02T04:03:13.043Z" hostname="NUC" time="0.153">
+  <properties/>
+  <testcase name="cleanupTimeoutUsesCopiedCodeAndRetainsUnresolvedEvidence" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.036"/>
+  <testcase name="lateStartCallbackCannotClearOrReplaceBlockedUx" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.001"/>
+  <testcase name="homeCanExposeBlockedReasonAndStatusNavigationWithOnlyValues" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.01"/>
+  <testcase name="returningFromHomeShowsSameBlockedStatusWithoutStartingRun" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.0"/>
+  <testcase name="droppingOldControllerAndExecutionStillLeavesApplicationValueUx" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.084"/>
+  <testcase name="retainedSurfaceLostIssueDoesNotDescribeOldRunAsStillEnding" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.001"/>
+  <testcase name="recoveryRequiredWithoutRemoteDeathDoesNotInventConnectionLoss" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.002"/>
+  <testcase name="cleanFromStaleOldOperationCannotReleaseCurrentBlockedRun" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.0"/>
+  <testcase name="otherPhasesDoNotRenderTerminalBlockedCopy" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.001"/>
+  <testcase name="recoveryRequiredExplainsLostConnectionAndUnresolvedCleanup" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.0"/>
+  <testcase name="uiRecreationRendersIdenticalCopiedValueEvidence" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.001"/>
+  <testcase name="noEmbeddedStartIsOfferedOrAdmitted" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.0"/>
+  <testcase name="copyExplainsLocalEndBothLaunchBlocksAndCurrentProcessBoundary" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.0"/>
+  <testcase name="shizukuAndResumeChangesOnlyReadinessWhileBlocked" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.003"/>
+  <testcase name="cleanupIncompleteHasDistinctUnconfirmedReason" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.0"/>
+  <testcase name="projectionCopiesListsAndItsWholeGraphContainsOnlyImmutableValues" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.0"/>
+  <testcase name="actionModelContainsOnlySafeNavigation" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.001"/>
+  <testcase name="typedIssueTakesPrecedenceOverUnrecognizedCode" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.0"/>
+  <testcase name="uncertainResultHasSafeReasonWithoutInventedSuccess" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.0"/>
+  <testcase name="noRetryCleanupReconcileResetOrForceStopActionIsOffered" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.0"/>
+  <testcase name="unknownCodeIsShownOnlyWhenTypedCauseIsMissing" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.002"/>
+  <testcase name="safeNavigationAwayLeavesGateAndEvidenceBlocked" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.0"/>
+  <testcase name="noClassicActionIsOfferedOrDispatched" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.0"/>
+  <testcase name="timeoutRequiresUnresolvedOutcomeProvenance" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.0"/>
+  <testcase name="explicitReadinessRefreshCannotReleaseGateOrReplaceBlockedEvidence" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.001"/>
+  <testcase name="blockedProjectionAndRecreatedAdmissionAllocateNothing" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.001"/>
+  <testcase name="missingProvenanceShowsUnknownAndDoesNotFabricateIdentifiers" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.0"/>
+  <testcase name="noManualUnlockOrFixedActionIsOffered" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.001"/>
+  <testcase name="repeatedCleanForExactCompletedCleanupCannotRetroactivelyUnlock" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" tests="17" skipped="0" failures="0" errors="0" timestamp="2026-10-02T04:03:13.261Z" hostname="NUC" time="0.017">
+  <properties/>
+  <testcase name="cleanupCauseUsesFailingCellRatherThanFirstCleanOutcome" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.001"/>
+  <testcase name="cleanResultCannotOfferClassicUntilGateReturnsIdleWithoutOwner" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.0"/>
+  <testcase name="stoppedNeedsCompleteNonEmptyOwnedSetWithoutDuplicateOrForeignOutcomes" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.0"/>
+  <testcase name="noneConfirmedNeverPermitsClassicWhileAnyRunPhaseOwnsGate" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.001"/>
+  <testcase name="preflightRejectionsRetainTypedCauseAndSourceWithoutAllocation" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.002"/>
+  <testcase name="cleanFlagWithMissingOrContradictoryRollbackOutcomesRemainsUncertain" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.0"/>
+  <testcase name="laterReadinessFailureCannotEraseUnknownAllocationFromMissingResult" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.003"/>
+  <testcase name="capabilityReadyKeepsExperimentalCopyWithoutClaimingDeviceVerification" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.0"/>
+  <testcase name="controllerConsumesIssuesAndRechecksGateWhileStartIsSuspended" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.004"/>
+  <testcase name="readinessFailuresKeepDistinctCodesAndPermissionActionIsSpecific" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.0"/>
+  <testcase name="controllerDoesNotOfferClassicAfterExceptionOrMissingStartResult" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.002"/>
+  <testcase name="runtimeFailureCauseIsIndependentOfCleanVersusUncertainCleanup" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.0"/>
+  <testcase name="eligibilityFailuresKeepDistinctIssuesAndOnlySafePreStartActions" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.002"/>
+  <testcase name="duplicateCallAndMissingResultNeverBecomeCleanEvenAtIdle" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.0"/>
+  <testcase name="idleStillRequiresGateAvailabilityAndAuthoritativeEvidence" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.001"/>
+  <testcase name="remoteDeathRetainsKnownOutcomeSourceWhenResultOmitsIt" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.0"/>
+  <testcase name="incompleteAndRemoteDeathPreserveEvidenceInsteadOfGuessingClean" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
