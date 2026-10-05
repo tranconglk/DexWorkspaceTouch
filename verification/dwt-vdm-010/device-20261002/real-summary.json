@@ -1,0 +1,62 @@
+{
+  "category": "C",
+  "device": "S23 Ultra / DeX display 167",
+  "calculator": {
+    "result": "PASS",
+    "run": "android-real/20261002T111600412Z",
+    "method": "realCalculatorRecreationFreshStartAndSurfaceLoss",
+    "pid": 3275,
+    "old_host_identity": 49277327,
+    "new_host_identity": 77053696,
+    "owned_runs": [
+      {
+        "generation": 1,
+        "start_operation": 1,
+        "cleanup_operation": 2,
+        "session_id": "dac6e266-b541-4821-8c5e-65fe1f38eff2",
+        "display_id": 169,
+        "terminal": "IDLE/CLEAN_CONFIRMED"
+      },
+      {
+        "generation": 2,
+        "start_operation": 3,
+        "cleanup_operation": null,
+        "session_id": "fc38d167-78b7-4755-b4b3-af43c3bb5fa4",
+        "display_id": 170,
+        "terminal": "IDLE/CLEAN_CONFIRMED; Surface result accepted by exact Start operation"
+      }
+    ],
+    "output_sha256": "263521b4240ce6e1e0cb985a4222093b626704938e0b34510729f3d59b4b80ba",
+    "trace_sha256": "03d15bf50f1e2d8589ce4dedad05b8cbb568ed24f984445037623969dfd2108e"
+  },
+  "calculator_waze": {
+    "result": "FAIL/STOP",
+    "run": "android-real/20261002T111849380Z",
+    "method": "realCalculatorWazeRecreationFreshStartAndSurfaceLoss",
+    "pid": 5253,
+    "generation": 1,
+    "start_operation": 1,
+    "cleanup_operation": null,
+    "token_identity": 260968613,
+    "session_id": "0bf0ecec-9e2c-4196-8edb-a076b688edb1",
+    "source_cell": "calc",
+    "phase": "CLEANUP_BLOCKED",
+    "result_kind": "START_FAILED",
+    "evidence": "INCOMPLETE",
+    "failure_code": "START_FAILED",
+    "waze_started": false,
+    "input_name": "DWT-VT-30d571a3dc825a74f33ea009",
+    "remote_log_observations": {
+      "association_id": 123,
+      "virtual_device_id": 114,
+      "display_id": 171,
+      "input_device_id": 631,
+      "handle_close_logs_observed": true
+    },
+    "authoritative_clean": "NOT VERIFIED; no release/retry/new Start after blocked",
+    "root_cause": "NOT VERIFIED; source/log timing suggests waitForStableFingerConfig failure before target launch; exact remote exception not captured",
+    "output_sha256": "77be6592f9864e0bafe39c1658be702b88f912670f4f2f56c4ef8269574ff337",
+    "trace_sha256": "a249439b55cee36e1773c6b71d9379e3b2c153a07e96b960429b92c240657f3a"
+  },
+  "scenario_status": "Required two-app lifecycle remains NOT VERIFIED; no milestone PASS"
+}

@@ -1,0 +1,16 @@
+{
+  "head": "a43d97bd52386f9ac1a76e2adf03ddcdb21c1c77",
+  "branch": "qualification/dwt-vdm-010",
+  "staged_paths": [],
+  "original_modified_hashes": {
+    "experiments/shizuku-task-probe/app/src/main/java/com/trancong/dexworkspacetouch/shizukuprobe/MainActivity.java": "5bcc29bbddca13c1d5487bd10af0ba72485183a43be08549fc9dc8046fb19e03",
+    "experiments/shizuku-task-probe/app/src/main/java/com/trancong/dexworkspacetouch/shizukuprobe/ProbeUserService.java": "d4be7b055a2d352df3651f7649e4baab55fc7a8c5f111d76ef878bed9706494c"
+  },
+  "original_modified_hashes_match": true,
+  "original_untracked_observed": 148,
+  "original_untracked_inventory_sha256": "673c73f5596481275707fccb75f6495a60fd72585dc0884e34503f352a751769",
+  "tracked_diff": " app/src/debug/AndroidManifest.xml                                   | 6 ++++++\n .../feature/embeddedworkspace/product/EmbeddedProductRecovery.kt    | 6 +++++-\n .../workspace/execution/embedded/runtime/EmbeddedWorkspaceRunner.kt | 2 +-\n 3 files changed, 12 insertions(+), 2 deletions(-)\n",
+  "new_production_patch": false,
+  "commit_push_tag": false,
+  "historical_session_IPC": false
+}

@@ -1,0 +1,11 @@
+gradle.beforeProject { p ->
+    p.pluginManager.withPlugin("com.android.application") {
+        p.extensions.getByName("androidComponents").finalizeDsl { android ->
+            def main = android.sourceSets.getByName("main")
+            println("VDM010_SOURCESET_CLASS " + main.class.name)
+            println("VDM010_SOURCESET_PROPERTIES " + main.properties.keySet().findAll { it.toString().toLowerCase().contains("kotlin") || it.toString().toLowerCase().contains("java") })
+            println("VDM010_SOURCESET_KOTLIN " + main.kotlin.class.name + " dirs=" + main.kotlin.srcDirs)
+            println("VDM010_JAVA " + main.java.srcDirs)
+        }
+    }
+}

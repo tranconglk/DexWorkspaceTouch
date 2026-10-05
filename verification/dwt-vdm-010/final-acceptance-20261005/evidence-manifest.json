@@ -1,0 +1,13 @@
+{
+  "verification\\dwt-vdm-010\\final-acceptance-20261005\\A-host-lifecycle-current.xml": "ddc306e4dcc0a9219e2ed5592036419e4e6a99d5002eb5b8c2c2c6596d53f46c",
+  "verification\\dwt-vdm-010\\final-acceptance-20261005\\A-start-failure-current.xml": "a56a4f38bec4fa24940ccaf8ef472280167af3916fc25162f2d274ec9d2a33c9",
+  "verification\\dwt-vdm-010\\final-acceptance-20261005\\A-ui-action-current.xml": "04d39980ef2c9ae0891313ba95f077f030ac5970a2fb74d63844f33a46b0f524",
+  "verification\\dwt-vdm-010\\final-acceptance-20261005\\acceptance-matrix.json": "201d56ed6ba7340a8e65ea2388215a19082d5bb0135eed42d358c8a6d16935de",
+  "verification\\dwt-vdm-010\\final-acceptance-20261005\\final-report.md": "2e03ac294ac85cadc24696eaf359cd56f3697abb9f72496fcd0bf6403edd7139",
+  "verification\\dwt-vdm-010\\final-acceptance-20261005\\previous-current-pointer.md": "fe1fa1daf22fac994e84a785df132edd0bfad90f3ef5e93a55cf5b14fa2f7b4d",
+  "verification\\dwt-vdm-010\\final-acceptance-20261005\\scope-audit.json": "b682fd6bbf099147b1086caf50ea66fab2386957f9782427a468c3a2810f4528",
+  "verification\\dwt-vdm-010\\final-acceptance-20261005\\verification-review.json": "2e4886b0c9e05028a60fe8cde59ee7eeecea374f9f8c780a7a888463e1c702e2",
+  "verification/dwt-vdm-010/checkpoint.md": "8e56490f7a80c25c8a6b04fc5c6a4381592964f4a557c1c676bb0afd7ca38d78",
+  "docs\\superpowers\\plans\\2026-10-02-dwt-vdm-010-host-lifecycle.md": "ed1ea3314f342cd9d438aa44ece0bc02c684e91204d8f2c4350a4caf6e183c4c",
+  "experiments\\dwt-vdm-010-host-harness\\README.md": "c95f260e8244cca540ba11d9e43e6573045c49fb8ad117b90827ef3edb9a8b97"
+}

@@ -1,0 +1,231 @@
+{
+  "task": "DWT-VDM-010",
+  "status": "COMPLETE / PASS",
+  "ready_for_commit": true,
+  "required": 13,
+  "passed": 13,
+  "gaps": [],
+  "matrix": [
+    {
+      "id": 1,
+      "criterion": "Forced same-process recreation",
+      "classes": [
+        "B",
+        "C"
+      ],
+      "evidence": [
+        "B1",
+        "C1",
+        "C2"
+      ],
+      "verdict": "PASS",
+      "finding": "B/C đổi host identity và giữ PID. C2: host 49277327 → 226738325, PID12800."
+    },
+    {
+      "id": 2,
+      "criterion": "New host admission: không replacement execution/Surface cho old non-IDLE",
+      "classes": [
+        "A",
+        "B"
+      ],
+      "corroboration": [
+        "C"
+      ],
+      "evidence": [
+        "A1",
+        "B1",
+        "C2",
+        "S1"
+      ],
+      "verdict": "PASS",
+      "finding": "B1 trực tiếp assert STOPPING, allocations=0, route=null, no Surface, explicitStart bị từ chối. A1 createExecutionIfIdle fence. C2 tạo host trong STOPPING và không Surface sau clean; không gọi đây là allocation counter C."
+    },
+    {
+      "id": 3,
+      "criterion": "Cleanup ownership: một operation, exact cells/SIDs, không duplicate receipt",
+      "classes": [
+        "A",
+        "B",
+        "C"
+      ],
+      "evidence": [
+        "A1",
+        "B1",
+        "B4",
+        "C1",
+        "C2"
+      ],
+      "verdict": "PASS",
+      "finding": "A/B Back+dispose join một close; C2 gen1/Start1/cleanup2. Receipts + partialReceipt đúng hai cells/SIDs duy nhất; Clean outcomes bao phủ đúng owned set."
+    },
+    {
+      "id": 4,
+      "criterion": "Navigation fencing: old callback không pop/unlock new host",
+      "classes": [
+        "A",
+        "B"
+      ],
+      "corroboration": [
+        "C"
+      ],
+      "evidence": [
+        "A1",
+        "B1",
+        "B2",
+        "B3",
+        "C2"
+      ],
+      "verdict": "PASS",
+      "finding": "A/B inject old result/session callback qua new host/new run và assert current state giữ nguyên; old navigation callback không chạy. C2 natural recreation callbacks old/new=0, không claim C injected stale proof."
+    },
+    {
+      "id": 5,
+      "criterion": "Exact clean terminal: accepted result/outcomes → IDLE/CLEAN_CONFIRMED",
+      "classes": [
+        "A",
+        "B",
+        "C"
+      ],
+      "evidence": [
+        "A1",
+        "B1",
+        "B4",
+        "C1",
+        "C2"
+      ],
+      "verdict": "PASS",
+      "finding": "C2 hai exact-owned terminal SurfaceLost có allOwnedSessionsClean=true và hai Clean outcomes; gate nhận đúng operation/token/generation và về IDLE/CLEAN_CONFIRMED."
+    },
+    {
+      "id": 6,
+      "criterion": "Không automatic restart từ refresh/recreation",
+      "classes": [
+        "A",
+        "B",
+        "C"
+      ],
+      "evidence": [
+        "A1",
+        "B1",
+        "B4",
+        "C1",
+        "C2",
+        "S1"
+      ],
+      "verdict": "PASS",
+      "finding": "A/B không tăng allocation/startCalls; C refresh sau clean giữ generation cũ và no Surface. Product route chỉ dựng execution từ handler Start."
+    },
+    {
+      "id": 7,
+      "criterion": "Explicit fresh Start tạo token/generation/Start operation mới",
+      "classes": [
+        "A",
+        "B",
+        "C"
+      ],
+      "evidence": [
+        "A1",
+        "B1",
+        "C1",
+        "C2"
+      ],
+      "verdict": "PASS",
+      "finding": "C2 gen1/token111161902/Start1 → explicit Start sau exact clean → gen2/token90185765/Start3. Hai SID mới khác run1. A policy kiểm cả current readiness và uncertain không được phép."
+    },
+    {
+      "id": 8,
+      "criterion": "CLEANUP_BLOCKED qua recreation/navigation/readiness refresh",
+      "classes": [
+        "A",
+        "B"
+      ],
+      "evidence": [
+        "A1",
+        "B2",
+        "B3",
+        "B5"
+      ],
+      "verdict": "PASS",
+      "finding": "INCOMPLETE/CONTROLLED_010 và UNCERTAIN giữ blocked qua real Android host lifecycle; policy/navigation không nhả Start/Classic. Synthetic evidence chỉ chứng minh local lifecycle/UI/gate/policy/stale behavior; không remote cleanup failure/convergence."
+    },
+    {
+      "id": 9,
+      "criterion": "Surface identity/generation fence, loss terminal, stale event không ảnh hưởng newer run",
+      "classes": [
+        "A",
+        "B",
+        "C"
+      ],
+      "evidence": [
+        "A1",
+        "B1",
+        "B4",
+        "C1",
+        "C2"
+      ],
+      "verdict": "PASS",
+      "finding": "A1 test cả wrong generation và current-generation/wrong Surface identity; B1 stale generation không ảnh hưởng native newer Surface. B4 destroy/create + viewport zero/positive controlled, không resurrect. C2 real Surface loss exact clean; không claim vendor lifetime."
+    },
+    {
+      "id": 10,
+      "criterion": "Real Calculator + Waze bounded lifecycle đầy đủ",
+      "classes": [
+        "C"
+      ],
+      "evidence": [
+        "C2"
+      ],
+      "verdict": "PASS",
+      "finding": "Hai app ACTIVE ở gen1 và gen2, same-PID recreation, exact cleanup, explicit fresh Start và Surface-loss scenario; một invocation OK (1 test), không skip/retry."
+    },
+    {
+      "id": 11,
+      "criterion": "Result authority: không suy clean từ timeout/death/inventory/close/detach",
+      "classes": [
+        "A",
+        "B",
+        "C",
+        "SOURCE/GIT"
+      ],
+      "evidence": [
+        "A1",
+        "B2",
+        "B3",
+        "C2",
+        "S1",
+        "S2"
+      ],
+      "verdict": "PASS",
+      "finding": "A missing-owned/incomplete/wrong-op cases không unlock. C2 clean chỉ từ exact accepted runner result/outcomes; historical SID không được cấp release authority từ independent run/process termination/log."
+    },
+    {
+      "id": 12,
+      "criterion": "Architecture preservation",
+      "classes": [
+        "A",
+        "SOURCE/GIT"
+      ],
+      "evidence": [
+        "A1",
+        "A2",
+        "A3",
+        "S1",
+        "S2"
+      ],
+      "verdict": "PASS",
+      "finding": "Runtime/controller/renderer vẫn route-owned; Application gate/status value-only. Gate, Application, renderer/remote runtime/AIDL không production diff; hai fixes không đổi ownership/result authority, không recovery/reconcile."
+    },
+    {
+      "id": 13,
+      "criterion": "Scope preservation, 009 closed, original excluded files bảo toàn",
+      "classes": [
+        "SOURCE/GIT"
+      ],
+      "evidence": [
+        "S2"
+      ],
+      "verdict": "PASS",
+      "finding": "Protected paths không diff; không signing/license/security/schema/version/deps/toolchain change. 009 COMPLETE/PASS/CLOSED. Original hai modified hashes + 148 observed untracked path inventory khớp; original chỉ được đọc."
+    }
+  ]
+}

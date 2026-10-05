@@ -1,0 +1,82 @@
+{
+  "task": "DWT-VDM-010",
+  "checkpoint": "SAFE_TESTBED_BLOCKER_CONFIRMED / STOP",
+  "milestone_pass": false,
+  "ready_for_commit": false,
+  "historical_exact_owned_attempt": {
+    "result": "FAIL/STOP",
+    "run": "android-real/20261002T111849380Z",
+    "method": "realCalculatorWazeRecreationFreshStartAndSurfaceLoss",
+    "pid": 5253,
+    "generation": 1,
+    "start_operation": 1,
+    "cleanup_operation": null,
+    "token_identity": 260968613,
+    "session_id": "0bf0ecec-9e2c-4196-8edb-a076b688edb1",
+    "source_cell": "calc",
+    "phase": "CLEANUP_BLOCKED",
+    "result_kind": "START_FAILED",
+    "evidence": "INCOMPLETE",
+    "failure_code": "START_FAILED",
+    "waze_started": false,
+    "input_name": "DWT-VT-30d571a3dc825a74f33ea009",
+    "remote_log_observations": {
+      "association_id": 123,
+      "virtual_device_id": 114,
+      "display_id": 171,
+      "input_device_id": 631,
+      "handle_close_logs_observed": true
+    },
+    "authoritative_clean": "NOT VERIFIED; no release/retry/new Start after blocked",
+    "root_cause": "NOT VERIFIED; source/log timing suggests waitForStableFingerConfig failure before target launch; exact remote exception not captured",
+    "output_sha256": "77be6592f9864e0bafe39c1658be702b88f912670f4f2f56c4ef8269574ff337",
+    "trace_sha256": "a249439b55cee36e1773c6b71d9379e3b2c153a07e96b960429b92c240657f3a"
+  },
+  "A_local_fake": {
+    "result": "PASS",
+    "tests": 1,
+    "injected_replays": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "test_class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedStartFailureEvidenceQualificationTest",
+    "xml_sha256": "bb343e50664729f5e26cd93c939fbd82bc47b29b10a426625463f7a2d135e392",
+    "test_source_sha256": "97a6406427c37b17e1b170fcb6dd69409d99e606169c7c32e56a2665f669bbc4",
+    "purpose": "Distinct injected Start messages survive real lifecycle/runner but produce identical product status; no historical native cause or remote cleanup proof.",
+    "command": "gradlew.bat --offline -I experiments/dwt-vdm-010-host-harness/isolated-app-id.init.gradle :app:testDebugUnitTest --tests com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedStartFailureEvidenceQualificationTest --console=plain",
+    "compile_error_before_valid_run": "Missing import corrected; compilation failure is not a behavioral RED.",
+    "gradle_log_sha256": "2bf06cfe2924994e599476bc5bdeb676d35b241007af5f3505c8667f79a41afc"
+  },
+  "B_controlled_android": {
+    "prior": "4/4 PASS on 2026-10-02 with previously recorded artifact limitation",
+    "rerun": false,
+    "new_evidence": "NONE"
+  },
+  "C_real_S23_DeX": {
+    "prior_calculator": "PASS",
+    "prior_calculator_waze": "FAIL/STOP at calc; Waze not started",
+    "new_runtime_retest": false,
+    "read_only_context": "current-device-readonly.json",
+    "current_native_or_historical_failure_log_rows": 0,
+    "matching_adbd_command_rows": 2,
+    "authoritative_release_for_failed_owned_attempt": "NOT VERIFIED",
+    "exact_start_root_cause": "NOT VERIFIED"
+  },
+  "blocker": "Historical raw Start exception was not archived; original run terminated CLEANUP_BLOCKED without authoritative release; accepted gate rejects late results. Current process/inventory cannot authorize a retry.",
+  "architecture_stop_boundaries": [
+    {
+      "number": 2,
+      "text": "ownership authority or result authority"
+    },
+    {
+      "number": 4,
+      "text": "process-death recovery architecture"
+    },
+    {
+      "number": 6,
+      "text": "cross-process or global cleanup/reconcile behavior"
+    }
+  ],
+  "safe_procedure": "See checkpoint.md; prerequisites are unmet and procedure is not authorized/executed by a fresh PID or empty registry.",
+  "verification_scope": "Only new diagnostic test run. Historical unrelated/full/B/C checks not repeated."
+}

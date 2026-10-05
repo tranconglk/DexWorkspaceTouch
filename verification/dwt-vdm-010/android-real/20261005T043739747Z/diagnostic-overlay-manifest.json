@@ -1,0 +1,37 @@
+{
+  "classification": "NEW_INDEPENDENT_QUALIFICATION_ONLY",
+  "identity": "3574c86f2453987687ee7e287fd37731cf9a10f23a458f9cc30b4d3fc8bbfb6f",
+  "source_dir": "D:\\AndroidStudioProjects\\DexWorkspaceTouch-VDM-010\\app\\build\\generated\\vdm010-diagnostic-main\\3574c86f24539876",
+  "production_source_not_modified": true,
+  "copied_files": 267,
+  "patched_copies": [
+    {
+      "path": "com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedAppSession.kt",
+      "original_sha256": "80086033911cc512712e69dec40f416a9142c2b25f96ae88b2f674ff58ad8733",
+      "overlay_sha256": "21944aa74047c9e508262eb06d2e6cca1bcb98634a9432682544c0f0fe18a061",
+      "strip_observers_equals_original_bytes": true,
+      "insertions": 2
+    },
+    {
+      "path": "com/trancong/dexworkspacetouch/feature/embeddedapp/remote/EmbeddedAppVdm.kt",
+      "original_sha256": "3012fa81d22e880924e43ac96d78637d5acdcd4244b43ebd240ab566d3aff916",
+      "overlay_sha256": "a5f933bd2529ff07ab8e0cd10952116c0c4abc2cc10ec5940d2e8a06859272a4",
+      "strip_observers_equals_original_bytes": true,
+      "insertions": 1
+    },
+    {
+      "path": "com/trancong/dexworkspacetouch/feature/embeddedapp/remote/RemoteSessionRuntime.kt",
+      "original_sha256": "b2b3ab0223bfec418c2991bc25432a3c2917b7f6ab8cc8c8c431765236aa05dd",
+      "overlay_sha256": "b4f19eeb98c577b003e852ff7b7d2145f5c10ebfe24335ea60709505a5941883",
+      "strip_observers_equals_original_bytes": true,
+      "insertions": 9
+    },
+    {
+      "path": "com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/EmbeddedWorkspaceRunner.kt",
+      "original_sha256": "338d7b8214b3c4f813f4b4af01c96beea9c9e8643a3a4c249521ec3ecf77a947",
+      "overlay_sha256": "b56d1d044e3651a3957b42b25531e5b9076b7051ba11b7944ee0818d13df8360",
+      "strip_observers_equals_original_bytes": true,
+      "insertions": 4
+    }
+  ]
+}

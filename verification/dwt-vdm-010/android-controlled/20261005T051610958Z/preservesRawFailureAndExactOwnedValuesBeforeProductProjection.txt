@@ -1,0 +1,44 @@
+﻿INSTRUMENTATION_STATUS: class=com.trancong.dexworkspacetouch.qualification.EmbeddedDiagnosticCaptureDeviceTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.trancong.dexworkspacetouch.qualification.EmbeddedDiagnosticCaptureDeviceTest:
+INSTRUMENTATION_STATUS: test=preservesRawFailureAndExactOwnedValuesBeforeProductProjection
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.trancong.dexworkspacetouch.qualification.EmbeddedDiagnosticCaptureDeviceTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stack=java.lang.IllegalStateException: Cannot perform this action on a not sealed instance.
+	at android.view.accessibility.AccessibilityNodeInfo.enforceSealed(AccessibilityNodeInfo.java:4710)
+	at android.view.accessibility.AccessibilityNodeInfo.getParent(AccessibilityNodeInfo.java:2289)
+	at com.trancong.dexworkspacetouch.qualification.QualificationPreStartCapture.describeNode(QualificationPreStartCapture.kt:22)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedDiagnosticCaptureDeviceTest.preservesRawFailureAndExactOwnedValuesBeforeProductProjection(EmbeddedDiagnosticCaptureDeviceTest.kt:73)
+
+INSTRUMENTATION_STATUS: stream=
+Error in preservesRawFailureAndExactOwnedValuesBeforeProductProjection(com.trancong.dexworkspacetouch.qualification.EmbeddedDiagnosticCaptureDeviceTest):
+java.lang.IllegalStateException: Cannot perform this action on a not sealed instance.
+	at android.view.accessibility.AccessibilityNodeInfo.enforceSealed(AccessibilityNodeInfo.java:4710)
+	at android.view.accessibility.AccessibilityNodeInfo.getParent(AccessibilityNodeInfo.java:2289)
+	at com.trancong.dexworkspacetouch.qualification.QualificationPreStartCapture.describeNode(QualificationPreStartCapture.kt:22)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedDiagnosticCaptureDeviceTest.preservesRawFailureAndExactOwnedValuesBeforeProductProjection(EmbeddedDiagnosticCaptureDeviceTest.kt:73)
+
+INSTRUMENTATION_STATUS: test=preservesRawFailureAndExactOwnedValuesBeforeProductProjection
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: 0,042
+There was 1 failure:
+1) preservesRawFailureAndExactOwnedValuesBeforeProductProjection(com.trancong.dexworkspacetouch.qualification.EmbeddedDiagnosticCaptureDeviceTest)
+java.lang.IllegalStateException: Cannot perform this action on a not sealed instance.
+	at android.view.accessibility.AccessibilityNodeInfo.enforceSealed(AccessibilityNodeInfo.java:4710)
+	at android.view.accessibility.AccessibilityNodeInfo.getParent(AccessibilityNodeInfo.java:2289)
+	at com.trancong.dexworkspacetouch.qualification.QualificationPreStartCapture.describeNode(QualificationPreStartCapture.kt:22)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedDiagnosticCaptureDeviceTest.preservesRawFailureAndExactOwnedValuesBeforeProductProjection(EmbeddedDiagnosticCaptureDeviceTest.kt:73)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1

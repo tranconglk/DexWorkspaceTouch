@@ -1,0 +1,36 @@
+{
+  "category": "B",
+  "display_id": 167,
+  "cases": [
+    {
+      "method": "actualSurfaceLossAndViewportChangesDoNotResurrectRun",
+      "result": "PASS",
+      "tests": 1,
+      "output_sha256": "7ba1043c9c036d18f181824ce682605eed691dd2d5a42c0ffb76d46d44e65bbb"
+    },
+    {
+      "method": "recreateJoinsCleanupOldCallbackCannotPopNewHostAndFreshStartIsExplicit",
+      "result": "PASS",
+      "tests": 1,
+      "output_sha256": "69b1c66907515d686681f62e3b5e7562d39d75d625735ffa2f8edd6391bf4546"
+    },
+    {
+      "method": "syntheticIncompleteSurvivesRecreationNavigationAndReadinessRefresh",
+      "result": "PASS",
+      "tests": 1,
+      "output_sha256": "ade001544d2c155e66b46b81e58c6ae1a86cbd76f5ff524cd440b3c35535bf1b"
+    },
+    {
+      "method": "syntheticUncertainSurvivesRecreationNavigationAndReadinessRefresh",
+      "result": "PASS",
+      "tests": 1,
+      "output_sha256": "a4e0ef5e62245b2675b1590de25e6ca466046bfc29efd2229d00cf15955021aa"
+    }
+  ],
+  "trace_sha256": {
+    "blocked-INCOMPLETE.txt": "a6b0e9ecb2f2e69d98569368c549ac73719b7b1b4da3029804ccb21e984d5519",
+    "blocked-UNCERTAIN.txt": "941bc1c454114ca5a58952f19cf88fd3e78fc3b6c2119eaa292ff91c19ffda0d",
+    "recreation-clean.txt": "406307e610a427f85df9c00426fb9975f16b1f0dd723a1f5b4dd2b50c43ce61c",
+    "surface-loss.txt": "4690f7062161efadd22b84a236fb374dcd9bef07ed32e06e02dc312963392971"
+  }
+}

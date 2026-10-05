@@ -1,0 +1,12 @@
+﻿{
+    "category":  "C_POST_INVOCATION_READONLY_CONTEXT",
+    "calculator_launcher":  [
+                                "com.sec.android.app.popupcalculator/.Calculator"
+                            ],
+    "calculator_exit":  0,
+    "waze_launcher":  [
+                          "com.waze/.FreeMapAppActivity"
+                      ],
+    "waze_exit":  0,
+    "inference":  "Current launcher lookup only; no Start, cleanup, release or retrospective UI cause proof"
+}

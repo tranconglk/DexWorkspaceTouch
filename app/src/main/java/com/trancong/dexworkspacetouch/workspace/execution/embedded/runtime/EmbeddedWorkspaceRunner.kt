@@ -486,7 +486,7 @@ class EmbeddedWorkspaceRunner(
                     EmbeddedWorkspaceRunResult.StartFailed(
                         sourceCellId = reason.sourceCellId,
                         failure = EmbeddedSessionFailure("SURFACE_LOST", "Execution surface was lost"),
-                        receipts = receipts,
+                        receipts = receipts.filterNot { it.sourceCellId == reason.sourceCellId },
                         partialReceipt = partialReceipt(reason.sourceCellId),
                         rollbackOutcomes = outcomes,
                         allOwnedSessionsClean = outcomes.size == ownedItems.size &&

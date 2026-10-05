@@ -1,0 +1,10 @@
+category=B time_nanos=420642034452027 host=1 identity=182194414 pid=14465 display=167 event=host_create phase=IDLE token=null generation=0 start=null cleanup=null
+category=B time_nanos=420642444531714 host=1 identity=182194414 pid=14465 display=167 event=explicit_start phase=IDLE token=null generation=0 start=null cleanup=null
+category=B time_nanos=420642505349005 host=1 identity=182194414 pid=14465 display=167 event=start_result phase=ACTIVE token=63813749 generation=1 start=1 cleanup=null
+category=B time_nanos=420642520164370 host=1 identity=182194414 pid=14465 display=167 event=surface_observed view=225419856 surface=162281913 valid=true phase=ACTIVE token=63813749 generation=1 start=1 cleanup=null
+category=B time_nanos=420642526303485 host=1 identity=182194414 pid=14465 display=167 event=surface_destroyed phase=ACTIVE token=63813749 generation=1 start=1 cleanup=null
+category=B time_nanos=420642530372391 host=1 identity=182194414 pid=14465 display=167 event=host_destroy phase=STOPPING token=63813749 generation=1 start=1 cleanup=2
+category=B time_nanos=420642537975880 host=2 identity=266222982 pid=14465 display=167 event=host_create phase=STOPPING token=63813749 generation=1 start=1 cleanup=2
+category=B time_nanos=420642599530464 host=2 identity=266222982 pid=14465 display=167 event=host_destroy phase=CLEANUP_BLOCKED token=63813749 generation=1 start=1 cleanup=2
+category=B time_nanos=420642607274005 host=3 identity=187170283 pid=14465 display=167 event=host_create phase=CLEANUP_BLOCKED token=63813749 generation=1 start=1 cleanup=2
+category=B result=blocked-INCOMPLETE phase=CLEANUP_BLOCKED generation=1 cleanup=2 owned=[calc] outcomes=[]

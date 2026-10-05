@@ -1,0 +1,24 @@
+// Testbed only: no signing/version/dependency changes. Always pass -I explicitly.
+gradle.beforeProject { p ->
+    p.pluginManager.withPlugin("com.android.application") {
+        p.extensions.getByName("androidComponents").finalizeDsl { android ->
+            android.defaultConfig.applicationId = "com.trancong.dexworkspacetouch.vdm010harness"
+            if (p.providers.gradleProperty("dwt.vdm010.diagnostics").orNull == "true") {
+                def file = p.rootProject.file("experiments/dwt-vdm-010-host-harness/diagnostic-overlay-manifest.json")
+                if (!file.isFile()) throw new GradleException("Prepare-Diagnostics.py must run first")
+                def manifest = new groovy.json.JsonSlurper().parse(file)
+                def source = new File(manifest.source_dir).canonicalFile
+                def allowed = new File(p.layout.buildDirectory.get().asFile, "generated/vdm010-diagnostic-main").canonicalFile
+                if (!source.toPath().startsWith(allowed.toPath()) || !source.isDirectory())
+                    throw new GradleException("Invalid diagnostic source mirror")
+                android.sourceSets.getByName("main").java.setSrcDirs([source])
+                android.sourceSets.getByName("main").kotlin.setSrcDirs([source])
+                p.tasks.configureEach { task ->
+                    if (task.name.toLowerCase().contains("release")) task.doFirst {
+                        throw new GradleException("Diagnostic overlay is debug qualification only")
+                    }
+                }
+            }
+        }
+    }
+}

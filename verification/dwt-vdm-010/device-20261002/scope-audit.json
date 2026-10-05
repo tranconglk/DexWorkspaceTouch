@@ -1,0 +1,44 @@
+{
+  "base": "a43d97bd52386f9ac1a76e2adf03ddcdb21c1c77",
+  "branch": "qualification/dwt-vdm-010",
+  "original_head": "c5cd7bacae6f48f049a29bd0bec3b479b7831828",
+  "original_branch": "release/1.0-beta",
+  "original_modified": [
+    "experiments/shizuku-task-probe/app/src/main/java/com/trancong/dexworkspacetouch/shizukuprobe/MainActivity.java",
+    "experiments/shizuku-task-probe/app/src/main/java/com/trancong/dexworkspacetouch/shizukuprobe/ProbeUserService.java"
+  ],
+  "original_untracked_observed": 148,
+  "original_modified_sha256": {
+    "experiments/shizuku-task-probe/app/src/main/java/com/trancong/dexworkspacetouch/shizukuprobe/MainActivity.java": "5bcc29bbddca13c1d5487bd10af0ba72485183a43be08549fc9dc8046fb19e03",
+    "experiments/shizuku-task-probe/app/src/main/java/com/trancong/dexworkspacetouch/shizukuprobe/ProbeUserService.java": "d4be7b055a2d352df3651f7649e4baab55fc7a8c5f111d76ef878bed9706494c"
+  },
+  "original_modified_match_prior_checkpoint": true,
+  "original_count_note": "148 untracked observed; prior 150 narrative was a PowerShell wildcard counting error including the 2 modified entries. Prompt 149 is not verified. No original file writes.",
+  "tracked_changed_paths": [
+    "app/src/debug/AndroidManifest.xml",
+    "app/src/main/java/com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/EmbeddedWorkspaceRunner.kt"
+  ],
+  "main_changed_paths": [
+    "app/src/main/java/com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/EmbeddedWorkspaceRunner.kt"
+  ],
+  "protected_paths_diff_empty": true,
+  "protected_paths": [
+    "app/build.gradle.kts",
+    "build.gradle.kts",
+    "settings.gradle.kts",
+    "gradle",
+    "gradle.properties",
+    "app/schemas",
+    "license-backend",
+    "docs/codex",
+    "verification/dwt-vdm-009",
+    "docs/superpowers/plans/2026-10-01-dwt-vdm-009-embedded-product-hardening.md"
+  ],
+  "staged_paths": [],
+  "diff_check": "PASS",
+  "production_patch": "one line: SurfaceLoss excludes source receipt already represented by partialReceipt; behavioral RED in A and B; no C reproduction claimed",
+  "android_controlled": "4/4 PASS; native Activity/Surface on S23 DeX display 167; synthetic sessions/results",
+  "real_s23_dex": "NOT VERIFIED - Shizuku server unavailable; no remote Start invoked",
+  "commit_push_tag": false,
+  "review": "author self-review; no independent review"
+}

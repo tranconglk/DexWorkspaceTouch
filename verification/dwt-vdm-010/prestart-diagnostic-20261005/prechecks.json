@@ -1,0 +1,23 @@
+{
+  "local_tests_pass": 12,
+  "B_evidence": "verification\\dwt-vdm-010\\android-controlled\\20261005T051839029Z",
+  "B_capture_pass": true,
+  "source_byte_roundtrip": "PASS",
+  "patched_copies": 5,
+  "observer_insertions": 19,
+  "artifact_guards": "PASS",
+  "artifact": {
+    "Package": "com.trancong.dexworkspacetouch.vdm010harness",
+    "TestPackage": "com.trancong.dexworkspacetouch.vdm010harness.test",
+    "VersionCode": "9",
+    "VersionName": "1.0.0-beta.8",
+    "SignerSha256": "74ec37adc2ed1048809a781e5e6199ab66ee62f1a4d0def5d563d0320192e42f",
+    "TargetPackage": "com.trancong.dexworkspacetouch.vdm010harness",
+    "ApkSha256": "E1C6D6477DF22BE8724B406F95D872A105DB48E6C42C722C40B1CFBEEC68C231",
+    "TestApkSha256": "9CB30632CF22CF82AD496AB02E4CF8E57D4EA8E0A4C56F588A0CFEE8723C0800"
+  },
+  "fresh_gate_guard": "LIVE ASSERT BEFORE PRODUCT ACTION: IDLE/gen0/token/start/cleanup null",
+  "historical_release": "NOT VERIFIED; no historical session IPC",
+  "head": "a43d97bd52386f9ac1a76e2adf03ddcdb21c1c77",
+  "branch": "qualification/dwt-vdm-010"
+}

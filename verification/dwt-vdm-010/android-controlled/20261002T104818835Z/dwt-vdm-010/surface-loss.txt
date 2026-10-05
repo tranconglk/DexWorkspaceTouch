@@ -1,0 +1,9 @@
+category=B time_nanos=421905954049461 host=1 identity=182194414 pid=24595 display=167 event=host_create phase=IDLE token=null generation=0 start=null cleanup=null
+category=B time_nanos=421906326508992 host=1 identity=182194414 pid=24595 display=167 event=explicit_start phase=IDLE token=null generation=0 start=null cleanup=null
+category=B time_nanos=421906376250398 host=1 identity=182194414 pid=24595 display=167 event=start_result phase=ACTIVE token=125948844 generation=1 start=1 cleanup=null
+category=B time_nanos=421906384086232 host=1 identity=182194414 pid=24595 display=167 event=surface_observed view=257040403 surface=186138496 valid=true phase=ACTIVE token=125948844 generation=1 start=1 cleanup=null
+category=B time_nanos=421906386453732 host=1 identity=182194414 pid=24595 display=167 event=surface_destroyed phase=ACTIVE token=125948844 generation=1 start=1 cleanup=null
+category=B time_nanos=421906408016753 host=1 identity=182194414 pid=24595 display=167 event=surface_terminal receipts=[] partial=EmbeddedWorkspaceItemReceipt(sourceCellId=calc, sessionId=EmbeddedAppSessionId(value=controlled-010-1), packageName=controlled.calc, componentName=controlled.calc.Main, order=0, phase=STOPPED, displayId=-1) outcomes=[Clean(sourceCellId=calc)] phase=ACTIVE token=125948844 generation=1 start=1 cleanup=null
+category=B time_nanos=421906443784878 host=1 identity=182194414 pid=24595 display=167 event=surface_created valid=true phase=ACTIVE token=125948844 generation=1 start=1 cleanup=null
+category=B time_nanos=421906444004878 host=1 identity=182194414 pid=24595 display=167 event=surface_changed width=900 height=675 phase=ACTIVE token=125948844 generation=1 start=1 cleanup=null
+category=B result=surface-loss phase=IDLE generation=1 cleanup=2 owned=[calc] outcomes=[ProductCleanupStatus(sourceCellId=calc, evidence=CLEAN_CONFIRMED, failureCode=null)]

@@ -1,0 +1,51 @@
+{
+  "classes": 6,
+  "tests": 86,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "results": [
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedHostLifecycleQualificationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest",
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest",
+      "tests": 16,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedShizukuRefreshTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceReadinessTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "ro.product.model": "SM-S918B",
+  "ro.build.version.release": "16",
+  "ro.build.version.sdk": "36",
+  "ro.build.version.oneui": "80500",
+  "displays": [
+    "mDisplayId=0",
+    "mDisplayId=167",
+    "mDisplayId=0",
+    "mDisplayId=0",
+    "mDisplayId=: 0",
+    "mDisplayId= 0",
+    "mDisplayId=0",
+    "mDisplayId=0",
+    "mDisplayId=0",
+    "mDisplayId=0",
+    "mDisplayId=0",
+    "mDisplayId=167",
+    "mDisplayId=167",
+    "mDisplayId=: 167",
+    "mDisplayId= 167",
+    "mDisplayId=167",
+    "mDisplayId=167",
+    "mDisplayId=167",
+    "mDisplayId=167"
+  ],
+  "serial": "192.168.1.106:5555",
+  "production_pid_before": "",
+  "production_metadata": [
+    "codePath=/data/app/~~SswJyK35ApDG7eYWMfogOg==/com.trancong.dexworkspacetouch-nVQ1juO5oBiaSUgT_1KETA==",
+    "versionCode=9 minSdk=28 targetSdk=37",
+    "versionName=1.0.0-beta.8"
+  ],
+  "production_apk_sha256": "246b7df53d14935fbd92925ba7521f7f6216c4ca3b46d16175bbfa25fd970af6",
+  "production_signer": "19ac0ea99125361b3c2083aaa44c8745ebad9c55fa967642c2b9e5a1086a45e7"
+}

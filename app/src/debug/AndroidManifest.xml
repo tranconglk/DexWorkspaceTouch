@@ -19,5 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".qualification.EmbeddedLifecycleHarnessActivity"
+            android:exported="false" android:label="DWT 010 controlled harness"
+            android:theme="@style/Theme.DexWorkspaceTouch" />
+        <activity android:name=".qualification.EmbeddedRealProductHarnessActivity"
+            android:exported="false" android:label="DWT 010 real product qualification"
+            android:theme="@style/Theme.DexWorkspaceTouch" />
     </application>
 </manifest>

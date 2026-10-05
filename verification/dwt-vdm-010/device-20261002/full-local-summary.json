@@ -1,0 +1,1004 @@
+{
+  "classes": 141,
+  "tests": 1164,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "results": [
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.EmbeddedWorkspacePreflightTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest",
+      "tests": 32,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedHostLifecycleQualificationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.WorkspaceLaunchDiagnosticFormatterTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.EmbeddedWorkspaceConnectionBoundaryIntegrationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductRoutingTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.execution.embedded.layout.EmbeddedWorkspaceLayoutMapperTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.AndroidEmbeddedWorkspaceSessionAdapterTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.EmbeddedWorkspaceHungStartIntegrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.about.presentation.AboutDialogStateTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.about.presentation.AppDiagnosticFormatterTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.branding.BrandingResourceContractTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.debugbenchmark.WorkspaceBenchmarkDataGeneratorTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.car.CarActionEngineTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.car.CarActionTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.car.CarWorkflowExecutionRunnerTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.car.CarWorkspaceDashboardTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.car.CarWorkspaceShortcutTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingDockCoordinatorTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingDockPositionTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingWorkspacePreviewTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingWorkspaceShortcutTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.car.overlay.CarOverlaySessionTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.car.platform.AndroidCarActionExecutorTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.car.shortcut.CarDockShortcutTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppLifecycleCoordinatorTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppModelsTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppRemotePolicyTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppServiceConnectionManagerTest",
+      "tests": 27,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppSessionBoundaryTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppSessionPolicyTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppSessionStateTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppStartIsolationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedapp.RemoteSessionRegistryTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedapp.SessionConnectionCoordinatorTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedapp.SessionStopCoordinatorTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedapp.VirtualInputOwnershipTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedcalculator.CalculatorEmbeddedTargetTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddeddual.EmbeddedDualAppControllerTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedwaze.WazeEmbeddedTargetTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.EmbeddedWorkspaceLayoutRouteTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.EmbeddedWorkspaceProofPlanTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.EmbeddedWorkspaceRendererCoordinatorTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.EmbeddedWorkspaceRunnerControllerTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest",
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest",
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest",
+      "tests": 16,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest",
+      "tests": 65,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedShizukuRefreshTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceEligibilityTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceReadinessTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.golden.GoldenWorkspaceWorkflowTest",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.license.activation.DefaultLicenseRepositoryTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.license.activation.LicenseTokenVerifierTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.license.activation.OkHttpLicenseApiClientTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.license.domain.LicenseKeyTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.license.domain.LicenseModelsTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.license.domain.LicenseStateTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.license.domain.LicenseTokenClaimsTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.license.identity.DefaultDeviceIdentityProviderTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.license.identity.DeviceFingerprintTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.license.identity.DeviceKeyContractTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.license.runtime.LicenseRuntimeCoordinatorTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.license.ui.LicenseActivationCredentialProtectionTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.license.ui.LicenseActivationPresentationTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.license.ui.LicenseGatePolicyTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.platform.launch.android.AndroidSingleAppLauncherTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.platform.launch.android.AndroidWorkspaceLauncherTest",
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.platform.launch.android.LegacyExternalDisplayWorkAreaTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.platform.launch.bounds.DisplayMetricsDeltaEvaluatorTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.platform.launch.bounds.DisplayWorkAreaSnapshotTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.platform.launch.bounds.DisplayWorkAreaTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.platform.launch.bounds.LaunchBoundsCalculatorTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.platform.launch.bounds.LaunchBoundsSanityTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.platform.launch.bounds.LaunchMarginTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.platform.launch.bounds.LegacyDisplayWorkAreaReferenceStoreTest",
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.platform.launch.bounds.PixelBoundsTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.platform.launch.bounds.WorkAreaInsetResolverTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.ui.design.DwtDesignSystemTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.update.AppUpdatePresentationTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.update.AppUpdateViewModelTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.update.UpdateManifestClientTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.apppicker.infrastructure.SafeCachedLoaderTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.apppicker.model.AppIdentityStableKeyTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.apppicker.model.InstalledAppCatalogTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.apppicker.model.InstalledAppTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.apppicker.presentation.AppPickerViewModelTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.model.AssignedAppTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.model.DividerSnapEngineTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.model.NormalizedBoundsTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasAssignmentsTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasDividerTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasEditorMergeTest",
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasEditorTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceCanvasValidatorTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.model.WorkspaceLimitsTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.state.DesignerContextToolbarStateTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerMergeTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerStateHolderTest",
+      "tests": 26,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.state.WorkspaceDesignerViewModelTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.ui.DividerDragRatioTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.ui.layout.FittedCanvasSizeTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.ui.WorkspaceActionSafeAreaTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.designer.ui.WorkspaceCanvasPlacementTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.execution.embedded.EmbeddedWorkspacePlannerTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.execution.embedded.layout.EmbeddedPaneTouchMapperTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.EmbeddedWorkspaceRunnerTest",
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.execution.WorkspaceRunPlannerTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.externaltransfer.ExternalTransferDetectorTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.externaltransfer.ExternalTransferIntentParserTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchUiMapperTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.launcher.WorkspaceLaunchModelsTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.launcher.WorkspaceLaunchRequestFactoryTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryMapperTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceDuplicateNamePolicyTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryProjectionTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryViewModelTest",
+      "tests": 46,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.library.ui.CenteredGridRowLayoutTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceCardMetadataTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceLibraryInteractionPolicyTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.librarytransfer.LibraryOutputActionStateTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibraryBundleSerializerTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibraryTransferPoliciesTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.librarytransfer.WorkspaceLibraryTransferViewModelTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.persistence.domain.WorkspaceTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.persistence.repository.RoomWorkspaceRepositoryTest",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.persistence.room.WorkspaceEntityMapperTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.persistence.serialization.WorkspaceCanvasSerializerTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.snapshot.ui.WorkspaceSnapshotDescriptionTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.snapshot.ui.WorkspaceSnapshotIconPolicyTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.templates.ui.WorkspaceTemplateDialogLayoutTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.templates.WorkspaceTemplateCatalogTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.templates.WorkspaceTemplateFactoryTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.templates.WorkspaceTemplateSignatureTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferPoliciesTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.trancong.dexworkspacetouch.workspace.transfer.WorkspaceTransferSerializerTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "lint": {
+    "Fatal": 0,
+    "Error": 0,
+    "Warning": 34,
+    "Information": 0
+  },
+  "command": "gradlew --offline -I experiments/dwt-vdm-010-host-harness/isolated-app-id.init.gradle testDebugUnitTest lintDebug --console=plain",
+  "build_log_sha256": "901177f69faff835d9686f707ddaca89207f6a209034a41266bdad17bf4d8b82"
+}

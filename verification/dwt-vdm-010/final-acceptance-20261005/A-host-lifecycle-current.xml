@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedHostLifecycleQualificationTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-05T05:12:53.171Z" hostname="NUC" time="0.193">
+  <properties/>
+  <testcase name="missingOwnedReceiptOrIncompleteTerminalCannotUnlockAfterNavigationAndRefresh" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedHostLifecycleQualificationTest" time="0.044"/>
+  <testcase name="cleanSurfaceLossAllowsExplicitFreshStartPolicyWhileUncertainStaysBlocked" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedHostLifecycleQualificationTest" time="0.003"/>
+  <testcase name="wrongGenerationOrOperationCannotCompleteCurrentCleanup" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedHostLifecycleQualificationTest" time="0.0"/>
+  <testcase name="cleanSurfaceLossResultHasOneReceiptPerOwnedCellAndReleasesGate" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedHostLifecycleQualificationTest" time="0.121"/>
+  <testcase name="viewportAndStaleSurfaceEventsCannotAffectNewRendererGeneration" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedHostLifecycleQualificationTest" time="0.013"/>
+  <testcase name="backDisposeJoinExactOwnedCleanupAndRequireFreshExplicitStart" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedHostLifecycleQualificationTest" time="0.007"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

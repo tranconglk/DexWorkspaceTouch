@@ -1,0 +1,31 @@
+{
+  "category": "B_CONTROLLED_NODE_AND_VALUE_CAPTURE",
+  "node": {
+    "text": "Kiểm tra lại",
+    "content_description": "controlled capture",
+    "package": null,
+    "class": "android.widget.Button",
+    "enabled": false,
+    "clickable": true,
+    "visible_to_user": true,
+    "bounds": [
+      1,
+      2,
+      101,
+      52
+    ],
+    "actions": [],
+    "parents_to_click_target": [],
+    "parent_query_errors": [
+      "java.lang.IllegalStateException: Cannot perform this action on a not sealed instance."
+    ]
+  },
+  "readiness": {
+    "readiness": "ShizukuPermissionMissing",
+    "platform_supported": true,
+    "binder_available": true,
+    "permission_granted": false,
+    "shizuku_launch_available": false,
+    "permission_denied": false
+  }
+}

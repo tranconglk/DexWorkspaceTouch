@@ -1,0 +1,24 @@
+{
+  "classification": "C_NEW_EXACT_SID_JOIN_ONLY",
+  "owned_sessions": [
+    "21470d47-c904-48d7-8252-95603a601ddb",
+    "4d30ec9f-8bb1-47f6-a73a-93f16ed3fd7b",
+    "b44cacd9-87f1-4925-890f-a14d4aaf87f5",
+    "cb30ef64-ec68-4191-80dd-f7aed2a2fcdd"
+  ],
+  "parsed_all": 104,
+  "incomplete": [],
+  "new_sid_stage_counts": {
+    "session_owned": 4,
+    "runner_snapshot": 28,
+    "local_start_entry": 4,
+    "remote_start_entry": 4,
+    "input_wait_begin": 4,
+    "input_stability_sample": 8,
+    "input_wait_return": 4,
+    "remote_launch_guard": 4,
+    "raw_start_completion_before_fence": 4,
+    "runner_result_before_value_mapping": 4
+  },
+  "historical_cleanup_authority": "NOT VERIFIED"
+}

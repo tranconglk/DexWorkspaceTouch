@@ -1,0 +1,46 @@
+{
+  "task": "DWT-VDM-010",
+  "review": "SAME_AGENT_SOURCE_ARTIFACT_AUDIT; NOT INDEPENDENT_REVIEWER",
+  "required_supported": 13,
+  "required_gaps": [],
+  "status": "COMPLETE / PASS",
+  "ready_for_commit": true,
+  "existing_A_full_gate": {
+    "tests": 1165,
+    "classes": 141,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log_sha256_verified": "02556f673759f8c8f10439eab0b75135e4743e1940b68c7d9a50ff94cd9f331b"
+  },
+  "existing_A_affected_after_policy": 86,
+  "current_A_copies": {
+    "A-host-lifecycle-current.xml": {
+      "source": "verification\\dwt-vdm-010\\prestart-diagnostic-20261005\\TEST-com.tr-PRK88QA6C67U6.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedHostLifecycleQualificationTest.xml",
+      "sha256": "ddc306e4dcc0a9219e2ed5592036419e4e6a99d5002eb5b8c2c2c6596d53f46c",
+      "tests": 6
+    },
+    "A-start-failure-current.xml": {
+      "source": "verification\\dwt-vdm-010\\prestart-diagnostic-20261005\\TEST-com.trancong.dexw-4L6QP71RJPE14.feature.embeddedworkspace.product.EmbeddedStartFailureEvidenceQualificationTest.xml",
+      "sha256": "a56a4f38bec4fa24940ccaf8ef472280167af3916fc25162f2d274ec9d2a33c9",
+      "tests": 1
+    },
+    "A-ui-action-current.xml": {
+      "source": "verification\\dwt-vdm-010\\prestart-diagnostic-20261005\\TEST-com.trancong.dexworkspacetouch.qualification.QualificationUiActionEvidenceTest.xml",
+      "sha256": "04d39980ef2c9ae0891313ba95f077f030ac5970a2fb74d63844f33a46b0f524",
+      "tests": 5
+    }
+  },
+  "existing_B_lifecycle_cases_pass": 4,
+  "existing_B_capture_cases_pass": 1,
+  "existing_C_calculator": "PASS",
+  "existing_C_calculator_waze": "PASS; NEW INDEPENDENT EXACT-OWNED ONLY",
+  "existing_evidence_reuse": "Source/diff/hash and assertion review; policy-only change does not invalidate B lifecycle/blocked/renderer assertions",
+  "test_build_device_invocations_in_final_review": 0,
+  "source_overlay_roundtrip_patched_copies_verified": 5,
+  "historical_sid": "0bf0ecec-9e2c-4196-8edb-a076b688edb1",
+  "historical_authoritative_release": "NOT VERIFIED",
+  "previous_prestart_refresh_root_cause": "NOT VERIFIED",
+  "code_changed_in_final_review": false,
+  "staging_commit_push_tag": false
+}

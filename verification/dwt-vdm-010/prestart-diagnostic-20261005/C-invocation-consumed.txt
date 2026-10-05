@@ -1,0 +1,3 @@
+ONE AUTHORIZED C INVOCATION DISPATCH
+vdm010-independent-a2ca3a7f-6079-453c-8bcd-759ced5f4336
+No retry if failure

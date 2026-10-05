@@ -1,0 +1,8 @@
+{
+  "record_categories": {
+    "B_DIAGNOSTIC_CAPTURE_SELFTEST": 5
+  },
+  "incomplete_chunk_records": [],
+  "C_new_records": 0,
+  "interpretation": "No new session/Start was created. B capture records in shared log remain category B and are not new native runtime evidence."
+}

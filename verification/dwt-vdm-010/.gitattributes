@@ -1,0 +1,7 @@
+# DWT-VDM-010 qualification evidence: preserve captured bytes and checksums.
+# CRLF is captured output; retain normal whitespace checks for all other text.
+* -text whitespace=cr-at-eol
+# Only these raw Android/log dumps retain their original output whitespace, including repeated CR.
+android-real/20261005T052015915Z/dwt-vdm-010-real/vdm010-independent-a2ca3a7f-6079-453c-8bcd-759ced5f4336/prestart-*-windows.txt whitespace=cr-at-eol,-blank-at-eol
+android-real/20261005T052015915Z/dwt-vdm-010-real/vdm010-independent-a2ca3a7f-6079-453c-8bcd-759ced5f4336/prestart-*-activities.txt whitespace=cr-at-eol,-blank-at-eof
+device-20261002/calculator-waze-remote-start.txt whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

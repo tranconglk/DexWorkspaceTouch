@@ -39,7 +39,11 @@ object EmbeddedProductRecoveryMapper {
                     is EmbeddedProductIssue.DuplicateTarget, EmbeddedProductIssue.UnsupportedPlatform -> Unit
                     else -> add(EmbeddedRecoveryAction.REFRESH_READINESS)
                 }
-                if (issue == null) add(EmbeddedRecoveryAction.START_EMBEDDED)
+                // SurfaceLost cũ không chặn run mới sau clean; UI vẫn phải xác nhận readiness host mới.
+                if (issue == null || (issue is EmbeddedProductIssue.SurfaceLost &&
+                        cleanupEvidence == CleanupEvidence.CLEAN_CONFIRMED)) {
+                    add(EmbeddedRecoveryAction.START_EMBEDDED)
+                }
                 if (issue == EmbeddedProductIssue.ShizukuPermissionMissing) add(EmbeddedRecoveryAction.REQUEST_SHIZUKU_PERMISSION)
             }
             if (phase in setOf(ProductRunPhase.STARTING, ProductRunPhase.ACTIVE, ProductRunPhase.STOPPING)) {

@@ -1,0 +1,56 @@
+{
+  "captured_utc": "2026-10-05T03:58:32.946693+00:00",
+  "worktree": "D:\\AndroidStudioProjects\\DexWorkspaceTouch-VDM-010",
+  "branch": "qualification/dwt-vdm-010",
+  "head": "a43d97bd52386f9ac1a76e2adf03ddcdb21c1c77",
+  "tracked_diff_paths": [
+    "app/src/debug/AndroidManifest.xml",
+    "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedProductRecovery.kt",
+    "app/src/main/java/com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/EmbeddedWorkspaceRunner.kt"
+  ],
+  "staged_paths": [],
+  "original_head": "c5cd7bacae6f48f049a29bd0bec3b479b7831828",
+  "original_branch": "release/1.0-beta",
+  "original_modified": [
+    {
+      "path": "experiments/shizuku-task-probe/app/src/main/java/com/trancong/dexworkspacetouch/shizukuprobe/MainActivity.java",
+      "sha256": "5bcc29bbddca13c1d5487bd10af0ba72485183a43be08549fc9dc8046fb19e03",
+      "matches_checkpoint": true
+    },
+    {
+      "path": "experiments/shizuku-task-probe/app/src/main/java/com/trancong/dexworkspacetouch/shizukuprobe/ProbeUserService.java",
+      "sha256": "d4be7b055a2d352df3651f7649e4baab55fc7a8c5f111d76ef878bed9706494c",
+      "matches_checkpoint": true
+    }
+  ],
+  "original_observed_untracked_count": 148,
+  "original_untracked_paths_sha256": "3aaf5663be296d4b3ecf0fdccf0a47679d5ea7a503a0c4d4becdf624101adb60",
+  "continuation_main_changes": [],
+  "continuation_android_harness_changes": [],
+  "continuation_test": "app/src/test/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedStartFailureEvidenceQualificationTest.kt",
+  "not_done": [
+    "stage",
+    "commit",
+    "push",
+    "tag",
+    "old-run Start/retry",
+    "remote bind/getter/stop/reconcile",
+    "install/uninstall/data clear",
+    "production configuration/signing/version change"
+  ],
+  "historical_production_changes": "Two existing 010 RED-verified fixes retained; no additional production patch during this investigation.",
+  "continuation_edited_files": [
+    "app/src/test/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedStartFailureEvidenceQualificationTest.kt",
+    "experiments/dwt-vdm-010-host-harness/README.md",
+    "verification/dwt-vdm-010/checkpoint.md",
+    "verification/dwt-vdm-010/device-blocker-20261005/*"
+  ],
+  "final_review": {
+    "source_sha256_unchanged_after_test": true,
+    "xml_source_identity_checked": true,
+    "relative_doc_links_checked": 23,
+    "staged_paths_empty": true,
+    "base_head_unchanged": true,
+    "no_tests_repeated_after_docs": true
+  }
+}

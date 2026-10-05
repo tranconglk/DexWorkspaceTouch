@@ -1,0 +1,19 @@
+{
+  "task": "DWT-VDM-010",
+  "classification": "NEW_INDEPENDENT_TESTBED",
+  "independent_run_id": "vdm010-independent-d7804af0-fdef-4ca1-9e2c-5b1b815166ea",
+  "serial": "192.168.1.106:5555",
+  "dex_display_id": 182,
+  "real_invocation_limit": 1,
+  "method": "realCalculatorWazeRecreationFreshStartAndSurfaceLoss",
+  "state": "STOP_D_PRE_START_TESTBED_BLOCKER",
+  "historical_session": "0bf0ecec-9e2c-4196-8edb-a076b688edb1",
+  "historical_authoritative_release": "NOT VERIFIED",
+  "historical_attempt_is_evidence_only": true,
+  "no_authority_transfer": true,
+  "controlled_capture_pass_path": "verification/dwt-vdm-010/android-controlled/20261005T043457162Z",
+  "real_invocations_executed": 1,
+  "remote_start_calls": 0,
+  "runtime_sessions_created": [],
+  "run_artifacts": "verification/dwt-vdm-010/android-real/20261005T043739747Z"
+}

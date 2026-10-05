@@ -1,0 +1,77 @@
+{
+  "task": "DWT-VDM-010",
+  "status": "IN_PROGRESS / STOP_D_PRE_START_TESTBED_BLOCKER",
+  "milestone_pass": false,
+  "ready_for_commit": false,
+  "historical_attempt": {
+    "session_id": "0bf0ecec-9e2c-4196-8edb-a076b688edb1",
+    "authoritative_release": "NOT VERIFIED",
+    "evidence_only": true,
+    "root_cause": "NOT VERIFIED",
+    "retry_reconcile_cleanup_unlock": false,
+    "authority_transfer": false
+  },
+  "new_independent_testbed": {
+    "run_id": "vdm010-independent-d7804af0-fdef-4ca1-9e2c-5b1b815166ea",
+    "PID": 25076,
+    "host_id": 1,
+    "host_identity": 49277327,
+    "display_id": 182,
+    "real_invocations": 1,
+    "remote_Start_calls": 0,
+    "sessions_created": [],
+    "generation": 0,
+    "token": null,
+    "start_operation": null,
+    "cleanup_operation": null,
+    "gate": "IDLE / NOT_NEEDED in this never-invoked NEW run only",
+    "exception": "java.lang.IllegalStateException: Product action not available: Ki?m tra l?i",
+    "failure_stage": "pre-Start readiness refresh accessibility action; clickText deadline, before Start call",
+    "exact_UI_accessibility_or_readiness_cause": "NOT VERIFIED: failure-time tree/readiness snapshot not captured",
+    "real_Start_root_cause": "NOT VERIFIED / NO NEW START EXECUTED",
+    "bounded_two_app_lifecycle": "NOT VERIFIED"
+  },
+  "A_local_fake": {
+    "counts": {
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "build": "PASS; diagnostic overlay active; no full unrelated gate rerun"
+  },
+  "B_controlled_android_capture": {
+    "result": "1/1 PASS; no Binder/VDM Start",
+    "run": "verification/dwt-vdm-010/android-controlled/20261005T043457162Z",
+    "limits": "Synthetic host identity/raw failure/receipt; native Surface object for logging plumbing only. No real host lifecycle/remote cleanup or input-stability proof.",
+    "initial_failure": "Overlay-presence assertion caught java-only source-set wiring; Kotlin source-set fixed before C"
+  },
+  "C_real_device": {
+    "result": "FAIL/STOP before first Start",
+    "run": "verification/dwt-vdm-010/android-real/20261005T043739747Z",
+    "artifact_identity": {
+      "Package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "TestPackage": "com.trancong.dexworkspacetouch.vdm010harness.test",
+      "VersionCode": "9",
+      "VersionName": "1.0.0-beta.8",
+      "SignerSha256": "74ec37adc2ed1048809a781e5e6199ab66ee62f1a4d0def5d563d0320192e42f",
+      "TargetPackage": "com.trancong.dexworkspacetouch.vdm010harness",
+      "ApkSha256": "A68578E0689CE23B663C4515B013B1D61BF37D821A90C572DB912D40A4B1FD6A",
+      "TestApkSha256": "D46DC4ABB5178A5A171E5FFBF226FAFED1F757464E7188B6568235E718678D76"
+    },
+    "trace_sha256": "c73ae7196eed34e8138a16c0d2b2bdb75fed20d48db97161b4453a4fab034947",
+    "method_output_sha256": "ca4de8606644606f3b63c4c50c166c83cbaf6313fa504baf4104057669c2ff7d",
+    "local_diagnostics_rows": 0,
+    "remote_diagnostics_C_rows": 0
+  },
+  "production_patch": "NONE NEW; qualification-only observer source copies are reversible to original bytes",
+  "architecture_impact": "No ownership/result/gate/protocol/geometry/runtime semantic change. STOP is bounded-invocation/testbed condition D, not a proposed architecture fix.",
+  "next": "Add pre-Start accessibility/window/readiness capture and verify interaction on DeX 182. An additional real invocation needs new explicit authorization; no implicit retry.",
+  "not_verified": [
+    "historical raw Start exception/release",
+    "new runtime Start and input samples",
+    "two-app lifecycle",
+    "exact pre-Start UI cause"
+  ],
+  "evidence_separation": "No B/local or new IDLE status transfers release authority to the historical blocked attempt."
+}

@@ -1,0 +1,12 @@
+--------- beginning of main
+10-02 18:18:54.133  5463  5487 I TaskViewLab.VDMSurface: createVirtualDevice begin uid=2000 associationId=123 surfaceValid=true
+10-02 18:18:54.142  5463  5487 I TaskViewLab.VDMSurface: createVirtualDisplay begin deviceId=114 config=VirtualDisplayConfig( mName=TVL-VDM-Trusted mHeight=675 mWidth=900 mDensityDpi=320 mFlags=1024 mSurface=Surface(name=null mNativeObject=-5476376640704902912)/@0xf3e58b9 mUniqueId=null mDisplayIdToMirror=0 mWindowManagerMirroringEnabled=false mDisplayCategories={} mRequestedRefreshRate=0.0 mIsHomeSupported=false mDisplayCutout=null mIgnoreActivitySizeRestrictions=false mDefaultBrightness=0.0 mDimBrightness=-1.0) surfaceValid=true
+10-02 18:18:54.183  5463  5487 I TaskViewLab.VDMSurface: create success deviceId=114 displayId=171 remoteSurfaceValid=true
+10-02 18:18:54.186  5463  5486 I TaskViewLab.VDMSurface: callback=android.hardware.display.IVirtualDisplayCallback code=2
+10-02 18:18:54.188  5463  5487 I TaskViewLab.VDMSurface: create touchscreen begin name=DWT-VT-30d571a3dc825a74f33ea009 displayId=171 config=900x675 vendor=0 product=0
+10-02 18:18:54.232  5463  5487 I TaskViewLab.VDMSurface: TVL006A2 touchscreen registered returnedInput=true inputDeviceId=631 associatedDisplayId=171 descriptorDisplayId=171 name=DWT-VT-30d571a3dc825a74f33ea009
+10-02 18:18:57.235  5463  5487 I TaskViewLab.VDMSurface: TVL006A2 IVirtualInputDevice.close begin inputDeviceId=631
+10-02 18:18:57.273  5463  5487 I TaskViewLab.VDMSurface: TVL006A2 IVirtualInputDevice.close success count=1 descriptorRemoved=true virtualDeviceAlive=true deviceId=114 displayId=171
+10-02 18:18:57.283  5463  5487 I TaskViewLab.VDMSurface: IVirtualDevice.close begin deviceId=114 displayId=171
+10-02 18:18:57.285  5463  5501 I TaskViewLab.VDMSurface: callback=android.hardware.display.IVirtualDisplayCallback code=3
+10-02 18:18:57.287  5463  5487 I TaskViewLab.VDMSurface: IVirtualDevice.close success

@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 9.2.1">
+
+    <issue
+        id="ModifierParameter"
+        severity="Warning"
+        message="Modifier parameter should be the first optional parameter"
+        category="Correctness"
+        priority="3"
+        summary="Guidelines for Modifier parameters in a Composable function"
+        explanation="The first (or only) Modifier parameter in a Composable function should follow the following rules:&#xA;- Be named `modifier`&#xA;- Have a type of `Modifier`&#xA;- Either have no default value, or have a default value of `Modifier`&#xA;- If optional, be the first optional parameter in the parameter list"
+        errorLine1="    modifier: Modifier = Modifier,"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\car\CarWorkspaceDashboard.kt"
+            line="55"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        severity="Warning"
+        message="Modifier parameter should be the first optional parameter"
+        category="Correctness"
+        priority="3"
+        summary="Guidelines for Modifier parameters in a Composable function"
+        explanation="The first (or only) Modifier parameter in a Composable function should follow the following rules:&#xA;- Be named `modifier`&#xA;- Have a type of `Modifier`&#xA;- Either have no default value, or have a default value of `Modifier`&#xA;- If optional, be the first optional parameter in the parameter list"
+        errorLine1="    modifier: Modifier = Modifier,"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\ui\design\DwtStatusSurface.kt"
+            line="33"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        severity="Warning"
+        message="Modifier parameter should be the first optional parameter"
+        category="Correctness"
+        priority="3"
+        summary="Guidelines for Modifier parameters in a Composable function"
+        explanation="The first (or only) Modifier parameter in a Composable function should follow the following rules:&#xA;- Be named `modifier`&#xA;- Have a type of `Modifier`&#xA;- Either have no default value, or have a default value of `Modifier`&#xA;- If optional, be the first optional parameter in the parameter list"
+        errorLine1="    modifier: Modifier = Modifier,"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\workspace\library\ui\WorkspaceLibraryCard.kt"
+            line="67"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="DiscouragedApi"
+        severity="Warning"
+        message="Use of this function is discouraged because resource reflection makes it harder to perform build optimizations and compile-time verification of code. It is much more efficient to retrieve resources by identifier (e.g. `R.foo.bar`) than by name (e.g. `getIdentifier(&quot;bar&quot;, &quot;foo&quot;, null)`)."
+        category="Correctness"
+        priority="2"
+        summary="Using discouraged APIs"
+        explanation="Discouraged APIs are allowed and are not deprecated, but they may be unfit for common use (e.g. due to slow performance or subtle behavior)."
+        errorLine1="            val id = displayContext.resources.getIdentifier(name, &quot;dimen&quot;, &quot;android&quot;)"
+        errorLine2="                                              ~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\platform\launch\android\LegacyExternalDisplayWorkArea.kt"
+            line="43"
+            column="47"/>
+    </issue>
+
+    <issue
+        id="HardwareIds"
+        severity="Warning"
+        message="Using `getString` to get device identifiers is not recommended"
+        category="Security"
+        priority="6"
+        summary="Hardware Id Usage"
+        explanation="Using these device identifiers is not recommended other than for high value fraud prevention and advanced telephony use-cases. For advertising use-cases, use `AdvertisingIdClient$Info#getId` and for analytics, use `InstanceId#getId`."
+        url="https://developer.android.com/training/articles/user-data-ids.html"
+        urls="https://developer.android.com/training/articles/user-data-ids.html"
+        errorLine1="                            androidId = Settings.Secure.getString("
+        errorLine2="                                        ^">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\license\infrastructure\identity\AndroidDeviceIdentityProvider.kt"
+            line="28"
+            column="41"/>
+    </issue>
+
+    <issue
+        id="DrawAllocation"
+        severity="Warning"
+        message="Avoid object allocations during draw/layout operations (preallocate and reuse instead)"
+        category="Performance"
+        priority="9"
+        summary="Memory allocations within drawing code"
+        explanation="You should avoid allocating objects during a drawing or layout operation. These are called frequently, so a smooth UI can be interrupted by garbage collection pauses caused by the object allocations.&#xA;&#xA;The way this is generally handled is to allocate the needed objects up front and to reuse them for each drawing operation.&#xA;&#xA;Some methods allocate memory on your behalf (such as `Bitmap.create`), and these should be handled in the same way."
+        errorLine1="        val card = RectF(outerPadding, outerPadding, width - outerPadding, height - outerPadding)"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\car\overlay\AndroidCarOverlayPlatform.kt"
+            line="497"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        severity="Warning"
+        message="Unnecessary; `SDK_INT` is always >= 28"
+        category="Performance"
+        priority="6"
+        summary="Obsolete SDK_INT Version Check"
+        explanation="This check flags version checks that are not necessary, because the `minSdkVersion` (or surrounding known API level) is already at least as high as the version checked for.&#xA;&#xA;Similarly, it also looks for resources in `-vNN` folders, such as `values-v14` where the version qualifier is less than or equal to the `minSdkVersion`, where the contents should be merged into the best folder."
+        errorLine1="        val signatures = if (Build.VERSION.SDK_INT >= 28) {"
+        errorLine2="                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\license\activation\AndroidApplicationIdentityProvider.kt"
+            line="19"
+            column="30"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        severity="Warning"
+        message="Unnecessary; `SDK_INT` is always >= 28"
+        category="Performance"
+        priority="6"
+        summary="Obsolete SDK_INT Version Check"
+        explanation="This check flags version checks that are not necessary, because the `minSdkVersion` (or surrounding known API level) is already at least as high as the version checked for.&#xA;&#xA;Similarly, it also looks for resources in `-vNN` folders, such as `values-v14` where the version qualifier is less than or equal to the `minSdkVersion`, where the contents should be merged into the best folder."
+        errorLine1="            versionCode = if (Build.VERSION.SDK_INT >= 28) packageInfo.longVersionCode"
+        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\license\activation\AndroidApplicationIdentityProvider.kt"
+            line="33"
+            column="31"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        severity="Warning"
+        message="This folder configuration (`v26`) is unnecessary; `minSdkVersion` is 28. Merge all the resources in this folder into `mipmap-anydpi`."
+        category="Performance"
+        priority="6"
+        summary="Obsolete SDK_INT Version Check"
+        explanation="This check flags version checks that are not necessary, because the `minSdkVersion` (or surrounding known API level) is already at least as high as the version checked for.&#xA;&#xA;Similarly, it also looks for resources in `-vNN` folders, such as `values-v14` where the version qualifier is less than or equal to the `minSdkVersion`, where the contents should be merged into the best folder.">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\res\mipmap-anydpi-v26"/>
+    </issue>
+
+    <issue
+        id="ViewConstructor"
+        severity="Warning"
+        message="Custom view `CarFloatingWorkspaceCardView` is missing constructor used by tools: `(Context)` or `(Context,AttributeSet)` or `(Context,AttributeSet,int)`"
+        category="Usability"
+        priority="3"
+        summary="Missing View constructors for XML inflation"
+        explanation="Some layout tools (such as the Android layout editor) need to find a constructor with one of the following signatures:&#xA;* `View(Context context)`&#xA;* `View(Context context, AttributeSet attrs)`&#xA;* `View(Context context, AttributeSet attrs, int defStyle)`&#xA;&#xA;If your custom view needs to perform initialization which does not apply when used in a layout editor, you can surround the given code with a check to see if `View#isInEditMode()` is false, since that method will return `false` at runtime but true within a user interface editor."
+        errorLine1="private class CarFloatingWorkspaceCardView("
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\car\overlay\AndroidCarOverlayPlatform.kt"
+            line="469"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX extension function `String.toUri` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="            val parsedUri = Uri.parse(uri)"
+        errorLine2="                            ~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\car\platform\AndroidCarActionExecutor.kt"
+            line="190"
+            column="29"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX extension function `String.toUri` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="        Uri.parse(&quot;package:${context.packageName}&quot;),"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\car\overlay\AndroidCarOverlayPermission.kt"
+            line="11"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="        if (!preferences.edit().putBoolean(DEVICE_KEY_CREATED_KEY, true).commit()) {"
+        errorLine2="             ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\license\infrastructure\identity\AndroidDeviceKeyManager.kt"
+            line="121"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="        preferences.edit().apply {"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\car\CarWorkspaceShortcutPreferences.kt"
+            line="71"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="            if (!preferences.edit().putString(INSTALLATION_ID_KEY, generated).commit()) {"
+        errorLine2="                 ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\license\infrastructure\identity\LicenseDeviceIdentityPreferences.kt"
+            line="33"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="        check(preferences.edit().putString(KEY_TOKEN, token).commit()) { &quot;Unable to persist license token.&quot; }"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\license\activation\LicenseTokenStore.kt"
+            line="21"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="        check(preferences.edit().remove(KEY_TOKEN).commit()) { &quot;Unable to clear license token.&quot; }"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\license\activation\LicenseTokenStore.kt"
+            line="25"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX extension function `String.toUri` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="                        startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url)))"
+        errorLine2="                                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\MainActivity.kt"
+            line="61"
+            column="66"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX extension function `String.toUri` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="        val uri = android.net.Uri.parse(parsed.uri)"
+        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\MainActivity.kt"
+            line="98"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX extension function `String.toUri` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="                    activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))"
+        errorLine2="                                                                      ~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\navigation\TouchNavigation.kt"
+            line="694"
+            column="71"/>
+    </issue>
+
+    <issue
+        id="UseTomlInstead"
+        severity="Warning"
+        message="Use version catalog instead"
+        category="Productivity"
+        priority="4"
+        summary="Use TOML Version Catalog Instead"
+        explanation="If your project is using a `libs.versions.toml` file, you should place all Gradle dependencies in the TOML file. This lint check looks for version declarations outside of the TOML file and suggests moving them (and in the IDE, provides a quickfix to performing the operation automatically)."
+        errorLine1="    implementation(&quot;dev.rikka.shizuku:api:13.1.5&quot;)"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\build.gradle.kts"
+            line="161"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="UseTomlInstead"
+        severity="Warning"
+        message="Use version catalog instead"
+        category="Productivity"
+        priority="4"
+        summary="Use TOML Version Catalog Instead"
+        explanation="If your project is using a `libs.versions.toml` file, you should place all Gradle dependencies in the TOML file. This lint check looks for version declarations outside of the TOML file and suggests moving them (and in the IDE, provides a quickfix to performing the operation automatically)."
+        errorLine1="    implementation(&quot;dev.rikka.shizuku:provider:13.1.5&quot;)"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\build.gradle.kts"
+            line="162"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        severity="Warning"
+        message="Custom view ``SurfaceView`` has `setOnTouchListener` called on it but does not override `performClick`"
+        category="Accessibility"
+        priority="6"
+        summary="Accessibility in Custom Views"
+        explanation="If a `View` that overrides `onTouchEvent` or uses an `OnTouchListener` does not also implement `performClick` and call it when clicks are detected, the `View` may not handle accessibility actions properly. Logic handling the click actions should ideally be placed in `View#performClick` as some accessibility services invoke `performClick` when a click action should occur."
+        errorLine1="                    view.setOnTouchListener { _, event ->"
+        errorLine2="                    ^">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\embeddedcalculator\EmbeddedCalculatorScreen.kt"
+            line="77"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        severity="Warning"
+        message="`onTouch` lambda should call `View#performClick` when a click is detected"
+        category="Accessibility"
+        priority="6"
+        summary="Accessibility in Custom Views"
+        explanation="If a `View` that overrides `onTouchEvent` or uses an `OnTouchListener` does not also implement `performClick` and call it when clicks are detected, the `View` may not handle accessibility actions properly. Logic handling the click actions should ideally be placed in `View#performClick` as some accessibility services invoke `performClick` when a click action should occur."
+        errorLine1="                    view.setOnTouchListener { _, event ->"
+        errorLine2="                                            ^">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\embeddedcalculator\EmbeddedCalculatorScreen.kt"
+            line="77"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        severity="Warning"
+        message="Custom view ``SurfaceView`` has `setOnTouchListener` called on it but does not override `performClick`"
+        category="Accessibility"
+        priority="6"
+        summary="Accessibility in Custom Views"
+        explanation="If a `View` that overrides `onTouchEvent` or uses an `OnTouchListener` does not also implement `performClick` and call it when clicks are detected, the `View` may not handle accessibility actions properly. Logic handling the click actions should ideally be placed in `View#performClick` as some accessibility services invoke `performClick` when a click action should occur."
+        errorLine1="                    view.setOnTouchListener { _, event ->"
+        errorLine2="                    ^">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\embeddeddual\EmbeddedDualAppScreen.kt"
+            line="51"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        severity="Warning"
+        message="`onTouch` lambda should call `View#performClick` when a click is detected"
+        category="Accessibility"
+        priority="6"
+        summary="Accessibility in Custom Views"
+        explanation="If a `View` that overrides `onTouchEvent` or uses an `OnTouchListener` does not also implement `performClick` and call it when clicks are detected, the `View` may not handle accessibility actions properly. Logic handling the click actions should ideally be placed in `View#performClick` as some accessibility services invoke `performClick` when a click action should occur."
+        errorLine1="                    view.setOnTouchListener { _, event ->"
+        errorLine2="                                            ^">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\embeddeddual\EmbeddedDualAppScreen.kt"
+            line="51"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        severity="Warning"
+        message="Custom view ``SurfaceView`` has `setOnTouchListener` called on it but does not override `performClick`"
+        category="Accessibility"
+        priority="6"
+        summary="Accessibility in Custom Views"
+        explanation="If a `View` that overrides `onTouchEvent` or uses an `OnTouchListener` does not also implement `performClick` and call it when clicks are detected, the `View` may not handle accessibility actions properly. Logic handling the click actions should ideally be placed in `View#performClick` as some accessibility services invoke `performClick` when a click action should occur."
+        errorLine1="                    view.setOnTouchListener { _, event ->"
+        errorLine2="                    ^">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\embeddedwaze\EmbeddedWazeScreen.kt"
+            line="77"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        severity="Warning"
+        message="`onTouch` lambda should call `View#performClick` when a click is detected"
+        category="Accessibility"
+        priority="6"
+        summary="Accessibility in Custom Views"
+        explanation="If a `View` that overrides `onTouchEvent` or uses an `OnTouchListener` does not also implement `performClick` and call it when clicks are detected, the `View` may not handle accessibility actions properly. Logic handling the click actions should ideally be placed in `View#performClick` as some accessibility services invoke `performClick` when a click action should occur."
+        errorLine1="                    view.setOnTouchListener { _, event ->"
+        errorLine2="                                            ^">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\embeddedwaze\EmbeddedWazeScreen.kt"
+            line="77"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        severity="Warning"
+        message="Custom view ``SurfaceView`` has `setOnTouchListener` called on it but does not override `performClick`"
+        category="Accessibility"
+        priority="6"
+        summary="Accessibility in Custom Views"
+        explanation="If a `View` that overrides `onTouchEvent` or uses an `OnTouchListener` does not also implement `performClick` and call it when clicks are detected, the `View` may not handle accessibility actions properly. Logic handling the click actions should ideally be placed in `View#performClick` as some accessibility services invoke `performClick` when a click action should occur."
+        errorLine1="        view.setOnTouchListener { touchedView, event ->"
+        errorLine2="        ^">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\embeddedworkspace\EmbeddedWorkspaceRenderer.kt"
+            line="117"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        severity="Warning"
+        message="`onTouch` lambda should call `View#performClick` when a click is detected"
+        category="Accessibility"
+        priority="6"
+        summary="Accessibility in Custom Views"
+        explanation="If a `View` that overrides `onTouchEvent` or uses an `OnTouchListener` does not also implement `performClick` and call it when clicks are detected, the `View` may not handle accessibility actions properly. Logic handling the click actions should ideally be placed in `View#performClick` as some accessibility services invoke `performClick` when a click action should occur."
+        errorLine1="        view.setOnTouchListener { touchedView, event ->"
+        errorLine2="                                ^">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\embeddedworkspace\EmbeddedWorkspaceRenderer.kt"
+            line="117"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        severity="Warning"
+        message="Custom view ``SurfaceView`` has `setOnTouchListener` called on it but does not override `performClick`"
+        category="Accessibility"
+        priority="6"
+        summary="Accessibility in Custom Views"
+        explanation="If a `View` that overrides `onTouchEvent` or uses an `OnTouchListener` does not also implement `performClick` and call it when clicks are detected, the `View` may not handle accessibility actions properly. Logic handling the click actions should ideally be placed in `View#performClick` as some accessibility services invoke `performClick` when a click action should occur."
+        errorLine1="        view.setOnTouchListener(null)"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\embeddedworkspace\EmbeddedWorkspaceRenderer.kt"
+            line="136"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        severity="Warning"
+        message="Custom view ``SurfaceView`` has `setOnTouchListener` called on it but does not override `performClick`"
+        category="Accessibility"
+        priority="6"
+        summary="Accessibility in Custom Views"
+        explanation="If a `View` that overrides `onTouchEvent` or uses an `OnTouchListener` does not also implement `performClick` and call it when clicks are detected, the `View` may not handle accessibility actions properly. Logic handling the click actions should ideally be placed in `View#performClick` as some accessibility services invoke `performClick` when a click action should occur."
+        errorLine1="                    view.setOnTouchListener { _, event ->"
+        errorLine2="                    ^">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\embeddedworkspace\EmbeddedWorkspaceRunnerScreen.kt"
+            line="191"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        severity="Warning"
+        message="`onTouch` lambda should call `View#performClick` when a click is detected"
+        category="Accessibility"
+        priority="6"
+        summary="Accessibility in Custom Views"
+        explanation="If a `View` that overrides `onTouchEvent` or uses an `OnTouchListener` does not also implement `performClick` and call it when clicks are detected, the `View` may not handle accessibility actions properly. Logic handling the click actions should ideally be placed in `View#performClick` as some accessibility services invoke `performClick` when a click action should occur."
+        errorLine1="                    view.setOnTouchListener { _, event ->"
+        errorLine2="                                            ^">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\embeddedworkspace\EmbeddedWorkspaceRunnerScreen.kt"
+            line="191"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="            text = &quot;Car Dock&quot;"
+        errorLine2="                    ~~~~~~~~">
+        <location
+            file="D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-010\app\src\main\java\com\trancong\dexworkspacetouch\feature\car\overlay\AndroidCarOverlayPlatform.kt"
+            line="281"
+            column="21"/>
+    </issue>
+
+</issues>

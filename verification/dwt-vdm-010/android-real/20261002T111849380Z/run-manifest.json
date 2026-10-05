@@ -1,0 +1,8 @@
+﻿{
+    "Serial":  "192.168.1.106:5555",
+    "DisplayId":  167,
+    "CaseSet":  "Real",
+    "OnlyMethod":  "realCalculatorWazeRecreationFreshStartAndSurfaceLoss",
+    "InstallationReusedFrom":  "20261002T111600412Z",
+    "Reason":  "No APK/source change since Calculator PASS; reuse validated isolated installation"
+}

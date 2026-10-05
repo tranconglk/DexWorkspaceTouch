@@ -1,0 +1,50 @@
+﻿INSTRUMENTATION_STATUS: class=com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest:
+INSTRUMENTATION_STATUS: test=realCalculatorRecreationFreshStartAndSurfaceLoss
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stack=java.lang.IllegalStateException: Shizuku binder observation deadline; timeout is not clean evidence
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest.await(EmbeddedRealProductLifecycleDeviceTest.kt:92)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest.qualify$lambda$25(EmbeddedRealProductLifecycleDeviceTest.kt:24)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest$$ExternalSyntheticLambda16.invoke(D8$$SyntheticClass:0)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest.withHost(EmbeddedRealProductLifecycleDeviceTest.kt:134)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest.qualify(EmbeddedRealProductLifecycleDeviceTest.kt:22)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest.realCalculatorRecreationFreshStartAndSurfaceLoss(EmbeddedRealProductLifecycleDeviceTest.kt:18)
+
+INSTRUMENTATION_STATUS: stream=
+Error in realCalculatorRecreationFreshStartAndSurfaceLoss(com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest):
+java.lang.IllegalStateException: Shizuku binder observation deadline; timeout is not clean evidence
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest.await(EmbeddedRealProductLifecycleDeviceTest.kt:92)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest.qualify$lambda$25(EmbeddedRealProductLifecycleDeviceTest.kt:24)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest$$ExternalSyntheticLambda16.invoke(D8$$SyntheticClass:0)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest.withHost(EmbeddedRealProductLifecycleDeviceTest.kt:134)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest.qualify(EmbeddedRealProductLifecycleDeviceTest.kt:22)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest.realCalculatorRecreationFreshStartAndSurfaceLoss(EmbeddedRealProductLifecycleDeviceTest.kt:18)
+
+INSTRUMENTATION_STATUS: test=realCalculatorRecreationFreshStartAndSurfaceLoss
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: 48,336
+There was 1 failure:
+1) realCalculatorRecreationFreshStartAndSurfaceLoss(com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest)
+java.lang.IllegalStateException: Shizuku binder observation deadline; timeout is not clean evidence
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest.await(EmbeddedRealProductLifecycleDeviceTest.kt:92)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest.qualify$lambda$25(EmbeddedRealProductLifecycleDeviceTest.kt:24)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest$$ExternalSyntheticLambda16.invoke(D8$$SyntheticClass:0)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest.withHost(EmbeddedRealProductLifecycleDeviceTest.kt:134)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest.qualify(EmbeddedRealProductLifecycleDeviceTest.kt:22)
+	at com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductLifecycleDeviceTest.realCalculatorRecreationFreshStartAndSurfaceLoss(EmbeddedRealProductLifecycleDeviceTest.kt:18)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1

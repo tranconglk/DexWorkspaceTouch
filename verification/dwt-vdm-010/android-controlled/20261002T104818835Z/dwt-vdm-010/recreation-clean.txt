@@ -1,0 +1,11 @@
+category=B time_nanos=421899728198057 host=1 identity=182194414 pid=24260 display=167 event=host_create phase=IDLE token=null generation=0 start=null cleanup=null
+category=B time_nanos=421900118864880 host=1 identity=182194414 pid=24260 display=167 event=explicit_start phase=IDLE token=null generation=0 start=null cleanup=null
+category=B time_nanos=421900161406911 host=1 identity=182194414 pid=24260 display=167 event=start_result phase=ACTIVE token=162281913 generation=1 start=1 cleanup=null
+category=B time_nanos=421900171142328 host=1 identity=182194414 pid=24260 display=167 event=surface_observed view=240233444 surface=63073981 valid=true phase=ACTIVE token=162281913 generation=1 start=1 cleanup=null
+category=B time_nanos=421900181880036 host=1 identity=182194414 pid=24260 display=167 event=surface_destroyed phase=STOPPING token=162281913 generation=1 start=1 cleanup=2
+category=B time_nanos=421900183875088 host=1 identity=182194414 pid=24260 display=167 event=host_destroy phase=STOPPING token=162281913 generation=1 start=1 cleanup=2
+category=B time_nanos=421900189330661 host=2 identity=266222982 pid=24260 display=167 event=host_create phase=STOPPING token=162281913 generation=1 start=1 cleanup=2
+category=B time_nanos=421900216587849 host=2 identity=266222982 pid=24260 display=167 event=explicit_start phase=IDLE token=null generation=1 start=1 cleanup=2
+category=B time_nanos=421900245423890 host=2 identity=266222982 pid=24260 display=167 event=start_result phase=ACTIVE token=172225309 generation=2 start=3 cleanup=null
+category=B time_nanos=421900262796963 host=2 identity=266222982 pid=24260 display=167 event=surface_observed view=117890094 surface=258420724 valid=true phase=ACTIVE token=172225309 generation=2 start=3 cleanup=null
+category=B result=recreation-clean phase=IDLE generation=2 cleanup=4 owned=[calc] outcomes=[ProductCleanupStatus(sourceCellId=calc, evidence=CLEAN_CONFIRMED, failureCode=null)]

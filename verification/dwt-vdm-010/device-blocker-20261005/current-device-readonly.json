@@ -1,0 +1,20 @@
+﻿{
+    "category":  "C_CURRENT_CONTEXT_ONLY",
+    "captured_utc":  "2026-10-05T03:54:51.5108201Z",
+    "serial":  "192.168.1.106:5555",
+    "device_date":  "Mon Oct  5 10:54:35 +07 2026",
+    "uptime_raw":  "656262.03 2415069.38",
+    "boot_id":  "402358bc-8b60-48cf-8add-770dd0b3cdd4",
+    "ps_command":  "adb shell ps -A -o PID,PPID,NAME,ARGS",
+    "related_process_rows":  [
+                                 "  PID  PPID NAME                        ARGS                       ",
+                                 "24063     1 shizuku_server              shizuku_server"
+                             ],
+    "log_command":  "adb logcat -d -b all -v threadtime",
+    "total_read_lines":  255359,
+    "matched_log_lines":  [
+                              "10-05 10:37:56.438 29316 29316 I adbd    : adbd service requested \u0027shell,v2,TERM=dumb:export ANDROID_LOG_TAGS=\u0027\u0027; exec logcat \u0027-d\u0027 \u0027-b\u0027 \u0027main\u0027 \u0027-s\u0027 \u0027TaskViewLab.VDMSurface:*\u0027 \u0027DWT-VDM-010:*\u0027\u0027",
+                              "10-05 10:43:24.637 29316 29316 I adbd    : adbd service requested \u0027shell,v2,TERM=dumb:export ANDROID_LOG_TAGS=\u0027\u0027; exec logcat \u0027-d\u0027 \u0027-b\u0027 \u0027main\u0027 \u0027-s\u0027 \u0027TaskViewLab.VDMSurface:*\u0027 \u0027DWT-VDM-010:*\u0027\u0027"
+                          ],
+    "interpretation":  "Read-only context; not historical Start root cause, release receipt, clean evidence, or process-death recovery proof. Initial-run boot_id not captured; do not infer reboot."
+}

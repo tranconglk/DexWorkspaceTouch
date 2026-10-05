@@ -1,0 +1,11 @@
+﻿{
+    "IndependentRunId":  "vdm010-independent-a2ca3a7f-6079-453c-8bcd-759ced5f4336",
+    "Authorization":  "ONE_MORE_AFTER_PRESTART_DIAGNOSTICS",
+    "MaxCInvocations":  1,
+    "Serial":  "192.168.1.106:5555",
+    "DisplayId":  182,
+    "HistoricalSID":  "0bf0ecec-9e2c-4196-8edb-a076b688edb1",
+    "HistoricalAuthoritativeRelease":  "NOT VERIFIED",
+    "PreviousPreStartRun":  "vdm010-independent-d7804af0-fdef-4ca1-9e2c-5b1b815166ea",
+    "NewIndependentTestbed":  true
+}

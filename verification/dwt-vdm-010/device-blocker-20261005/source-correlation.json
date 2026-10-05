@@ -1,0 +1,461 @@
+{
+  "classification": "SOURCE_CORRELATION_NOT_REAL_ROOT_CAUSE",
+  "source_references": [
+    {
+      "path": "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/remote/RemoteSessionRuntime.kt",
+      "sha256": "b2b3ab0223bfec418c2991bc25432a3c2917b7f6ab8cc8c8c431765236aa05dd",
+      "lines": [
+        31,
+        32,
+        43,
+        61,
+        62,
+        69,
+        74,
+        80,
+        84
+      ],
+      "finding": "Start order, input wait, rollback catch and exception returned in Bundle; no retained error record.",
+      "anchors": [
+        {
+          "anchor": "waitForStableFingerConfig",
+          "lines": [
+            31,
+            69
+          ]
+        },
+        {
+          "anchor": "val launch =",
+          "lines": [
+            32
+          ]
+        },
+        {
+          "anchor": "catch (error: Throwable)",
+          "lines": [
+            43,
+            61,
+            62
+          ]
+        },
+        {
+          "anchor": "substringAfter",
+          "lines": [
+            74
+          ]
+        },
+        {
+          "anchor": "did not settle",
+          "lines": [
+            80
+          ]
+        },
+        {
+          "anchor": "private fun failure",
+          "lines": [
+            84
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/remote/EmbeddedAppVdm.kt",
+      "sha256": "3012fa81d22e880924e43ac96d78637d5acdcd4244b43ebd240ab566d3aff916",
+      "lines": [
+        145,
+        146,
+        147,
+        149,
+        172
+      ],
+      "finding": "Pre-launch Surface validity guard precedes target-launch log. Creation-time validity does not sample this later guard.",
+      "anchors": [
+        {
+          "anchor": "fun launchTarget",
+          "lines": [
+            145
+          ]
+        },
+        {
+          "anchor": "Gate A display is not active",
+          "lines": [
+            146,
+            172
+          ]
+        },
+        {
+          "anchor": "Received Surface became invalid",
+          "lines": [
+            147
+          ]
+        },
+        {
+          "anchor": "target launch begin",
+          "lines": [
+            149
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedStartIpcTask.kt",
+      "sha256": "92f0fbadbf06c121d53dbc7630195d27554119bb676602d661a5681ced8cce58",
+      "lines": [
+        31
+      ],
+      "finding": "Existing Start completion carries raw exception (bounded to 512 characters).",
+      "anchors": [
+        {
+          "anchor": "getString(\"exception\")",
+          "lines": [
+            31
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedAppSession.kt",
+      "sha256": "80086033911cc512712e69dec40f416a9142c2b25f96ae88b2f674ff58ad8733",
+      "lines": [
+        110,
+        124,
+        161,
+        183,
+        225,
+        239,
+        253,
+        254,
+        257,
+        283,
+        284,
+        289,
+        311,
+        324,
+        325,
+        349,
+        358,
+        362
+      ],
+      "finding": "Start failure retained in session snapshot; close republishes FAILED before asynchronous finalization.",
+      "anchors": [
+        {
+          "anchor": "private fun onStartCompleted",
+          "lines": [
+            239
+          ]
+        },
+        {
+          "anchor": "startFailed(EmbeddedSessionFailure",
+          "lines": [
+            253
+          ]
+        },
+        {
+          "anchor": "state = state.copy(busy = false, status = value.error",
+          "lines": [
+            254
+          ]
+        },
+        {
+          "anchor": "if (!lifecycle.requestStop())",
+          "lines": [
+            283
+          ]
+        },
+        {
+          "anchor": "lifecycle.requestClose()",
+          "lines": [
+            324
+          ]
+        },
+        {
+          "anchor": "publishLifecycle()",
+          "lines": [
+            110,
+            124,
+            161,
+            183,
+            225,
+            257,
+            284,
+            289,
+            311,
+            325,
+            349,
+            358,
+            362
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedAppSessionState.kt",
+      "sha256": "a09bdae6a9039ded6a4d182a3ef9186bab0ec275a3ca54ca5ce7cd5419bf16c1",
+      "lines": [
+        116,
+        134,
+        136,
+        144,
+        148,
+        156,
+        163,
+        178,
+        180
+      ],
+      "finding": "FAILED is terminal; requestStop/requestClose do not replace it.",
+      "anchors": [
+        {
+          "anchor": "fun startFailed",
+          "lines": [
+            134
+          ]
+        },
+        {
+          "anchor": "fun requestStop",
+          "lines": [
+            148
+          ]
+        },
+        {
+          "anchor": "fun requestClose",
+          "lines": [
+            156
+          ]
+        },
+        {
+          "anchor": "fun cleanupSucceeded",
+          "lines": [
+            163
+          ]
+        },
+        {
+          "anchor": "private fun isTerminal",
+          "lines": [
+            178
+          ]
+        },
+        {
+          "anchor": "EmbeddedSessionPhase.FAILED,",
+          "lines": [
+            116,
+            136,
+            144,
+            180
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/main/java/com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/EmbeddedWorkspaceRunner.kt",
+      "sha256": "338d7b8214b3c4f813f4b4af01c96beea9c9e8643a3a4c249521ec3ecf77a947",
+      "lines": [
+        438,
+        446,
+        447,
+        497,
+        499,
+        641
+      ],
+      "finding": "FAILED cleanup snapshot maps to Incomplete; StartFailed preserves raw failure and exact partial receipt.",
+      "anchors": [
+        {
+          "anchor": "private fun completeCurrentCleanup",
+          "lines": [
+            438
+          ]
+        },
+        {
+          "anchor": "EmbeddedSessionPhase.FAILED,",
+          "lines": [
+            446,
+            641
+          ]
+        },
+        {
+          "anchor": "EmbeddedWorkspaceCleanupOutcome.Incomplete(sourceCellId, snapshot.failure)",
+          "lines": [
+            447
+          ]
+        },
+        {
+          "anchor": "is CleanupReason.StartFailure -> EmbeddedWorkspaceRunResult.StartFailed",
+          "lines": [
+            497
+          ]
+        },
+        {
+          "anchor": "failure = reason.failure",
+          "lines": [
+            499
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedProductRunGate.kt",
+      "sha256": "092cb1973d31137278f14f2191c8a78650d3737cff7250e52ae67845b683d4df",
+      "lines": [
+        39,
+        119,
+        130,
+        172,
+        180,
+        297,
+        299,
+        314
+      ],
+      "finding": "Value-only projection drops raw message; CLEANUP_BLOCKED rejects late results.",
+      "anchors": [
+        {
+          "anchor": "data class ProductCleanupStatus",
+          "lines": [
+            39
+          ]
+        },
+        {
+          "anchor": "class ProductExecutionValue",
+          "lines": [
+            119
+          ]
+        },
+        {
+          "anchor": "val mapped =",
+          "lines": [
+            130
+          ]
+        },
+        {
+          "anchor": "return ProductExecutionValue",
+          "lines": [
+            172
+          ]
+        },
+        {
+          "anchor": "ProductCleanupStatus(outcome.sourceCellId, CleanupEvidence.INCOMPLETE",
+          "lines": [
+            180
+          ]
+        },
+        {
+          "anchor": "fun acceptResult",
+          "lines": [
+            297
+          ]
+        },
+        {
+          "anchor": "if (!matches(operation, current) || current.phase == ProductRunPhase.CLEANUP_BLOCKED",
+          "lines": [
+            299
+          ]
+        },
+        {
+          "anchor": "else -> ProductRunPhase.CLEANUP_BLOCKED",
+          "lines": [
+            314
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/debug/java/com/trancong/dexworkspacetouch/qualification/EmbeddedRealProductHarnessActivity.kt",
+      "sha256": "13aef1de7cac1952eba16c67419be50b5b7e48c52073039a983f3039bf92ec92",
+      "lines": [
+        77,
+        78
+      ],
+      "finding": "Historical category-C trace records gate projection only, not StartFailed.failure.message.",
+      "anchors": [
+        {
+          "anchor": "val status = gate.status.value",
+          "lines": [
+            77
+          ]
+        },
+        {
+          "anchor": "val line =",
+          "lines": [
+            78
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/remote/RemoteSessionRegistry.kt",
+      "sha256": "a7513619c9c49b0c6338dcf9566c3ae52fc5478b03080bfa0740075038790efd",
+      "lines": [
+        6,
+        17,
+        29,
+        43
+      ],
+      "finding": "In-memory registry retains phase/resource state, not historical Start exception.",
+      "anchors": [
+        {
+          "anchor": "interface RemoteSessionHandle",
+          "lines": [
+            6
+          ]
+        },
+        {
+          "anchor": "private val entries",
+          "lines": [
+            17
+          ]
+        },
+        {
+          "anchor": "fun require",
+          "lines": [
+            29
+          ]
+        },
+        {
+          "anchor": "fun serviceState",
+          "lines": [
+            43
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/remote/EmbeddedAppUserService.kt",
+      "sha256": "dc8da93ac433609a56203247e0157514fb8a9d8782389e347c44595ffa1e67a7",
+      "lines": [
+        31,
+        34,
+        35
+      ],
+      "finding": "getSessionState has phase/liveResources; cannot recover raw Start reply or retroactively unlock original gate.",
+      "anchors": [
+        {
+          "anchor": "override fun getSessionState",
+          "lines": [
+            31
+          ]
+        },
+        {
+          "anchor": "putString(\"phase\"",
+          "lines": [
+            34
+          ]
+        },
+        {
+          "anchor": "putBoolean(\"liveResources\"",
+          "lines": [
+            35
+          ]
+        }
+      ]
+    }
+  ],
+  "archived_raw_message_marker_matches": {
+    "VDM input configuration did not settle": [],
+    "Received Surface became invalid": []
+  },
+  "archived_trace_path": "verification/dwt-vdm-010/android-real/20261002T111849380Z/dwt-vdm-010-real/calculator-waze.txt",
+  "archived_trace_sha256": "a249439b55cee36e1773c6b71d9379e3b2c153a07e96b960429b92c240657f3a",
+  "notes": [
+    "Two injected causes are examples of ambiguity, not an exhaustive list of possible exceptions.",
+    "3.003-second registration-to-close interval is an observation, not proven input-stability root cause.",
+    "Native close logs do not establish exact authoritative cleanup/convergence."
+  ]
+}

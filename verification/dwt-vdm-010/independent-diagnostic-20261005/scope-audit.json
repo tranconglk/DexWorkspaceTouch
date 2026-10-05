@@ -1,0 +1,44 @@
+{
+  "worktree": "D:\\AndroidStudioProjects\\DexWorkspaceTouch-VDM-010",
+  "branch": "qualification/dwt-vdm-010",
+  "head": "a43d97bd52386f9ac1a76e2adf03ddcdb21c1c77",
+  "staged_paths": [],
+  "tracked_diff_paths": [
+    "app/src/debug/AndroidManifest.xml",
+    "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedProductRecovery.kt",
+    "app/src/main/java/com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/EmbeddedWorkspaceRunner.kt"
+  ],
+  "production_source_overlay_original_hashes_match": true,
+  "original_modified": [
+    {
+      "path": "experiments/shizuku-task-probe/app/src/main/java/com/trancong/dexworkspacetouch/shizukuprobe/MainActivity.java",
+      "sha256": "5bcc29bbddca13c1d5487bd10af0ba72485183a43be08549fc9dc8046fb19e03",
+      "matches_prior_checkpoint": true
+    },
+    {
+      "path": "experiments/shizuku-task-probe/app/src/main/java/com/trancong/dexworkspacetouch/shizukuprobe/ProbeUserService.java",
+      "sha256": "d4be7b055a2d352df3651f7649e4baab55fc7a8c5f111d76ef878bed9706494c",
+      "matches_prior_checkpoint": true
+    }
+  ],
+  "original_untracked_count": 148,
+  "no_commit_push_tag": true,
+  "no_original_worktree_edits": true,
+  "debug_source_hashes": {
+    "app/src/debug/java/com/trancong/dexworkspacetouch/qualification/QualificationDiagnostics.kt": "9afbd3eca3913be43e47131f19fdb0917b772237eee6cb71dcb16124214e9224",
+    "app/src/debug/java/com/trancong/dexworkspacetouch/qualification/EmbeddedRealProductHarnessActivity.kt": "597b68e62af8efbb6e0129588abae0b205f2fb0ceea4d0b3a4de3bad56ff7ac5",
+    "app/src/androidTest/java/com/trancong/dexworkspacetouch/qualification/EmbeddedDiagnosticCaptureDeviceTest.kt": "756ca89828a5837907830e73ba37d9089512ddb84b618cd43791922fae0a9339",
+    "app/src/androidTest/java/com/trancong/dexworkspacetouch/qualification/EmbeddedRealProductLifecycleDeviceTest.kt": "deb56d07722e6d55534dac53261f89d3fc72f706c6cdbba706e5501429101c18",
+    "experiments/dwt-vdm-010-host-harness/Prepare-Diagnostics.py": "1312ada771ece6aa517481e25efb040102c4927cd0ebb40277fdf91267ff62be",
+    "experiments/dwt-vdm-010-host-harness/isolated-app-id.init.gradle": "aa4a3e8c42508ea2a4fc3252219b4ac4c845e210ca1d000e7d06d0fe8d6a2b02",
+    "experiments/dwt-vdm-010-host-harness/Run-Qualification.ps1": "fecade788c3422e3426dc0bc83f72c3f40fc5bcc8af0d81ac3ea1c87ca8e81fe"
+  },
+  "artifact_identity_C_matches_B_app": true,
+  "final_review": {
+    "debug_sources_unchanged_since_evidence": true,
+    "relative_doc_links_checked": 26,
+    "no_test_rerun_after_docs": true,
+    "staged_paths_empty": true,
+    "base_head_unchanged": true
+  }
+}

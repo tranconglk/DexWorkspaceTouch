@@ -1,0 +1,10 @@
+﻿{
+    "Package":  "com.trancong.dexworkspacetouch.vdm010harness",
+    "TestPackage":  "com.trancong.dexworkspacetouch.vdm010harness.test",
+    "VersionCode":  "9",
+    "VersionName":  "1.0.0-beta.8",
+    "SignerSha256":  "74ec37adc2ed1048809a781e5e6199ab66ee62f1a4d0def5d563d0320192e42f",
+    "TargetPackage":  "com.trancong.dexworkspacetouch.vdm010harness",
+    "ApkSha256":  "E1C6D6477DF22BE8724B406F95D872A105DB48E6C42C722C40B1CFBEEC68C231",
+    "TestApkSha256":  "9CB30632CF22CF82AD496AB02E4CF8E57D4EA8E0A4C56F588A0CFEE8723C0800"
+}

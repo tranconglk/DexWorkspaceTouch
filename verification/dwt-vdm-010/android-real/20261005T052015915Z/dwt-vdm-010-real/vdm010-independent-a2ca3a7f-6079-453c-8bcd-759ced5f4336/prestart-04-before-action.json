@@ -1,0 +1,2037 @@
+{
+  "category": "C_NEW_INDEPENDENT_PRESTART",
+  "independent_run_id": "vdm010-independent-a2ca3a7f-6079-453c-8bcd-759ced5f4336",
+  "timestamp_ms": 1791177632867,
+  "elapsed_nanos": 661419061337448,
+  "app_pid": 12800,
+  "label": "before-action",
+  "selector_text": "Bắt đầu Embedded",
+  "selector_package": "com.trancong.dexworkspacetouch.vdm010harness",
+  "action_dispatched": false,
+  "action_click_result": null,
+  "dispatch_target": {
+    "text": null,
+    "content_description": null,
+    "package": "com.trancong.dexworkspacetouch.vdm010harness",
+    "class": "android.view.View",
+    "enabled": true,
+    "clickable": true,
+    "visible_to_user": true,
+    "bounds": [
+      457,
+      399,
+      629,
+      447
+    ],
+    "actions": [
+      64,
+      1,
+      16
+    ],
+    "parents_to_click_target": [
+      {
+        "class": "android.view.View",
+        "enabled": true,
+        "clickable": false,
+        "visible_to_user": true
+      },
+      {
+        "class": "android.view.View",
+        "enabled": true,
+        "clickable": false,
+        "visible_to_user": true
+      },
+      {
+        "class": "androidx.compose.ui.platform.ComposeView",
+        "enabled": true,
+        "clickable": false,
+        "visible_to_user": true
+      },
+      {
+        "class": "android.widget.FrameLayout",
+        "enabled": true,
+        "clickable": false,
+        "visible_to_user": true
+      },
+      {
+        "class": "android.widget.FrameLayout",
+        "enabled": true,
+        "clickable": false,
+        "visible_to_user": true
+      },
+      {
+        "class": "android.widget.FrameLayout",
+        "enabled": true,
+        "clickable": false,
+        "visible_to_user": true
+      }
+    ],
+    "parent_query_errors": []
+  },
+  "host_id": 1,
+  "host_identity": 49277327,
+  "dex_display_id": 182,
+  "activity_class": "com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductHarnessActivity",
+  "lifecycle_state": "RESUMED",
+  "window_has_focus": true,
+  "current_focus_class": null,
+  "route": "EmbeddedWorkspaceProductScreen:vdm010-real",
+  "gate_phase": "IDLE",
+  "generation": 0,
+  "product_token_identity": null,
+  "start_operation_id": null,
+  "cleanup_operation_id": null,
+  "gate_issue": null,
+  "cleanup_evidence": "NOT_NEEDED",
+  "product_ui_values": {
+    "product_root": {
+      "eligibility": "Ready",
+      "rejection_reason": null
+    },
+    "observation": {
+      "readiness": "Ready",
+      "platform_supported": true,
+      "binder_available": true,
+      "permission_granted": true,
+      "shizuku_launch_available": true,
+      "permission_denied": false
+    }
+  },
+  "decor_width": 1038,
+  "decor_height": 780,
+  "screenshot": "prestart-04-before-action-host.png",
+  "screenshot_scope": "own host Canvas decor; native Surface buffers are not captured",
+  "accessibility_service_flags": 65618,
+  "accessibility_service_capabilities": 11,
+  "window_root_inventory": [
+    {
+      "display_id": 182,
+      "window_id": 2282,
+      "type": 3,
+      "title": null,
+      "active": false,
+      "focused": false,
+      "accessibility_focused": false,
+      "bounds": [
+        0,
+        1144,
+        1920,
+        1200
+      ],
+      "root_present": true,
+      "root_package": "com.sec.android.app.launcher",
+      "root_class": "android.widget.FrameLayout"
+    },
+    {
+      "display_id": 182,
+      "window_id": 2278,
+      "type": 1,
+      "title": null,
+      "active": false,
+      "focused": false,
+      "accessibility_focused": false,
+      "bounds": [
+        441,
+        157,
+        1479,
+        197
+      ],
+      "root_present": true,
+      "root_package": "com.android.systemui",
+      "root_class": "android.widget.FrameLayout"
+    },
+    {
+      "display_id": 182,
+      "window_id": 2302,
+      "type": 1,
+      "title": "DWT 010 real product qualification",
+      "active": true,
+      "focused": true,
+      "accessibility_focused": false,
+      "bounds": [
+        441,
+        157,
+        1479,
+        937
+      ],
+      "root_present": true,
+      "root_package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "root_class": "android.widget.FrameLayout"
+    },
+    {
+      "display_id": 182,
+      "window_id": 2287,
+      "type": 1,
+      "title": "Trang chủ One UI",
+      "active": false,
+      "focused": false,
+      "accessibility_focused": false,
+      "bounds": [
+        0,
+        0,
+        1920,
+        1200
+      ],
+      "root_present": true,
+      "root_package": "com.sec.android.app.launcher",
+      "root_class": "android.widget.FrameLayout"
+    }
+  ],
+  "own_package_node_inventory": [
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.FrameLayout",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        441,
+        157,
+        1479,
+        937
+      ],
+      "actions": [
+        4,
+        8,
+        64,
+        16908342
+      ],
+      "parents_to_click_target": [],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.FrameLayout",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        441,
+        197,
+        1479,
+        937
+      ],
+      "actions": [
+        4,
+        8,
+        64,
+        16908342
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.FrameLayout",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        441,
+        197,
+        1479,
+        937
+      ],
+      "actions": [
+        4,
+        8,
+        64,
+        16908342
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "androidx.compose.ui.platform.ComposeView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        441,
+        197,
+        1479,
+        937
+      ],
+      "actions": [
+        4,
+        8,
+        64,
+        16908342
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.view.View",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        441,
+        197,
+        1479,
+        937
+      ],
+      "actions": [
+        64
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.view.View",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        441,
+        197,
+        1479,
+        937
+      ],
+      "actions": [
+        64
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.view.View",
+      "enabled": true,
+      "clickable": true,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        277,
+        636,
+        325
+      ],
+      "actions": [
+        64,
+        1,
+        16
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/0"
+    },
+    {
+      "text": "Sao chép chẩn đoán",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        481,
+        291,
+        612,
+        311
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/0\/0"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.Button",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        281,
+        636,
+        321
+      ],
+      "actions": [
+        64
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/0\/1"
+    },
+    {
+      "text": "DWT 010 real qualification",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        335,
+        660,
+        359
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/1"
+    },
+    {
+      "text": "Thiết bị đáp ứng kiểm tra khả năng; Embedded vẫn đang Thử nghiệm trên thiết bị này.",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        367,
+        1106,
+        391
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/2"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.view.View",
+      "enabled": true,
+      "clickable": true,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        399,
+        629,
+        447
+      ],
+      "actions": [
+        64,
+        1,
+        16
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/3"
+    },
+    {
+      "text": "Bắt đầu Embedded",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        481,
+        413,
+        605,
+        433
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/3\/0"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.Button",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        403,
+        629,
+        443
+      ],
+      "actions": [
+        64
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/3\/1"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.view.View",
+      "enabled": true,
+      "clickable": true,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        455,
+        580,
+        503
+      ],
+      "actions": [
+        64,
+        1,
+        16
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/4"
+    },
+    {
+      "text": "Kiểm tra lại",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        481,
+        469,
+        556,
+        489
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/4\/0"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.Button",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        459,
+        580,
+        499
+      ],
+      "actions": [
+        64
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/4\/1"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.view.View",
+      "enabled": true,
+      "clickable": true,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        511,
+        580,
+        559
+      ],
+      "actions": [
+        64,
+        1,
+        16
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/5"
+    },
+    {
+      "text": "Mở Shizuku",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        481,
+        525,
+        556,
+        545
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/5\/0"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.Button",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        515,
+        580,
+        555
+      ],
+      "actions": [
+        64
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/5\/1"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.view.View",
+      "enabled": true,
+      "clickable": true,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        567,
+        576,
+        615
+      ],
+      "actions": [
+        64,
+        1,
+        16
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/6"
+    },
+    {
+      "text": "Mở Classic",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        481,
+        581,
+        552,
+        601
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/6\/0"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.Button",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        571,
+        576,
+        611
+      ],
+      "actions": [
+        64
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/6\/1"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.view.View",
+      "enabled": true,
+      "clickable": true,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        623,
+        559,
+        671
+      ],
+      "actions": [
+        64,
+        1,
+        16
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/7"
+    },
+    {
+      "text": "Quay lại",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        481,
+        637,
+        535,
+        657
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/7\/0"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.Button",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        627,
+        559,
+        667
+      ],
+      "actions": [
+        64
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/7\/1"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.view.View",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        441,
+        197,
+        1479,
+        261
+      ],
+      "actions": [
+        64
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/8"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.view.View",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        441,
+        197,
+        1479,
+        261
+      ],
+      "actions": [
+        64
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/8\/0"
+    },
+    {
+      "text": null,
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.view.View",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        205,
+        813,
+        253
+      ],
+      "actions": [
+        64
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/8\/0\/0"
+    },
+    {
+      "text": "Embedded Workspace (Thử nghiệm)",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        215,
+        813,
+        243
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/8\/0\/0\/0"
+    }
+  ],
+  "matching_text_nodes_all_displays": [
+    {
+      "text": "Bắt đầu Embedded",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        481,
+        413,
+        605,
+        433
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/3\/0"
+    }
+  ],
+  "matching_text_node_count": 1,
+  "description_only_matches": [],
+  "visible_readiness_error_text_inventory": [
+    {
+      "text": "Sao chép chẩn đoán",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        481,
+        291,
+        612,
+        311
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/0\/0"
+    },
+    {
+      "text": "DWT 010 real qualification",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        335,
+        660,
+        359
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/1"
+    },
+    {
+      "text": "Thiết bị đáp ứng kiểm tra khả năng; Embedded vẫn đang Thử nghiệm trên thiết bị này.",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        367,
+        1106,
+        391
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/2"
+    },
+    {
+      "text": "Bắt đầu Embedded",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        481,
+        413,
+        605,
+        433
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/3\/0"
+    },
+    {
+      "text": "Kiểm tra lại",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        481,
+        469,
+        556,
+        489
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/4\/0"
+    },
+    {
+      "text": "Mở Shizuku",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        481,
+        525,
+        556,
+        545
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/5\/0"
+    },
+    {
+      "text": "Mở Classic",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        481,
+        581,
+        552,
+        601
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/6\/0"
+    },
+    {
+      "text": "Quay lại",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        481,
+        637,
+        535,
+        657
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": true,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/7\/0"
+    },
+    {
+      "text": "Embedded Workspace (Thử nghiệm)",
+      "content_description": null,
+      "package": "com.trancong.dexworkspacetouch.vdm010harness",
+      "class": "android.widget.TextView",
+      "enabled": true,
+      "clickable": false,
+      "visible_to_user": true,
+      "bounds": [
+        457,
+        215,
+        813,
+        243
+      ],
+      "actions": [
+        64,
+        131072,
+        256,
+        512
+      ],
+      "parents_to_click_target": [
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.view.View",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "androidx.compose.ui.platform.ComposeView",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        },
+        {
+          "class": "android.widget.FrameLayout",
+          "enabled": true,
+          "clickable": false,
+          "visible_to_user": true
+        }
+      ],
+      "parent_query_errors": [],
+      "display_id": 182,
+      "window_id": 2302,
+      "path": "root\/0\/0\/0\/0\/0\/8\/0\/0\/0"
+    }
+  ],
+  "selector_outcome": "ACTION_NOT_DISPATCHED",
+  "focused_resumed_windows": [],
+  "focused_resumed_activities": [
+    "      topResumedActivity=ActivityRecord{110349139 u0 com.trancong.dexworkspacetouch.vdm010harness\/com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductHarnessActivity t5261}",
+    "      topResumedActivity=ActivityRecord{19753 u0 com.sec.android.app.launcher\/com.honeyspace.dexservice.SecondaryLauncher t5246}",
+    "  ResumedActivity: ActivityRecord{110349139 u0 com.trancong.dexworkspacetouch.vdm010harness\/com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductHarnessActivity t5261}",
+    "  mCurrentFocus=Window{79a2fb0 u0 com.trancong.dexworkspacetouch.vdm010harness\/com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductHarnessActivity}",
+    "  mFocusedApp=ActivityRecord{110349139 u0 com.trancong.dexworkspacetouch.vdm010harness\/com.trancong.dexworkspacetouch.qualification.EmbeddedRealProductHarnessActivity t5261}",
+    "  mCurrentFocus=null",
+    "  mFocusedApp=ActivityRecord{7131977 u0 com.sec.android.app.launcher\/.activities.LauncherActivity t4285}"
+  ]
+}

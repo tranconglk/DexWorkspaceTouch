@@ -1,0 +1,10 @@
+﻿{
+    "Serial":  "192.168.1.106:5555",
+    "DisplayId":  182,
+    "CaseSet":  "Capture",
+    "OnlyMethod":  "preservesRawFailureAndExactOwnedValuesBeforeProductProjection",
+    "IndependentRunId":  "",
+    "NewIndependentTestbed":  false,
+    "HistoricalSession":  "0bf0ecec-9e2c-4196-8edb-a076b688edb1",
+    "HistoricalAuthoritativeRelease":  "NOT VERIFIED"
+}
