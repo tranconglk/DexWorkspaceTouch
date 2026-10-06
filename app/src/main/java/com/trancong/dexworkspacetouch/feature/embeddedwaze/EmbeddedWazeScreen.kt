@@ -46,7 +46,7 @@ fun EmbeddedWazeScreen(activity: Activity, onBack: () -> Unit) {
         onDispose { session.close() }
     }
     Scaffold(topBar = {
-        TopAppBar(title = { Text("Embedded Waze (Experimental)") },
+        TopAppBar(title = { Text("Embedded Waze (Experimental/Frozen)") },
             navigationIcon = { TextButton(onClick = onBack) { Text("Back") } })
     }) { padding ->
         Column(Modifier.padding(padding).fillMaxSize().padding(16.dp),

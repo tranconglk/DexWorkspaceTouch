@@ -15,7 +15,7 @@ import com.trancong.dexworkspacetouch.feature.embeddedwaze.WAZE_EMBEDDED_TARGET
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable fun EmbeddedDualAppScreen(activity: Activity, onBack: () -> Unit) {
-    Scaffold(topBar = { TopAppBar(title = { Text("Embedded Dual App (Experimental)") },
+    Scaffold(topBar = { TopAppBar(title = { Text("Embedded Dual App (Experimental/Frozen)") },
         navigationIcon = { TextButton(onClick = onBack) { Text("Back") } }) }) { padding ->
         Row(Modifier.padding(padding).fillMaxSize().padding(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)) {

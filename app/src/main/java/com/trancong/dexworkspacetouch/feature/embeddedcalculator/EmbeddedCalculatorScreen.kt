@@ -46,7 +46,7 @@ fun EmbeddedCalculatorScreen(activity: Activity, onBack: () -> Unit) {
         onDispose { session.close() }
     }
     Scaffold(topBar = {
-        TopAppBar(title = { Text("Embedded Calculator (Experimental)") },
+        TopAppBar(title = { Text("Embedded Calculator (Experimental/Frozen)") },
             navigationIcon = { TextButton(onClick = onBack) { Text("Back") } })
     }) { padding ->
         Column(Modifier.padding(padding).fillMaxSize().padding(16.dp),

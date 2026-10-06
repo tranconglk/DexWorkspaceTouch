@@ -71,7 +71,7 @@ fun EmbeddedWorkspaceProductScreen(
         // Terminal local đã kết thúc: host mới chỉ đọc status, không tải/dựng lại execution.
         BackHandler(onBack = onBack)
         Scaffold(topBar = {
-            TopAppBar(title = { Text("Embedded Workspace (Thử nghiệm)") })
+            TopAppBar(title = { Text("Embedded Workspace (Experimental/Frozen)") })
         }) { padding ->
             Column(Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(16.dp)) {
                 EmbeddedCleanupBlockedStatus(blockedUi, onBack = onBack)
@@ -91,7 +91,7 @@ fun EmbeddedWorkspaceProductScreen(
         if (application.embeddedProductRunGate.canEnterEmbedded()) onBack()
     }
     Scaffold(topBar = {
-        TopAppBar(title = { Text("Embedded Workspace (Thử nghiệm)") },
+        TopAppBar(title = { Text("Embedded Workspace (Experimental/Frozen)") },
             navigationIcon = {
                 if (loaded !is EmbeddedEligibilityResult.Ready) {
                     TextButton(onClick = onBack, enabled = gateState == ProductRunPhase.IDLE) { Text("Quay lại") }

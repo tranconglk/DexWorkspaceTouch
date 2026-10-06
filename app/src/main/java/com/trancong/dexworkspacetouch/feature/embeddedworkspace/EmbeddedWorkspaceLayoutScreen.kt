@@ -53,7 +53,7 @@ fun EmbeddedWorkspaceLayoutScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Embedded Workspace Layout (Experimental)") },
+                title = { Text("Embedded Workspace Layout (Experimental/Frozen)") },
                 navigationIcon = { TextButton(onClick = onBack) { Text("Back") } },
             )
         },

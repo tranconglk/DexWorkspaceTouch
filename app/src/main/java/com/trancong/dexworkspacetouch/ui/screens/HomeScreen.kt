@@ -82,11 +82,11 @@ import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.cleanupB
 import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedStatus
 
 internal enum class HomeEmbeddedProofControl(val label: String) {
-    WAZE("Embedded Waze"),
-    CALCULATOR("Embedded Calculator"),
-    DUAL_APP("Embedded Dual App"),
-    RUNNER("Embedded Workspace Runner (Experimental)"),
-    WORKSPACE_LAYOUT("Embedded Workspace Layout (Experimental)"),
+    WAZE("Embedded Waze (Experimental/Frozen)"),
+    CALCULATOR("Embedded Calculator (Experimental/Frozen)"),
+    DUAL_APP("Embedded Dual App (Experimental/Frozen)"),
+    RUNNER("Embedded Workspace Runner (Experimental/Frozen)"),
+    WORKSPACE_LAYOUT("Embedded Workspace Layout (Experimental/Frozen)"),
 }
 
 internal data class HomeEmbeddedProofMenu(val isOpen: Boolean = false) {
@@ -456,8 +456,8 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxWidth().padding(Spacing.L),
                 verticalArrangement = Arrangement.spacedBy(Spacing.S),
             ) {
-                Text("Nhà phát triển (Thử nghiệm)", style = MaterialTheme.typography.titleLarge)
-                Text("Các proof Embedded dành cho kiểm thử có chủ đích. Chọn một proof để mở giao diện kiểm thử.")
+                Text("Nhà phát triển (Experimental/Frozen)", style = MaterialTheme.typography.titleLarge)
+                Text("Embedded là thử nghiệm đã đóng băng phát triển, chỉ mở thủ công để nghiên cứu.")
                 if (!workspaceRunActionsEnabled) {
                     Text("Proof Embedded đang bị chặn bởi trạng thái phiên hiện tại. Có thể xem trạng thái từ Workspace Library.")
                 }
@@ -650,7 +650,7 @@ fun HomeScreen(
                                 if (!isMultiSelectMode) OutlinedButton(
                                     onClick = { proofMenu = proofMenu.open() },
                                     modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
-                                ) { Text("Nhà phát triển (Thử nghiệm)") }
+                                ) { Text("Nhà phát triển (Experimental/Frozen)") }
                             }
                         } else {
                             Column(verticalArrangement = Arrangement.spacedBy(Spacing.M)) {
@@ -666,7 +666,7 @@ fun HomeScreen(
                                 if (!isMultiSelectMode) OutlinedButton(
                                     onClick = { proofMenu = proofMenu.open() },
                                     modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
-                                ) { Text("Nhà phát triển (Thử nghiệm)") }
+                                ) { Text("Nhà phát triển (Experimental/Frozen)") }
                             }
                         }
                     }

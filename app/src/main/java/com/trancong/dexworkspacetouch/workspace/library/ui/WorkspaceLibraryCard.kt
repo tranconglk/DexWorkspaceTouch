@@ -179,7 +179,7 @@ fun WorkspaceLibraryCard(
                                 onClick = onOpenEmbedded,
                                 enabled = embeddedOpenEnabled,
                                 modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
-                            ) { Text("Mở Embedded (Thử nghiệm)") }
+                            ) { Text("Mở Embedded (Experimental/Frozen)") }
                         }
                         if (selected) {
                             if (showDirectManagementActions) {

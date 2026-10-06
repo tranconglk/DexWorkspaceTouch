@@ -38,6 +38,12 @@ internal class EmbeddedProofAccessTest(private val route: EmbeddedProofRoute, pr
         assertFalse(developer.close().controls.contains(control))
     }
 
+    @Test fun deliberateDeveloperEntryLabelsProofAsExperimentalAndFrozen() {
+        val visible = HomeEmbeddedProofMenu().open().controls.single { it == control }
+        assertTrue("Experimental label missing: ${visible.label}", visible.label.contains("Experimental"))
+        assertTrue("Frozen label missing: ${visible.label}", visible.label.contains("Frozen"))
+    }
+
     @Test fun exactDirectRouteRemainsDefinedAndIdleAdmitsExistingBehavior() {
         assertEquals(exactPattern, route.pattern)
         val gate = EmbeddedProductRunGate()

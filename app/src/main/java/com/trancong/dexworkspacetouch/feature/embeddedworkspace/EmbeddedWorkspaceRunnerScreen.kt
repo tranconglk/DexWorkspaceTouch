@@ -77,7 +77,7 @@ fun EmbeddedWorkspaceRunnerScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Embedded Workspace Runner (Experimental)") },
+                title = { Text("Embedded Workspace Runner (Experimental/Frozen)") },
                 navigationIcon = {
                     TextButton(onClick = onBack) { Text("Back") }
                 },
