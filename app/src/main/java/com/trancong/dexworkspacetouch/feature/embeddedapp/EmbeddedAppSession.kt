@@ -1,4 +1,5 @@
 package com.trancong.dexworkspacetouch.feature.embeddedapp
+import com.trancong.dexworkspacetouch.diagnostics.embedded.EmbeddedEvidence
 
 import android.content.Context
 import android.os.Handler
@@ -126,6 +127,8 @@ class EmbeddedAppSession internal constructor(
     }
 
     private fun onConnectionEvent(event: EmbeddedConnectionEvent) {
+        EmbeddedEvidence.app("session.service_operation", sessionId.value, fields = mapOf(
+            "service_generation" to event.identity.generation.toString(), "service_operation" to event.identity.operation.toString()))
         var task: UidVerificationTask? = null
         synchronized(stateLock) {
             if (lease?.accepts(event) != true) return
@@ -204,6 +207,8 @@ class EmbeddedAppSession internal constructor(
     }
 
     fun startSession(surface: Surface) {
+        EmbeddedEvidence.observe { EmbeddedEvidence.app("session.start", sessionId.value,
+            fields = mapOf("surface_identity" to System.identityHashCode(surface).toString(), "surface_valid" to surface.isValid.toString())) }
         val (task, ownedLease) = synchronized(stateLock) {
             if (closed || stopping) return
             val service = remote ?: return rejectStart("REMOTE_UNAVAILABLE", "Connect Shizuku first")
@@ -216,6 +221,10 @@ class EmbeddedAppSession internal constructor(
             val operation = ownedLease.operationStarted()
             startSubmitted = true
             startOperation = operation
+            EmbeddedEvidence.observe { EmbeddedEvidence.app("session.operation", sessionId.value, fields = buildMap {
+                put("ipc_operation", operation.toString())
+                manager.generationFor(service)?.let { put("service_generation", it.toString()) }
+            }) }
             val destination = DetachableMailbox(startCompletionExecutor, ::onStartCompleted)
             startMailbox = destination
             val geometry = target.geometry
@@ -238,7 +247,11 @@ class EmbeddedAppSession internal constructor(
 
     private fun onStartCompleted(value: StartCompletion) {
         synchronized(stateLock) {
-            if (startMailbox == null || startOperation != value.operation) return
+            if (startMailbox == null || startOperation != value.operation) {
+                EmbeddedEvidence.app("session.fence", sessionId.value, fields = mapOf("ipc_operation" to value.operation.toString(), "disposition" to "rejected"))
+                return
+            }
+            EmbeddedEvidence.app("session.fence", sessionId.value, fields = mapOf("ipc_operation" to value.operation.toString(), "disposition" to "matched"))
             startMailbox?.detach(); startMailbox = null; startOperation = null
             // Failure/exception may still have allocated. Detachment deliberately leaves this
             // operation pending in the manager instead of accepting a late completion as clean.
@@ -359,5 +372,12 @@ class EmbeddedAppSession internal constructor(
             update(state.copy(busy = false, status = message))
         }
     }
-    private fun publishLifecycle() { notifications.offer(Notification.Lifecycle(lifecycle.snapshot)) }
+    private fun publishLifecycle() {
+        val snapshot = lifecycle.snapshot
+        val admitted = notifications.offer(Notification.Lifecycle(snapshot))
+        EmbeddedEvidence.observe { EmbeddedEvidence.app("session.snapshot", sessionId.value, fields = buildMap {
+            put("phase", snapshot.phase.name); put("display_id", snapshot.displayId.toString()); put("admitted", admitted.toString())
+            snapshot.failure?.let { put("failure_code", it.code); it.message?.let { message -> put("message", message) } }
+        }) }
+    }
 }

@@ -9,10 +9,11 @@ import android.os.Process
 import android.util.Log
 import com.trancong.dexworkspacetouch.feature.embeddedapp.EmbeddedAppTarget
 import java.lang.reflect.InvocationTargetException
+import com.trancong.dexworkspacetouch.diagnostics.embedded.EmbeddedEvidence
 
 object ShellDisplayLaunch {
     @android.annotation.SuppressLint("PrivateApi")
-    fun launch(displayId: Int, target: EmbeddedAppTarget): Bundle {
+    fun launch(displayId: Int, target: EmbeddedAppTarget, diagnosticSid: String? = null): Bundle {
         val reply = Bundle()
         val identity = Binder.clearCallingIdentity()
         try {
@@ -38,8 +39,10 @@ object ShellDisplayLaunch {
                 null, null, -1, 0, null, options, 0) as Int
             reply.putInt("result", result)
             reply.putBoolean("success", result == 0)
+            EmbeddedEvidence.remote("launch.result", diagnosticSid, mapOf("launch_result" to result.toString(), "display_id" to displayId.toString()))
         } catch (error: Exception) {
             val cause = if (error is InvocationTargetException) error.targetException else error
+            EmbeddedEvidence.observe { EmbeddedEvidence.remote("launch.failure", diagnosticSid, EmbeddedEvidence.errorFields(cause)) }
             reply.putBoolean("success", false)
             reply.putString("exception", "${cause.javaClass.name}: ${cause.message}")
             Log.e(TAG, "launch failed displayId=$displayId", cause)

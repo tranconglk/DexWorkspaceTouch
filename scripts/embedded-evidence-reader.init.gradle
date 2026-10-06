@@ -1,0 +1,7 @@
+// Chỉ cung cấp classpath của reader offline, không thay build/runtime contract.
+gradle.projectsEvaluated {
+    def app = gradle.rootProject.project(':app')
+    app.tasks.register('embeddedEvidenceReaderClasspath') {
+        doLast { println(app.tasks.named('testDebugUnitTest').get().classpath.asPath) }
+    }
+}

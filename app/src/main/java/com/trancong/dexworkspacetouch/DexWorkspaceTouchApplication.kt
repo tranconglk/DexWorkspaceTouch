@@ -58,6 +58,8 @@ class DexWorkspaceTouchApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        com.trancong.dexworkspacetouch.diagnostics.embedded.EmbeddedEvidence.initializeApp(
+            java.io.File(filesDir, "dwt-vdm-012-evidence"))
         appIconLoader = PackageManagerAppIconLoader.create(applicationContext)
         val database = Room.databaseBuilder(
             applicationContext,

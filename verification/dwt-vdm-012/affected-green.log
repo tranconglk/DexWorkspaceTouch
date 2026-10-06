@@ -1,0 +1,72 @@
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>if "Windows_NT" == "Windows_NT" setlocal
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>set DIRNAME=D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012\ 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>if "D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012\" == "" set DIRNAME=. 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>set APP_BASE_NAME=gradlew 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>set APP_HOME=D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012\ 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>for %i in ("D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012\") do set APP_HOME=%~fi 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>set APP_HOME=D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012\ 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m" 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>if defined JAVA_HOME goto findJavaFromJavaHome 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>set JAVA_HOME=C:\Program Files\Android\Android Studio\jbr 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>set JAVA_EXE=C:\Program Files\Android\Android Studio\jbr/bin/java.exe 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>if exist "C:\Program Files\Android\Android Studio\jbr/bin/java.exe" goto execute 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>set CLASSPATH= 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>"C:\Program Files\Android\Android Studio\jbr/bin/java.exe" "-Xmx64m" "-Xms64m"   "-Dorg.gradle.appname=gradlew" -classpath "" -jar "D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012\\gradle\wrapper\gradle-wrapper.jar" :app:testDebugUnitTest --tests *EvidenceRecorderTest --tests *EvidenceFileStoreTest --tests *EvidenceReaderTest --tests *RunnerEvidenceTest --tests *RemoteStepEvidenceTest --tests *EmbeddedStartObservabilityTest --tests *EmbeddedAppStartIsolationTest --tests *EmbeddedWorkspaceRunnerTest --tests *EmbeddedWorkspaceProductControllerTest --tests *EmbeddedProductDiagnosticFormatterTest --console=plain 
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:compileDebugAidl UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:generateDebugRFile UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest UP-TO-DATE
+> Task :app:kspDebugKotlin
+
+> Task :app:compileDebugKotlin
+w: file:///D:/AndroidStudioProjects/DexWorkspaceTouch-VDM-012/app/src/debug/java/com/trancong/dexworkspacetouch/qualification/EmbeddedLifecycleHarnessActivity.kt:167:169 'val defaultDisplay: Display!' is deprecated. Deprecated in Java.
+
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:kspDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes UP-TO-DATE
+> Task :app:testDebugUnitTest
+
+BUILD SUCCESSFUL in 21s
+29 actionable tasks: 7 executed, 22 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.4.1/userguide/configuration_cache_enabling.html
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>if 0 EQU 0 goto mainEnd 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>if "Windows_NT" == "Windows_NT" endlocal

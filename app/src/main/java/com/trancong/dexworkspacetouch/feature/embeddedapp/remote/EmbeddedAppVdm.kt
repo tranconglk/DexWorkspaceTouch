@@ -25,10 +25,11 @@ import com.trancong.dexworkspacetouch.feature.embeddedapp.VirtualInputOwnershipP
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Proxy
+import com.trancong.dexworkspacetouch.diagnostics.embedded.EmbeddedEvidence
 
 /** Disposable TVL-005F2C2 path: exactly one VirtualDevice and one owned display. */
 @android.annotation.SuppressLint("PrivateApi", "NewApi", "WrongConstant")
-class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
+class EmbeddedAppVdm(private val expectedInputDeviceName: String, private val diagnosticSid: String? = null) {
     private var device: Any? = null
     private var displayCallback: Any? = null
     private var receivedSurface: Surface? = null
@@ -43,6 +44,17 @@ class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
     private var touchClosed = false
     private val inputOwnership = VirtualInputOwnership(expectedInputDeviceName)
     private var cleanupProgress = CleanupProgress()
+
+    private fun captureAllocation(event: String, stage: String) = EmbeddedEvidence.observe {
+        EmbeddedEvidence.remote(event, diagnosticSid, mapOf("stage" to stage,
+            "device_returned" to (device != null).toString(), "input_returned" to (returnedInput != null).toString(),
+            "device_id" to deviceId.takeIf { it >= 0 }?.toString().orUnknown(),
+            "display_id" to displayId.takeIf { it > 0 }?.toString().orUnknown(),
+            "input_device_id" to inputDeviceId.takeIf { it >= 0 }?.toString().orUnknown(),
+            "task_id" to activeTaskId.takeIf { it >= 0 }?.toString().orUnknown(),
+            "input_phase" to inputOwnership.phase.name))
+    }
+    private fun String?.orUnknown() = this ?: "NOT_VERIFIED"
 
     private fun type(name: String) = Class.forName(name)
 
@@ -85,6 +97,7 @@ class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
     @Synchronized
     fun create(surface: Surface, target: EmbeddedAppTarget, associationId: Int): Bundle {
         val identity = Binder.clearCallingIdentity()
+        var diagnosticStage = "display_validation"
         try {
             check(Process.myUid() == 2000) { "Requires shell UID 2000" }
             check(device == null) { "VDM Surface probe already active" }
@@ -95,10 +108,12 @@ class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
             cleanupProgress = CleanupProgress()
             require(associationId > 0) { "Association ID must be positive" }
             receivedSurface = surface
+            diagnosticStage = "tasks_before"
             beforeTaskIds = runningTasks().map { it.taskId }.toSet()
 
             val attribution = AttributionSource.Builder(Process.myUid())
                 .setPackageName("com.android.shell").build()
+            diagnosticStage = "virtual_device_params"
             val paramsType = type("android.companion.virtual.VirtualDeviceParams")
             val paramsBuilderType = type("${paramsType.name}\$Builder")
             val params = paramsBuilderType.getMethod("build")
@@ -107,22 +122,31 @@ class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
             val soundName = "android.companion.virtual.IVirtualDeviceSoundEffectListener"
             val managerType = type("android.companion.virtual.IVirtualDeviceManager")
             Log.i(TAG, "createVirtualDevice begin uid=${Process.myUid()} associationId=$associationId surfaceValid=${surface.isValid}")
+            diagnosticStage = "virtual_device_create"
+            EmbeddedEvidence.remote("allocation.device_attempt", diagnosticSid, mapOf("attempted" to "true", "stage" to diagnosticStage))
             val created = managerType.getMethod("createVirtualDevice", IBinder::class.java,
                 AttributionSource::class.java, Int::class.javaPrimitiveType, paramsType,
                 type(activityName), type(soundName)).invoke(manager(), Binder(), attribution,
                 associationId, params, inertListener(activityName), inertListener(soundName))
             device = created
+            captureAllocation("allocation.device_returned", diagnosticStage)
+            diagnosticStage = "virtual_device_id"
             val deviceType = type("android.companion.virtual.IVirtualDevice")
             deviceId = deviceType.getMethod("getDeviceId").invoke(created) as Int
+            captureAllocation("allocation.device_id", diagnosticStage)
 
+            diagnosticStage = "display_config"
             val config = VirtualDisplayConfig.Builder("TVL-VDM-Trusted", width, height, densityDpi)
                 .setSurface(surface).setFlags(TRUSTED_DISPLAY_FLAG).build()
             val callbackName = "android.hardware.display.IVirtualDisplayCallback"
             val callback = inertListener(callbackName)
             displayCallback = callback
+            diagnosticStage = "display_create"
+            EmbeddedEvidence.remote("allocation.display_attempt", diagnosticSid, mapOf("attempted" to "true", "stage" to diagnosticStage))
             Log.i(TAG, "createVirtualDisplay begin deviceId=$deviceId config=$config surfaceValid=${surface.isValid}")
             displayId = deviceType.getMethod("createVirtualDisplay", VirtualDisplayConfig::class.java,
                 type(callbackName)).invoke(created, config, callback) as Int
+            captureAllocation("allocation.display_id", diagnosticStage)
             check(displayId > 0) { "Invalid displayId=$displayId" }
             Log.i(TAG, "create success deviceId=$deviceId displayId=$displayId remoteSurfaceValid=${surface.isValid}")
             return result(true).apply {
@@ -133,8 +157,13 @@ class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
             }
         } catch (error: Throwable) {
             val cause = unwrap(error)
+            EmbeddedEvidence.observe { EmbeddedEvidence.remote("vdm.create.failure", diagnosticSid,
+                EmbeddedEvidence.errorFields(cause) + ("stage" to diagnosticStage)) }
             Log.e(TAG, "create failed", cause)
+            EmbeddedEvidence.remote("rollback.create.begin", diagnosticSid)
             runCatching { closeDevice() }
+                .onSuccess { EmbeddedEvidence.remote("rollback.create.end", diagnosticSid, mapOf("success" to "true")) }
+                .onFailure { close -> EmbeddedEvidence.observe { EmbeddedEvidence.remote("rollback.create.failure", diagnosticSid, EmbeddedEvidence.errorFields(close)) } }
             return failure(cause)
         } finally {
             Binder.restoreCallingIdentity(identity)
@@ -143,13 +172,16 @@ class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
 
     @Synchronized
     fun launchTarget(): Bundle {
+        EmbeddedEvidence.observe { EmbeddedEvidence.remote("launch.guard", diagnosticSid, mapOf(
+            "surface_identity" to System.identityHashCode(receivedSurface).toString(), "surface_valid" to (receivedSurface?.isValid == true).toString())) }
         check(device != null && displayId > 0) { "Gate A display is not active" }
         check(receivedSurface?.isValid == true) { "Received Surface became invalid" }
         val target = checkNotNull(activeTarget) { "Embedded target is missing" }
         Log.i(TAG, "target launch begin component=${target.componentName} displayId=$displayId surfaceValid=${receivedSurface?.isValid}")
-        return ShellDisplayLaunch.launch(displayId, target).also {
+        return ShellDisplayLaunch.launch(displayId, target, diagnosticSid).also {
             Log.i(TAG, "target launch result=${it.getInt("result")} success=${it.getBoolean("success")}")
             if (it.getBoolean("success")) activeTaskId = awaitLaunchedTargetTask(target).taskId
+            captureAllocation("allocation.task_id", "target_task_observed")
         }
     }
 
@@ -166,6 +198,7 @@ class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
     @Synchronized
     fun prepareTouchscreen(): Bundle {
         val identity = Binder.clearCallingIdentity()
+        var diagnosticStage = "input_validation"
         try {
             check(Process.myUid() == 2000) { "Requires shell UID 2000" }
             val activeDevice = checkNotNull(device) { "Gate A VirtualDevice is not active" }
@@ -179,6 +212,7 @@ class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
             touchToken = token
             touchClosed = false
             inputOwnership.creationAttempted()
+            diagnosticStage = "input_config"
             val configType = type("android.hardware.input.VirtualTouchscreenConfig")
             val builderType = type("android.hardware.input.VirtualTouchscreenConfig\$Builder")
             val builder = builderType.getConstructor(Int::class.javaPrimitiveType,
@@ -192,6 +226,8 @@ class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
             val config = builderType.getMethod("build").invoke(builder)
             val deviceType = type("android.companion.virtual.IVirtualDevice")
             Log.i(TAG, "create touchscreen begin name=$expectedInputDeviceName displayId=$displayId config=${activeTarget?.geometry?.width}x${activeTarget?.geometry?.height} vendor=0 product=0")
+            diagnosticStage = "input_create"
+            EmbeddedEvidence.remote("allocation.input_attempt", diagnosticSid, mapOf("attempted" to "true", "stage" to diagnosticStage))
             val createdInput = checkNotNull(deviceType
                 .getMethod("createVirtualTouchscreen", configType, IBinder::class.java)
                 .invoke(activeDevice, config, token)) {
@@ -199,20 +235,27 @@ class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
             }
             returnedInput = createdInput
             inputOwnership.handleReturned()
+            captureAllocation("allocation.input_returned", diagnosticStage)
+            diagnosticStage = "input_associated_display"
             val inputType = type("android.hardware.input.IVirtualInputDevice")
             val associatedDisplayId = inputType.getMethod("getAssociatedDisplayId")
                 .invoke(createdInput) as Int
             check(associatedDisplayId == displayId) {
                 "Returned input display mismatch expected=$displayId actual=$associatedDisplayId"
             }
+            diagnosticStage = "input_id"
             inputDeviceId = inputType.getMethod("getInputDeviceId").invoke(createdInput) as Int
+            captureAllocation("allocation.input_id", diagnosticStage)
             check(inputDeviceId >= 0) { "Invalid InputDevice ID=$inputDeviceId" }
+            diagnosticStage = "input_descriptor"
             val input = inputDevice(inputDeviceId)
             checkNotNull(input) { "InputDevice $inputDeviceId not registered" }
+            diagnosticStage = "input_descriptor_display"
             val descriptorDisplayId = input.javaClass.getMethod("getAssociatedDisplayId").invoke(input) as Int
             check(descriptorDisplayId == displayId) {
                 "InputDevice display mismatch expected=$displayId actual=$descriptorDisplayId"
             }
+            diagnosticStage = "input_descriptor_name"
             check(input.name == expectedInputDeviceName) {
                 "InputDevice name mismatch expected=$expectedInputDeviceName actual=${input.name}"
             }
@@ -228,9 +271,12 @@ class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
             }
         } catch (error: Throwable) {
             val cause = unwrap(error)
+            EmbeddedEvidence.observe { EmbeddedEvidence.remote("vdm.input.failure", diagnosticSid,
+                EmbeddedEvidence.errorFields(cause) + ("stage" to diagnosticStage)) }
             val observedNames = runCatching { inputDeviceNames() }
                 .getOrElse { setOf(expectedInputDeviceName) }
             inputOwnership.creationFailed(observedNames)
+            captureAllocation("allocation.input_failure_state", diagnosticStage)
             Log.e(TAG, "TVL005F2F1 touchscreen preparation failed", cause)
             return failure(cause)
         } finally {
@@ -269,10 +315,16 @@ class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
         var error: Throwable? = null
         try {
             fun attempt(step: CleanupStep, label: String, action: () -> Unit) {
-                if (cleanupProgress.next() != step) return
-                try { action() }
+                if (cleanupProgress.next() != step) {
+                    EmbeddedEvidence.remote("cleanup.step", diagnosticSid, mapOf("step" to step.name, "state" to "skipped_progress"))
+                    return
+                }
+                EmbeddedEvidence.remote("cleanup.step", diagnosticSid, mapOf("step" to step.name, "state" to "begin"))
+                try { action(); EmbeddedEvidence.remote("cleanup.step", diagnosticSid, mapOf("step" to step.name, "state" to "returned")) }
                 catch (failure: Throwable) {
                     val cause = unwrap(failure)
+                    EmbeddedEvidence.observe { EmbeddedEvidence.remote("cleanup.step.failure", diagnosticSid,
+                        EmbeddedEvidence.errorFields(cause) + ("step" to step.name)) }
                     if (error == null) error = cause
                     Log.e(TAG, "$label failed", cause)
                 } finally { cleanupProgress.complete(step) }
@@ -285,7 +337,9 @@ class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
                     val candidate = selectRecordedTargetTask(taskCandidates(tasks), activeTaskId,
                         target, displayId)
                     candidate?.let { selected ->
-                        check(removeTask(selected.taskId)) {
+                        val removed = removeTask(selected.taskId)
+                        EmbeddedEvidence.remote("cleanup.task_result", diagnosticSid, mapOf("task_id" to selected.taskId.toString(), "success" to removed.toString()))
+                        check(removed) {
                             "removeTask(${selected.taskId}) returned false"
                         }
                         removedTaskId = selected.taskId
@@ -313,16 +367,19 @@ class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
     }
 
     private fun closeDevice() {
+        captureAllocation("allocation.before_device_close", "rollback_device")
         val closing = device
         device = null
         closing?.let {
             Log.i(TAG, "IVirtualDevice.close begin deviceId=$deviceId displayId=$displayId")
             type("android.companion.virtual.IVirtualDevice").getMethod("close").invoke(it)
+            EmbeddedEvidence.remote("cleanup.device_returned", diagnosticSid, mapOf("device_id" to deviceId.toString()))
             Log.i(TAG, "IVirtualDevice.close success")
         }
     }
 
     private fun releaseReferences() {
+        captureAllocation("allocation.before_reference_reset", "reference_reset")
         displayCallback = null
         receivedSurface?.release()
         receivedSurface = null
@@ -338,6 +395,7 @@ class EmbeddedAppVdm(private val expectedInputDeviceName: String) {
     }
 
     private fun closeTouchscreen() {
+        captureAllocation("allocation.before_input_close", "rollback_input")
         if (inputOwnership.phase in setOf(VirtualInputOwnershipPhase.NOT_ATTEMPTED,
                 VirtualInputOwnershipPhase.NOT_CREATED, VirtualInputOwnershipPhase.CLOSED)) return
         check(inputOwnership.phase != VirtualInputOwnershipPhase.UNCERTAIN) {

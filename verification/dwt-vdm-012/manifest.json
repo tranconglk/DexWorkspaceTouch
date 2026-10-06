@@ -1,0 +1,169 @@
+{
+    "task":  "DWT-VDM-012",
+    "status":  "READY_FOR_COMMIT",
+    "generated_utc":  "2026-10-06T04:12:57.0869523Z",
+    "base":  "db69bed601eceea12259249c89f0f5276793e425",
+    "head":  "db69bed601eceea12259249c89f0f5276793e425",
+    "branch":  "implementation/dwt-vdm-012",
+    "commit_push_tag":  "NOT_PERFORMED",
+    "verification":  {
+                         "unit_tests":  1196,
+                         "failures":  0,
+                         "errors":  0,
+                         "skipped":  0,
+                         "assembleDebug":  "PASS",
+                         "lintDebug":  "PASS",
+                         "diff_check":  "PASS",
+                         "protected_paths_changed":  [
+
+                                                     ]
+                     },
+    "tracked_changes":  [
+                            "app/src/main/java/com/trancong/dexworkspacetouch/DexWorkspaceTouchApplication.kt",
+                            "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedAppSession.kt",
+                            "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedStartIpcTask.kt",
+                            "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/remote/AssociationShell.kt",
+                            "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/remote/EmbeddedAppVdm.kt",
+                            "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/remote/RemoteSessionRuntime.kt",
+                            "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/remote/ShellDisplayLaunch.kt",
+                            "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedWorkspaceProductController.kt",
+                            "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedWorkspaceProductScreen.kt",
+                            "app/src/main/java/com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/EmbeddedWorkspaceRunner.kt"
+                        ],
+    "android_retention":  "CONTROLLED_SHELL_UID_2000_ONLY",
+    "offline_reader":  "NOT_VERIFIED_EXPECTED_INCOMPLETE_FIXTURE",
+    "review":  {
+                   "initial_verdict":  "NOT_READY",
+                   "critical":  0,
+                   "important":  3,
+                   "important_fixed":  3,
+                   "post_fix_red_assertions":  5,
+                   "second_review":  "NOT_PERFORMED",
+                   "minor_deferred":  "DROP_COUNT_UNDERREPORT_ON_REPEATED_WRITE_LOSS"
+               },
+    "not_verified":  [
+                         "ACTUAL_APP_PRIVATE_DEVICE_STORAGE_EXPORT",
+                         "ACTUAL_SHIZUKU_END_TO_END",
+                         "REAL_ALLOCATED_ID_ROLLBACK_DEVICE_PATH",
+                         "TIMING_CONCURRENCY_STRESS",
+                         "PROCESS_DEATH_TAIL_DURABILITY",
+                         "POWERSHELL_WRAPPER_EXECUTION_UNDER_RESTRICTED_POLICY"
+                     ],
+    "evidence":  [
+                     {
+                         "path":  "verification/dwt-vdm-012/affected-green.log",
+                         "bytes":  4249,
+                         "sha256":  "575F78B45C33524224AEA10D357DB42382C3EFCBFD149CD5095A8206EDECB7CB"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/android-offline-reader.json",
+                         "bytes":  223,
+                         "sha256":  "E17A1096EFF7D0FB506165CC0A92A9063693725328FE086945132FE1CBB04396"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/android-retention-probe.log",
+                         "bytes":  153,
+                         "sha256":  "90ABE0FA3EE5E9F7FE575A9B8CF2E08DFC398CDB798C3C50B7D3C12A4E0C7165"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/baseline.log",
+                         "bytes":  14636,
+                         "sha256":  "9088631E7FE4A880405DAFA5F340B7D36A3F5FCCDDD9B28175B18F2DDAE73061"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/compile-diagnostic.log",
+                         "bytes":  4298,
+                         "sha256":  "9FC06A0ED12A09DA57324A3CAAB0BEA8DFAD4E831A710607FEE26B58217C5DB7"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/core-ipc-green.log",
+                         "bytes":  3815,
+                         "sha256":  "A6559D4C91A3102B9CCE35981CEDBB0A66AE98331B98DB9582BED98155E82201"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/correlation-late-green.log",
+                         "bytes":  4677,
+                         "sha256":  "33A81AAF12063500496E141A2D6C616C4757CF6EC3067FA4BCB15DA9142D30B9"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/debug-build.log",
+                         "bytes":  4149,
+                         "sha256":  "D404ED02D8D4C251B4D9EA2633D4ECCFF14769D2F024E004D9B8D266439E048F"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/final-local-gate.log",
+                         "bytes":  4189,
+                         "sha256":  "C1DF235ACC95D4212356B7B1D2BFB6B77DC265A60F7A964F65777823C2F93B01"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/ipc-red.log",
+                         "bytes":  10176,
+                         "sha256":  "ECDA1D2D8393D5AB9E124511B0A7615AFA8C06282036CE5E25CE25008F828758"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/model-red.log",
+                         "bytes":  10222,
+                         "sha256":  "87644C5F5D2C1438BA61D009B7F42B19ECF0A6FE6DAF7CAB72CD24FFF8E27E32"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/plumbing-build.log",
+                         "bytes":  4170,
+                         "sha256":  "F03D684C9666D9BA56705088C5BB957226392D5558D0ABC6DD05E2D6358FF136"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/post-review-final-gate.log",
+                         "bytes":  5202,
+                         "sha256":  "4E73BFE7F283E88809DD0262BB4FC25E20512F6290A9E6ACBE8933FF5A24A912"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/privacy-quota-edge-green-build.log",
+                         "bytes":  4686,
+                         "sha256":  "F8D8249946E782D91E66EEDC845AF7655723F52A113EC70BD6699A1A1B12FDFB"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/privacy-quota-edge-red.log",
+                         "bytes":  4928,
+                         "sha256":  "AD5D4602245B275E730C983C025F0B30BD4D3AEBD9DA55CE88661EAE2DCC4C32"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/reader-red.log",
+                         "bytes":  4910,
+                         "sha256":  "AD34268F649F8CECC6406AD2489DB4A7E6850B03425FF53D9221AD8C512E4E05"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/review-important-green.log",
+                         "bytes":  3906,
+                         "sha256":  "621564F714CBDDE0AD0DBD513CE1F6C716188EC426B2A699C9202BBD9BA9D56A"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/review-important-red.log",
+                         "bytes":  5246,
+                         "sha256":  "D551C956E9069623E90405DA8DC1DE9BC531D030817FFFB577735587E308FF4C"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/runner-rollback-green.log",
+                         "bytes":  4027,
+                         "sha256":  "A69AAEE8F55A61F32DAFCCD4C994F14FD663EB3465F185EB6E6AD3727FB685C9"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/runner-rollback-red.log",
+                         "bytes":  5074,
+                         "sha256":  "F52BCB16E1AF28502D4D3791C809332853BB8533055D6488747048D48AFC717E"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/storage-red-model-green.log",
+                         "bytes":  4684,
+                         "sha256":  "311F669E707FBDD348486976AED6AAC0AE5539282E94627A718051707889CB70"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/app-plumbing/segment-4824b746-a525-4080-b755-7ce8d570a268.jsonl",
+                         "bytes":  1549,
+                         "sha256":  "8BE25B186B13AEBD53CE57FEB03DFE144AC228DFE34DB84BD10EDBBC8C4072EA"
+                     },
+                     {
+                         "path":  "verification/dwt-vdm-012/remote-retention/segment-d2a48a39-670a-4d7e-8748-041f652f62e2.jsonl",
+                         "bytes":  7684,
+                         "sha256":  "D3A72057A90B15305B3BA9A938049B59C3CFC81AA996B6B827B6B404E89C03BB"
+                     }
+                 ]
+}

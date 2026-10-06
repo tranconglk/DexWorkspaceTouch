@@ -12,6 +12,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.trancong.dexworkspacetouch.diagnostics.embedded.EmbeddedEvidence
+import com.trancong.dexworkspacetouch.diagnostics.embedded.EmbeddedResultEvidence
 
 class EmbeddedWorkspaceRunner(
     preflight: EmbeddedWorkspacePreflight,
@@ -19,6 +21,7 @@ class EmbeddedWorkspaceRunner(
     private val timeoutPolicy: EmbeddedWorkspaceRunnerTimeoutPolicy,
     scope: CoroutineScope,
     dispatcher: CoroutineDispatcher,
+    val evidenceGraphId: String = java.util.UUID.randomUUID().toString(),
 ) {
     private val events = Channel<Event>(Channel.UNLIMITED)
     private val admissionLock = Any()
@@ -214,6 +217,11 @@ class EmbeddedWorkspaceRunner(
         if (terminalResult != null) return
         val item = ownedItems[event.sourceCellId] ?: return
         item.latestSnapshot = event.snapshot
+        EmbeddedEvidence.observe { EmbeddedEvidence.app("runner.snapshot", item.handle.sessionId.value,
+            event.sourceCellId, evidenceGraphId, buildMap {
+                put("phase", event.snapshot.phase.name); put("display_id", event.snapshot.displayId.toString())
+                event.snapshot.failure?.let { put("failure_code", it.code); it.message?.let { message -> put("message", message) } }
+            }) }
 
         if (cleanupActive) {
             if (event.sourceCellId == currentCleanupSourceId && event.snapshot.phase.isCleanupTerminal()) {
@@ -294,6 +302,7 @@ class EmbeddedWorkspaceRunner(
             currentStartupSourceId = null
             phase = EmbeddedWorkspaceRunnerPhase.ACTIVE
             startReply?.complete(EmbeddedWorkspaceRunResult.Started(activeReceipts()))
+            EmbeddedResultEvidence.record(EmbeddedWorkspaceRunResult.Started(activeReceipts()), evidenceGraphId)
             return
         }
 
@@ -306,6 +315,8 @@ class EmbeddedWorkspaceRunner(
                 admit(Event.Snapshot(sourceCellId, snapshot))
             }
         } catch (failure: Exception) {
+            EmbeddedEvidence.observe { EmbeddedEvidence.app("runner.create.failure", cell = sourceCellId,
+                graph = evidenceGraphId, fields = EmbeddedEvidence.errorFields(failure)) }
             beginCleanup(
                 CleanupReason.StartFailure(
                     sourceCellId,
@@ -317,11 +328,16 @@ class EmbeddedWorkspaceRunner(
 
         val item = OwnedItem(prepared, handle)
         ownedItems[sourceCellId] = item
+        EmbeddedEvidence.observe { EmbeddedEvidence.app("session.link", handle.sessionId.value, sourceCellId,
+            evidenceGraphId, mapOf("surface_identity" to System.identityHashCode(prepared.executionSurface).toString(),
+                "surface_valid" to prepared.executionSurface.isValid.toString())) }
 
         schedulePhaseTimeout(sourceCellId, PhaseWaitKind.READY)
         try {
             handle.connect()
         } catch (failure: Exception) {
+            EmbeddedEvidence.observe { EmbeddedEvidence.app("runner.connect.failure", handle.sessionId.value,
+                sourceCellId, evidenceGraphId, EmbeddedEvidence.errorFields(failure)) }
             beginCleanup(
                 CleanupReason.StartFailure(
                     sourceCellId,
@@ -348,6 +364,8 @@ class EmbeddedWorkspaceRunner(
         try {
             item.handle.start(item.prepared.executionSurface)
         } catch (failure: Exception) {
+            EmbeddedEvidence.observe { EmbeddedEvidence.app("runner.start.failure", item.handle.sessionId.value,
+                sourceCellId, evidenceGraphId, EmbeddedEvidence.errorFields(failure)) }
             beginCleanup(
                 CleanupReason.StartFailure(
                     sourceCellId,
@@ -398,6 +416,7 @@ class EmbeddedWorkspaceRunner(
             is CleanupReason.StartFailure, is CleanupReason.SurfaceLoss -> EmbeddedWorkspaceRunnerPhase.ROLLING_BACK
             CleanupReason.Stop, is CleanupReason.Recovery -> EmbeddedWorkspaceRunnerPhase.STOPPING
         }
+        EmbeddedEvidence.app("runner.rollback.begin", graph = evidenceGraphId, fields = mapOf("kind" to reason.javaClass.simpleName))
         cleanupOrder = ownedItems.keys.toList().asReversed()
         cleanupIndex = 0
         cleanupOutcomes.clear()
@@ -431,8 +450,18 @@ class EmbeddedWorkspaceRunner(
             admit(Event.CleanupTimeout(sourceCellId, token))
         }
 
+        EmbeddedEvidence.observe { EmbeddedEvidence.app("runner.rollback.step", item.handle.sessionId.value,
+            sourceCellId, evidenceGraphId, mapOf("step" to "stop", "state" to "begin")) }
         runCatching { item.handle.stop() }
+            .onSuccess { EmbeddedEvidence.observe { EmbeddedEvidence.app("runner.rollback.step", item.handle.sessionId.value,
+                sourceCellId, evidenceGraphId, mapOf("step" to "stop", "state" to "returned")) } }
+            .onFailure { error -> EmbeddedEvidence.observe { EmbeddedEvidence.app("runner.rollback.failure", item.handle.sessionId.value,
+                sourceCellId, evidenceGraphId, EmbeddedEvidence.errorFields(error) + ("step" to "stop")) } }
         runCatching { item.handle.close() }
+            .onSuccess { EmbeddedEvidence.observe { EmbeddedEvidence.app("runner.rollback.step", item.handle.sessionId.value,
+                sourceCellId, evidenceGraphId, mapOf("step" to "close", "state" to "returned")) } }
+            .onFailure { error -> EmbeddedEvidence.observe { EmbeddedEvidence.app("runner.rollback.failure", item.handle.sessionId.value,
+                sourceCellId, evidenceGraphId, EmbeddedEvidence.errorFields(error) + ("step" to "close")) } }
     }
 
     private fun completeCurrentCleanup(sourceCellId: String, snapshot: EmbeddedSessionSnapshot) {
@@ -514,6 +543,7 @@ class EmbeddedWorkspaceRunner(
     }
 
     private fun terminate(result: EmbeddedWorkspaceRunResult) {
+        EmbeddedResultEvidence.record(result, evidenceGraphId)
         // The result is already a complete value copy. Close admission before detaching handles.
         synchronized(admissionLock) {
             terminalSources = ownedItems.keys.toSet()

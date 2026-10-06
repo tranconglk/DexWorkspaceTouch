@@ -1,0 +1,11 @@
+{
+  "linked_sids": {},
+  "reasons": [
+    "OMITTED_OR_TRUNCATED",
+    "MISSING_TIMELINE",
+    "MISSING_RESULT_TAIL"
+  ],
+  "observed_failures": [],
+  "authority": "NOT_VERIFIED",
+  "verification": "NOT_VERIFIED"
+}

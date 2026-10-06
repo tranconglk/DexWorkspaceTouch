@@ -1,0 +1,84 @@
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>if "Windows_NT" == "Windows_NT" setlocal
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>set DIRNAME=D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012\ 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>if "D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012\" == "" set DIRNAME=. 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>set APP_BASE_NAME=gradlew 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>set APP_HOME=D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012\ 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>for %i in ("D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012\") do set APP_HOME=%~fi 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>set APP_HOME=D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012\ 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m" 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>if defined JAVA_HOME goto findJavaFromJavaHome 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>set JAVA_HOME=C:\Program Files\Android\Android Studio\jbr 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>set JAVA_EXE=C:\Program Files\Android\Android Studio\jbr/bin/java.exe 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>if exist "C:\Program Files\Android\Android Studio\jbr/bin/java.exe" goto execute 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>set CLASSPATH= 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>"C:\Program Files\Android\Android Studio\jbr/bin/java.exe" "-Xmx64m" "-Xms64m"   "-Dorg.gradle.appname=gradlew" -classpath "" -jar "D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012\\gradle\wrapper\gradle-wrapper.jar" :app:assembleDebug --console=plain 
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:compileDebugAidl UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:generateDebugRFile UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:kspDebugKotlin
+> Task :app:generateDebugGlobalSynthetics
+> Task :app:desugarDebugFileDependencies
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugJniLibFolders
+> Task :app:mergeLibDexDebug
+> Task :app:mergeDebugNativeLibs
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so. Run with --info option to learn more.
+
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:compileDebugKotlin
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJavaResource
+> Task :app:mergeExtDexDebug
+> Task :app:dexBuilderDebug
+> Task :app:mergeProjectDexDebug
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 26s
+40 actionable tasks: 20 executed, 20 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.4.1/userguide/configuration_cache_enabling.html
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>if 0 EQU 0 goto mainEnd 
+
+D:\AndroidStudioProjects\DexWorkspaceTouch-VDM-012>if "Windows_NT" == "Windows_NT" endlocal

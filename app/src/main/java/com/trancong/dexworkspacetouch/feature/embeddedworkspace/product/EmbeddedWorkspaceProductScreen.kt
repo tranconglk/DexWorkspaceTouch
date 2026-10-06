@@ -190,12 +190,16 @@ private fun createProductRouteExecution(
     probe: AndroidEmbeddedCapabilityProbe,
 ): ProductRouteExecution {
     val scope = application.createEmbeddedProductRunScope()
+    val evidenceGraphId = java.util.UUID.randomUUID().toString()
+    com.trancong.dexworkspacetouch.diagnostics.embedded.EmbeddedEvidence.app("host.link", graph = evidenceGraphId,
+        fields = mapOf("host_identity" to System.identityHashCode(activity).toString()))
     val runner = EmbeddedWorkspaceRunner(
         preflight = EmbeddedWorkspacePreflight(snapshot.asPolicy()),
         sessionFactory = AndroidEmbeddedWorkspaceSessionFactory(activity.applicationContext),
         timeoutPolicy = PROOF_EMBEDDED_WORKSPACE_TIMEOUTS,
         scope = scope,
         dispatcher = Dispatchers.Main.immediate,
+        evidenceGraphId = evidenceGraphId,
     )
     val renderer = EmbeddedWorkspaceRendererCoordinator(snapshot, EmbeddedWorkspaceLayoutMapper(),
         EmbeddedWorkspaceRunnerController(snapshot.planSnapshot, runner))
@@ -205,7 +209,7 @@ private fun createProductRouteExecution(
         object : EmbeddedProductExecution {
             override suspend fun start(): EmbeddedWorkspaceRunResult? = renderer.start()
             override suspend fun close(): EmbeddedWorkspaceRunResult? = renderer.close()
-        }, scope)
+        }, scope, evidenceGraphId)
     return ProductRouteExecution(scope, renderer, product, probe)
 }
 

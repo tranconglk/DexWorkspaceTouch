@@ -1,4 +1,6 @@
 package com.trancong.dexworkspacetouch.feature.embeddedworkspace.product
+import com.trancong.dexworkspacetouch.diagnostics.embedded.EmbeddedEvidence
+import com.trancong.dexworkspacetouch.diagnostics.embedded.EmbeddedResultEvidence
 
 import com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.EmbeddedWorkspaceRunResult
 import kotlinx.coroutines.CoroutineScope
@@ -36,6 +38,7 @@ class EmbeddedWorkspaceProductController(
     hostReadiness: () -> ProductHostReadiness,
     execution: EmbeddedProductExecution,
     private val appRunScope: CoroutineScope,
+    private val evidenceGraphId: String? = null,
 ) {
     private val lock = Any()
     private var hostReadiness: (() -> ProductHostReadiness)? = hostReadiness
@@ -88,6 +91,9 @@ class EmbeddedWorkspaceProductController(
             val acquired = gate.tryAcquireEmbedded(workspaceId) ?: return ProductStartOutcome.Busy
             val start = checkNotNull(gate.startOperation(acquired))
             operation = start
+            EmbeddedEvidence.app("product.operation", graph = evidenceGraphId, fields = mapOf(
+                "token_identity" to System.identityHashCode(acquired).toString(),
+                "product_generation" to start.generation.toString(), "start_operation" to start.operationId.toString()))
             mutableRecovery.value = recoveryFrom(gate.status.value)
             val checkedHost = checkNotNull(hostReadiness).invoke()
             if (!checkedHost.rendererReady || !checkedHost.controllerCanStart) {
@@ -107,13 +113,18 @@ class EmbeddedWorkspaceProductController(
             appRunScope.async(start = CoroutineStart.UNDISPATCHED) {
                 check(gate.markInvoked(start))
                 val result = try { currentExecution.start() }
-                catch (_: Exception) { null }
+                catch (error: Exception) {
+                    EmbeddedEvidence.observe { EmbeddedEvidence.app("product.start.failure", graph = evidenceGraphId,
+                        fields = EmbeddedEvidence.errorFields(error)) }
+                    null
+                }
                 if (result == null) {
                     synchronized(lock) {
                         if (gate.recordMissingStartResult(start)) mutableRecovery.value = recoveryFrom(gate.status.value)
                     }
                     ProductStartOutcome.Uncertain
                 } else {
+                    EmbeddedResultEvidence.record(result, evidenceGraphId, "product.raw")
                     val accepted = synchronized(lock) { consume(start, ProductExecutionValue.from(result)) }
                     if (accepted) ProductStartOutcome.RunResult(result) else ProductStartOutcome.Uncertain
                 }
@@ -145,7 +156,11 @@ class EmbeddedWorkspaceProductController(
     }
 
     suspend fun observeResult(operation: ProductRunOperation, result: EmbeddedWorkspaceRunResult) = synchronized(lock) {
-        if (operation != this.operation) return@synchronized false
+        EmbeddedResultEvidence.record(result, evidenceGraphId, "product.observed")
+        if (operation != this.operation) {
+            EmbeddedEvidence.app("product.acceptance", graph = evidenceGraphId, fields = mapOf("accepted" to "false", "disposition" to "operation_mismatch"))
+            return@synchronized false
+        }
         val value = ProductExecutionValue.from(result)
         if (!consume(operation, value)) return@synchronized false
         if (value.kind != ProductResultKind.STARTED) {
@@ -190,7 +205,12 @@ class EmbeddedWorkspaceProductController(
         val currentExecution = execution
         return appRunScope.async(start = CoroutineStart.UNDISPATCHED) {
             val result = try { currentExecution?.close() }
-            catch (_: Exception) { null }
+            catch (error: Exception) {
+                EmbeddedEvidence.observe { EmbeddedEvidence.app("product.close.failure", graph = evidenceGraphId,
+                    fields = EmbeddedEvidence.errorFields(error)) }
+                null
+            }
+            result?.let { EmbeddedResultEvidence.record(it, evidenceGraphId, "product.cleanup") }
             synchronized(lock) {
                 if (cleanup != null) consume(cleanup, ProductExecutionValue.from(result))
                 startWork?.cancel()
@@ -203,7 +223,16 @@ class EmbeddedWorkspaceProductController(
     }
 
     private fun consume(operation: ProductRunOperation, value: ProductExecutionValue): Boolean {
-        if (!gate.acceptResult(operation, value)) return false
+        EmbeddedEvidence.app("product.projection", graph = evidenceGraphId, fields = buildMap {
+            put("product_generation", operation.generation.toString())
+            put(if (operation.kind == ProductOperationKind.START) "start_operation" else "cleanup_operation", operation.operationId.toString())
+            put("result_kind", value.kind.name); put("authoritative_clean", value.authoritativeClean.toString())
+            put("allocation_evidence", value.allocationEvidence.name); put("cleanup_evidence", value.cleanupEvidence.name)
+            value.issue?.let { put("issue_code", it.code) }
+        })
+        val accepted = gate.acceptResult(operation, value)
+        EmbeddedEvidence.app("product.acceptance", graph = evidenceGraphId, fields = mapOf("accepted" to accepted.toString()))
+        if (!accepted) return false
         mutableRecovery.value = recoveryFrom(gate.status.value)
         if (value.kind != ProductResultKind.STARTED) {
             cleanupCompleted = gate.state.value == ProductRunPhase.IDLE
