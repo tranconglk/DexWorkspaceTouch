@@ -1,0 +1,65 @@
+﻿{
+    "task":  "DWT-VDM-011-D1",
+    "outcome":  "D1-C",
+    "milestone":  "IN PROGRESS / BLOCKED_BY_UNRESOLVED_OWNERSHIP",
+    "exactRun":  {
+                     "workspaceId":  "fc3b92c6-900a-4111-89ef-910ab90d400e",
+                     "generation":  3,
+                     "productStartOperation":  5,
+                     "productCleanupOperation":  "unknown",
+                     "sourceCellId":  "cell_a",
+                     "ownedSid":  "db621ed2-c769-408e-b901-7679ee03bd4f",
+                     "ipcLeaseOperation":  "unknown; separate namespace from product Start operation 5"
+                 },
+    "correlation":  [
+                        {
+                            "time":  "2026-10-05T16:54:35.215Z",
+                            "provenance":  "single-fresh-clean-diagnostic.txt",
+                            "observation":  "Previous different SID generation 2/start 3/cleanup 4 clean; not release for blocked SID"
+                        },
+                        {
+                            "time":  "2026-10-05 23:58 +07:00 (minute precision only)",
+                            "provenance":  "screenshots/dual-refreshed.png system clock",
+                            "observation":  "Selected dual workspace Ready, no panes before explicit Start"
+                        },
+                        {
+                            "time":  "2026-10-05 23:59 +07:00 (minute precision only)",
+                            "provenance":  "screenshots/dual-after-start.png system clock",
+                            "observation":  "After one explicit Start, blocked product UI"
+                        },
+                        {
+                            "time":  "2026-10-05T17:00:11.940Z",
+                            "provenance":  "dual-blocked-diagnostic.txt snapshot UTC",
+                            "observation":  "Exact SID/cell generation 3/product Start 5; START_FAILED/INCOMPLETE/CLEANUP_BLOCKED; this is snapshot time, not exact IPC failure time"
+                        },
+                        {
+                            "time":  "2026-10-06 00:08 +07:00 (minute precision only)",
+                            "provenance":  "screenshots/final-blocked-library.png system clock",
+                            "observation":  "Library carries unresolved banner; navigation is not release"
+                        },
+                        {
+                            "time":  "2026-10-06T02:01:28Z",
+                            "provenance":  "D1 read-only-system-observation.json deviceReportedUtc",
+                            "observation":  "Read-only retained-log/input observation; no expected input-name match, no release inferred"
+                        }
+                    ],
+    "startRootCause":  {
+                           "status":  "NOT VERIFIED",
+                           "mostPreciseSupported":  "Accepted local non-success StartCompletion surfaced as lifecycle START_FAILED before cell_a ACTIVE; negative remote Bundle vs IPC exception cannot be distinguished from retained product evidence",
+                           "rawException":  "not in captured 011 durable evidence; selected retained log tags empty",
+                           "originalStartFailureTimestamp":  "NOT VERIFIED",
+                           "timingIsNotRootCause":  true
+                       },
+    "authoritativeRelease":  {
+                                 "status":  "NOT VERIFIED",
+                                 "observedAcceptedResult":  "StartFailed with partialReceipt FAILED and rollback Incomplete/START_FAILED",
+                                 "exactOwnedCleanFound":  false,
+                                 "qualifier":  "No CLEAN found in reviewed retained evidence; no claim that remote rollback or private manager clean never occurred",
+                                 "remoteReservationAndResourceAllocation":  "NOT VERIFIED",
+                                 "remoteStopResult":  "NOT VERIFIED"
+                             },
+    "deviceRetestEligibility":  "NOT ELIGIBLE; 011 remains stopped",
+    "architectureBoundary":  "Immutable FAILED session lifecycle, runner terminal detach/cache and fail-closed product gate lack accepted path to promote absent/unexported post-failure exact-owned cleanup evidence; safe unlock/recovery would change lifecycle/result/authority/cleanup contract and requires Charter review",
+    "deviceMutation":  "none; D1 used logcat dump/buffer info, dumpsys input and date only; no app/remote control",
+    "tests":  "Accepted 010 characterization 1/1 reused and XML hash verified; no fresh test/RED/GREEN, no duplicate suite"
+}

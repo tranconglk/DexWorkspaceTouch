@@ -1,0 +1,14 @@
+﻿{
+    "classification":  "LOCAL_FAKE_ACCEPTED_010_REUSED",
+    "newExecution":  false,
+    "tests":  1,
+    "failures":  0,
+    "errors":  0,
+    "skipped":  0,
+    "path":  "verification/dwt-vdm-010/final-acceptance-20261005/A-start-failure-current.xml",
+    "sha256":  "a56a4f38bec4fa24940ccaf8ef472280167af3916fc25162f2d274ec9d2a33c9",
+    "verifiedAgainst":  "verification/dwt-vdm-010/final-acceptance-20261005/verification-review.json",
+    "behavior":  "Different injected raw Start causes remain distinct in runner but produce identical product evidence; FAILED terminal yields Incomplete and gate blocks",
+    "limitation":  "Does not identify 011 exception or prove remote cleanup",
+    "newBehavioralRed":  "not run; no production patch"
+}

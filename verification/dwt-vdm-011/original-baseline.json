@@ -1,0 +1,759 @@
+﻿{
+    "head":  "db69bed601eceea12259249c89f0f5276793e425",
+    "branch":  "release/1.0-beta",
+    "indexSha256":  "7a2008a220d1a6bd256eb0e10faec3d22816c0980b866b00b046c3fc1b7537dd",
+    "status":  [
+                   " M experiments/shizuku-task-probe/app/src/main/java/com/trancong/dexworkspacetouch/shizukuprobe/MainActivity.java",
+                   " M experiments/shizuku-task-probe/app/src/main/java/com/trancong/dexworkspacetouch/shizukuprobe/ProbeUserService.java",
+                   "?? docs/compat/COMP-012R_HISTORY_ASSISTED_REUSE_DESIGN.md",
+                   "?? docs/superpowers/plans/2026-10-01-dwt-vdm-009r-i-process-death-recovery-implementation.md",
+                   "?? docs/superpowers/specs/2026-10-01-dwt-vdm-009r-a-association-root-recovery-design.md",
+                   "?? docs/superpowers/specs/2026-10-01-dwt-vdm-009r-d-process-death-recovery-decision.md",
+                   "?? docs/superpowers/specs/2026-10-01-dwt-vdm-009r-process-death-ownership-recovery-design.md",
+                   "?? experiments/dwt-vdm-009r-i-platform-probe/app/build.gradle.kts",
+                   "?? experiments/dwt-vdm-009r-i-platform-probe/app/src/main/AndroidManifest.xml",
+                   "?? experiments/dwt-vdm-009r-i-platform-probe/app/src/main/aidl/com/trancong/dexworkspacetouch/recoveryprobe/IRecoveryProbeService.aidl",
+                   "?? experiments/dwt-vdm-009r-i-platform-probe/app/src/main/java/com/trancong/dexworkspacetouch/recoveryprobe/DeclaredRootProbe.java",
+                   "?? experiments/dwt-vdm-009r-i-platform-probe/app/src/main/java/com/trancong/dexworkspacetouch/recoveryprobe/ExactAssociationProbe.java",
+                   "?? experiments/dwt-vdm-009r-i-platform-probe/app/src/main/java/com/trancong/dexworkspacetouch/recoveryprobe/ProbeEvidence.java",
+                   "?? experiments/dwt-vdm-009r-i-platform-probe/app/src/main/java/com/trancong/dexworkspacetouch/recoveryprobe/RecoveryProbeActivity.java",
+                   "?? experiments/dwt-vdm-009r-i-platform-probe/app/src/main/java/com/trancong/dexworkspacetouch/recoveryprobe/RecoveryProbeUserService.java",
+                   "?? experiments/dwt-vdm-009r-i-platform-probe/app/src/test/java/com/trancong/dexworkspacetouch/recoveryprobe/ExactProbeClassificationTest.java",
+                   "?? experiments/dwt-vdm-009r-i-platform-probe/build.gradle.kts",
+                   "?? experiments/dwt-vdm-009r-i-platform-probe/settings.gradle.kts",
+                   "?? smoke-output/dwt006-after-start.png",
+                   "?? smoke-output/dwt006-before.png",
+                   "?? smoke-output/dwt006-fresh-blocker.png",
+                   "?? smoke-output/dwt006-phone-after.png",
+                   "?? smoke-output/dwt006-revalidation-after-start.png",
+                   "?? smoke-output/dwt006-revalidation-after-stop.png",
+                   "?? smoke-output/dwt006-revalidation-calculator-56.png",
+                   "?? smoke-output/dwt006-revalidation-home.png",
+                   "?? smoke-output/dwt006-revalidation-ready.png",
+                   "?? smoke-output/dwt006-revalidation-waze-interaction.png",
+                   "?? smoke-output/task9-20261002/01-home.png",
+                   "?? smoke-output/task9-20261002/02-home.png",
+                   "?? smoke-output/task9-20261002/03-developer-sheet.png",
+                   "?? smoke-output/task9-20261002/04-home-sheet-closed.png",
+                   "?? smoke-output/task9-20261002/05-shizuku-initial.png",
+                   "?? smoke-output/task9-20261002/06-shizuku-app-permission.png",
+                   "?? smoke-output/task9-20261002/07-shizuku-menu.png",
+                   "?? smoke-output/task9-20261002/08-shizuku-restored-ui.png",
+                   "?? smoke-output/task9-20261002/09-shizuku-stop-menu.png",
+                   "?? smoke-output/task9-20261002/10-shizuku-stop-confirm.png",
+                   "?? smoke-output/task9-20261002/11-shizuku-confirm-stable.png",
+                   "?? smoke-output/task9-20261002/12-shizuku-stopped.png",
+                   "?? smoke-output/task9-20261002/13-library-lower.png",
+                   "?? smoke-output/task9-20261002/14-workspace-selected.png",
+                   "?? smoke-output/task9-20261002/15-embedded-shizuku-unavailable.png",
+                   "?? smoke-output/task9-20261002/16-embedded-unavailable-settled.png",
+                   "?? smoke-output/task9-20261002/17-classic-shizuku-unavailable.png",
+                   "?? smoke-output/task9-20261002/18-dwt-after-classic.png",
+                   "?? smoke-output/task9-20261002/19-home-clipboard-setup.png",
+                   "?? smoke-output/task9-20261002/20-clipboard-sentinel-paste.png",
+                   "?? smoke-output/task9-20261002/21-selected-proof-before-refresh.png",
+                   "?? smoke-output/task9-20261002/22-unavailable-before-shizuku-restore.png",
+                   "?? smoke-output/task9-20261002/23-unavailable-route.png",
+                   "?? smoke-output/task9-20261002/24-shizuku-normal-start-flow.png",
+                   "?? smoke-output/task9-20261002/25-readiness-after-normal-shizuku-start.png",
+                   "?? smoke-output/task9-20261002/26-start-immediate.png",
+                   "?? smoke-output/task9-20261002/27-start-progress.png",
+                   "?? smoke-output/task9-20261002/29-normal-back-cleanup.png",
+                   "?? smoke-output/task9-20261002/30-post-cleanup-home.png",
+                   "?? smoke-output/task9-20261002/31-clipboard-unchanged-before-copy.png",
+                   "?? smoke-output/task9-20261002/32-terminal-status-before-copy.png",
+                   "?? smoke-output/task9-20261002/33-explicit-diagnostics-copy.png",
+                   "?? smoke-output/task9-20261002/34-diagnostics-paste-ui.png",
+                   "?? smoke-output/task9-20261002/35-after-terminal-route-back.png",
+                   "?? smoke-output/task9-20261002/36-copied-diagnostics-pasted.png",
+                   "?? smoke-output/task9-20261002/39-final-home.png",
+                   "?? smoke-output/task9-20261002/dex-preflight.png",
+                   "?? verification/dwt-vdm-005-final/a-interactive-after-stop-b.png",
+                   "?? verification/dwt-vdm-005-final/after-stop-a.png",
+                   "?? verification/dwt-vdm-005-final/after-stop-b.png",
+                   "?? verification/dwt-vdm-005-final/calculator-56.png",
+                   "?? verification/dwt-vdm-005-final/cancel-result.png",
+                   "?? verification/dwt-vdm-005-final/connect-check.png",
+                   "?? verification/dwt-vdm-005-final/dual-initial.png",
+                   "?? verification/dwt-vdm-005-final/home.png",
+                   "?? verification/dwt-vdm-005-final/ready.png",
+                   "?? verification/dwt-vdm-005-final/rerun-a-active.png",
+                   "?? verification/dwt-vdm-005-final/rerun-ab-active.png",
+                   "?? verification/dwt-vdm-005-final/rerun-ready.png",
+                   "?? verification/dwt-vdm-005-final/stopped-clean.png",
+                   "?? verification/dwt-vdm-009/dex-action.png",
+                   "?? verification/dwt-vdm-009/dex-active.png",
+                   "?? verification/dwt-vdm-009/dex-after-shizuku.png",
+                   "?? verification/dwt-vdm-009/dex-current.png",
+                   "?? verification/dwt-vdm-009/dex-prestart.png",
+                   "?? verification/dwt-vdm-009/dex-ready.png",
+                   "?? verification/dwt-vdm-009/dex-refresh.png",
+                   "?? verification/dwt-vdm-009/dex-route.png",
+                   "?? verification/dwt-vdm-009/dex-route2.png",
+                   "?? verification/dwt-vdm-009/dex-selected.png",
+                   "?? verification/dwt-vdm-009r-a/prior-api-inventory.json",
+                   "?? verification/dwt-vdm-009r-a/protected-paths-before.json",
+                   "?? verification/dwt-vdm-009r-a/spec-before-p1.md",
+                   "?? verification/dwt-vdm-009r-a/task-p1-association-root-feasibility.md",
+                   "?? verification/dwt-vdm-009r-a/tracked-diff-before.patch",
+                   "?? verification/dwt-vdm-009r-a/verification-checks.txt",
+                   "?? verification/dwt-vdm-009r-i/ExactProbeClassificationTest.xml",
+                   "?? verification/dwt-vdm-009r-i/baseline-associations.txt",
+                   "?? verification/dwt-vdm-009r-i/baseline-virtualdevice.txt",
+                   "?? verification/dwt-vdm-009r-i/final-associations.txt",
+                   "?? verification/dwt-vdm-009r-i/final-virtualdevice.txt",
+                   "?? verification/dwt-vdm-009r-i/permission-screen.png",
+                   "?? verification/dwt-vdm-009r-i/preconditions.txt",
+                   "?? verification/dwt-vdm-009r-i/probe-artifact.txt",
+                   "?? verification/dwt-vdm-009r-i/probe-events.jsonl",
+                   "?? verification/dwt-vdm-009r-i/protected-paths-before-device-proof.json",
+                   "?? verification/dwt-vdm-009r-i/task-0-platform-feasibility.md",
+                   "?? verification/dwt005-a-active.xml",
+                   "?? verification/dwt005-a-connected.xml",
+                   "?? verification/dwt005-a-interactive.png",
+                   "?? verification/dwt005-a-ready.xml",
+                   "?? verification/dwt005-after-stop-b.png",
+                   "?? verification/dwt005-b-pane.xml",
+                   "?? verification/dwt005-both.png",
+                   "?? verification/dwt005-dual-r1.xml",
+                   "?? verification/dwt005-dual.png",
+                   "?? verification/dwt005-dual.xml",
+                   "?? verification/dwt005-home.png",
+                   "?? verification/dwt005-host-scroll.xml",
+                   "?? verification/dwt005-host-scroll2.xml",
+                   "?? verification/dwt005-host-scroll3.xml",
+                   "?? verification/dwt005-host21.png",
+                   "?? verification/dwt005-ready.png",
+                   "?? verification/dwt005-touch-b.png",
+                   "?? verification/dwt005.xml",
+                   "?? verification/dwt007-after-start.png",
+                   "?? verification/dwt007-assign.png",
+                   "?? verification/dwt007-cal-state.png",
+                   "?? verification/dwt007-calculator-56.png",
+                   "?? verification/dwt007-calibrated.png",
+                   "?? verification/dwt007-canvas.png",
+                   "?? verification/dwt007-canvas.xml",
+                   "?? verification/dwt007-current.png",
+                   "?? verification/dwt007-current.xml",
+                   "?? verification/dwt007-diagnostic.png",
+                   "?? verification/dwt007-editor.png",
+                   "?? verification/dwt007-editor.xml",
+                   "?? verification/dwt007-forensic.png",
+                   "?? verification/dwt007-fresh.png",
+                   "?? verification/dwt007-library.png",
+                   "?? verification/dwt007-picker.png",
+                   "?? verification/dwt007-pre.png",
+                   "?? verification/dwt007-pre.xml",
+                   "?? verification/dwt007-prestart.png",
+                   "?? verification/dwt007-ratio.png",
+                   "?? verification/dwt007-ratio.xml",
+                   "?? verification/dwt007-resize.png",
+                   "?? verification/dwt007-return.png",
+                   "?? verification/dwt007-save.png",
+                   "?? verification/dwt007-selected.png",
+                   "?? verification/dwt007-stopped.png",
+                   "?? verification/dwt007-waze-pan.png"
+               ],
+    "files":  [
+                  {
+                      "path":  "experiments/shizuku-task-probe/app/src/main/java/com/trancong/dexworkspacetouch/shizukuprobe/MainActivity.java",
+                      "sha256":  "5bcc29bbddca13c1d5487bd10af0ba72485183a43be08549fc9dc8046fb19e03"
+                  },
+                  {
+                      "path":  "experiments/shizuku-task-probe/app/src/main/java/com/trancong/dexworkspacetouch/shizukuprobe/ProbeUserService.java",
+                      "sha256":  "d4be7b055a2d352df3651f7649e4baab55fc7a8c5f111d76ef878bed9706494c"
+                  },
+                  {
+                      "path":  "docs/compat/COMP-012R_HISTORY_ASSISTED_REUSE_DESIGN.md",
+                      "sha256":  "607580fc690fad3639f1d385d7f4377e2a33bf77145ac6b9a3ffb42142633b59"
+                  },
+                  {
+                      "path":  "docs/superpowers/plans/2026-10-01-dwt-vdm-009r-i-process-death-recovery-implementation.md",
+                      "sha256":  "ba88abf321aa735ee8baaee4278e60f4022876795c019257effc140b3ec0dad7"
+                  },
+                  {
+                      "path":  "docs/superpowers/specs/2026-10-01-dwt-vdm-009r-a-association-root-recovery-design.md",
+                      "sha256":  "30223c18bc33a1602f959865322da1fb257b59887b6354c6d066a76ff0e8f57c"
+                  },
+                  {
+                      "path":  "docs/superpowers/specs/2026-10-01-dwt-vdm-009r-d-process-death-recovery-decision.md",
+                      "sha256":  "c1fc1f4d714f815912af0ccfd21969175acfdffaaf5f770b1ee76576c7f453e2"
+                  },
+                  {
+                      "path":  "docs/superpowers/specs/2026-10-01-dwt-vdm-009r-process-death-ownership-recovery-design.md",
+                      "sha256":  "f61941cd5f58775e1f47398d4e12b51568c0169ab7cb3154177ceab8be0330b7"
+                  },
+                  {
+                      "path":  "experiments/dwt-vdm-009r-i-platform-probe/app/build.gradle.kts",
+                      "sha256":  "bf82d8604bbdc6c9a5a09ec8c50290de9176a03f38d4ecc4cf8df0e76a91750e"
+                  },
+                  {
+                      "path":  "experiments/dwt-vdm-009r-i-platform-probe/app/src/main/AndroidManifest.xml",
+                      "sha256":  "763732f1141090c81d67cf0a878dd782885e5a1d141bb0824142bf436b678974"
+                  },
+                  {
+                      "path":  "experiments/dwt-vdm-009r-i-platform-probe/app/src/main/aidl/com/trancong/dexworkspacetouch/recoveryprobe/IRecoveryProbeService.aidl",
+                      "sha256":  "2fe4e5912424884e224513a056c5ac63a9df8c29581c245b045540cc2a9bd4b2"
+                  },
+                  {
+                      "path":  "experiments/dwt-vdm-009r-i-platform-probe/app/src/main/java/com/trancong/dexworkspacetouch/recoveryprobe/DeclaredRootProbe.java",
+                      "sha256":  "df73c79965862d065c1c1ec1b48b048aea65b8c94e2899935364257739ce1634"
+                  },
+                  {
+                      "path":  "experiments/dwt-vdm-009r-i-platform-probe/app/src/main/java/com/trancong/dexworkspacetouch/recoveryprobe/ExactAssociationProbe.java",
+                      "sha256":  "9fcd903e3fc30948350d304ea1a29e2f56317874f947392f4ca228c64d7a553d"
+                  },
+                  {
+                      "path":  "experiments/dwt-vdm-009r-i-platform-probe/app/src/main/java/com/trancong/dexworkspacetouch/recoveryprobe/ProbeEvidence.java",
+                      "sha256":  "06b88e7e9b94ce807fe47923e644b2b278daa1195272649c66d85a6cf964e5e4"
+                  },
+                  {
+                      "path":  "experiments/dwt-vdm-009r-i-platform-probe/app/src/main/java/com/trancong/dexworkspacetouch/recoveryprobe/RecoveryProbeActivity.java",
+                      "sha256":  "897bd60359a161d103cd4e0c14ef3ec128f7d1954b23fc75cd8a641b52be82b8"
+                  },
+                  {
+                      "path":  "experiments/dwt-vdm-009r-i-platform-probe/app/src/main/java/com/trancong/dexworkspacetouch/recoveryprobe/RecoveryProbeUserService.java",
+                      "sha256":  "c96294ec0bd4610cf4c958ce4a95e63f05947a0d01381c0387fd801842e66b7b"
+                  },
+                  {
+                      "path":  "experiments/dwt-vdm-009r-i-platform-probe/app/src/test/java/com/trancong/dexworkspacetouch/recoveryprobe/ExactProbeClassificationTest.java",
+                      "sha256":  "87f0ee6f84fb727928f6fc8200fa625a176974a19d0570bcca6c9ab96b17ebcb"
+                  },
+                  {
+                      "path":  "experiments/dwt-vdm-009r-i-platform-probe/build.gradle.kts",
+                      "sha256":  "6cabee94aac88993acad319e7195667e26033f4bd00d157e1aeac7c1ca9710ce"
+                  },
+                  {
+                      "path":  "experiments/dwt-vdm-009r-i-platform-probe/settings.gradle.kts",
+                      "sha256":  "cf2c64c3a6da22c1357ded453d51c976623eddf57eea80a608a51f2500c3762c"
+                  },
+                  {
+                      "path":  "smoke-output/dwt006-after-start.png",
+                      "sha256":  "ebdca88d695d4880c3d5d13645e63abf4dd543c5814a74ac25f88451ac8d7dab"
+                  },
+                  {
+                      "path":  "smoke-output/dwt006-before.png",
+                      "sha256":  "e2d3194512f1d00faba772245111f82e35967a8f2850eeb1a22db8796bf85143"
+                  },
+                  {
+                      "path":  "smoke-output/dwt006-fresh-blocker.png",
+                      "sha256":  "5905c6c0acaa37e212c96cea8e426729be2f0b595e32a141096ccb1e4cbe087e"
+                  },
+                  {
+                      "path":  "smoke-output/dwt006-phone-after.png",
+                      "sha256":  "5dee2d8a3cbac5483472a90c19816a36e3c97814835b748c5fbc6fcf0414e9a0"
+                  },
+                  {
+                      "path":  "smoke-output/dwt006-revalidation-after-start.png",
+                      "sha256":  "1587f7d3f3ded3bd465c0663ae11baaad0a7d449aa0d65b97106a1407d74f78b"
+                  },
+                  {
+                      "path":  "smoke-output/dwt006-revalidation-after-stop.png",
+                      "sha256":  "3c7307809af9bcd995ec48a519ffb8c07c3b8fde9f79bb462a8d108aa40f27c3"
+                  },
+                  {
+                      "path":  "smoke-output/dwt006-revalidation-calculator-56.png",
+                      "sha256":  "e5de34c94bba0d0585a15ed71527aa1f201590aa8f64348bc0ac4eb55ce48eab"
+                  },
+                  {
+                      "path":  "smoke-output/dwt006-revalidation-home.png",
+                      "sha256":  "86823c916e12a292573b04769560fc8256a8e4234f4b4dc0a1a2817697c7d948"
+                  },
+                  {
+                      "path":  "smoke-output/dwt006-revalidation-ready.png",
+                      "sha256":  "77018f45273264f42652977424a1f5a041fa6f663c5f4cfd3eedf68f01595b4a"
+                  },
+                  {
+                      "path":  "smoke-output/dwt006-revalidation-waze-interaction.png",
+                      "sha256":  "9945085c96304c054dab2eafaca2ca566992ad2aeadc0783e8d9b088e3e43df4"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/01-home.png",
+                      "sha256":  "8614e54d05557b6c11efa17fb4c022be4747aa4da5658fd87801d8acb85374ed"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/02-home.png",
+                      "sha256":  "73f96f0abffe5a71b6beed22516dbc81c2dc7fbc62393d360830ad1d4d956504"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/03-developer-sheet.png",
+                      "sha256":  "33e20a63ed8230385d822f9803fa31171fd65fab4fe497887bf43bad881b7f43"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/04-home-sheet-closed.png",
+                      "sha256":  "e4bee5c6ef238222a8c8d178dd681f2413dce753b0ab91e70603903fa1805a68"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/05-shizuku-initial.png",
+                      "sha256":  "cfb92455817eaca5bddb8b0bff75ea9f7fb6bdb269355da29ebb805c3afb72a8"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/06-shizuku-app-permission.png",
+                      "sha256":  "41de5ca69141c3ba92470ab20dd326acff72e759cf4c209b177cfb6565272022"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/07-shizuku-menu.png",
+                      "sha256":  "7004d6191f89504d8cf891bcbbb26a4af5795c32d8528de33b09afb5a5f16f4f"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/08-shizuku-restored-ui.png",
+                      "sha256":  "e831e0d2f91fbd6e8be8ce9529da881dea097e114e4591fbf3672c82d9a8ba8c"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/09-shizuku-stop-menu.png",
+                      "sha256":  "90babfaec8608dd5fb3c2b83a1d602df3c1631eb0e817579abbd9eaa7fea3b38"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/10-shizuku-stop-confirm.png",
+                      "sha256":  "2eeec42f5300a6953dcd441c144a6c25ed3a16a0cb661c037c0622996f32e5c7"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/11-shizuku-confirm-stable.png",
+                      "sha256":  "88f9d835b8fb0cf43f90da4b7dd00efb93d0e89a1844e004f6d1f5998eaa6d74"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/12-shizuku-stopped.png",
+                      "sha256":  "fbf00884267876cd6ccf4d028ef9ad6ad4e825a0150497d57fc77afe191bd4df"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/13-library-lower.png",
+                      "sha256":  "e1117af2a198a762f14df5aa3088ce8da1d46f6ee264ea9c17ca93c665ccd3c9"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/14-workspace-selected.png",
+                      "sha256":  "20e760d5d3ab6408be28d8a6d72842000bd0fa69147275e3e587a32eab54fa96"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/15-embedded-shizuku-unavailable.png",
+                      "sha256":  "6140c697df72b414b9341e8f2d38339fb52f68f8fa951f441e434a5ddcdca755"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/16-embedded-unavailable-settled.png",
+                      "sha256":  "939e374918154af0e3109a70f02198fb1237f4da3591357c70453eec13d46357"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/17-classic-shizuku-unavailable.png",
+                      "sha256":  "5cf5a15fb1f42eeaeefc9b14f927ea337f80680efb6201efa53d7c76a6e4bc43"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/18-dwt-after-classic.png",
+                      "sha256":  "3e458f1b9989cfb60801460682ab8a6ba16922ed5dea266a7ccf84d2ceb16cd0"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/19-home-clipboard-setup.png",
+                      "sha256":  "9eb0823e09fddcad299244cda1ee9383695bf43be8f920e258255820b49da2b3"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/20-clipboard-sentinel-paste.png",
+                      "sha256":  "8d85533274a91cedf313eb7179221b4180e41cbefba6ed77821098857c1b468c"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/21-selected-proof-before-refresh.png",
+                      "sha256":  "8883227d93d0429dd6667a3d3b8d9d283543bd94e2b31e40a110fb237997466c"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/22-unavailable-before-shizuku-restore.png",
+                      "sha256":  "55bd662bbba420946080ba3eb3f9f68f87c87c9ea9b825299f899e10e8da7732"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/23-unavailable-route.png",
+                      "sha256":  "b4a56a2b6bc97b211e4efb1fcb42f6eabca5d4da655951e64d74a2c530211fbd"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/24-shizuku-normal-start-flow.png",
+                      "sha256":  "95b3f236c7f86fca3afd99e78eb07dea774bd4b822692ba85ae809322a77bfcf"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/25-readiness-after-normal-shizuku-start.png",
+                      "sha256":  "0139deb8e348387a18c6adf7ed57fd296efe16f276460b78d0b58bd79e5633a4"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/26-start-immediate.png",
+                      "sha256":  "94a39a21b4d456fec84663c1f510e0a24411ed2e50292d005b4091d674be077d"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/27-start-progress.png",
+                      "sha256":  "94a39a21b4d456fec84663c1f510e0a24411ed2e50292d005b4091d674be077d"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/29-normal-back-cleanup.png",
+                      "sha256":  "592deaa11797b30f60bc5eb2df43dd1d93291e85b14c1a76dd4d10376b4c30dc"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/30-post-cleanup-home.png",
+                      "sha256":  "43806103094a7927e3e0e96eeb25d8109173431268f6bd732879481b1f41b85a"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/31-clipboard-unchanged-before-copy.png",
+                      "sha256":  "6d6f97660bbacd202d1ab1ceb89826f1337b3a04c22335fa567b08b6d432340a"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/32-terminal-status-before-copy.png",
+                      "sha256":  "c90f5269272dba8fdfe884cffb8df0aafba3fd836262edaabd0d66d54a65529f"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/33-explicit-diagnostics-copy.png",
+                      "sha256":  "47ec957c26cee229fb53936c8b7ba6237a38af304d78366988346c6f22dc4b0e"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/34-diagnostics-paste-ui.png",
+                      "sha256":  "c516f83ddf2ad790f901b862c2da75d5578365ccf04ff1c5f673e76f92a0ef37"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/35-after-terminal-route-back.png",
+                      "sha256":  "c516f83ddf2ad790f901b862c2da75d5578365ccf04ff1c5f673e76f92a0ef37"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/36-copied-diagnostics-pasted.png",
+                      "sha256":  "564d19451edb095067e01da8ecbb2c837eda4c03c58530194f5c033495a67e0c"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/39-final-home.png",
+                      "sha256":  "3fdbd4d8910b4994863fd691625632600ec510e5204fc994633849950c2087f6"
+                  },
+                  {
+                      "path":  "smoke-output/task9-20261002/dex-preflight.png",
+                      "sha256":  "8675cc00a701729020ba64c89b9490280bf3b998e93c525cbe63fc84167e664b"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-005-final/a-interactive-after-stop-b.png",
+                      "sha256":  "b59aa9b741305cacf474370f42a2ec7f700040a0b51810c0f26de599c46b99a8"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-005-final/after-stop-a.png",
+                      "sha256":  "9e9dd8de62994238a1780c758475f0a4829a9386e1a261ccf161aeafe2a1846c"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-005-final/after-stop-b.png",
+                      "sha256":  "f4146a1417b3009f71e24eba810e10946735e334a84aaea0f4ad4a5c3ad940ea"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-005-final/calculator-56.png",
+                      "sha256":  "ae7f72ea05afb0a42f47a69dc8860ed3ab41765b4095c085ff940df1457c5958"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-005-final/cancel-result.png",
+                      "sha256":  "39a90c3fd311e4d2dcca579ea5103952abdb3da0ccc30cb7ef66eb6e2145dc8d"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-005-final/connect-check.png",
+                      "sha256":  "606a49e003299dce8f41923d86887d0e0e2b8bef0161d7a63cabea6fe9d4c4e5"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-005-final/dual-initial.png",
+                      "sha256":  "e74c64260b5a789d93531fe3af6c2ce83a7c74fd1fa8bdea6ae4d4dccffe844f"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-005-final/home.png",
+                      "sha256":  "b7034dc81d8a723c3c57cf940da23064bc0bfbc8e7446fa6b940fd749687715c"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-005-final/ready.png",
+                      "sha256":  "606a49e003299dce8f41923d86887d0e0e2b8bef0161d7a63cabea6fe9d4c4e5"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-005-final/rerun-a-active.png",
+                      "sha256":  "c5984cbdaacae20eb3ec925b4be3f1778ee8abb8c1ae49009c95d5e576a9227c"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-005-final/rerun-ab-active.png",
+                      "sha256":  "54adbaa9afe0f35c29ed039e0fac6b650a2c905de16564543613c483d47a3298"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-005-final/rerun-ready.png",
+                      "sha256":  "1d213031b16161cd0dac72704db4ce564d22d28a1d3069e6f6910e62c49d8267"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-005-final/stopped-clean.png",
+                      "sha256":  "9254c60517359359db146215c6411ed46c209df5095f5311b2b002f93f580064"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009/dex-action.png",
+                      "sha256":  "39b239d88fc42824c5446e036006fce84e80e2f5134c8629b028e7d4e8db47ef"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009/dex-active.png",
+                      "sha256":  "ac0b5106d1b4f91cdc11c8a9b78246b438a9c9a7bc1ce71eb23f777578866a28"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009/dex-after-shizuku.png",
+                      "sha256":  "c49e8b45e4b62691406282cb92ab74150953a7cd72ed90e15ee420a1016d283b"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009/dex-current.png",
+                      "sha256":  "ecce7511be8c7e8ef073440b8769213b99d1699a5b8e4b70a92acd41bf18a9b5"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009/dex-prestart.png",
+                      "sha256":  "3757b86bb519cae9b6226f5fe32a4c36b1ccffbf80054ce8d8c310b5a0218f9d"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009/dex-ready.png",
+                      "sha256":  "061b2344f4086d48ab9f575a981adf858c1c0ad23c0354618d1ef541470f4074"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009/dex-refresh.png",
+                      "sha256":  "1550f25dad0288a7747dcd070346c1afcb3ce5f0ef2c2300045b0cdda5823549"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009/dex-route.png",
+                      "sha256":  "434259429890083b2dd6e6a303ec3cbb6947aaf97bddce3517f95b3689e21acf"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009/dex-route2.png",
+                      "sha256":  "94d07664fb2668a07c0a562aea28454fc0e907de371c55449791add534a757a7"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009/dex-selected.png",
+                      "sha256":  "cd5cbdae86014d2d435cca49bef62fd9b31677ae011b00fe213efff3d7379312"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-a/prior-api-inventory.json",
+                      "sha256":  "133b0e26e54c7f26c812d22c16aa5141b27645fcec04026d36f98d5e747b25fe"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-a/protected-paths-before.json",
+                      "sha256":  "6fa35a66fbeb9c964bf75915293bfbefca8c229f1c4d71ca540c7818c2c58864"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-a/spec-before-p1.md",
+                      "sha256":  "c0b9911823fa5d61678ccf58e44c10ac8f8a9cc1c4fb3941e558f7a8d3e40c5e"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-a/task-p1-association-root-feasibility.md",
+                      "sha256":  "f76a65493a017958e0c2a66bb52f1c40287a51cfeee1ea74773678e38dfe5404"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-a/tracked-diff-before.patch",
+                      "sha256":  "978405d179f75133d303b330c110d78c933977d08451de1933260b2d1f51a416"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-a/verification-checks.txt",
+                      "sha256":  "7f3bd5afb5c96c1675eab9349748a121a77a236fd68bb164d089b3035e6dfaa7"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-i/ExactProbeClassificationTest.xml",
+                      "sha256":  "c27b3a857478cebc79ca3ef511fc977d1af9632242868a417ecaa852a3177d29"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-i/baseline-associations.txt",
+                      "sha256":  "9bcc4fe3ca7522832f22114990ca1ee85b2542bd0335d7ef528c18abf2e3e9da"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-i/baseline-virtualdevice.txt",
+                      "sha256":  "1d106c67ea43e39a7e55560e0d089f98d7b7fb9c50f2c4d7db74e37f8e1ee269"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-i/final-associations.txt",
+                      "sha256":  "9bcc4fe3ca7522832f22114990ca1ee85b2542bd0335d7ef528c18abf2e3e9da"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-i/final-virtualdevice.txt",
+                      "sha256":  "1d106c67ea43e39a7e55560e0d089f98d7b7fb9c50f2c4d7db74e37f8e1ee269"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-i/permission-screen.png",
+                      "sha256":  "8c723677fb5391b13b76034e46cdfea8f9410e7758355492ec6ac3377aae3cb3"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-i/preconditions.txt",
+                      "sha256":  "ceb95059fa120413bea53ddaee7f80a2fdb7705550ba42e15748aa528a7e082b"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-i/probe-artifact.txt",
+                      "sha256":  "7a179f23ff48092a5d749eb0fc99279bf53a39e459ff6c653daa354f8dbc90a9"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-i/probe-events.jsonl",
+                      "sha256":  "31a8629155f42205e8ba38b5ff03d2f07ab10706aee874ab150aabceea8d113d"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-i/protected-paths-before-device-proof.json",
+                      "sha256":  "0c582fd7befe9b066b5ea47fbee600a87b51e910b05fe26e2fcdbe53b7629602"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-009r-i/task-0-platform-feasibility.md",
+                      "sha256":  "a16fc36562237be01cab692a156439e2d18a03e107779f18813e36081b8ab75c"
+                  },
+                  {
+                      "path":  "verification/dwt005-a-active.xml",
+                      "sha256":  "d372692309d6555ca8c73a8ac3fbdc4808636061eea5763c3197485b8cf91524"
+                  },
+                  {
+                      "path":  "verification/dwt005-a-connected.xml",
+                      "sha256":  "1e9c423625589ea4f326d0d5129d036fe3e9b05e746fde29e59e279030f1f216"
+                  },
+                  {
+                      "path":  "verification/dwt005-a-interactive.png",
+                      "sha256":  "4f1455f0b5682db55b2042c1a7c32573b5e1445562c6bf91d2b3094903a678b6"
+                  },
+                  {
+                      "path":  "verification/dwt005-a-ready.xml",
+                      "sha256":  "6cc549f274911b8beedf85e73db15257cc522dc20532fb383d6ce0413bee7e4c"
+                  },
+                  {
+                      "path":  "verification/dwt005-after-stop-b.png",
+                      "sha256":  "96391dad0e26643a147fc7a1acc732f8a40b536c7e47a8aca5056e11a8ac64fd"
+                  },
+                  {
+                      "path":  "verification/dwt005-b-pane.xml",
+                      "sha256":  "d372692309d6555ca8c73a8ac3fbdc4808636061eea5763c3197485b8cf91524"
+                  },
+                  {
+                      "path":  "verification/dwt005-both.png",
+                      "sha256":  "2d66e10a2d9acfe4b923e5490b292bd02819892c3d69312a382cd4c8880ae20d"
+                  },
+                  {
+                      "path":  "verification/dwt005-dual-r1.xml",
+                      "sha256":  "f78bf5efc3773999fe4811103d988c6de4491bfce38f3de0ef0aa13081db7990"
+                  },
+                  {
+                      "path":  "verification/dwt005-dual.png",
+                      "sha256":  "8da441076ce254874c2ee485ec3e1765d8b67778836dd8d656e343f2d6b7195e"
+                  },
+                  {
+                      "path":  "verification/dwt005-dual.xml",
+                      "sha256":  "aa01f871a413703c0a0445f996f18e52bdfb85f6e6ec7a5c759f79101b0b2d29"
+                  },
+                  {
+                      "path":  "verification/dwt005-home.png",
+                      "sha256":  "1ddcebf3d0f36d5eb943db356114766e4522b84f767b6a3bd0bd202665d9d20b"
+                  },
+                  {
+                      "path":  "verification/dwt005-host-scroll.xml",
+                      "sha256":  "8ffc696bcdf477157df022e03608da82439ca66533bdadfdf389b52623dee361"
+                  },
+                  {
+                      "path":  "verification/dwt005-host-scroll2.xml",
+                      "sha256":  "8de90864cd6aa420ddca23a901562f60235fb978820806407c11c1dfbc3097d1"
+                  },
+                  {
+                      "path":  "verification/dwt005-host-scroll3.xml",
+                      "sha256":  "8de90864cd6aa420ddca23a901562f60235fb978820806407c11c1dfbc3097d1"
+                  },
+                  {
+                      "path":  "verification/dwt005-host21.png",
+                      "sha256":  "087b0c2ea7bb7ae22de47bb1edaefdd21d436588c5804036cf4d470d2a6aa8e2"
+                  },
+                  {
+                      "path":  "verification/dwt005-ready.png",
+                      "sha256":  "f9648f5cef3bb1e89051cf26132bac0bbf43687a6a8414126f1d3f93df09b77e"
+                  },
+                  {
+                      "path":  "verification/dwt005-touch-b.png",
+                      "sha256":  "d1763d88841976a8bdca44e4f13bc2c531026df564fa238def379ef9d94432e5"
+                  },
+                  {
+                      "path":  "verification/dwt005.xml",
+                      "sha256":  "4c1ac8927d974b869d56eac925187c7dba41a1fc4979488460ec2d1199aac112"
+                  },
+                  {
+                      "path":  "verification/dwt007-after-start.png",
+                      "sha256":  "bc64bfe4b074c18f618bfd4c2c13e35b84c58bce5d3f5cfc64ef05b769a1529d"
+                  },
+                  {
+                      "path":  "verification/dwt007-assign.png",
+                      "sha256":  "107719547c40a855a93921b74d76a472260b0c57dfd94ece29ce43e805dee5a9"
+                  },
+                  {
+                      "path":  "verification/dwt007-cal-state.png",
+                      "sha256":  "ea4dced2299565f1fc57cf0f0fd0c40d9309c373693de27a6dbed6987eb3bfe2"
+                  },
+                  {
+                      "path":  "verification/dwt007-calculator-56.png",
+                      "sha256":  "464d09ae25ed4c67e40b3cf8075e0ad2f25e3862e559c567a57ede942dd043dd"
+                  },
+                  {
+                      "path":  "verification/dwt007-calibrated.png",
+                      "sha256":  "7822fc4fd89e7d5f107fcda65385cf63c8b2d4ca2fdcf23c675f71e4b2879dd8"
+                  },
+                  {
+                      "path":  "verification/dwt007-canvas.png",
+                      "sha256":  "f8e4ed47c6aefcbda354f9a3ab4a64d9f09c1e0ed4cf8fd7fad86726c7637f17"
+                  },
+                  {
+                      "path":  "verification/dwt007-canvas.xml",
+                      "sha256":  "0c1f66b654830d74c807161918654e62c860cff7c197065bf42a57a9e2c547a7"
+                  },
+                  {
+                      "path":  "verification/dwt007-current.png",
+                      "sha256":  "21a59b6fcceda6524074ac0854cbafc27a243fb7b26562734b3bcaeee43c1b92"
+                  },
+                  {
+                      "path":  "verification/dwt007-current.xml",
+                      "sha256":  "fa1a535fb81783829d08ceb5abc7a25dbba69854c4b5da20bf327f165b953da9"
+                  },
+                  {
+                      "path":  "verification/dwt007-diagnostic.png",
+                      "sha256":  "61c4980f6fdbb1949c543b763c5a037b9422262d391cf694004b23653e7cd6b8"
+                  },
+                  {
+                      "path":  "verification/dwt007-editor.png",
+                      "sha256":  "270ea82a853c63b24f4184e5f34b370d9c89204e35462428834496218cecc452"
+                  },
+                  {
+                      "path":  "verification/dwt007-editor.xml",
+                      "sha256":  "6e0727b7edd2dd339bbd9524a682e35c215ee5cb18e86d5d170069f3d7253f89"
+                  },
+                  {
+                      "path":  "verification/dwt007-forensic.png",
+                      "sha256":  "e922174e681c26c90d3b979041664062429ef41ca3ba0a352642ddc94bf46646"
+                  },
+                  {
+                      "path":  "verification/dwt007-fresh.png",
+                      "sha256":  "def262aaec30f797eac6d9505ceb68c53d38647a8eb1e15373c1add1e9076195"
+                  },
+                  {
+                      "path":  "verification/dwt007-library.png",
+                      "sha256":  "1ac561d4e9598151008365096510960cc9d4ebbcf6ee50e66a82d2911d42dc77"
+                  },
+                  {
+                      "path":  "verification/dwt007-picker.png",
+                      "sha256":  "7a8b8c7103eb922da0c27b68a8a8883d294f61682afdf108bcc90611e8b3171a"
+                  },
+                  {
+                      "path":  "verification/dwt007-pre.png",
+                      "sha256":  "191077720844ebeac14b5771274f280a20d9bb7ce6fd324c17279648ef57f723"
+                  },
+                  {
+                      "path":  "verification/dwt007-pre.xml",
+                      "sha256":  "98f66b04263b43ca0e2edbdf99e4b67b268e09921760923e8708246aced99fd7"
+                  },
+                  {
+                      "path":  "verification/dwt007-prestart.png",
+                      "sha256":  "e38963dd3254cfb032465e7f7fad6c73816ca34fe3c1ce1708eac68de9b659d0"
+                  },
+                  {
+                      "path":  "verification/dwt007-ratio.png",
+                      "sha256":  "35984ff31e5860ed17222f477a762bb92f4016d04090674306e7e708401bedb8"
+                  },
+                  {
+                      "path":  "verification/dwt007-ratio.xml",
+                      "sha256":  "afdfb9939b4d82c5e0aff1458051adda2ba6f6bc3accf62a349a8bda8b955ada"
+                  },
+                  {
+                      "path":  "verification/dwt007-resize.png",
+                      "sha256":  "959cee87399c0f53b72016d16d3a7c148422b487080908aec0b9e976d88faf0a"
+                  },
+                  {
+                      "path":  "verification/dwt007-return.png",
+                      "sha256":  "b890d04b9cbdcbf3cfb37e5340ea7b529d905979e777ddebd3164f6bda3ee3ba"
+                  },
+                  {
+                      "path":  "verification/dwt007-save.png",
+                      "sha256":  "6c3fdbacf79de419e628ef34b04787f48160308108dab3f2e9367253db5d74dd"
+                  },
+                  {
+                      "path":  "verification/dwt007-selected.png",
+                      "sha256":  "3d39b34f8ce0a570f609ac2fc52224f754766b1aa8cf3008586130ab5cfffec4"
+                  },
+                  {
+                      "path":  "verification/dwt007-stopped.png",
+                      "sha256":  "70fe435209d461df311e451cd629a7ad760c2f2890022f2061b11f14bd2ad906"
+                  },
+                  {
+                      "path":  "verification/dwt007-waze-pan.png",
+                      "sha256":  "1b395c944fc84db3faab6bcf994c9e057039e16f1f34405b815877d423315eae"
+                  }
+              ]
+}

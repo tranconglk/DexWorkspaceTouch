@@ -1,0 +1,7 @@
+BUILD SUCCESSFUL in 3m 14s
+DEVICE SMOKE BUILD: PASS
+versionCode: 9
+versionName: 1.0.0-beta.8
+APK SHA-256: 6370cd122f8c5750e230e56c15af5f5ea7a0d252fa019371648c54ab1715852b
+Signer SHA-256: 19ac0ea99125361b3c2083aaa44c8745ebad9c55fa967642c2b9e5a1086a45e7
+Wrapper session 25932: exit code NOT VERIFIED (no completion result returned); build not repeated.

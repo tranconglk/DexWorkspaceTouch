@@ -1,0 +1,16 @@
+﻿{
+    "collectedUtc":  "2026-10-06T01:58:51.4850471Z",
+    "deviceTimezone":  "Asia/Saigon (+07:00)",
+    "operation":  "logcat dump only; no clear or remote call",
+    "command":  "adb logcat -b main -b system -d -v threadtime -T \u002710-05 23:42:00.000\u0027 -s TaskViewLab.VDMSurface:V DWT.EmbeddedAppLaunch:V AndroidRuntime:E",
+    "exitCode":  0,
+    "lines":  0,
+    "allRetainedLookup":  {
+                              "sameTags":  true,
+                              "withoutTimeFilter":  true,
+                              "exitCode":  0,
+                              "lines":  0,
+                              "file":  "device-logcat-all-retained.txt",
+                              "provenance":  "Read-only D1 all-retained query recorded in tool output; no second runtime execution"
+                          }
+}

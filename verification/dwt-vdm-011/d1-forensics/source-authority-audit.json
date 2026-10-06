@@ -1,0 +1,115 @@
+﻿{
+    "sourceCommit":  "db69bed601eceea12259249c89f0f5276793e425",
+    "productionFix":  "none",
+    "method":  "Read unchanged source only; references are source deductions, not captured device events",
+    "sources":  [
+                    {
+                        "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/remote/RemoteSessionRuntime.kt",
+                        "lines":  "19-47;56-66;69-84",
+                        "finding":  "Start stages; swallowed rollback outcome; failure reply retains only exception string",
+                        "sha256":  "b2b3ab0223bfec418c2991bc25432a3c2917b7f6ab8cc8c8c431765236aa05dd"
+                    },
+                    {
+                        "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/remote/EmbeddedAppUserService.kt",
+                        "lines":  "13-18;27-37",
+                        "finding":  "Exact SID request/result; stop/getSessionState existing protocol",
+                        "sha256":  "dc8da93ac433609a56203247e0157514fb8a9d8782389e347c44595ffa1e67a7"
+                    },
+                    {
+                        "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/remote/RemoteSessionRegistry.kt",
+                        "lines":  "19-38",
+                        "finding":  "Registry reservation and stop; no historical result journal",
+                        "sha256":  "a7513619c9c49b0c6338dcf9566c3ae52fc5478b03080bfa0740075038790efd"
+                    },
+                    {
+                        "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedStartIpcTask.kt",
+                        "lines":  "6-35",
+                        "finding":  "Completion drops raw fields except display/success and 512-char exception; IPC exception collapses to START_IPC_FAILED",
+                        "sha256":  "92f0fbadbf06c121d53dbc7630195d27554119bb676602d661a5681ced8cce58"
+                    },
+                    {
+                        "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedAppSession.kt",
+                        "lines":  "206-258;280-350",
+                        "finding":  "Exact lease Start operation fence; all failure completions become START_FAILED; close cleanup has no accepted FAILED-to-STOPPED transition",
+                        "sha256":  "80086033911cc512712e69dec40f416a9142c2b25f96ae88b2f674ff58ad8733"
+                    },
+                    {
+                        "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedAppSessionState.kt",
+                        "lines":  "77-81;134-189;253-258",
+                        "finding":  "FAILED is terminal; snapshots have no timestamps; deterministic expected input name",
+                        "sha256":  "a09bdae6a9039ded6a4d182a3ef9186bab0ec275a3ca54ca5ce7cd5419bf16c1"
+                    },
+                    {
+                        "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/EmbeddedAppServiceConnectionManager.kt",
+                        "lines":  "47-66;321-355;365-383",
+                        "finding":  "SID/lease operation/generation/binder/revision fences; no durable historical cleanup export",
+                        "sha256":  "0b27385bc0224ac6cac5581869e2034a22cbed3840164a4de0caa1b44839c9e2"
+                    },
+                    {
+                        "path":  "app/src/main/java/com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/AndroidEmbeddedWorkspaceSessionFactory.kt",
+                        "lines":  "46-57;101-107",
+                        "finding":  "Product session state callback ignored; lifecycle delegation and detach",
+                        "sha256":  "b50217cb0be36821ccfa9259757d8c6394ed268b9c6439390cd4a1e528e67c79"
+                    },
+                    {
+                        "path":  "app/src/main/java/com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/EmbeddedWorkspaceRunner.kt",
+                        "lines":  "215-253;291-367;407-549;571-588",
+                        "finding":  "Sequential Start, rollback uses lifecycle terminal, partialReceipt, frozen terminal result and detach",
+                        "sha256":  "338d7b8214b3c4f813f4b4af01c96beea9c9e8643a3a4c249521ec3ecf77a947"
+                    },
+                    {
+                        "path":  "app/src/main/java/com/trancong/dexworkspacetouch/workspace/execution/embedded/runtime/EmbeddedWorkspaceRuntimeModels.kt",
+                        "lines":  "72-100",
+                        "finding":  "Runner preserves raw failure but receipt contains no failure string",
+                        "sha256":  "1c5e8e4155844afe28eb291f2ae47a79e5d3e2dcbd1c137a8830a0f15f663228"
+                    },
+                    {
+                        "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedProductRecovery.kt",
+                        "lines":  "97-110",
+                        "finding":  "Raw cause collapsed to typed issue, cleanup still Incomplete",
+                        "sha256":  "54962325b88d4f1c984acf00ef2df395b00472c2cf8939a2f081d5fb24896934"
+                    },
+                    {
+                        "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedProductRunGate.kt",
+                        "lines":  "118-184;271-332",
+                        "finding":  "Value-only projection; exact-owned clean requirements; blocked gate rejects late result",
+                        "sha256":  "092cb1973d31137278f14f2191c8a78650d3737cff7250e52ae67845b683d4df"
+                    },
+                    {
+                        "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedWorkspaceProductController.kt",
+                        "lines":  "107-127;205-222",
+                        "finding":  "Raw result temporary; product value accepted under operation then runtime graph detached",
+                        "sha256":  "cad4e8e5154d62137eea03ee3b942e7de0a405029d9164a2b802ebb89cb99fe8"
+                    },
+                    {
+                        "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedProductDiagnostics.kt",
+                        "lines":  "38-80",
+                        "finding":  "Sanitized current value only; no raw failure/rollback message",
+                        "sha256":  "37cf440cfdc976db69bd75e108744fd82b706a5951964d94e884a3329af56ebb"
+                    },
+                    {
+                        "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/embeddedapp/remote/EmbeddedAppVdm.kt",
+                        "lines":  "85-151;180-239;266-325",
+                        "finding":  "Remote resource stages/log tags; physical inventory not release authority",
+                        "sha256":  "3012fa81d22e880924e43ac96d78637d5acdcd4244b43ebd240ab566d3aff916"
+                    },
+                    {
+                        "path":  "app/src/main/aidl/com/trancong/dexworkspacetouch/feature/embeddedapp/remote/IEmbeddedAppService.aidl",
+                        "lines":  "4-10",
+                        "finding":  "Current Bundle protocol; no retained per-run result export",
+                        "sha256":  "11671549770a19f1cbe1330897661f2f95a551d75406e5162e20998ac5657c6c"
+                    },
+                    {
+                        "path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/embeddedworkspace/product/EmbeddedStartFailureEvidenceQualificationTest.kt",
+                        "lines":  "19-108",
+                        "finding":  "Existing characterization proves many-to-one product evidence",
+                        "sha256":  "97a6406427c37b17e1b170fcb6dd69409d99e606169c7c32e56a2665f669bbc4"
+                    },
+                    {
+                        "path":  "scripts/build-device-smoke.ps1",
+                        "lines":  "65",
+                        "finding":  "011 normal assembleRelease, no debug diagnostic overlay",
+                        "sha256":  "dbd30285039ff8b106031f00cb09c5d9dc0d7cc871b5c0567db7b082f6ce134c"
+                    }
+                ]
+}

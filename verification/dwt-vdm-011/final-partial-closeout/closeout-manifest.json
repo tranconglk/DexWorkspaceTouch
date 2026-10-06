@@ -1,0 +1,21 @@
+{
+    "task":  "DWT-VDM-011",
+    "bundle":  "FINAL_PARTIAL_BLOCKED_CLOSEOUT",
+    "createdUtc":  "2026-10-06T02:34:07.1204066Z",
+    "algorithm":  "SHA-256",
+    "manifestExcludedFromOwnInventory":  true,
+    "files":  [
+                  {
+                      "path":  "closeout.md",
+                      "sha256":  "752d7bad914331aa6d8be36cc35424a9cdb2967586fa3f35bf6294f3c0548171"
+                  },
+                  {
+                      "path":  "historical-evidence-baseline.json",
+                      "sha256":  "5bc8c62f9f500b293ad45d0905ccf3707f87bdce152c5df990debfb174f76f98"
+                  },
+                  {
+                      "path":  "preservation-audit.json",
+                      "sha256":  "4a8527b3459d43b233a25d56ea0838c070f3490261a530e582c03638eb8bfa40"
+                  }
+              ]
+}

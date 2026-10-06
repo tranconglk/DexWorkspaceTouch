@@ -1,0 +1,71 @@
+﻿{
+    "task":  "DWT-VDM-011-D1",
+    "outcome":  "D1-C",
+    "closedAtUtc":  "2026-10-06T02:09:15.8561243Z",
+    "milestoneStillBlocked":  true,
+    "sourceCommit":  "db69bed601eceea12259249c89f0f5276793e425",
+    "files":  [
+                  {
+                      "name":  "accepted-characterization.json",
+                      "bytes":  767,
+                      "sha256":  "62cbae606301cace23b8fc1f58f957d844a154dffc0c7726c0de0a2163f09e70"
+                  },
+                  {
+                      "name":  "checkpoint.md",
+                      "bytes":  16053,
+                      "sha256":  "531a9afde6a366764804caed4166ff8c248a805025dfd39a2278de068b42165e"
+                  },
+                  {
+                      "name":  "device-logcat.txt",
+                      "bytes":  1,
+                      "sha256":  "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+                  },
+                  {
+                      "name":  "device-logcat-all-retained.txt",
+                      "bytes":  1,
+                      "sha256":  "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+                  },
+                  {
+                      "name":  "exact-run-correlation.json",
+                      "bytes":  4703,
+                      "sha256":  "de6fb1707ef120594994daf6dcaad389452eda1f7eaceb730f82934cad4cc727"
+                  },
+                  {
+                      "name":  "log-buffer-info.txt",
+                      "bytes":  211,
+                      "sha256":  "5597691500643171fa391c20b1bb4c43637f839d86ee27410497133748286645"
+                  },
+                  {
+                      "name":  "log-collection.json",
+                      "bytes":  848,
+                      "sha256":  "65dca4aeb9170e7dc134a9088e9422bc6dfcfcc930353eeb044af3f037383267"
+                  },
+                  {
+                      "name":  "native-crash-run-window.txt",
+                      "bytes":  1,
+                      "sha256":  "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+                  },
+                  {
+                      "name":  "native-log-collection.json",
+                      "bytes":  505,
+                      "sha256":  "e8c8e5ba26f069c9a171b075c560f32c3c32d456576cdafdeb2aea23517ea009"
+                  },
+                  {
+                      "name":  "read-only-system-observation.json",
+                      "bytes":  990,
+                      "sha256":  "477fef4468c7c1c0eaabb5f353b8c19217a780c6d96cb72cc0c9a8148b3d4627"
+                  },
+                  {
+                      "name":  "scope-preservation.json",
+                      "bytes":  866,
+                      "sha256":  "d6cfb4aeb84de7dce092a691b15b9525567cf344e66db085a1212c461caaf1ba"
+                  },
+                  {
+                      "name":  "source-authority-audit.json",
+                      "bytes":  8559,
+                      "sha256":  "0271b3f27942aa12bde5647ca933f74e9dd19d00895d1d0166a187f7992e191c"
+                  }
+              ],
+    "selfHash":  "not included",
+    "auditType":  "same-agent evidence/source audit; not independent reviewer"
+}

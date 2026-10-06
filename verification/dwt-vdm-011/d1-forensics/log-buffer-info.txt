@@ -1,0 +1,2 @@
+main: ring buffer is 5 MiB (4 MiB consumed, 24 MiB readable), max entry is 5120 B, max payload is 4068 B
+system: ring buffer is 2 MiB (1 MiB consumed, 8 MiB readable), max entry is 5120 B, max payload is 4068 B

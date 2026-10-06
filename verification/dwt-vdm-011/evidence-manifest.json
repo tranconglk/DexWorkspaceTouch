@@ -1,0 +1,159 @@
+﻿{
+    "milestoneStatus":  "STOP_UNRESOLVED_OWNERSHIP",
+    "createdUtc":  "2026-10-05T17:16:16.9106750Z",
+    "scope":  "Only qualification docs/evidence, no tracked source/build/test changes",
+    "files":  [
+                  {
+                      "path":  "docs/superpowers/plans/2026-10-05-dwt-vdm-011-production-journey.md",
+                      "bytes":  13210,
+                      "sha256":  "06609d892ddbbdd8c1e4b78cdb0ccec6edb96096caaaa104d152466e53b66c8a"
+                  },
+                  {
+                      "path":  "docs/user/EMBEDDED_WORKSPACE_GUIDE.md",
+                      "bytes":  4575,
+                      "sha256":  "0777cb84264c63348bf587db8521b0e68f0131dd33235d8970d61b5e036c36bc"
+                  },
+                  {
+                      "path":  "smoke-output/.gitignore",
+                      "bytes":  14,
+                      "sha256":  "240a3e0d37d2e86b614063f5347eb02d4f99ca6c254de6b82871ff8d95532a7d"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/artifact-build-status.txt",
+                      "bytes":  351,
+                      "sha256":  "dd119ba58aba4a109e2d0ce7854095ce039c26b33a36925020563d4fed2b4abd"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/artifact-identity.json",
+                      "bytes":  1215,
+                      "sha256":  "1f1c0382674068f36db8d039d4a8008f6e788f342479cab01fa65c64f53d032b"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/checkpoint.md",
+                      "bytes":  12033,
+                      "sha256":  "ce2c971f57a1b0e96e9705876322b21ff4c8e113de50bd9ff5ff2415c88b6c62"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/dual-blocked-diagnostic.txt",
+                      "bytes":  1057,
+                      "sha256":  "797915b539b76304e6ef291965b2450cf5bf042a1a32426db4083996febb12b0"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/library-preservation.json",
+                      "bytes":  5752,
+                      "sha256":  "00647b41c816a3cd0ec0b02b29ab40432447374d0e65d7c6b15e53e143e0d05d"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/original-baseline.json",
+                      "bytes":  46435,
+                      "sha256":  "9ea16249370866cffa44a62053f33047f6096eef7057f20605adf0538434e956"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/reused-regression.json",
+                      "bytes":  3475,
+                      "sha256":  "37339f04286f754f3c36139a358501af3f4ac9d10fe0ae143e5ff539e845d54e"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/run-evidence-summary.json",
+                      "bytes":  4358,
+                      "sha256":  "26abc01f1e86df902cdaec6523726d5b5f64c31b315814d44cfbf5e9e3d92336"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/scope-audit.json",
+                      "bytes":  582,
+                      "sha256":  "bc58ce190eec67576999faad937acf6850a86aece810d40867e75c990d1fffd6"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/screenshots/dual-after-start.png",
+                      "bytes":  176626,
+                      "sha256":  "41210aee94a74c4687383beb9825df0bcf8de4f9b68389eddb0561661f131c93"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/screenshots/dual-assigned.png",
+                      "bytes":  172045,
+                      "sha256":  "8f3b1ea5ccf33e1a16716081c2e39bd7bf327045d257d8046477a91ec22bd8de"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/screenshots/dual-entry.png",
+                      "bytes":  167362,
+                      "sha256":  "23514118020baa7410aa5eff1ded9e11edef8d9f6bda7dcdcb848f81ffd0894e"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/screenshots/dual-refreshed.png",
+                      "bytes":  167321,
+                      "sha256":  "5c97acfcf4c8a8b3de753d6a918cf56e34ebfd343486f1933f149ce1bc3f15fd"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/screenshots/dual-saved-library.png",
+                      "bytes":  228746,
+                      "sha256":  "6c79127e0c626615b91a4418e07475f1143b7418c35b093d23ae6139ab9fab4b"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/screenshots/final-blocked-library.png",
+                      "bytes":  242871,
+                      "sha256":  "efcc99e7d281c73b66129513ecfba668a3e7162cd4fc76b60c35a9a8aa013dd4"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/screenshots/saved-single-library.png",
+                      "bytes":  234709,
+                      "sha256":  "dff496ece107620727f050c4f38f3002bceb5b002e96ccf4447b0ae4eb50abb2"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/screenshots/single-after-start.png",
+                      "bytes":  374206,
+                      "sha256":  "42aa904d66006c8b675ad0e4095d945ba8f53503d4ffaf2c55743a0ab4bd99b8"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/screenshots/single-entry.png",
+                      "bytes":  167213,
+                      "sha256":  "9771ba2df30f1a5983d16dbd6ec6cb7ecc58c428ee21b36cf9ba58db726d4e0e"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/screenshots/single-fresh-active.png",
+                      "bytes":  373716,
+                      "sha256":  "f3c6311adbb2a053dec82dbe8fd74192a128cfbb04e014a2e812faf4da1a5cc4"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/screenshots/single-refreshed.png",
+                      "bytes":  167101,
+                      "sha256":  "60e4c0eb79cee2ed280ec093f4d24a7f70e4da44c5fdf7d12d6500dfd1a90f31"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/screenshots/single-reopen-before-start.png",
+                      "bytes":  174488,
+                      "sha256":  "8f7fd291a5b07d8bc01a58d81395c2cd6e2cd3da1cc3fdd9fea16d4985189e45"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/screenshots/single-reopen-refreshed.png",
+                      "bytes":  166790,
+                      "sha256":  "c8d438404f9702b68b586f4951b52ced3ee4b51dd07881e806d0c54c85859102"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/screenshots/single-result-15.png",
+                      "bytes":  373406,
+                      "sha256":  "293287f6665a4763e4a175502fe59dbad7b2159f93310c3b089d3096166e70dc"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/single-active-diagnostic.txt",
+                      "bytes":  903,
+                      "sha256":  "9837cffa4057ada3279e7e1bbb6b32d4222737a8911a94a75e6d28b6c8db3cee"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/single-clean-diagnostic.txt",
+                      "bytes":  983,
+                      "sha256":  "70c3d3c9afdfc5e5cabf266bdab3804f0eda425897277c3c594741b13e41d7d4"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/single-fresh-active-diagnostic.txt",
+                      "bytes":  903,
+                      "sha256":  "0799bd6a9149566253871c1663cc3d6a7e629cf939ea9c596e0db96648d45d60"
+                  },
+                  {
+                      "path":  "verification/dwt-vdm-011/single-fresh-clean-diagnostic.txt",
+                      "bytes":  983,
+                      "sha256":  "4e275d98873601a6a1aae5ae2428b8f4134d4eb4d1c2e072affb31a8cafd6ac9"
+                  }
+              ],
+    "manifestSelfHash":  "not included",
+    "rawApkBackupAndScratch":  "ignored smoke-output, not publication artifacts"
+}

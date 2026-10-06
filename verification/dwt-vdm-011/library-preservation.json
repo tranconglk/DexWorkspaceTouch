@@ -1,0 +1,70 @@
+﻿{
+    "beforeCount":  11,
+    "afterCount":  13,
+    "preservedExportedWorkspaceBodies":  11,
+    "qualificationAdded":  2,
+    "beforeExportSha256":  "abb6c09c6ed1f76514f15b62d03c3ed1ba39a1f55639c321ac407cdab005cfbd",
+    "afterExportSha256":  "191ec04a6147288bfce0e01806f1e775ea38b6b939bd56bd2fd445a299ba51b2",
+    "evidenceMethod":  "Actual UI Library backup before and after; multiset equality of every pre-existing name/schema/canvas record",
+    "limit":  "Product export omits workspace IDs and pin/settings state; exact ID preservation for all old workspaces NOT VERIFIED",
+    "qualificationWorkspaces":  [
+                                    {
+                                        "name":  "DWT-VDM-011 CAL 20261005-R01",
+                                        "workspaceSchemaVersion":  1,
+                                        "canvas":  {
+                                                       "cells":  [
+                                                                     {
+                                                                         "id":  "cell",
+                                                                         "bounds":  {
+                                                                                        "left":  0.0,
+                                                                                        "top":  0.0,
+                                                                                        "right":  1.0,
+                                                                                        "bottom":  1.0
+                                                                                    },
+                                                                         "app":  {
+                                                                                     "packageName":  "com.sec.android.app.popupcalculator",
+                                                                                     "activityName":  "com.sec.android.app.popupcalculator.Calculator",
+                                                                                     "label":  "Máy tính"
+                                                                                 }
+                                                                     }
+                                                                 ]
+                                                   }
+                                    },
+                                    {
+                                        "name":  "DWT-VDM-011 CAL+WAZE 20261005-R01",
+                                        "workspaceSchemaVersion":  1,
+                                        "canvas":  {
+                                                       "cells":  [
+                                                                     {
+                                                                         "id":  "cell_a",
+                                                                         "bounds":  {
+                                                                                        "left":  0.0,
+                                                                                        "top":  0.0,
+                                                                                        "right":  0.5,
+                                                                                        "bottom":  1.0
+                                                                                    },
+                                                                         "app":  {
+                                                                                     "packageName":  "com.sec.android.app.popupcalculator",
+                                                                                     "activityName":  "com.sec.android.app.popupcalculator.Calculator",
+                                                                                     "label":  "Máy tính"
+                                                                                 }
+                                                                     },
+                                                                     {
+                                                                         "id":  "cell_b",
+                                                                         "bounds":  {
+                                                                                        "left":  0.5,
+                                                                                        "top":  0.0,
+                                                                                        "right":  1.0,
+                                                                                        "bottom":  1.0
+                                                                                    },
+                                                                         "app":  {
+                                                                                     "packageName":  "com.waze",
+                                                                                     "activityName":  "com.waze.FreeMapAppActivity",
+                                                                                     "label":  "Waze"
+                                                                                 }
+                                                                     }
+                                                                 ]
+                                                   }
+                                    }
+                                ]
+}

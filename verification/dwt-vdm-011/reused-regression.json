@@ -1,0 +1,65 @@
+﻿{
+    "evidenceClass":  "LOCAL_FAKE_REUSED_010",
+    "source":  "../dwt-vdm-010/device-20261002/full-local-summary-after-policy.json",
+    "newExecution":  false,
+    "reason":  "No tracked source/build/test changes at accepted release HEAD",
+    "selectedTests":  124,
+    "selectedClasses":  [
+                            {
+                                "class":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductRoutingTest",
+                                "tests":  3,
+                                "failures":  0,
+                                "errors":  0,
+                                "skipped":  0
+                            },
+                            {
+                                "class":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest",
+                                "tests":  17,
+                                "failures":  0,
+                                "errors":  0,
+                                "skipped":  0
+                            },
+                            {
+                                "class":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest",
+                                "tests":  16,
+                                "failures":  0,
+                                "errors":  0,
+                                "skipped":  0
+                            },
+                            {
+                                "class":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedShizukuRefreshTest",
+                                "tests":  14,
+                                "failures":  0,
+                                "errors":  0,
+                                "skipped":  0
+                            },
+                            {
+                                "class":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceEligibilityTest",
+                                "tests":  5,
+                                "failures":  0,
+                                "errors":  0,
+                                "skipped":  0
+                            },
+                            {
+                                "class":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceReadinessTest",
+                                "tests":  9,
+                                "failures":  0,
+                                "errors":  0,
+                                "skipped":  0
+                            },
+                            {
+                                "class":  "com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryViewModelTest",
+                                "tests":  46,
+                                "failures":  0,
+                                "errors":  0,
+                                "skipped":  0
+                            },
+                            {
+                                "class":  "com.trancong.dexworkspacetouch.workspace.persistence.serialization.WorkspaceCanvasSerializerTest",
+                                "tests":  14,
+                                "failures":  0,
+                                "errors":  0,
+                                "skipped":  0
+                            }
+                        ]
+}

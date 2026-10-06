@@ -1,0 +1,23 @@
+﻿{
+    "task":  "DWT-VDM-011-D1",
+    "originalHeadUnchanged":  true,
+    "originalBranchUnchanged":  true,
+    "originalIndexUnchanged":  true,
+    "originalStatusUnchanged":  true,
+    "originalFilesVerified":  150,
+    "originalFileHashChanges":  0,
+    "originalModifiedCount":  2,
+    "originalUntrackedCount":  148,
+    "historical011EvidenceFilesVerified":  30,
+    "historical011EvidenceHashChanges":  0,
+    "qualificationHead":  "db69bed601eceea12259249c89f0f5276793e425",
+    "trackedSourceBuildTestChanges":  [
+
+                                      ],
+    "stagedFiles":  [
+
+                    ],
+    "newD1Scope":  "verification/dwt-vdm-011/d1-forensics",
+    "noDeviceMutation":  "D1 command inventory: logcat dumps/-g, dumpsys input, date -u only; no new UI/input/start/stop/ownership IPC",
+    "noProductionPatch":  true
+}

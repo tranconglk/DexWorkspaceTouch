@@ -1,0 +1,19 @@
+﻿{
+    "collectedUtc":  "2026-10-06T02:01:28.6885789Z",
+    "deviceReportedUtc":  "2026-10-06T02:01:28Z",
+    "exactSid":  "db621ed2-c769-408e-b901-7679ee03bd4f",
+    "expectedInputName":  "DWT-VT-374c84acc55595406a1e22d8",
+    "expectedNameProvenance":  "DERIVED from unchanged virtualInputDeviceName(sessionId), not an observed registered descriptor",
+    "inputDumpExit":  0,
+    "exactNameMatchCount":  0,
+    "inputEvidence":  "",
+    "latestRetainedLogTimestampsOnly":  [
+                                            "10-06 09:01:28.240"
+                                        ],
+    "authorityLimit":  "Presence/absence is corroboration only; not authoritative release and no remote lifecycle snapshot",
+    "operations":  [
+                       "dumpsys input (read only; retained exact-name matches only)",
+                       "logcat dump latest timestamps only (messages not stored)",
+                       "date -u (read only)"
+                   ]
+}

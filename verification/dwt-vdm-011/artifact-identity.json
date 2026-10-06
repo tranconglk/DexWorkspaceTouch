@@ -1,0 +1,20 @@
+﻿{
+    "evidenceClass":  "REAL_PRODUCTION_PACKAGE",
+    "sourceCommit":  "db69bed601eceea12259249c89f0f5276793e425",
+    "sourceChanges":  "none; documentation/qualification evidence only",
+    "applicationId":  "com.trancong.dexworkspacetouch",
+    "versionName":  "1.0.0-beta.8",
+    "versionCode":  9,
+    "apkSha256":  "6370cd122f8c5750e230e56c15af5f5ea7a0d252fa019371648c54ab1715852b",
+    "installedReadbackSha256":  "6370cd122f8c5750e230e56c15af5f5ea7a0d252fa019371648c54ab1715852b",
+    "signerSha256":  "19ac0ea99125361b3c2083aaa44c8745ebad9c55fa967642c2b9e5a1086a45e7",
+    "preinstallApkSha256":  "246b7df53d14935fbd92925ba7521f7f6216c4ca3b46d16175bbfa25fd970af6",
+    "safeInstall":  "same-signer established before install -r; Success; matching installed APK readback",
+    "device":  "Samsung SM-S918B Android 16",
+    "dexLogicalDisplayId":  194,
+    "pidBeforeFirstStart":  4324,
+    "artifactRule":  "Qualification only, not public release",
+    "baselineLibraryCount":  11,
+    "baselineLibraryExportSha256":  "abb6c09c6ed1f76514f15b62d03c3ed1ba39a1f55639c321ac407cdab005cfbd",
+    "workspaceIdSource":  "PRODUCT_RUN_WORKSPACE diagnostic; export format omits workspace ID"
+}

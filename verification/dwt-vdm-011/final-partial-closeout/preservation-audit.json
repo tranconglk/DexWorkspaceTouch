@@ -1,0 +1,73 @@
+{
+    "task":  "DWT-VDM-011",
+    "disposition":  "COMPLETE / PARTIAL / BLOCKED",
+    "reviewType":  "DOCUMENTATION_AND_PRESERVATION_ONLY",
+    "verifiedUtc":  "2026-10-06T02:34:07.0639540Z",
+    "historicalEvidence":  {
+                               "baseline":  "historical-evidence-baseline.json",
+                               "filesCompared":  45,
+                               "changed":  [
+
+                                           ],
+                               "unchanged":  true
+                           },
+    "originalWorktree":  {
+                             "root":  "D:\\AndroidStudioProjects\\DexWorkspaceTouch",
+                             "headUnchanged":  true,
+                             "branchUnchanged":  true,
+                             "indexUnchanged":  true,
+                             "statusUnchanged":  true,
+                             "filesCompared":  150,
+                             "fileChanges":  [
+
+                                             ],
+                             "fileHashesUnchanged":  true
+                         },
+    "qualificationWorktree":  {
+                                  "root":  "D:\\AndroidStudioProjects\\DexWorkspaceTouch-VDM-011",
+                                  "head":  "db69bed601eceea12259249c89f0f5276793e425",
+                                  "headUnchanged":  true,
+                                  "branch":  "qualification/dwt-vdm-011",
+                                  "trackedDiff":  [
+
+                                                  ],
+                                  "staged":  [
+
+                                             ]
+                              },
+    "documentation":  {
+                          "acceptanceMatrix":  {
+                                                   "PASS":  13,
+                                                   "PARTIAL":  2,
+                                                   "NOT_VERIFIED":  8,
+                                                   "OUT_OF_SCOPE":  6
+                                               },
+                          "uniqueLocalLinks":  25,
+                          "unexpectedMissingLinks":  [
+
+                                                     ],
+                          "historicalSid":  "db621ed2-c769-408e-b901-7679ee03bd4f",
+                          "historicalSidEvidenceOnly":  true,
+                          "startRootCause":  "NOT VERIFIED",
+                          "authoritativeRelease":  "NOT VERIFIED",
+                          "oneApp":  "QUALIFIED",
+                          "twoApp":  "NOT QUALIFIED",
+                          "d1AndD2":  "HISTORICAL_ACCEPTED_UNCHANGED",
+                          "commitCheckpoint":  "READY FOR PARTIAL-CLOSEOUT COMMIT"
+                      },
+    "execution":  {
+                      "sourceChanges":  false,
+                      "testChanges":  false,
+                      "buildChanges":  false,
+                      "deviceChanges":  false,
+                      "newTestsRun":  false,
+                      "newBuildInstall":  false,
+                      "newEmbeddedStart":  false,
+                      "forensicInvestigation":  false,
+                      "licenseMutation":  false,
+                      "workspaceMutation":  false,
+                      "commit":  false,
+                      "push":  false,
+                      "tag":  false
+                  }
+}
