@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" tests="20" skipped="0" failures="0" errors="0" timestamp="2026-10-07T10:24:47.954Z" hostname="NUC" time="0.17">
+  <properties/>
+  <testcase name="onlySuccessfulClassicCompletesSuggestionAndSecondLaunchInvalidatesFirst" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.042"/>
+  <testcase name="ready invokes launcher for exact selected workspace" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.001"/>
+  <testcase name="modern unavailable does not select legacy guidance" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.001"/>
+  <testcase name="legacy unavailable selects legacy guidance" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.001"/>
+  <testcase name="too many targets does not invoke launcher" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.001"/>
+  <testcase name="host disposal cancels active launcher without retaining dead host" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.027"/>
+  <testcase name="empty cells does not invoke launcher" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.001"/>
+  <testcase name="failure maps to completed state" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.0"/>
+  <testcase name="partial success maps to completed state" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.001"/>
+  <testcase name="asyncClassicDispatchHoldsReservationUntilCancellationAndEarlyFailureReleases" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.007"/>
+  <testcase name="invalid canvas does not invoke launcher" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.001"/>
+  <testcase name="non launchable applications does not invoke launcher" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.001"/>
+  <testcase name="missing applications does not invoke launcher" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.001"/>
+  <testcase name="cancel moves to explicit cancelled state" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.001"/>
+  <testcase name="success maps to completed state" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.0"/>
+  <testcase name="dismiss completed result returns idle" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.0"/>
+  <testcase name="double tap does not start second sequence" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.001"/>
+  <testcase name="repairStatusCallbackFailureCannotBlockClassicOrLeakReservation" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.003"/>
+  <testcase name="repairReservationBlocksClassicDispatchUntilReleased" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.001"/>
+  <testcase name="unavailableSuggestionDoesNotChangeClassicSuccess" classname="com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest" time="0.078"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

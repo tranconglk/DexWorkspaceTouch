@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDispatcherTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-07T10:24:50.142Z" hostname="NUC" time="0.058">
+  <properties/>
+  <testcase name="cancellationClosesFrameAndAllowsNextRequestWithoutRetry" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDispatcherTest" time="0.006"/>
+  <testcase name="deadlineProducesFailureFrameAndKillsProcess" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDispatcherTest" time="0.042"/>
+  <testcase name="cancellationArrivingBeforeExecutionPreventsLateMutation" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDispatcherTest" time="0.001"/>
+  <testcase name="completedResultAllowsImmediateReadbackBeforePipeCloseFinishes" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDispatcherTest" time="0.003"/>
+  <testcase name="forbiddenCommandsNeverReachProcessFactory" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDispatcherTest" time="0.001"/>
+  <testcase name="duplicateIdAndConcurrentMutationAreNeverLaunched" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDispatcherTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

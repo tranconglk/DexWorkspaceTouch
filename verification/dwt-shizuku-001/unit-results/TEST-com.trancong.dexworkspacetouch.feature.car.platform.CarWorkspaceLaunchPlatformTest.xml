@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-10-07T10:24:47.836Z" hostname="NUC" time="0.109">
+  <properties/>
+  <testcase name="cancellationFromRepository_propagates" classname="com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest" time="0.072"/>
+  <testcase name="validWorkspace_launchesExactWorkspaceWithoutMutation" classname="com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest" time="0.007"/>
+  <testcase name="emptyWorkspace_returnsWorkspaceUnavailableWithoutRuntimeCall" classname="com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest" time="0.003"/>
+  <testcase name="missingWorkspace_returnsWorkspaceUnavailable" classname="com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest" time="0.001"/>
+  <testcase name="unavailableComponentsFromLaunchResult_returnsWorkspaceUnavailable" classname="com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest" time="0.003"/>
+  <testcase name="dockClassicSuccessReportsExactRequestButFailureDoesNotAssess" classname="com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest" time="0.004"/>
+  <testcase name="partialWorkspaceLaunch_returnsExecutionFailed" classname="com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest" time="0.005"/>
+  <testcase name="repairCallbackFailureDoesNotTurnDockClassicSuccessIntoFailure" classname="com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest" time="0.002"/>
+  <testcase name="repositoryFailure_returnsExecutionFailed" classname="com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest" time="0.001"/>
+  <testcase name="cancellationFromRuntime_propagates" classname="com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest" time="0.001"/>
+  <testcase name="unavailableEnvironment_returnsExecutionFailedWithoutLaunch" classname="com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest" time="0.002"/>
+  <testcase name="missingComponent_returnsWorkspaceUnavailableWithoutRuntimeCall" classname="com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

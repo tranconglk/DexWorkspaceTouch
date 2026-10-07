@@ -18,6 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -129,6 +130,30 @@ class WorkspaceLaunchViewModelTest {
         assertTrue(viewModel.state is WorkspaceLaunchUiState.LaunchError)
     }
 
+    @Test fun repairReservationBlocksClassicDispatchUntilReleased() {
+        val arbiter=com.trancong.dexworkspacetouch.feature.car.CarWorkflowExecutionArbiter()
+        val vm=WorkspaceLaunchViewModel({ready},CoroutineScope(SupervisorJob()+Dispatchers.Unconfined),arbiter)
+        val runtime=FakeRuntime()
+        assertTrue(arbiter.tryAcquire())
+        vm.launchWorkspace(item,runtime,hostToken)
+        assertTrue(runtime.requests.isEmpty())
+        arbiter.release()
+        vm.launchWorkspace(item,runtime,hostToken)
+        assertEquals(1,runtime.requests.size)
+        assertFalse(arbiter.isRunning.value)
+    }
+    @Test fun asyncClassicDispatchHoldsReservationUntilCancellationAndEarlyFailureReleases() {
+        val arbiter=com.trancong.dexworkspacetouch.feature.car.CarWorkflowExecutionArbiter()
+        val vm=WorkspaceLaunchViewModel({ready},CoroutineScope(SupervisorJob()+Dispatchers.Unconfined),arbiter)
+        vm.launchWorkspace(item,FakeRuntime(block=true),hostToken)
+        assertFalse(arbiter.tryAcquire())
+        vm.cancelLaunch()
+        assertFalse(arbiter.isRunning.value)
+        val stopped=WorkspaceLaunchViewModel({LaunchReadiness.EmptyCells(listOf("cell"))},
+            CoroutineScope(SupervisorJob()+Dispatchers.Unconfined),arbiter)
+        stopped.launchWorkspace(item,FakeRuntime(),hostToken)
+        assertFalse(arbiter.isRunning.value)
+    }
     private fun assertReadinessStops(readiness: LaunchReadiness) {
         val runtime = FakeRuntime()
         val viewModel = viewModel { readiness }
@@ -136,11 +161,50 @@ class WorkspaceLaunchViewModelTest {
         assertTrue(runtime.requests.isEmpty())
         assertEquals(readiness, (viewModel.state as WorkspaceLaunchUiState.ReadinessError).readiness)
     }
+    @Test fun onlySuccessfulClassicCompletesSuggestionAndSecondLaunchInvalidatesFirst() {
+        val events=mutableListOf<String>()
+        val vm=WorkspaceLaunchViewModel({ready},CoroutineScope(SupervisorJob()+Dispatchers.Unconfined),
+            onClassicLaunchStarted={ events+="start:$it" },onClassicLaunchCompleted={ events+="complete:${it.workspaceId}" })
+        vm.launchWorkspace(item,FakeRuntime(),hostToken)
+        vm.launchWorkspace(item,FakeRuntime(result=WorkspaceLaunchResult.Failure(listOf(failure))),hostToken)
+        vm.launchWorkspace(item,FakeRuntime(result=WorkspaceLaunchResult.PartialSuccess(listOf(AppLaunchTargetResult(target)),listOf(failure))),hostToken)
+        assertEquals(listOf("start:workspace","complete:workspace","start:workspace","start:workspace"),events)
+    }
+    @Test fun unavailableSuggestionDoesNotChangeClassicSuccess() = kotlinx.coroutines.test.runTest {
+        val session=com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairSession(this,
+            kotlinx.coroutines.flow.MutableStateFlow(false),{ error("Shizuku unavailable") },{ error("No manual click") })
+        val vm=WorkspaceLaunchViewModel({ready},this,onClassicLaunchStarted=session::classicLaunchStarted,
+            onClassicLaunchCompleted=session::classicLaunchCompleted)
+        vm.launchWorkspace(item,FakeRuntime(),hostToken)
+        advanceUntilIdle()
+        assertTrue((vm.state as WorkspaceLaunchUiState.Completed).result is WorkspaceLaunchResult.Success)
+        assertEquals(com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceAssessmentStatus.UNAVAILABLE,
+            session.state.value.assessment!!.status)
+        session.dispose()
+    }
 
     private fun launchWith(result: WorkspaceLaunchResult): WorkspaceLaunchViewModel {
         val viewModel = viewModel { ready }
         viewModel.launchWorkspace(item, FakeRuntime(result = result), hostToken)
         return viewModel
+    }
+
+    @Test fun repairStatusCallbackFailureCannotBlockClassicOrLeakReservation() {
+        val arbiter = com.trancong.dexworkspacetouch.feature.car.CarWorkflowExecutionArbiter()
+        val errors = mutableListOf<Throwable>()
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Unconfined +
+            kotlinx.coroutines.CoroutineExceptionHandler { _, error -> errors += error })
+        val vm = WorkspaceLaunchViewModel({ ready }, scope, arbiter,
+            onClassicLaunchStarted = { error("Repair status unavailable") },
+            onClassicLaunchCompleted = { error("Repair assessment unavailable") })
+        val runtime = FakeRuntime()
+        val dispatched = runCatching { vm.launchWorkspace(item, runtime, hostToken) }
+        assertTrue("Repair callback must not escape into Classic", dispatched.isSuccess)
+        assertEquals(1, runtime.requests.size)
+        assertTrue((vm.state as WorkspaceLaunchUiState.Completed).result is WorkspaceLaunchResult.Success)
+        assertFalse(arbiter.isRunning.value)
+        assertTrue("Repair callback must not crash the launch scope", errors.isEmpty())
+        scope.coroutineContext[kotlinx.coroutines.Job]?.cancel()
     }
 
     private fun launchWithEnvironment(reason: LaunchEnvironmentFailure): WorkspaceLaunchViewModel {

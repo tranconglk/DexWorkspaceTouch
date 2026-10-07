@@ -61,9 +61,11 @@ class CarWorkspaceShortcuts private constructor(
 interface CarWorkspaceShortcutPreferences {
     val shortcuts: StateFlow<CarWorkspaceShortcuts>
     val visibleSlotCount: StateFlow<Int>
+    val workspaceRepairMode: StateFlow<WorkspaceRepairMode>
     fun setWorkspace(slot: CarWorkspaceShortcutSlot, workspaceId: String)
     fun clear(slot: CarWorkspaceShortcutSlot)
     fun setVisibleSlotCount(count: Int)
+    fun setWorkspaceRepairMode(mode: WorkspaceRepairMode)
     fun refresh()
 }
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.feature.car.overlay.CarOverlaySessionTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-10-07T10:24:48.461Z" hostname="NUC" time="0.015">
+  <properties/>
+  <testcase name="permissionRevocationRemovesExistingWindow" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarOverlaySessionTest" time="0.006"/>
+  <testcase name="defaultDisplayHostIsRejected" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarOverlaySessionTest" time="0.002"/>
+  <testcase name="expandedHideRequestUsesSessionHidePath_andCanReopen" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarOverlaySessionTest" time="0.001"/>
+  <testcase name="windowFactoryRejectionDoesNotCreateSessionState" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarOverlaySessionTest" time="0.001"/>
+  <testcase name="dockStartsCollapsed_expands_emitsSemanticActionsAndCollapses" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarOverlaySessionTest" time="0.001"/>
+  <testcase name="suppliedActivityHostIsSourceOfTruth_defaultRejected_andAlreadyShownDoesNotMigrate" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarOverlaySessionTest" time="0.001"/>
+  <testcase name="displayRemovedCleansWindowAndFreshShowUsesNewExplicitHost" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarOverlaySessionTest" time="0.001"/>
+  <testcase name="coordinatorCollapseKeepsSessionShownAndDoesNotRemoveWindow" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarOverlaySessionTest" time="0.0"/>
+  <testcase name="permissionDeniedAndUnavailableDisplayDoNotCreateWindow" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarOverlaySessionTest" time="0.0"/>
+  <testcase name="showCreatesOneWindow_repeatShowHideAndDoubleDisposeAreSafe" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarOverlaySessionTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

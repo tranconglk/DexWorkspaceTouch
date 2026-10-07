@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDeadlineTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-07T10:24:50.136Z" hostname="NUC" time="0.003">
+  <properties/>
+  <testcase name="binderQueueTimeIsDeductedFromRemainingBudget" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDeadlineTest" time="0.001"/>
+  <testcase name="overlongAndOverflowingDeadlineIsRejected" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDeadlineTest" time="0.001"/>
+  <testcase name="expiredAndEqualDeadlinesCannotDispatch" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDeadlineTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

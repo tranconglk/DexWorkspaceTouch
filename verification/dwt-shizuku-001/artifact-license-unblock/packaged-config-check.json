@@ -1,0 +1,16 @@
+﻿{
+    "Package":  "com.trancong.dexworkspacetouch",
+    "VersionCode":  9,
+    "VersionName":  "1.0.0-beta.8",
+    "ApkSHA256":  "708e4df09c1aea4e232e5655b981ef457b96d3b5d85fb36397fee9e1ccd14b68",
+    "SignerSHA256":  "19ac0ea99125361b3c2083aaa44c8745ebad9c55fa967642c2b9e5a1086a45e7",
+    "LicenseApiBaseUrl":  "https://dexworkspacetouch-license-production.dex-backend.workers.dev",
+    "Kid":  "license-signing-v1",
+    "PublicKeyFingerprint":  "ae8c0a5376ceef82fa3f0123e2788c21cc218bb19fb866aed83813745d392e74",
+    "ExactApprovedRegistryInBuildConfig":  true,
+    "ProductionUrlInDex":  true,
+    "KidInDex":  true,
+    "ApprovedPublicKeyInDex":  true,
+    "Published":  false,
+    "Installed":  false
+}

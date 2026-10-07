@@ -1,0 +1,29 @@
+﻿{
+    "Purpose":  "DWT-SHIZUKU-001 device qualification only",
+    "Package":  "com.trancong.dexworkspacetouch",
+    "VersionCode":  9,
+    "VersionName":  "1.0.0-beta.8",
+    "ApkSHA256":  "708e4df09c1aea4e232e5655b981ef457b96d3b5d85fb36397fee9e1ccd14b68",
+    "ApkSignerSHA256":  "19ac0ea99125361b3c2083aaa44c8745ebad9c55fa967642c2b9e5a1086a45e7",
+    "LicenseApiBaseUrl":  "https://dexworkspacetouch-license-production.dex-backend.workers.dev",
+    "ActiveKid":  "license-signing-v1",
+    "TrustedKeyRegistry":  [
+                               {
+                                   "value":  [
+                                                 {
+                                                     "kid":  "license-signing-v1",
+                                                     "algorithm":  "RS256",
+                                                     "spkiBase64":  "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmawC5WRPylb3FhGHU6Yug8TJRjAK67cjYY8YgFAZOBwUi8DA11uNSY6G65bGeE1kgPUyKPHsBsfL4IEkBym+CRxyxqxnJTSO6yieE69szZ4K+tWbfy3n4EQdtVvkr4bSn1yPr7LMygXt8jlbge5S5M7cID7qE3wKewSgqKjNqtAD90lt69XmSoaXC5BJlXFL+V27OKeXKNMox6iY0SVtbafONTgECK5tJ2AC2NYbGwZ/WbYq7zgUTdFM0WNfRy0ojyXq7zI0vFs7+DVYdYWT5E4ZiVcNe3y+7aWS+MZyHZsSBLR9JPioI3M7xLooaavQKaegKYbyc6x6ex31E2fMoQIDAQAB"
+                                                 }
+                                             ],
+                                   "Count":  1
+                               }
+                           ],
+    "LicensePublicKeyFingerprint":  "ae8c0a5376ceef82fa3f0123e2788c21cc218bb19fb866aed83813745d392e74",
+    "SourceSnapshot":  "36 unchanged files",
+    "BuildVariant":  "release",
+    "ProductionConfigSource":  "scripts/build-device-smoke.ps1 + license-backend/wrangler.jsonc",
+    "SigningSource":  "Existing approved DWT keystore/configuration",
+    "Published":  false,
+    "Installed":  false
+}

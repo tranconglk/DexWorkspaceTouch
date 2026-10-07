@@ -1,0 +1,14 @@
+import {execFileSync} from 'node:child_process';
+import {writeFileSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
+const adb='C:/Users/tranc/AppData/Local/Android/Sdk/platform-tools/adb.exe';
+const screen=process.argv[3]??'4';
+if(!['0','4'].includes(screen)) throw new Error('Unsupported evidence display');
+const captureArgs=['-d',screen==='0'?'4630947232161729154':screen,'-p'];
+const bytes=execFileSync(adb,['-s','192.168.1.183:5555','exec-out','screencap',...captureArgs],{windowsHide:true,maxBuffer:16000000});
+if(bytes.readUInt32BE(0)!==0x89504e47) throw new Error('External display capture is not PNG');
+const filename=process.argv[2]??'desktop.png';
+if(!/^[a-z0-9-]+\.png$/.test(filename)) throw new Error('Evidence filename invalid');
+const target=fileURLToPath(new URL('./'+filename,import.meta.url));
+writeFileSync(target,bytes);
+console.log(target);

@@ -1,0 +1,34 @@
+﻿{
+    "Device":  "S23",
+    "Serial":  "192.168.1.106:5555",
+    "Model":  "SM-S918B",
+    "Package":  "com.trancong.dexworkspacetouch",
+    "AndroidVersion":  "16",
+    "SDK":  "36",
+    "OneUI":  "80500",
+    "BuildFingerprint":  "samsung/dm3qxxx/dm3q:16/BP4A.251205.006/S918BXXSAFZH3:user/release-keys",
+    "InstalledVersion":  {
+                             "Package":  "com.trancong.dexworkspacetouch",
+                             "VersionCode":  9,
+                             "VersionName":  "1.0.0-beta.8"
+                         },
+    "QualificationVersion":  {
+                                 "Package":  "com.trancong.dexworkspacetouch",
+                                 "VersionCode":  9,
+                                 "VersionName":  "1.0.0-beta.8"
+                             },
+    "InstalledSignerSHA256":  "19ac0ea99125361b3c2083aaa44c8745ebad9c55fa967642c2b9e5a1086a45e7",
+    "QualificationSignerSHA256":  "19ac0ea99125361b3c2083aaa44c8745ebad9c55fa967642c2b9e5a1086a45e7",
+    "InstalledApkSHA256":  "6370cd122f8c5750e230e56c15af5f5ea7a0d252fa019371648c54ab1715852b",
+    "QualificationApkSHA256":  "708e4df09c1aea4e232e5655b981ef457b96d3b5d85fb36397fee9e1ccd14b68",
+    "SameSigner":  true,
+    "SameVersion":  true,
+    "UpdateInPlaceCompatible":  true,
+    "UserId":  "10612",
+    "FirstInstallTime":  "2026-09-10 10:58:54",
+    "DataDir":  "/data/user/0/com.trancong.dexworkspacetouch",
+    "UpdateAttempted":  false,
+    "Uninstalled":  false,
+    "DataCleared":  false,
+    "RecordedAtUtc":  "2026-10-07T12:59:26.3109020Z"
+}

@@ -1,0 +1,135 @@
+﻿[
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ClassicWorkspaceRuntimeIsolationTest",
+        "Tests":  1,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductRoutingTest",
+        "Tests":  3,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.feature.car.CarWorkflowExecutionRunnerTest",
+        "Tests":  4,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingDockCoordinatorTest",
+        "Tests":  8,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.feature.car.overlay.CarOverlaySessionTest",
+        "Tests":  10,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest",
+        "Tests":  14,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairSessionTest",
+        "Tests":  10,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest",
+        "Tests":  12,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.feature.car.WorkspaceRepairModePreferencesTest",
+        "Tests":  3,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ClassicWorkspaceAdmissionTest",
+        "Tests":  5,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest",
+        "Tests":  29,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest",
+        "Tests":  16,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceAssessmentTest",
+        "Tests":  8,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest",
+        "Tests":  14,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest",
+        "Tests":  18,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDeadlineTest",
+        "Tests":  3,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDispatcherTest",
+        "Tests":  6,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandProcessTest",
+        "Tests":  4,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest",
+        "Tests":  20,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    }
+]

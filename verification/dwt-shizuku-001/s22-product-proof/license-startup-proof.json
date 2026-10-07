@@ -1,0 +1,12 @@
+﻿{
+    "Device":  "S22",
+    "Package":  "com.trancong.dexworkspacetouch",
+    "UserReportedInputMethodMistypedPriorKey":  true,
+    "UserActivatedThroughNormalLicenseGate":  true,
+    "ProductUiObserved":  true,
+    "ColdStartupProductUi":  true,
+    "TokenVerification":  "PASS - normal verified activation and stored-token bootstrap gate",
+    "LicenseBypass":  false,
+    "LicensePlaintextExported":  false,
+    "RecordedAtUtc":  "2026-10-07T12:04:24.8863889Z"
+}

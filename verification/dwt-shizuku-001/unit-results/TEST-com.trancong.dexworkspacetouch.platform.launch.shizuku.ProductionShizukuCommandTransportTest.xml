@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2026-10-07T10:24:49.996Z" hostname="NUC" time="0.137">
+  <properties/>
+  <testcase name="serviceDeathAfterResultIsNotSuccessAndDoesNotRetry" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.009"/>
+  <testcase name="bindFailureIsMappedWithoutMutation" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.001"/>
+  <testcase name="frameRejectsTruncatedOrOversizedLengths" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.001"/>
+  <testcase name="permissionDeniedDoesNotBindOrExecute" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.002"/>
+  <testcase name="malformedFrameFailsClosed" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.001"/>
+  <testcase name="deadlineIncludesBindingAndNeverDispatchesExpiredMutation" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.037"/>
+  <testcase name="unsupportedUidDoesNotExecute" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.001"/>
+  <testcase name="successfulResizeIsExecutedOnce" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.001"/>
+  <testcase name="deadServiceWithBrokenPipeMapsToServiceDeath" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.001"/>
+  <testcase name="framePreservesLargeDumpWithoutBinderSizedTruncation" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.018"/>
+  <testcase name="whitelistRejectsLaunchShellAndMalformedResizeBeforeBinding" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.002"/>
+  <testcase name="readOnlyCapturesStdoutStderrAndExitSeparately" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.001"/>
+  <testcase name="timeoutDoesNotRetryMutation" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.054"/>
+  <testcase name="disconnectedCallFailsThenNewRequestMayReconnect" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.003"/>
+  <testcase name="cancellationInvalidatesOutstandingCommandAndDoesNotRetry" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.002"/>
+  <testcase name="preservesExistingEngineOutputFraming" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.001"/>
+  <testcase name="unavailableShizukuDoesNotBindOrExecute" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.001"/>
+  <testcase name="closePreventsFurtherCommands" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

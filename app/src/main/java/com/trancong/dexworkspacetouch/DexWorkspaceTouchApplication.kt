@@ -79,6 +79,7 @@ class DexWorkspaceTouchApplication : Application() {
             carWorkspaceShortcutPreferences,
             carWorkflowExecutionArbiter,
             workspaceLaunchDiagnostics,
+            repairGate = embeddedProductRunGate,
         )
         val trustedKeys = if (BuildConfig.DEBUG && BuildConfig.LICENSE_TRUSTED_PUBLIC_KEYS_JSON == "[]") {
             TrustedLicenseSigningKeys.emptyForDebug()

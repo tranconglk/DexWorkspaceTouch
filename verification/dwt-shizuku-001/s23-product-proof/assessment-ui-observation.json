@@ -1,0 +1,32 @@
+{
+  "mode": "AUTOMATIC",
+  "modeEvidence": "automatic-mode-selected.png: Automatic radio selected",
+  "classicTrigger": "Workspace Library, S23 Calculator Clock 50 50, real Open button",
+  "dockLabel": "Repair",
+  "dockDetail": "Layout already correct",
+  "assessmentStatus": "LAYOUT_CORRECT",
+  "assessmentEvidence": "automatic-correct-result.png: real product dock",
+  "manualRepairClicked": false,
+  "layoutPreparedWithShellResize": false,
+  "isolatedApplicationUsed": false,
+  "geometry": {
+    "displayId": 6,
+    "physicalDisplayId": "4632669056402301701",
+    "widthPx": 1920,
+    "heightPx": 1200,
+    "densityDpi": 160,
+    "navigationBarFrame": [0, 1144, 1920, 1200],
+    "usableArea": [0, 0, 1920, 1144],
+    "cellInsetPx": 8
+  },
+  "setup": {
+    "existingShizukuAuthorizationRetained": true,
+    "shizukuServerUid": 2000,
+    "shizukuManagerOpenedBeforeObservationOnly": true,
+    "shizukuPermissionChanged": false,
+    "overlayPermissionAlreadyAllowed": true,
+    "oldWorkspaceShortcutsChanged": false,
+    "fixtureAppsForceStopped": false,
+    "fixtureAddedThroughProductImport": true
+  }
+}

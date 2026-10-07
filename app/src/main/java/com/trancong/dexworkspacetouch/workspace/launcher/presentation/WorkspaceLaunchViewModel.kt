@@ -9,15 +9,22 @@ import androidx.lifecycle.viewModelScope
 import com.trancong.dexworkspacetouch.platform.launch.bounds.LegacyDisplayWorkAreaReferenceStore
 import com.trancong.dexworkspacetouch.workspace.launcher.WorkspaceLaunchRequestFactory
 import com.trancong.dexworkspacetouch.workspace.launcher.model.LaunchReadiness
+import com.trancong.dexworkspacetouch.workspace.launcher.model.WorkspaceLaunchRequest
+import com.trancong.dexworkspacetouch.workspace.launcher.model.WorkspaceLaunchResult
 import com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryItem
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineStart
+import com.trancong.dexworkspacetouch.feature.car.CarWorkflowExecutionArbiter
 
 class WorkspaceLaunchViewModel(
     private val createReadiness: (WorkspaceLibraryItem) -> LaunchReadiness,
     private val suppliedScope: CoroutineScope? = null,
+    private val executionArbiter: CarWorkflowExecutionArbiter? = null,
+    private val onClassicLaunchStarted: (String) -> Unit = {},
+    private val onClassicLaunchCompleted: (WorkspaceLaunchRequest) -> Unit = {},
 ) : ViewModel() {
     var state by mutableStateOf<WorkspaceLaunchUiState>(WorkspaceLaunchUiState.Idle)
         private set
@@ -29,9 +36,12 @@ class WorkspaceLaunchViewModel(
 
     fun launchWorkspace(item: WorkspaceLibraryItem, runtime: WorkspaceLaunchRuntime, hostToken: Any) {
         if (launchJob?.isActive == true) return
+        if (executionArbiter?.tryAcquire() == false) return
+        // Repair status is optional; it cannot block Classic or retain its reservation.
+        runCatching { onClassicLaunchStarted(item.id) }
         activeHostToken = hostToken
         activeWorkspace = item
-        launchJob = (suppliedScope ?: viewModelScope).launch {
+        launchJob = (suppliedScope ?: viewModelScope).launch(start = CoroutineStart.LAZY) {
             state = WorkspaceLaunchUiState.Checking(item.id)
             val readiness = createReadiness(item)
             if (readiness !is LaunchReadiness.Ready) {
@@ -54,13 +64,20 @@ class WorkspaceLaunchViewModel(
                     readiness.request.targets.size,
                     result,
                 )
+                if (result is WorkspaceLaunchResult.Success) {
+                    runCatching { onClassicLaunchCompleted(readiness.request) }
+                }
             } catch (cancellation: CancellationException) {
                 state = WorkspaceLaunchUiState.Cancelled(item.id, item.name)
                 throw cancellation
             }
         }.also { job ->
-            job.invokeOnCompletion { launchJob = null }
+            job.invokeOnCompletion {
+                if (launchJob === job) launchJob = null
+                executionArbiter?.release()
+            }
         }
+        launchJob?.start()
     }
 
     fun cancelLaunch() {
@@ -89,7 +106,10 @@ class WorkspaceLaunchViewModel(
     }
 
     companion object {
-        fun factory(requestFactory: WorkspaceLaunchRequestFactory): ViewModelProvider.Factory =
+        fun factory(requestFactory: WorkspaceLaunchRequestFactory,
+            executionArbiter: CarWorkflowExecutionArbiter? = null,
+            onClassicLaunchStarted: (String) -> Unit = {},
+            onClassicLaunchCompleted: (WorkspaceLaunchRequest) -> Unit = {}): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -98,6 +118,9 @@ class WorkspaceLaunchViewModel(
                         createReadiness = { item ->
                             requestFactory.create(item.id, item.name, item.canvas)
                         },
+                        executionArbiter = executionArbiter,
+                        onClassicLaunchStarted = onClassicLaunchStarted,
+                        onClassicLaunchCompleted = onClassicLaunchCompleted,
                     ) as T
                 }
             }

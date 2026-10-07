@@ -28,6 +28,26 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class CarWorkspaceLaunchPlatformTest {
+    @Test fun repairCallbackFailureDoesNotTurnDockClassicSuccessIntoFailure() = runBlocking {
+        val runtime = FakeRuntime()
+        val platform = RepositoryCarWorkspaceLaunchPlatform(FakeRepository(validWorkspace),
+            WorkspaceLaunchRequestFactory(ListInstalledAppCatalog(listOf(installedApp))), runtime,
+            onClassicLaunchCompleted = { error("Repair unavailable") })
+        assertSame(CarWorkspaceLaunchResult.Success, platform.launch(validWorkspace.id))
+        assertEquals(1, runtime.requests.size)
+    }
+
+    @Test fun dockClassicSuccessReportsExactRequestButFailureDoesNotAssess() = runBlocking {
+        val completions=mutableListOf<WorkspaceLaunchRequest>()
+        val factory=WorkspaceLaunchRequestFactory(ListInstalledAppCatalog(listOf(installedApp)))
+        val success=RepositoryCarWorkspaceLaunchPlatform(FakeRepository(validWorkspace),factory,FakeRuntime(),completions::add)
+        assertSame(CarWorkspaceLaunchResult.Success,success.launch(validWorkspace.id))
+        assertEquals(listOf(readyRequest()),completions)
+        val failure=RepositoryCarWorkspaceLaunchPlatform(FakeRepository(validWorkspace),factory,
+            FakeRuntime(result=WorkspaceLaunchResult.Failure(listOf(AppLaunchFailure(readyRequest().targets.first(),AppLaunchFailureReason.LAUNCH_REJECTED)))),completions::add)
+        assertTrue(failure.launch(validWorkspace.id) is CarWorkspaceLaunchResult.ExecutionFailed)
+        assertEquals(1,completions.size)
+    }
     @Test
     fun validWorkspace_launchesExactWorkspaceWithoutMutation() = runBlocking {
         val original = validWorkspace

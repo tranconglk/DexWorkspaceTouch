@@ -1,0 +1,18 @@
+﻿Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): false
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v3.2 scheme (APK Signature Scheme v3.2): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+V2 Signer: certificate DN: CN=Tran Cong, OU=Unknown, O=Unknown, L=Hang Gon, ST=Dong Nai, C=VN
+V2 Signer: certificate SHA-256 digest: 19ac0ea99125361b3c2083aaa44c8745ebad9c55fa967642c2b9e5a1086a45e7
+V2 Signer: certificate SHA-1 digest: 69c22c8284b0cc9e5c6f3973076d07ec5ed09669
+V2 Signer: certificate MD5 digest: 108d828ec61863007998278b57044df3
+V2 Signer: key algorithm: RSA
+V2 Signer: key size (bits): 4096
+V2 Signer: public key SHA-256 digest: 49b7c8657e364d357309ae7dd2c00f51fcd595b3ec545e73a32a46f2c8402406
+V2 Signer: public key SHA-1 digest: ebe66007fd0d0856b19ea6699a474bdf710e60a1
+V2 Signer: public key MD5 digest: 40c361c4ef2b82fca66624bb6f7cd4c8

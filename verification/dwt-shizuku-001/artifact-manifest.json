@@ -1,0 +1,20 @@
+﻿[
+    {
+        "File":  "app/build/outputs/apk/debug/app-debug.apk",
+        "SHA256":  "26ABFAD20A64226B7C7741920BD929FE43CE58B3E6C791EEDB184F37B3839660",
+        "Baseline":  "b04288e69a0f8c2057e185b68a1df9ae8fcd0b80",
+        "Package":  "com.trancong.dexworkspacetouch",
+        "Variant":  "debug",
+        "VersionCode":  9,
+        "VersionName":  "1.0.0-beta.8"
+    },
+    {
+        "File":  "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+        "SHA256":  "C2E8E298E4D5962220051E558403DB2CE10ABC87A4C5A5324C04F2889BDA90DF",
+        "Baseline":  "b04288e69a0f8c2057e185b68a1df9ae8fcd0b80",
+        "Package":  "com.trancong.dexworkspacetouch",
+        "Variant":  "debug",
+        "VersionCode":  9,
+        "VersionName":  "1.0.0-beta.8"
+    }
+]

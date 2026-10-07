@@ -1,6 +1,8 @@
 package com.trancong.dexworkspacetouch.feature.car.overlay
 
 import android.content.Context
+import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGate
+import com.trancong.dexworkspacetouch.platform.launch.shizuku.AndroidExistingWorkspaceRepair
 import com.trancong.dexworkspacetouch.feature.car.CarActionEngine
 import com.trancong.dexworkspacetouch.feature.car.CarWorkflowExecutionRunner
 import com.trancong.dexworkspacetouch.feature.car.CarWorkflowExecutionArbiter
@@ -41,6 +43,7 @@ class CarFloatingDockCoordinator(
     shortcutPreferences: CarWorkspaceShortcutPreferences,
     workspaceRepository: WorkspaceRepository,
     private val executionArbiter: CarWorkflowExecutionArbiter,
+    private val repairController: ManualWorkspaceRepairController? = null,
 ) {
     private val runner = CarWorkflowExecutionRunner<CarWorkspaceShortcutSlot>(
         actionEngine,
@@ -55,6 +58,7 @@ class CarFloatingDockCoordinator(
     private var currentShortcuts: List<CarFloatingWorkspaceShortcut> = emptyList()
     private val runnerStateJob: Job = scope.launch {
         executionArbiter.isRunning.collect { isRunning ->
+            if (isRunning) repairController?.controlActionStarted()
             session.setActionsEnabled(!isRunning)
         }
     }
@@ -75,7 +79,25 @@ class CarFloatingDockCoordinator(
         }
     }
     private val sessionStateJob: Job = scope.launch {
-        session.stateChanges.collect { synchronizeState() }
+        session.stateChanges.collect {
+            if (session.state !is CarOverlaySessionState.Shown) repairController?.invalidateSuggestion()
+            synchronizeState()
+        }
+    }
+
+    private val repairStateJob: Job? = repairController?.let { controller ->
+        scope.launch { controller.state.collect { session.updateRepair(it.control(controller::repair)) } }
+    }
+    val repairState: StateFlow<CarDockRepairState>? get() = repairController?.state
+    fun rememberRepairWorkspace(workspaceId: String) { repairController?.selectWorkspace(workspaceId) }
+    fun classicLaunchStarted(workspaceId: String) { repairController?.classicLaunchStarted(workspaceId) }
+    fun classicLaunchCompleted(request: com.trancong.dexworkspacetouch.workspace.launcher.model.WorkspaceLaunchRequest) {
+        repairController?.classicLaunchCompleted(request)
+    }
+    internal fun performRepairClickForTest(): Boolean {
+        val real = session as? CarOverlaySession ?: return false
+        real.performHandleClickForTest()
+        return real.performRepairClickForTest()
     }
 
     init {
@@ -96,6 +118,7 @@ class CarFloatingDockCoordinator(
             )
         }
         session.updateShortcuts(currentShortcuts)
+        repairController?.let { session.updateRepair(it.state.value.control(it::repair)) }
         session.setActionsEnabled(!executionArbiter.isRunning.value)
     }
 
@@ -104,6 +127,7 @@ class CarFloatingDockCoordinator(
     }
 
     fun hide() {
+        repairController?.invalidateSuggestion()
         session.hide()
         mutableDockState.value = CarFloatingDockControlState.Hidden
     }
@@ -120,6 +144,8 @@ class CarFloatingDockCoordinator(
         runnerStateJob.cancel()
         shortcutStateJob.cancel()
         sessionStateJob.cancel()
+        repairStateJob?.cancel()
+        repairController?.dispose()
         session.dispose()
         mutableDockState.value = CarFloatingDockControlState.Hidden
     }
@@ -129,7 +155,11 @@ class CarFloatingDockCoordinator(
         if (workflow == null) {
             runner.reject(slot, "Workspace shortcut is unavailable.")
         } else {
-            runner.acceptAndRun(slot, workflow, session::collapse)
+            runner.acceptAndRun(slot, workflow) {
+                (currentShortcuts.firstOrNull { it.slot == slot }?.state as? CarFloatingWorkspaceShortcutState.Configured)
+                    ?.workspaceId?.let(::classicLaunchStarted)
+                session.collapse()
+            }
         }
         session.setActionsEnabled(!executionArbiter.isRunning.value)
     }
@@ -155,6 +185,7 @@ class CarFloatingDockCoordinator(
             shortcutPreferences: CarWorkspaceShortcutPreferences,
             executionArbiter: CarWorkflowExecutionArbiter,
             diagnostics: WorkspaceLaunchDiagnostics = WorkspaceLaunchDiagnostics.None,
+            repairGate: EmbeddedProductRunGate? = null,
         ): CarFloatingDockCoordinator {
             val applicationContext = context.applicationContext
             val session = CarOverlaySession(
@@ -170,6 +201,10 @@ class CarFloatingDockCoordinator(
                     AndroidInstalledAppDataSource.create(applicationContext),
                 ),
             )
+            val repairController = if (repairGate != null) AndroidExistingWorkspaceRepair(
+                applicationContext,scope,workspaceRepository,requestFactory,repairGate,executionArbiter,displayProvider,
+                repairMode=shortcutPreferences.workspaceRepairMode,
+            ) else null
             val workspacePlatform = RepositoryCarWorkspaceLaunchPlatform(
                 repository = workspaceRepository,
                 requestFactory = requestFactory,
@@ -178,6 +213,7 @@ class CarFloatingDockCoordinator(
                     diagnostics = diagnostics,
                     displayProvider = displayProvider,
                 ),
+                onClassicLaunchCompleted = { repairController?.classicLaunchCompleted(it) },
             )
             val executor = AndroidCarActionExecutor.createForOverlay(
                 context = applicationContext,
@@ -194,6 +230,7 @@ class CarFloatingDockCoordinator(
                 shortcutPreferences = shortcutPreferences,
                 workspaceRepository = workspaceRepository,
                 executionArbiter = executionArbiter,
+                repairController = repairController,
             )
         }
     }

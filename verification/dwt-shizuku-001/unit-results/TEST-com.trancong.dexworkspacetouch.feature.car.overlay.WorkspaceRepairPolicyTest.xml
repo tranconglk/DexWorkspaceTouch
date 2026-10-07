@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-10-07T10:24:48.480Z" hostname="NUC" time="0.149">
+  <properties/>
+  <testcase name="suggestAndDefaultWaitForClickWithZeroMutation" classname="com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest" time="0.058"/>
+  <testcase name="secondClassicLaunchCancelsPendingAutomaticRepairEvenForSameWorkspace" classname="com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest" time="0.005"/>
+  <testcase name="modeChangedToOffCancelsPendingAssessmentAndAutoRepair" classname="com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest" time="0.007"/>
+  <testcase name="partialRepairIsNeverReportedAsFullSuccess" classname="com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest" time="0.011"/>
+  <testcase name="automaticWrongLayoutInvokesSameEngineOnceAndRetainsTaskIdentity" classname="com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest" time="0.007"/>
+  <testcase name="shizukuUnavailableDoesNotPropagateFailureFromClassicCompletion" classname="com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest" time="0.003"/>
+  <testcase name="freshCorrectBoundsBetweenAssessmentAndRunNeverResizeStaleSnapshot" classname="com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest" time="0.005"/>
+  <testcase name="offDoesNotAssessAndManualRepairStillUsesExistingEngine" classname="com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest" time="0.004"/>
+  <testcase name="embeddedAndCleanupBlockedStillPreventAutomaticMutation" classname="com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest" time="0.017"/>
+  <testcase name="taskOrActivityIdentityChangedBetweenAssessmentAndRunFailsClosed" classname="com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest" time="0.008"/>
+  <testcase name="automaticCorrectLayoutOnlyReadsOnceAndDoesNotInvokeRepair" classname="com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest" time="0.003"/>
+  <testcase name="lateAssessmentCannotRepairAfterWorkspaceOrGenerationOrDockChanges" classname="com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest" time="0.011"/>
+  <testcase name="anotherWorkflowReservationAfterAssessmentDiscardsAutomaticAction" classname="com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest" time="0.004"/>
+  <testcase name="unresolvedOrUnavailableNeverInvokeAutomaticRepair" classname="com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

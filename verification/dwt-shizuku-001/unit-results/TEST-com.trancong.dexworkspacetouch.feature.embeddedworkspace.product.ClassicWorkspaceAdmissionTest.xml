@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ClassicWorkspaceAdmissionTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-07T10:24:48.948Z" hostname="NUC" time="0.007">
+  <properties/>
+  <testcase name="admittedClassicLaunchCompletesWithoutEmbeddedExecutionOrNavigation" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ClassicWorkspaceAdmissionTest" time="0.004"/>
+  <testcase name="unavailableClassicEnvironmentDoesNotFallBackToEmbedded" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ClassicWorkspaceAdmissionTest" time="0.001"/>
+  <testcase name="classicLaunchFailureDoesNotFallBackToEmbedded" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ClassicWorkspaceAdmissionTest" time="0.001"/>
+  <testcase name="incompleteEmbeddedCleanupRejectsBeforeClassicReadinessOrRuntime" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ClassicWorkspaceAdmissionTest" time="0.001"/>
+  <testcase name="explicitEmbeddedEntryNavigatesWithoutLaunchingEitherRuntime" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ClassicWorkspaceAdmissionTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

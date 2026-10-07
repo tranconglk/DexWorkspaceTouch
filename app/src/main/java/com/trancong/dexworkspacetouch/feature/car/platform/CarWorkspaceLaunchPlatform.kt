@@ -4,6 +4,7 @@ import com.trancong.dexworkspacetouch.workspace.launcher.WorkspaceLaunchRequestF
 import com.trancong.dexworkspacetouch.workspace.launcher.model.AppLaunchFailureReason
 import com.trancong.dexworkspacetouch.workspace.launcher.model.LaunchReadiness
 import com.trancong.dexworkspacetouch.workspace.launcher.model.WorkspaceLaunchResult
+import com.trancong.dexworkspacetouch.workspace.launcher.model.WorkspaceLaunchRequest
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.LaunchEnvironmentCheck
 import com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchRuntime
 import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspaceRepository
@@ -23,6 +24,7 @@ class RepositoryCarWorkspaceLaunchPlatform(
     private val repository: WorkspaceRepository,
     private val requestFactory: WorkspaceLaunchRequestFactory,
     private val runtime: WorkspaceLaunchRuntime,
+    private val onClassicLaunchCompleted: (WorkspaceLaunchRequest) -> Unit = {},
 ) : CarWorkspaceLaunchPlatform {
     override suspend fun launch(workspaceId: String): CarWorkspaceLaunchResult {
         return try {
@@ -56,7 +58,11 @@ class RepositoryCarWorkspaceLaunchPlatform(
                     )
                 }
             }
-            runtime.launch(request).toCarResult()
+            val result = runtime.launch(request)
+            if (result is WorkspaceLaunchResult.Success) {
+                runCatching { onClassicLaunchCompleted(request) }
+            }
+            result.toCarResult()
         } catch (cancellation: CancellationException) {
             throw cancellation
         } catch (exception: Exception) {

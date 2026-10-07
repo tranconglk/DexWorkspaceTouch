@@ -1,0 +1,132 @@
+{
+  "status": "PASS - PRODUCT INTEGRATION VIABLE / READY FOR COMMIT REVIEW",
+  "deviceStatus": {
+    "S22": "PASS retained",
+    "S23": "PASS real product"
+  },
+  "environment": {
+    "Device": "S23",
+    "Serial": "192.168.1.106:5555",
+    "Model": "SM-S918B",
+    "Package": "com.trancong.dexworkspacetouch",
+    "AndroidVersion": "16",
+    "SDK": "36",
+    "OneUI": "80500",
+    "BuildFingerprint": "samsung/dm3qxxx/dm3q:16/BP4A.251205.006/S918BXXSAFZH3:user/release-keys",
+    "InstalledVersion": {
+      "Package": "com.trancong.dexworkspacetouch",
+      "VersionCode": 9,
+      "VersionName": "1.0.0-beta.8"
+    },
+    "QualificationVersion": {
+      "Package": "com.trancong.dexworkspacetouch",
+      "VersionCode": 9,
+      "VersionName": "1.0.0-beta.8"
+    },
+    "InstalledSignerSHA256": "19ac0ea99125361b3c2083aaa44c8745ebad9c55fa967642c2b9e5a1086a45e7",
+    "QualificationSignerSHA256": "19ac0ea99125361b3c2083aaa44c8745ebad9c55fa967642c2b9e5a1086a45e7",
+    "InstalledApkSHA256": "6370cd122f8c5750e230e56c15af5f5ea7a0d252fa019371648c54ab1715852b",
+    "QualificationApkSHA256": "708e4df09c1aea4e232e5655b981ef457b96d3b5d85fb36397fee9e1ccd14b68",
+    "SameSigner": true,
+    "SameVersion": true,
+    "UpdateInPlaceCompatible": true,
+    "UserId": "10612",
+    "FirstInstallTime": "2026-09-10 10:58:54",
+    "DataDir": "/data/user/0/com.trancong.dexworkspacetouch",
+    "UpdateAttempted": false,
+    "Uninstalled": false,
+    "DataCleared": false,
+    "RecordedAtUtc": "2026-10-07T12:59:26.3109020Z"
+  },
+  "updateCompatibility": "PASS - same official signer/package/version, adb install -r",
+  "dataPreservation": {
+    "originalWorkspaceCount": 13,
+    "originalWorkspaceContentsIdentical": true,
+    "appIdUnchanged": true,
+    "firstInstallTimeUnchanged": true,
+    "normalLicensedStartupBeforeAndAfter": true,
+    "reactivationRequired": false,
+    "licenseBypass": false,
+    "uninstall": false,
+    "clearData": false
+  },
+  "mode": "AUTOMATIC",
+  "assessment": "LAYOUT_CORRECT",
+  "cells": [
+    {
+      "package": "com.sec.android.app.popupcalculator",
+      "taskId": 5506,
+      "expectedBounds": [
+        8,
+        8,
+        952,
+        1136
+      ],
+      "firstObservedBounds": [
+        8,
+        8,
+        952,
+        1136
+      ],
+      "finalBounds": [
+        8,
+        8,
+        952,
+        1136
+      ],
+      "maxDeviationPx": 0,
+      "boundsChanges": 0,
+      "firstSeenUtc": "2026-10-07T13:13:48.853Z"
+    },
+    {
+      "package": "com.sec.android.app.clockpackage",
+      "taskId": 5507,
+      "expectedBounds": [
+        968,
+        8,
+        1912,
+        1136
+      ],
+      "firstObservedBounds": [
+        968,
+        8,
+        1912,
+        1136
+      ],
+      "finalBounds": [
+        968,
+        8,
+        1912,
+        1136
+      ],
+      "maxDeviationPx": 0,
+      "boundsChanges": 0,
+      "firstSeenUtc": "2026-10-07T13:13:49.415Z"
+    }
+  ],
+  "observation": {
+    "durationMs": 20181,
+    "sampleCount": 60,
+    "bothTasksStableForMs": 17137,
+    "taskIdsStable": true,
+    "targetBoundsChanges": 0,
+    "unrelatedTaskMutations": 0,
+    "shizukuAppStarts": 0,
+    "automaticRepairAttempts": 0,
+    "taskResizes": 0
+  },
+  "zeroAttemptEvidence": "Runtime real-dock LAYOUT_CORRECT plus unchanged REPAIR_AVAILABLE-only automatic admission and accepted automaticCorrectLayoutOnlyReadsOnceAndDoesNotInvokeRepair regression; no Manual Repair click",
+  "counterInstrumentation": "No internal RPC counter injected into frozen non-debuggable artifact. Zero resize/attempt conclusion combines runtime assessment, exact stable task traces and verified unchanged policy.",
+  "sourceFreeze": {
+    "files": 36,
+    "changed": 0
+  },
+  "artifactSha256": "708e4df09c1aea4e232e5655b981ef457b96d3b5d85fb36397fee9e1ccd14b68",
+  "versionCode": 9,
+  "versionName": "1.0.0-beta.8",
+  "newBuildPerformed": false,
+  "commit": false,
+  "push": false,
+  "tag": false,
+  "recordedAtUtc": "2026-10-07T13:17:48.650Z"
+}

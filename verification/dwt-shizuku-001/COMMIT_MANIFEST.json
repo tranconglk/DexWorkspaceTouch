@@ -1,0 +1,545 @@
+{
+  "task": "DWT-SHIZUKU-001",
+  "acceptedStatus": "PASS - PRODUCT INTEGRATION VIABLE / READY FOR COMMIT",
+  "baseline": "b04288e69a0f8c2057e185b68a1df9ae8fcd0b80",
+  "rndReference": "4e8bca37d904ef6f537d10a52403262e5f4e742a",
+  "branch": "product/dwt-shizuku-001",
+  "sourceSnapshot": "device-continuation/frozen-source-snapshot.json",
+  "sourceFiles": 36,
+  "counts": {
+    "main": 22,
+    "aidl": 1,
+    "unit": 12,
+    "androidTest": 1,
+    "docsEvidence": 93,
+    "total": 129
+  },
+  "artifactSHA256": "708e4df09c1aea4e232e5655b981ef457b96d3b5d85fb36397fee9e1ccd14b68",
+  "bytePolicy": "SHA-256 of original qualified bytes; no EOL normalization",
+  "files": [
+    {
+      "File": "app/src/androidTest/java/com/trancong/dexworkspacetouch/feature/car/CarWorkspaceShortcutPreferencesDeviceTest.kt",
+      "SHA256": "4bbef0b139d7c6c228d372a616006749bca54023e8743f90758dabd031444b85"
+    },
+    {
+      "File": "app/src/main/aidl/com/trancong/dexworkspacetouch/platform/launch/shizuku/IWorkspaceCommandService.aidl",
+      "SHA256": "b2b493be7598b5282aee4ed1336e6f8f9e08cb368bba818520223a3b70d26f9f"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/DexWorkspaceTouchApplication.kt",
+      "SHA256": "2921cd1ee0888d0421b83c9afdf2c1a4e293e1505a003b22a276942e77b0e624"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/CarScreen.kt",
+      "SHA256": "713e7a58099b6ea191af25427f4660e7d29d421b80b38975e0c1390a9001e8a2"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/CarWorkspaceShortcut.kt",
+      "SHA256": "5bf64887eac92ffcd34128420e864538c9aaca120ad19ed979bdabbb68f76b50"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/CarWorkspaceShortcutPreferences.kt",
+      "SHA256": "1f8ed0adf12aa00a6348e27a95a52a4447c3fa2a2a29ba2361afdbaf2965fb2d"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/overlay/AndroidCarOverlayPlatform.kt",
+      "SHA256": "492f7fbd63775648faad758aae1cc110a3fad9c40318f4f931a030bea39da787"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/overlay/CarDockRepairControl.kt",
+      "SHA256": "5eb2ae50400ec942ce20b048ce31e41d6328aeac24c920e5ca2eaef2ee097167"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/overlay/CarFloatingDockCoordinator.kt",
+      "SHA256": "42ba789e61969e7d4207116cbd8e13aebfa90a8a9e217e55ca305bd17bbdd484"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/overlay/CarOverlaySession.kt",
+      "SHA256": "8de2184f438b731acf66bf1b84730380db8ca595d37a4ad1c328a326088e8c9e"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/overlay/WorkspaceRepairSession.kt",
+      "SHA256": "823c126a8bafc767228bf94e331eaea3c0530be0368d22f67312f1fb548d8039"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/platform/CarWorkspaceLaunchPlatform.kt",
+      "SHA256": "6ecafe3b1b87f18874ca3488ace25945776aeb7128212a249b3ccbd5f17b3573"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/WorkspaceRepairMode.kt",
+      "SHA256": "559b68c6b963f6d69a31869253b153ab49231ff8207f4b6a2d67158370e6911a"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/navigation/TouchNavigation.kt",
+      "SHA256": "003e884c4ebcc726d71885a735012ff391da2233a218fa08ca7062a54712339d"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/AndroidExistingWorkspaceRepair.kt",
+      "SHA256": "7732a85ff57896c24307f198e67b72e2c89cf0d84d138dbc19e0ae182521756b"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/AndroidShizukuCommandTransport.kt",
+      "SHA256": "7c0ad6072d0767cf8e53186499250b6c23be8dcac997ad8b0e96e83c8b9ac56d"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ExistingWorkspaceRepair.kt",
+      "SHA256": "95793510e94c158f499491c83de83b9d5e33fea0877f1ed856a7d89443ced0d2"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ShizukuCommandTransport.kt",
+      "SHA256": "c4d824c30713a72c112a9dcac5b73c16c4a2b6fac156401d3174b68a62b9ff3c"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceCommandDeadline.kt",
+      "SHA256": "cf79cc9f0e4519e4d9524a2f708098f23e85b79c6921fb0f89e80a104de578d8"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceCommandDispatcher.kt",
+      "SHA256": "c384d19d4746fc64c77091dfec89ee8291f114643151c1a7485007ff821733a0"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceCommandProcess.kt",
+      "SHA256": "f9cf1eb8683c909937ddd1f90187958b3e9c904a53ebd164243c5ebc6d0d3d83"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceCommandUserService.kt",
+      "SHA256": "af84be1daf89bec7bbd7ab2591d8d85ce3a5131abb8777afe9f1944867783e10"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceTaskCorrelation.kt",
+      "SHA256": "47dc29859b917199ccd344815724bf1000c9650d5fcd1eb9578f2ef1fc9a7b08"
+    },
+    {
+      "File": "app/src/main/java/com/trancong/dexworkspacetouch/workspace/launcher/presentation/WorkspaceLaunchViewModel.kt",
+      "SHA256": "6667ba475638bc65712c5c310833c4d011d5cb3a8588d328f6b5f7bd1ef0993f"
+    },
+    {
+      "File": "app/src/test/java/com/trancong/dexworkspacetouch/feature/car/overlay/CarFloatingDockCoordinatorTest.kt",
+      "SHA256": "feeeac11c81264ee04f07f98d6dcbe98563f8c9c488d2ad7be0f61f43355a8b3"
+    },
+    {
+      "File": "app/src/test/java/com/trancong/dexworkspacetouch/feature/car/overlay/WorkspaceRepairPolicyTest.kt",
+      "SHA256": "88b468197e26ba226b7b9f0aac6c4dc1a9562dfd03c7426e83de367f2564262a"
+    },
+    {
+      "File": "app/src/test/java/com/trancong/dexworkspacetouch/feature/car/overlay/WorkspaceRepairSessionTest.kt",
+      "SHA256": "092909db703c612307abd89c66d2608a335899809b537fe70efad20d38b40080"
+    },
+    {
+      "File": "app/src/test/java/com/trancong/dexworkspacetouch/feature/car/platform/CarWorkspaceLaunchPlatformTest.kt",
+      "SHA256": "dd46e1dc3a621390c5b59c117948bdbf7d753bf5fb1d33c031087dac22904a66"
+    },
+    {
+      "File": "app/src/test/java/com/trancong/dexworkspacetouch/feature/car/WorkspaceRepairModePreferencesTest.kt",
+      "SHA256": "f57f0ffab2312e2f0d9839c2acdd3e578de927cb97a1a85d9a3293d4a7e931bd"
+    },
+    {
+      "File": "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ExistingWorkspaceAssessmentTest.kt",
+      "SHA256": "9749eaefe9859abb041f10650226b1588befefab595743d6df516550c2da5cac"
+    },
+    {
+      "File": "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ExistingWorkspaceRepairTest.kt",
+      "SHA256": "02f28ca754efbc1daf477db43e94b8c92cbc460a7d9064a5cabca2319fd382b6"
+    },
+    {
+      "File": "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ProductionShizukuCommandTransportTest.kt",
+      "SHA256": "81d16fa1a8f36fe5494d1b2c7f36328032b1a386d453f145b70d37df87a6d916"
+    },
+    {
+      "File": "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceCommandDeadlineTest.kt",
+      "SHA256": "64fb0112a0b2ede392e20ddf2de4f11626d55b15c120a32006b38e8ac86c84aa"
+    },
+    {
+      "File": "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceCommandDispatcherTest.kt",
+      "SHA256": "8ca192c4e9bff9aa9ef75917af3ae678493da11961fb722afc38a9335e9edb28"
+    },
+    {
+      "File": "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceCommandProcessTest.kt",
+      "SHA256": "dfa982898e3d3c0886ed2b58135c3b74591d4799d6d10bba404dadf3250329fe"
+    },
+    {
+      "File": "app/src/test/java/com/trancong/dexworkspacetouch/workspace/launcher/presentation/WorkspaceLaunchViewModelTest.kt",
+      "SHA256": "931b347cb2d1ad3d0601ad3cbaa108855e23232d9979351b9f19135e3888b7f7"
+    },
+    {
+      "File": "docs/codex/DWT-SHIZUKU-001_INVENTORY.md",
+      "SHA256": "a9b0984bd203806227d1a7b8d7f98fd8cc645e7ae897f3cc32981842f5010316"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/DWT-SHIZUKU-001_REPORT.md",
+      "SHA256": "8b12c7774f2de62680b4b389a2ffb1c736e38776381de20aec0e258c6d12855f"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/artifact-manifest.json",
+      "SHA256": "000634483fbdd8b15292d5ca3c0578e783b5fc0bfde76c02f5475ea80323b15d"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/source-check.txt",
+      "SHA256": "a6aec015be84acc2787755907651a096279b1f1be706b6d91e71583e33e1173f"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/verify-source.ps1",
+      "SHA256": "11fbd165b3b5809cdec3a7d82682337628b379264f7e278f50ea908ade409e1b"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-summary.json",
+      "SHA256": "c93024da44324bd2f9b750390432af1951fd9d00e2f54ed61e012b8e2db220f4"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/red.log",
+      "SHA256": "69ab43c305a689ccc3abbb05889176d4b5a89cd0a0828ba34070f3397304e974"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/debug-green.log",
+      "SHA256": "f577f14ca67a685e590465c959e30c6e3e3d314dc92f284a7649429476664c0f"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/regression-build.log",
+      "SHA256": "98373ac5bab7c489c8ad484d90888be2fd7e9fd31b692db89a1562faf1949265"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-device.json",
+      "SHA256": "6abb0427ab787544bd41752b15a25518b6048a80b2d3cd9bf71be23d55f1f82f"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-preferences-device.txt",
+      "SHA256": "41dd8253a60f0df878d4c5d788ac06369babca8c5615006618570f9e30507565"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.tran-KFG33OALCNMQK.dexworkspacetouch.feature.embeddedworkspace.product.ClassicWorkspaceRuntimeIsolationTest.xml",
+      "SHA256": "ca0917eb34d45a8526c3727b5ddb20c4f186bcf0d3d106ba7c87de26b0e5d2f5"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.tranc-9E5MMSLPOVUAG.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductRoutingTest.xml",
+      "SHA256": "a7d1be7034bf51223a9bd65ad92c6bde5eec2762ccaf1e6cd99d34644379f301"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.feature.car.CarWorkflowExecutionRunnerTest.xml",
+      "SHA256": "8750c7d713ef41b76d352f2bd0441099b7d112332506060986285b7be6e8edc6"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.feature.car.WorkspaceRepairModePreferencesTest.xml",
+      "SHA256": "495752b1befee09f4ab4a52febfa7a3891fb5c1c3daf6adbf099c0988de25c2c"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingDockCoordinatorTest.xml",
+      "SHA256": "06f49ee93659f20df93ed588a2298c3cde35602d74ab8d7c5578267b2c5fa8f7"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.feature.car.overlay.CarOverlaySessionTest.xml",
+      "SHA256": "a811880beddf85bfdab0a189fa29cd6de7a1965c3d36300335fbaaa3295b1855"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest.xml",
+      "SHA256": "2a787a308d7fb50839c3ab5a527051b8cb8c92eb5a0ab2d18485465db20547a7"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairSessionTest.xml",
+      "SHA256": "3b159aa6cbecf4d5172196826a65086d440df1c4eb04c6cddad88c4f6bd0e7e3"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest.xml",
+      "SHA256": "65baece9b1cd2777729a3e90b8b81054a37b65dcb993e185050118fb610d074c"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ClassicWorkspaceAdmissionTest.xml",
+      "SHA256": "f93918074780d696e39b34b74970f7a66e999562d0230691bde77ce16807de81"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest.xml",
+      "SHA256": "04e4427e48a01e756a20218d67191c788c647735161defbad6e1c6068ecd71ba"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest.xml",
+      "SHA256": "00235d45da2ef89b392bc9a01d6dbf941b5b759daf836f78a62ff2dc4884b85d"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceAssessmentTest.xml",
+      "SHA256": "deed976fdb6edb3a2b30cec0d4df45679fd74bc6b7f894fbd6143b128cb5f20a"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest.xml",
+      "SHA256": "c9baaf46f4267200460c8226e3dc9a852b74992507f456ea5324740a8f7bb2cd"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest.xml",
+      "SHA256": "b9fedb30a834de5ee2dd6ff3020afa7abd82b8ace512ce992a42703b687f13e7"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDeadlineTest.xml",
+      "SHA256": "dd95868f0588d7693e9b9a3debb434154ffadecf5c73803bc559e26e6cbc91ba"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDispatcherTest.xml",
+      "SHA256": "4540709a9664e95a1d4fdecc893ac3fb0ab091532272aabaf49c91cd58201494"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandProcessTest.xml",
+      "SHA256": "8a22f1664874c0dd402c4aa2adefe37c00ce99b85089ab989035909f965d1bb2"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/unit-results/TEST-com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest.xml",
+      "SHA256": "3ca1ef15d168661aa8056e4a17592495566822c72bab92e6d9a0a7895491cc6c"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/red-results/TEST-com.trancong.dexworkspacetouch.feature.car.platform.CarWorkspaceLaunchPlatformTest.xml",
+      "SHA256": "ca624688adcd9b159879f2d963401a7a383709dbfc7c48ff67890828983e9ea6"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/red-results/TEST-com.trancong.dexworkspacetouch.workspace.launcher.presentation.WorkspaceLaunchViewModelTest.xml",
+      "SHA256": "58ae9a9fe4c27dc05a998709f5884f26388a70e7a3362828dde63c721f2b5851"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/device-continuation/frozen-source-snapshot.json",
+      "SHA256": "a2e2be15907054c9013b2cbcdddc8f396eaec5d50243f98c213d221cc46e3e2b"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/artifact-license-unblock/build-qualification.ps1",
+      "SHA256": "9df57e18770b42102e141feccfcefc6b81009520e792f39f4d7280024021d545"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/artifact-license-unblock/packaged-config-check.json",
+      "SHA256": "f6644b9f5c7691c01d7c1e3664983a4eea031d0b0e90df19eb141680389d9890"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/artifact-license-unblock/qualification-build.log",
+      "SHA256": "17b87d5c697ce7583e3d2043f504a3c280af7cc811b51b71fbe6ff445d171f7e"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/artifact-license-unblock/qualification-manifest.json",
+      "SHA256": "51f5a47313191f037e23fa6d6b7a0ef9a1d2ec0b00a3ecb7a1f0d98382ae940b"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/artifact-license-unblock/qualification-signer.txt",
+      "SHA256": "6163f8d8e29129850ac294d52e0e9fdaea28d0f5d673de7025453b15d085c680"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/artifact-license-unblock/s22-install-result.json",
+      "SHA256": "7c01c36f7ab7f6e15509e09964e5d082cc98928964df47d6f4bcff97f1d80bff"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/artifact-license-unblock/s22-post-install-verification.json",
+      "SHA256": "6f59c850702c5da5a9921f34433d8bec218a209f2b3d22b4096bf2093a84de98"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/S22_PRODUCT_QUALIFICATION_REPORT.md",
+      "SHA256": "ddd4867169d9c562d9158d5ac3ccffed3b028cf9d61529ea1774cad28c0bb572"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/s22-qualification-summary.json",
+      "SHA256": "b349188c054ce004f9523c25701ebd7a6c54305ce708eba8a08055920906a372"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/license-startup-proof.json",
+      "SHA256": "4d3f3a50086e659e31397f3b6c96930675d9603cf7559d9c78e1bb41f1fa5891"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/S22-Chrome-Browser-Tips-25-25-50.dwt",
+      "SHA256": "e7ccea372c28e9488e89e472cbeee1ce8f983115c667247e4a554fe5980787c8"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/verify-device-proof.mjs",
+      "SHA256": "31f6a69cb9b27c37347122b95da6710ede385222f6c591a185848610581752c9"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/analyze-traces.mjs",
+      "SHA256": "83528b30b0a68736572a5f565fe20bc64305177ab6c8a61f766e1837d48f73b6"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/task-trace.mjs",
+      "SHA256": "cf0d8d4257e4b117907b654c28df91f4ca0b38dd14d13b7c239b21d62e275792"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/capture-desktop.mjs",
+      "SHA256": "38490c9de6f18f9a34e2bae48f59e24b1786142493265572ab736a136030170d"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/s22-ui.ps1",
+      "SHA256": "bed37d91af4bb71c0284d45569a3a66a5dd5cc4391b84dae0b07522b641cd754"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/automatic-home-stable.png",
+      "SHA256": "c047ed34a5e8cb9c0ca5bf7dbd90f4970119bc457c02205d9aa144bd923ced6b"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/automatic-mode-selected.png",
+      "SHA256": "6f0f39ae05f1ab10e23f7ee0fa0df0054a4a2cf6fe6827ba87a913a4ce7006c8"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/suggest-mode-selected.png",
+      "SHA256": "47935534a044f2fb2c3c1618ca9e8def1c0d232a4e9a4811c5fff9091a252cf1"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/suggest-before-repair.png",
+      "SHA256": "46954bf1f754254628a8db1c674690f7284ec42c3ca6a74df7eb4e7708253bbc"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/suggest-after-repair.png",
+      "SHA256": "56881ac73b9b55fab01a296eedb37c9d809d06b85e9f6c656283c1ccfd5cfeb9"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/off-mode-selected.png",
+      "SHA256": "4c8a1b33d341a44f8934ef98f1f88c1b40ffa1ba695b881ebc4339946ec0e1db"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/off-before-repair.png",
+      "SHA256": "29443dcd2bd2b0f6974d2cf45e5a11cf0496f4691e7b968bae60f56bfa566c2d"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/off-after-repair.png",
+      "SHA256": "4f6cdb04c2a267ae840efd3ad52196a747193d68fae35901234c6514e7e8e726"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/final-mode-restored-suggest.png",
+      "SHA256": "b2325a6aad24074fde163bfca2427ce7baf27a901ba5ce048190ace8930df405"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/automatic-home-stable-task-trace.json",
+      "SHA256": "40d9dd9bb65b0a25bb97800fbf92d9464a33f9a5e8d5ba4e7fc0e00ab791c9d1"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/automatic-home-stable-analysis.json",
+      "SHA256": "da344692cf9bff91a1229991e0cea82e73642fc1ba29cee8273ea5be8d34fec0"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/suggest-classic-no-click-task-trace.json",
+      "SHA256": "faf444e1eda435b56c2f2c22b97dca21937c1b60837c4299ed66e1cd453e6078"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/suggest-classic-no-click-analysis.json",
+      "SHA256": "4a9a341a03efda3d284393008cee7e82dac7e1ecfd8e5f173f35a3f7338c7101"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/suggest-stable-hold-task-trace.json",
+      "SHA256": "344c2be02f580a379eb33e73052f8448daaad6327e915c89ec5ce36b347e2309"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/suggest-stable-hold-analysis.json",
+      "SHA256": "0ec1f4ec5017a5ab1abe53bd65cc586c0f45d64da8a3763fbc8d760cf0f298af"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/suggest-real-dock-repair-task-trace.json",
+      "SHA256": "f1d5b1113ad9c79ee1dec6fc7539c4d3cecfa0095da323caace94a0ccdf9eb33"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/suggest-real-dock-repair-analysis.json",
+      "SHA256": "f7a35fb990a9723f6433c2cad0e8e963de27d7640f835dae67997292d1350ca3"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/off-classic-no-click-task-trace.json",
+      "SHA256": "d5c9e5f6617986d94c7f652ddbdc8ee4080981d0a2c98016082de1e6bac3e10c"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/off-classic-no-click-analysis.json",
+      "SHA256": "30412cd8bf272f0e676ce8cbb9703002c12d15432038d2bdf3ba0b4bfc03e502"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/off-stable-hold-task-trace.json",
+      "SHA256": "a747cfe0ffa3f3f331888f55b899d6d39f047db06037bd01361ec70f766b970c"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/off-stable-hold-analysis.json",
+      "SHA256": "7674bb35387b769465e6e70c400eae6ef51317f75157a99a2c0e185e87132a51"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/off-real-dock-repair-task-trace.json",
+      "SHA256": "808916afa31c9386fb84535e567b2b81deea8e109c1117b6409ff0269accf14b"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s22-product-proof/off-real-dock-repair-analysis.json",
+      "SHA256": "b6dd2795524aadbe609b85dd64b4d027dc1dc06f07be20d24eea5c680cdcd0ef"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/S23_PRODUCT_QUALIFICATION_REPORT.md",
+      "SHA256": "b8bd9daed17bbc8faff50d82d8d7688ea241423f5578e932db4bfb8b436d19d8"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/s23-qualification-summary.json",
+      "SHA256": "b4cdce2270a3eef3846f943d760f07736cf55ebf25211e69d8d7ea81cc627f96"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/S23-Calculator-Clock-50-50.dwt",
+      "SHA256": "64f839f0848b9a0e505b14fc3d3033f90dcf9a550203f1297977a4ffa54cafab"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/precheck.json",
+      "SHA256": "fd5bf569b1cb9819fa5c5756b75101f1e9e7e6afbd802f4168a447d9a610da3d"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/update-result.json",
+      "SHA256": "5548885ce70419c84403381765ffac075ea827afe9ca711c434bc1217a74a7b5"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/preservation-proof.json",
+      "SHA256": "7ccf80bc7785089720d51c047a490001fcf8f9e17b50f21e50411c23f9a439d0"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/assessment-ui-observation.json",
+      "SHA256": "fe5133e1c4584e4900a7b7fd2361ed002370c60ea0adba4c94b6f309d9ab6668"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/automatic-correct-classic-task-trace.json",
+      "SHA256": "d6f212b14fad00158a0d26b275953c608bbb9deedabdcadbf0220c9fb5eb3a57"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/installed-before-signer.txt",
+      "SHA256": "cdff2cec15c650edfbbe646caefaf2611f7732e21d870349182aec1598e4d857"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/qualification-signer-recheck.txt",
+      "SHA256": "cdff2cec15c650edfbbe646caefaf2611f7732e21d870349182aec1598e4d857"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/precheck-update.ps1",
+      "SHA256": "22158d7cde58d08db966126e66ac6859d05cabf5c1947d58a050cf9f3f35495e"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/install-in-place.ps1",
+      "SHA256": "b15b78dc76b0bb6742a1f7f506f8373b389b791870bd8b23dbfdc9dfe2ce384c"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/verify-proof.mjs",
+      "SHA256": "4d7134ee1b6fe1b48586a8db78e2d2176cf3b6379469891740f66f6ceb12b66c"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/capture.mjs",
+      "SHA256": "84a9cb10bbce078e6666af4a3f3ec6f58db646f2fab3e6e31f334a0fbf439db5"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/task-trace.mjs",
+      "SHA256": "9101265b04b9670dcca260003902c4a0f828b4c5eceff01b409a789e8a67211b"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/s23-ui.ps1",
+      "SHA256": "24c80027c07abab86f97f27c21dae4e052e45c924e007dd237777cc97fd52a65"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/automatic-mode-selected.png",
+      "SHA256": "e81c1e4ddd5dd5bef0be0734f3837aae2d71d86373a82be6c4a7d69696e166e9"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/automatic-correct-result.png",
+      "SHA256": "6dc4c152705284104bc26e6c56b76b6b6682d566ee085ef134623d2a01b34069"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/s23-product-proof/proof-ready-dock-expanded.png",
+      "SHA256": "7b6837dd6393238f8432e97ee431aa30d3efbadd47057191180517dcad1e411d"
+    },
+    {
+      "File": "verification/dwt-shizuku-001/COMMIT_PROVENANCE.md",
+      "SHA256": "424f0c3f3e4a4bd9379f7cfd620a11e1b681ddbff7e9b4a645a9ca0448e1136d"
+    }
+  ],
+  "self": "verification/dwt-shizuku-001/COMMIT_MANIFEST.json",
+  "selfHash": "Omitted to avoid a circular hash; this manifest is the remaining committed file",
+  "localOnly": [
+    "APK/build outputs",
+    "local.properties/keystore/private key/password/token/plaintext license",
+    "database and sidecars",
+    "Library backups and before/after Library UI snapshots",
+    "customer activation/fulfillment diagnostics",
+    "unnecessary setup and failed-trial raw captures",
+    "historical raw R&D evidence"
+  ],
+  "testsDevicesRerun": false
+}

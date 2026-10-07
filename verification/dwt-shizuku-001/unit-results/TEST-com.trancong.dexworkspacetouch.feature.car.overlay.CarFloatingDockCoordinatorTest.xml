@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingDockCoordinatorTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-07T10:24:48.336Z" hostname="NUC" time="0.074">
+  <properties/>
+  <testcase name="shownAlreadyShownHideRevocationAndDisplayRemovalSynchronize" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingDockCoordinatorTest" time="0.019"/>
+  <testcase name="productionOverlayActionsSelectExpectedWorkflowsAndReturnIdle" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingDockCoordinatorTest" time="0.013"/>
+  <testcase name="missingBindingIsLightweightError" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingDockCoordinatorTest" time="0.003"/>
+  <testcase name="permissionRefreshAndInvalidHostShowUseRealSessionResults" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingDockCoordinatorTest" time="0.002"/>
+  <testcase name="visibleCountUpdatesPublishedDockItemsWithoutChangingSlotOrder" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingDockCoordinatorTest" time="0.008"/>
+  <testcase name="failureBecomesError_hideDoesNotChangeRunnerAndDisposeCancels" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingDockCoordinatorTest" time="0.007"/>
+  <testcase name="runningDisablesActionsAndRejectsSecondTap" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingDockCoordinatorTest" time="0.007"/>
+  <testcase name="repositoryLayoutAndRenameUpdatesReachAnExpandedDockWithoutHideShow" classname="com.trancong.dexworkspacetouch.feature.car.overlay.CarFloatingDockCoordinatorTest" time="0.014"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

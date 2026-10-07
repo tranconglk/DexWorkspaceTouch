@@ -1,0 +1,157 @@
+{
+  "label": "suggest-real-dock-repair",
+  "sampleCount": 31,
+  "durationMs": 9101,
+  "cells": [
+    {
+      "package": "com.android.chrome",
+      "expected": [
+        8,
+        8,
+        472,
+        1016
+      ],
+      "taskIds": [
+        11365
+      ],
+      "uniqueTaskIdentity": true,
+      "finalCorrect": true,
+      "wrongBoundsObserved": true,
+      "transitions": [
+        {
+          "atUtc": "2026-10-07T12:37:47.626Z",
+          "tasks": [
+            {
+              "id": 11365,
+              "bounds": [
+                728,
+                6,
+                1192,
+                1014
+              ],
+              "displayId": 14,
+              "visible": true
+            }
+          ]
+        },
+        {
+          "atUtc": "2026-10-07T12:37:48.132Z",
+          "tasks": [
+            {
+              "id": 11365,
+              "bounds": [
+                8,
+                8,
+                472,
+                1016
+              ],
+              "displayId": 14,
+              "visible": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": "com.sec.android.app.sbrowser",
+      "expected": [
+        488,
+        8,
+        952,
+        1016
+      ],
+      "taskIds": [
+        11366
+      ],
+      "uniqueTaskIdentity": true,
+      "finalCorrect": true,
+      "wrongBoundsObserved": true,
+      "transitions": [
+        {
+          "atUtc": "2026-10-07T12:37:47.626Z",
+          "tasks": [
+            {
+              "id": 11366,
+              "bounds": [
+                1456,
+                16,
+                1920,
+                1024
+              ],
+              "displayId": 14,
+              "visible": true
+            }
+          ]
+        },
+        {
+          "atUtc": "2026-10-07T12:37:48.663Z",
+          "tasks": [
+            {
+              "id": 11366,
+              "bounds": [
+                488,
+                8,
+                952,
+                1016
+              ],
+              "displayId": 14,
+              "visible": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": "com.samsung.android.app.tips",
+      "expected": [
+        968,
+        8,
+        1912,
+        1016
+      ],
+      "taskIds": [
+        11367
+      ],
+      "uniqueTaskIdentity": true,
+      "finalCorrect": true,
+      "wrongBoundsObserved": true,
+      "transitions": [
+        {
+          "atUtc": "2026-10-07T12:37:47.626Z",
+          "tasks": [
+            {
+              "id": 11367,
+              "bounds": [
+                0,
+                0,
+                944,
+                1008
+              ],
+              "displayId": 14,
+              "visible": true
+            }
+          ]
+        },
+        {
+          "atUtc": "2026-10-07T12:37:49.413Z",
+          "tasks": [
+            {
+              "id": 11367,
+              "bounds": [
+                968,
+                8,
+                1912,
+                1016
+              ],
+              "displayId": 14,
+              "visible": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unrelatedBoundsChanges": [],
+  "shizukuAppStarts": [],
+  "activityStarts": []
+}

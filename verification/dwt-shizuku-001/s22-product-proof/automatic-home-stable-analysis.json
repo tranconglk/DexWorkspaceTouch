@@ -1,0 +1,198 @@
+{
+  "label": "automatic-home-stable",
+  "sampleCount": 40,
+  "durationMs": 12733,
+  "cells": [
+    {
+      "package": "com.android.chrome",
+      "expected": [
+        8,
+        8,
+        472,
+        1016
+      ],
+      "taskIds": [
+        11362
+      ],
+      "uniqueTaskIdentity": true,
+      "finalCorrect": true,
+      "wrongBoundsObserved": true,
+      "transitions": [
+        {
+          "atUtc": "2026-10-07T12:35:05.882Z",
+          "tasks": []
+        },
+        {
+          "atUtc": "2026-10-07T12:35:06.311Z",
+          "tasks": [
+            {
+              "id": 11362,
+              "bounds": [
+                728,
+                6,
+                1192,
+                1014
+              ],
+              "displayId": 14,
+              "visible": true
+            }
+          ]
+        },
+        {
+          "atUtc": "2026-10-07T12:35:08.768Z",
+          "tasks": [
+            {
+              "id": 11362,
+              "bounds": [
+                8,
+                8,
+                472,
+                1016
+              ],
+              "displayId": 14,
+              "visible": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": "com.sec.android.app.sbrowser",
+      "expected": [
+        488,
+        8,
+        952,
+        1016
+      ],
+      "taskIds": [
+        11363
+      ],
+      "uniqueTaskIdentity": true,
+      "finalCorrect": true,
+      "wrongBoundsObserved": true,
+      "transitions": [
+        {
+          "atUtc": "2026-10-07T12:35:05.882Z",
+          "tasks": []
+        },
+        {
+          "atUtc": "2026-10-07T12:35:06.586Z",
+          "tasks": [
+            {
+              "id": 11363,
+              "bounds": [
+                488,
+                8,
+                952,
+                1016
+              ],
+              "displayId": 14,
+              "visible": true
+            }
+          ]
+        },
+        {
+          "atUtc": "2026-10-07T12:35:06.937Z",
+          "tasks": [
+            {
+              "id": 11363,
+              "bounds": [
+                1456,
+                16,
+                1920,
+                1024
+              ],
+              "displayId": 14,
+              "visible": true
+            }
+          ]
+        },
+        {
+          "atUtc": "2026-10-07T12:35:09.302Z",
+          "tasks": [
+            {
+              "id": 11363,
+              "bounds": [
+                488,
+                8,
+                952,
+                1016
+              ],
+              "displayId": 14,
+              "visible": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": "com.samsung.android.app.tips",
+      "expected": [
+        968,
+        8,
+        1912,
+        1016
+      ],
+      "taskIds": [
+        11364
+      ],
+      "uniqueTaskIdentity": true,
+      "finalCorrect": true,
+      "wrongBoundsObserved": true,
+      "transitions": [
+        {
+          "atUtc": "2026-10-07T12:35:05.882Z",
+          "tasks": []
+        },
+        {
+          "atUtc": "2026-10-07T12:35:07.235Z",
+          "tasks": [
+            {
+              "id": 11364,
+              "bounds": [
+                0,
+                0,
+                944,
+                1008
+              ],
+              "displayId": 14,
+              "visible": true
+            }
+          ]
+        },
+        {
+          "atUtc": "2026-10-07T12:35:10.117Z",
+          "tasks": [
+            {
+              "id": 11364,
+              "bounds": [
+                968,
+                8,
+                1912,
+                1016
+              ],
+              "displayId": 14,
+              "visible": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unrelatedBoundsChanges": [],
+  "shizukuAppStarts": [],
+  "activityStarts": [
+    {
+      "at": "1791376506.079",
+      "component": "com.android.chrome/com.google.android.apps.chrome.Main"
+    },
+    {
+      "at": "1791376506.513",
+      "component": "com.sec.android.app.sbrowser/.SBrowserMainActivity"
+    },
+    {
+      "at": "1791376506.946",
+      "component": "com.samsung.android.app.tips/.TipsMainActivity"
+    }
+  ]
+}

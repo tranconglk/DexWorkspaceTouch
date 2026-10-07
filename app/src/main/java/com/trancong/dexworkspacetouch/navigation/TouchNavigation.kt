@@ -488,6 +488,9 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
     val launchViewModel: WorkspaceLaunchViewModel = viewModel(
         factory = WorkspaceLaunchViewModel.factory(
             workspaceLaunchRequestFactory,
+            executionArbiter = application.carWorkflowExecutionArbiter,
+            onClassicLaunchStarted = application.carFloatingDockCoordinator::classicLaunchStarted,
+            onClassicLaunchCompleted = application.carFloatingDockCoordinator::classicLaunchCompleted,
         ),
     )
     val launchHostToken = remember(activity) { Any() }
@@ -774,6 +777,7 @@ private fun CarRoute(
     }
     val shortcuts by shortcutPreferences.shortcuts.collectAsState()
     val visibleSlotCount by shortcutPreferences.visibleSlotCount.collectAsState()
+    val workspaceRepairMode by shortcutPreferences.workspaceRepairMode.collectAsState()
     val workspaceFlow = remember(repository) { repository.observeAll() }
     val shortcutWorkspaces by workspaceFlow.collectAsState(initial = emptyList())
     val workspaceOptions = remember(shortcutWorkspaces) {
@@ -867,6 +871,8 @@ private fun CarRoute(
         workspaceShortcutRows = shortcutRows,
         visibleSlotCount = visibleSlotCount,
         onVisibleSlotCountChanged = shortcutPreferences::setVisibleSlotCount,
+        workspaceRepairMode = workspaceRepairMode,
+        onWorkspaceRepairModeChanged = shortcutPreferences::setWorkspaceRepairMode,
         workspaceOptions = workspaceOptions,
         onSetWorkspaceShortcut = shortcutPreferences::setWorkspace,
         onClearWorkspaceShortcut = shortcutPreferences::clear,

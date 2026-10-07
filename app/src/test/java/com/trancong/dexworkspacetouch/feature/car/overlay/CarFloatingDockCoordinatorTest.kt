@@ -303,6 +303,8 @@ class CarFloatingDockCoordinatorTest {
     }
 
     private class FakePreferences : CarWorkspaceShortcutPreferences {
+        override val workspaceRepairMode = MutableStateFlow(com.trancong.dexworkspacetouch.feature.car.WorkspaceRepairMode.SUGGEST)
+        override fun setWorkspaceRepairMode(mode: com.trancong.dexworkspacetouch.feature.car.WorkspaceRepairMode) { workspaceRepairMode.value = mode }
         override val shortcuts = MutableStateFlow(CarWorkspaceShortcuts.defaults())
         override val visibleSlotCount = MutableStateFlow(6)
         override fun setWorkspace(slot: CarWorkspaceShortcutSlot, workspaceId: String) = Unit

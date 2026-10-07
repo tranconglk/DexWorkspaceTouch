@@ -179,6 +179,8 @@ private class AndroidCarFloatingDockWindow(
     private var hideView: View? = null
     private var position = initialPosition
     private var shortcuts: List<CarFloatingWorkspaceShortcut> = emptyList()
+    private var repairControl: CarDockRepairControl? = null
+    private var repairView: TextView? = null
     private var actionsEnabled = true
     override var dockState: CarFloatingDockState = CarFloatingDockState.Collapsed
         private set
@@ -218,9 +220,21 @@ private class AndroidCarFloatingDockWindow(
                     .toInt(),
             ),
         )
+        repairControl?.let { control ->
+            root.addView(TextView(root.context).apply {
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding((16*density).toInt(),0,(16*density).toInt(),0)
+                textSize = 14f
+                setTextColor(DwtViewColors.OnSurface)
+                isClickable = true
+                isFocusable = true
+                setOnClickListener { repairControl?.takeIf { it.enabled && actionsEnabled }?.onRepair?.invoke() }
+                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,(100*density).toInt())
+            }.also { repairView=it; renderRepair() })
+        }
         val expandedWidth = (CarFloatingDockVisual.ExpandedWidthDp * density).toInt()
             .coerceAtMost(workArea.right - workArea.left)
-        val expandedHeight = (CarFloatingDockGrid.expandedHeightDp(shortcuts.size) * density)
+        val expandedHeight = ((CarFloatingDockGrid.expandedHeightDp(shortcuts.size) + if(repairControl != null) 100 else 0) * density)
             .toInt()
             .coerceAtMost(workArea.bottom - workArea.top)
         updateBounds(expandedWidth, expandedHeight, wrapHeight = true)
@@ -245,6 +259,7 @@ private class AndroidCarFloatingDockWindow(
         shortcutViews.clear()
         collapseView = null
         hideView = null
+        repairView = null
         root.background = dockBackground(expanded = false)
         root.addView(dragHandle().also { handleView = it })
         val size = (CarFloatingDockVisual.CollapsedSizeDp * density).toInt()
@@ -254,12 +269,33 @@ private class AndroidCarFloatingDockWindow(
 
     override fun setActionsEnabled(enabled: Boolean) {
         actionsEnabled = enabled
+        renderRepair()
         shortcutViews.forEach { (slot, view) ->
             val shortcutEnabled = shortcuts.firstOrNull { it.slot == slot }?.enabled == true
             view.isEnabled = enabled && shortcutEnabled
             view.alpha = if (view.isEnabled) 1f else 0.5f
         }
     }
+
+    override fun updateRepair(control: CarDockRepairControl?) {
+        val presenceChanged = (repairControl == null) != (control == null)
+        repairControl = control
+        if (presenceChanged && dockState == CarFloatingDockState.Expanded) {
+            dockState = CarFloatingDockState.Collapsed
+            expand()
+        } else renderRepair()
+    }
+    private fun renderRepair() {
+        repairView?.let { view ->
+            val control = repairControl ?: return
+            view.text = control.label + if(control.detail.isBlank()) "" else "\n" + control.detail
+            view.contentDescription = control.label + ". " + control.detail
+            view.isEnabled = control.enabled && actionsEnabled
+            view.alpha = if(view.isEnabled) 1f else 0.6f
+        }
+    }
+    override fun performRepairClickForTest(): Boolean =
+        repairView?.takeIf { it.isEnabled }?.performClick() == true
 
     override fun updateShortcuts(shortcuts: List<CarFloatingWorkspaceShortcut>) {
         this.shortcuts = shortcuts.toList()

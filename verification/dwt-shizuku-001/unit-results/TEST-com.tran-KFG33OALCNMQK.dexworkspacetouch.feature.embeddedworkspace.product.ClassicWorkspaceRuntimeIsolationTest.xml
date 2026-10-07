@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ClassicWorkspaceRuntimeIsolationTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-10-07T10:24:48.957Z" hostname="NUC" time="0.014">
+  <properties/>
+  <testcase name="classicLaunchClassesCannotConstructOrCallEmbeddedExecutionMachinery" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ClassicWorkspaceRuntimeIsolationTest" time="0.014"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

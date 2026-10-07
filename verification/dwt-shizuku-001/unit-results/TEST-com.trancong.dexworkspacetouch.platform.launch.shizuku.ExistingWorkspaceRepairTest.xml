@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-10-07T10:24:49.949Z" hostname="NUC" time="0.043">
+  <properties/>
+  <testcase name="resizeErrorAndReadbackMismatchAreNotSuccess" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest" time="0.016"/>
+  <testcase name="alreadyCorrectWithinToleranceHasNoResize" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest" time="0.002"/>
+  <testcase name="incorrectExistingTaskIsRepairedWithoutLaunching" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest" time="0.002"/>
+  <testcase name="changedActivityIdentityBeforeResizeFailsClosed" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest" time="0.001"/>
+  <testcase name="missingAppIsReportedAndNeverLaunched" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest" time="0.001"/>
+  <testcase name="finalWorkspaceReadbackRejectsLaterDrift" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest" time="0.001"/>
+  <testcase name="activeEmbeddedCleanupBlockedAndConflictingDispatchRejectWithoutShell" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest" time="0.001"/>
+  <testcase name="holdsExistingGateAndArbiterAcrossInspectionAndReleasesAfterFailure" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest" time="0.001"/>
+  <testcase name="packageOnlyTargetAndDuplicateWorkspaceComponentFailClosed" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest" time="0.001"/>
+  <testcase name="newlyAmbiguousTaskBeforeResizeFailsClosed" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest" time="0.001"/>
+  <testcase name="ambiguousAndDuplicateTaskIdsFailClosed" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest" time="0.002"/>
+  <testcase name="noEmbeddedRuntimeOrLaunchCapabilityInRepairClass" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest" time="0.006"/>
+  <testcase name="oneCellFailureAllowsOnlySafeNextCellResize" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest" time="0.006"/>
+  <testcase name="exactComponentDisplayUserVisibleFreeformAndActivityIdentityRequired" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

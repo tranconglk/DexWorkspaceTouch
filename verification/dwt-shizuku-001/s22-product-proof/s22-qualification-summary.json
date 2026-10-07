@@ -1,0 +1,431 @@
+{
+  "recordedAtUtc": "2026-10-07T12:43:35.222Z",
+  "device": "S22 / SM-S908E / One UI 8",
+  "package": "com.trancong.dexworkspacetouch",
+  "status": "PASS - S22 real product qualification",
+  "milestoneStatus": "PARTIAL - S23 real product proof deferred",
+  "artifactSha256": "708e4df09c1aea4e232e5655b981ef457b96d3b5d85fb36397fee9e1ccd14b68",
+  "normalLicenseAndColdStartup": "PASS",
+  "automatic": {
+    "label": "automatic-home-stable",
+    "durationMs": 12733,
+    "sampleCount": 40,
+    "cells": [
+      {
+        "package": "com.android.chrome",
+        "taskId": 11362,
+        "classicBounds": [
+          728,
+          6,
+          1192,
+          1014
+        ],
+        "finalBounds": [
+          8,
+          8,
+          472,
+          1016
+        ]
+      },
+      {
+        "package": "com.sec.android.app.sbrowser",
+        "taskId": 11363,
+        "classicBounds": [
+          1456,
+          16,
+          1920,
+          1024
+        ],
+        "finalBounds": [
+          488,
+          8,
+          952,
+          1016
+        ]
+      },
+      {
+        "package": "com.samsung.android.app.tips",
+        "taskId": 11364,
+        "classicBounds": [
+          0,
+          0,
+          944,
+          1008
+        ],
+        "finalBounds": [
+          968,
+          8,
+          1912,
+          1016
+        ]
+      }
+    ],
+    "unrelatedBoundsChanges": 0,
+    "shizukuAppStarts": 0,
+    "taskIdentityPreserved": true
+  },
+  "suggest": {
+    "classic": {
+      "label": "suggest-classic-no-click",
+      "durationMs": 12206,
+      "sampleCount": 40,
+      "cells": [
+        {
+          "package": "com.android.chrome",
+          "taskId": 11365,
+          "classicBounds": [
+            728,
+            6,
+            1192,
+            1014
+          ],
+          "finalBounds": [
+            728,
+            6,
+            1192,
+            1014
+          ]
+        },
+        {
+          "package": "com.sec.android.app.sbrowser",
+          "taskId": 11366,
+          "classicBounds": [
+            1456,
+            16,
+            1920,
+            1024
+          ],
+          "finalBounds": [
+            1456,
+            16,
+            1920,
+            1024
+          ]
+        },
+        {
+          "package": "com.samsung.android.app.tips",
+          "taskId": 11367,
+          "classicBounds": [
+            0,
+            0,
+            944,
+            1008
+          ],
+          "finalBounds": [
+            0,
+            0,
+            944,
+            1008
+          ]
+        }
+      ],
+      "unrelatedBoundsChanges": 0,
+      "shizukuAppStarts": 0,
+      "taskIdentityPreserved": true
+    },
+    "hold": {
+      "label": "suggest-stable-hold",
+      "durationMs": 7037,
+      "sampleCount": 23,
+      "cells": [
+        {
+          "package": "com.android.chrome",
+          "taskId": 11365,
+          "classicBounds": [
+            728,
+            6,
+            1192,
+            1014
+          ],
+          "finalBounds": [
+            728,
+            6,
+            1192,
+            1014
+          ]
+        },
+        {
+          "package": "com.sec.android.app.sbrowser",
+          "taskId": 11366,
+          "classicBounds": [
+            1456,
+            16,
+            1920,
+            1024
+          ],
+          "finalBounds": [
+            1456,
+            16,
+            1920,
+            1024
+          ]
+        },
+        {
+          "package": "com.samsung.android.app.tips",
+          "taskId": 11367,
+          "classicBounds": [
+            0,
+            0,
+            944,
+            1008
+          ],
+          "finalBounds": [
+            0,
+            0,
+            944,
+            1008
+          ]
+        }
+      ],
+      "unrelatedBoundsChanges": 0,
+      "shizukuAppStarts": 0,
+      "taskIdentityPreserved": true
+    },
+    "repair": {
+      "label": "suggest-real-dock-repair",
+      "durationMs": 9101,
+      "sampleCount": 31,
+      "cells": [
+        {
+          "package": "com.android.chrome",
+          "taskId": 11365,
+          "classicBounds": [
+            728,
+            6,
+            1192,
+            1014
+          ],
+          "finalBounds": [
+            8,
+            8,
+            472,
+            1016
+          ]
+        },
+        {
+          "package": "com.sec.android.app.sbrowser",
+          "taskId": 11366,
+          "classicBounds": [
+            1456,
+            16,
+            1920,
+            1024
+          ],
+          "finalBounds": [
+            488,
+            8,
+            952,
+            1016
+          ]
+        },
+        {
+          "package": "com.samsung.android.app.tips",
+          "taskId": 11367,
+          "classicBounds": [
+            0,
+            0,
+            944,
+            1008
+          ],
+          "finalBounds": [
+            968,
+            8,
+            1912,
+            1016
+          ]
+        }
+      ],
+      "unrelatedBoundsChanges": 0,
+      "shizukuAppStarts": 0,
+      "taskIdentityPreserved": true
+    }
+  },
+  "off": {
+    "classic": {
+      "label": "off-classic-no-click",
+      "durationMs": 12191,
+      "sampleCount": 38,
+      "cells": [
+        {
+          "package": "com.android.chrome",
+          "taskId": 11368,
+          "classicBounds": [
+            728,
+            6,
+            1192,
+            1014
+          ],
+          "finalBounds": [
+            728,
+            6,
+            1192,
+            1014
+          ]
+        },
+        {
+          "package": "com.sec.android.app.sbrowser",
+          "taskId": 11369,
+          "classicBounds": [
+            1456,
+            16,
+            1920,
+            1024
+          ],
+          "finalBounds": [
+            1456,
+            16,
+            1920,
+            1024
+          ]
+        },
+        {
+          "package": "com.samsung.android.app.tips",
+          "taskId": 11370,
+          "classicBounds": [
+            0,
+            0,
+            944,
+            1008
+          ],
+          "finalBounds": [
+            0,
+            0,
+            944,
+            1008
+          ]
+        }
+      ],
+      "unrelatedBoundsChanges": 0,
+      "shizukuAppStarts": 0,
+      "taskIdentityPreserved": true
+    },
+    "hold": {
+      "label": "off-stable-hold",
+      "durationMs": 7110,
+      "sampleCount": 21,
+      "cells": [
+        {
+          "package": "com.android.chrome",
+          "taskId": 11368,
+          "classicBounds": [
+            728,
+            6,
+            1192,
+            1014
+          ],
+          "finalBounds": [
+            728,
+            6,
+            1192,
+            1014
+          ]
+        },
+        {
+          "package": "com.sec.android.app.sbrowser",
+          "taskId": 11369,
+          "classicBounds": [
+            1456,
+            16,
+            1920,
+            1024
+          ],
+          "finalBounds": [
+            1456,
+            16,
+            1920,
+            1024
+          ]
+        },
+        {
+          "package": "com.samsung.android.app.tips",
+          "taskId": 11370,
+          "classicBounds": [
+            0,
+            0,
+            944,
+            1008
+          ],
+          "finalBounds": [
+            0,
+            0,
+            944,
+            1008
+          ]
+        }
+      ],
+      "unrelatedBoundsChanges": 0,
+      "shizukuAppStarts": 0,
+      "taskIdentityPreserved": true
+    },
+    "repair": {
+      "label": "off-real-dock-repair",
+      "durationMs": 9131,
+      "sampleCount": 30,
+      "cells": [
+        {
+          "package": "com.android.chrome",
+          "taskId": 11368,
+          "classicBounds": [
+            728,
+            6,
+            1192,
+            1014
+          ],
+          "finalBounds": [
+            8,
+            8,
+            472,
+            1016
+          ]
+        },
+        {
+          "package": "com.sec.android.app.sbrowser",
+          "taskId": 11369,
+          "classicBounds": [
+            1456,
+            16,
+            1920,
+            1024
+          ],
+          "finalBounds": [
+            488,
+            8,
+            952,
+            1016
+          ]
+        },
+        {
+          "package": "com.samsung.android.app.tips",
+          "taskId": 11370,
+          "classicBounds": [
+            0,
+            0,
+            944,
+            1008
+          ],
+          "finalBounds": [
+            968,
+            8,
+            1912,
+            1016
+          ]
+        }
+      ],
+      "unrelatedBoundsChanges": 0,
+      "shizukuAppStarts": 0,
+      "taskIdentityPreserved": true
+    }
+  },
+  "assessmentEvidence": {
+    "automatic": "Frozen policy permits automatic ExistingWorkspaceRepair only after REPAIR_AVAILABLE; real UI showed 3 repaired, 0 correct without Repair click",
+    "suggest": "Real dock showed Repair available; wrong bounds unchanged before the actual dock Repair click",
+    "off": "Frozen OFF early return plus accepted offDoesNotAssessAndManualRepairStillUsesExistingEngine zero-command assertion; device mode OFF and unchanged bounds before click",
+    "internalRpcCounters": "NOT DIRECTLY INSTRUMENTED - signed qualification artifact is non-debuggable; no product instrumentation or source alteration"
+  },
+  "sourceFreeze": {
+    "files": 36,
+    "changed": 0,
+    "acceptedRegressionReused": true
+  },
+  "observationMethod": "ADB activity-task snapshots and ActivityTaskManager START events; screenshots checked visually; no shell resize, fake callback, license extraction, or isolated application used during proof"
+}

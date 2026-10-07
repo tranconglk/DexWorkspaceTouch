@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-10-07T10:24:49.255Z" hostname="NUC" time="0.026">
+  <properties/>
+  <testcase name="preRunnerRejectionReleasesOnlyWithExactAuthoritativeNoInvocationProof" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" time="0.0"/>
+  <testcase name="missingStartResultKeepsAdmissionClosedUntilExactInitialCleanup" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" time="0.001"/>
+  <testcase name="statusCollectorStartingNewRunCannotBeOverwrittenByPreviousPhasePublication" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" time="0.013"/>
+  <testcase name="exactPreflightRejectionUsesResultHandlingAfterInvocation" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" time="0.002"/>
+  <testcase name="classicDispatchAndEmbeddedAcquireCannotOverlap" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" time="0.002"/>
+  <testcase name="startedAndCleanStopFollowProductPhases" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" time="0.001"/>
+  <testcase name="incompleteCleanupBlocksBothModesAndStaleCallback" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" time="0.0"/>
+  <testcase name="invokedMissingResultNeverAuthorizesReleaseOrLaterCleanCallback" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" time="0.0"/>
+  <testcase name="lateStartedAfterStopIntentCannotBecomeActive" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" time="0.0"/>
+  <testcase name="staleTokenGenerationAndStartOperationAreRejectedWithoutChangingStatus" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" time="0.001"/>
+  <testcase name="staleCleanupCannotReleaseNewerRunEvenWithSameWorkspaceId" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" time="0.0"/>
+  <testcase name="missingDuplicateOrWrongOwnedCleanupEvidenceCannotReleaseGate" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" time="0.0"/>
+  <testcase name="copiedStatusCannotBeMutatedThroughRuntimeListsAndHasOnlyImmutableValues" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" time="0.002"/>
+  <testcase name="lateStartedAfterBlockedTerminalCannotChangeEvidenceOrPhase" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" time="0.001"/>
+  <testcase name="stopIntentHasOneOperationAndRejectsBothStartedAndOldStartTerminal" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" time="0.0"/>
+  <testcase name="everyNonIdlePhaseBlocksClassicAndAnotherEmbeddedRun" classname="com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

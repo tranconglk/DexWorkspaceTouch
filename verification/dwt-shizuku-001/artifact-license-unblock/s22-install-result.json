@@ -1,0 +1,19 @@
+﻿{
+    "Device":  "S22",
+    "Serial":  "192.168.1.183:5555",
+    "Model":  "SM-S908E",
+    "Package":  "com.trancong.dexworkspacetouch",
+    "UserAuthorizedReplacement":  true,
+    "PreviousApkSHA256":  "26abfad20a64226b7c7741920bd929fe43ce58b3e6c791eedb184f37b3839660",
+    "PreviousApkUninstalled":  true,
+    "Installed":  true,
+    "ApkSHA256":  "708e4df09c1aea4e232e5655b981ef457b96d3b5d85fb36397fee9e1ccd14b68",
+    "ApkSignerSHA256":  "19ac0ea99125361b3c2083aaa44c8745ebad9c55fa967642c2b9e5a1086a45e7",
+    "VersionCode":  9,
+    "VersionName":  "1.0.0-beta.8",
+    "ApplicationDataReset":  true,
+    "LicenseBypass":  false,
+    "S23Touched":  false,
+    "Activation":  "NOT VERIFIED - normal LicenseGate requires valid user license input",
+    "RecordedAtUtc":  "2026-10-07T11:37:27.9406806Z"
+}

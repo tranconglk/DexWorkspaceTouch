@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandProcessTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-07T10:24:50.202Z" hostname="NUC" time="0.059">
+  <properties/>
+  <testcase name="timeoutKillsOwnedProcess" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandProcessTest" time="0.032"/>
+  <testcase name="cancellationKillsOwnedProcess" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandProcessTest" time="0.002"/>
+  <testcase name="oversizedOutputFailsRatherThanTruncating" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandProcessTest" time="0.023"/>
+  <testcase name="drainsBothStreamsAndPreservesNonzeroExit" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandProcessTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

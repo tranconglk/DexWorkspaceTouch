@@ -21,8 +21,10 @@ interface CarFloatingDockWindow {
     fun expand()
     fun collapse()
     fun setActionsEnabled(enabled: Boolean)
+    fun updateRepair(control: CarDockRepairControl?) = Unit
     fun updateShortcuts(shortcuts: List<CarFloatingWorkspaceShortcut>)
     fun remove()
+    fun performRepairClickForTest(): Boolean = false
     fun performHandleClickForTest(): Boolean = false
     fun performShortcutClickForTest(slot: CarWorkspaceShortcutSlot): Boolean = false
     fun performCollapseClickForTest(): Boolean = false
@@ -42,6 +44,7 @@ interface CarFloatingDockSession {
     fun hide()
     fun collapse()
     fun setActionsEnabled(enabled: Boolean)
+    fun updateRepair(control: CarDockRepairControl?) = Unit
     fun updateShortcuts(shortcuts: List<CarFloatingWorkspaceShortcut>)
     fun dispose()
 }
@@ -162,6 +165,9 @@ class CarOverlaySession(
     }
 
     @Synchronized
+    override fun updateRepair(control: CarDockRepairControl?) { window?.updateRepair(control) }
+
+    @Synchronized
     override fun updateShortcuts(shortcuts: List<CarFloatingWorkspaceShortcut>) {
         window?.updateShortcuts(shortcuts)
     }
@@ -173,6 +179,9 @@ class CarOverlaySession(
         disposed = true
         publishState()
     }
+
+    @Synchronized
+    internal fun performRepairClickForTest(): Boolean = window?.performRepairClickForTest() == true
 
     @Synchronized
     internal fun performHandleClickForTest(): Boolean = window?.performHandleClickForTest() == true

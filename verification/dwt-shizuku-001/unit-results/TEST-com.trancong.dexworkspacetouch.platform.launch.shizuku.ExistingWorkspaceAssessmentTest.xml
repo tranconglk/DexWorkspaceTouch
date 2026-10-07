@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceAssessmentTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-07T10:24:49.929Z" hostname="NUC" time="0.018">
+  <properties/>
+  <testcase name="allCorrectWithinTwoPixelsDoNotSuggestOrMutate" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceAssessmentTest" time="0.005"/>
+  <testcase name="wrongSafeTaskCanSuggestEvenWhenAnotherTaskIsMissing" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceAssessmentTest" time="0.001"/>
+  <testcase name="embeddedCleanupBlockedAndArbiterConflictPreserveAuthority" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceAssessmentTest" time="0.001"/>
+  <testcase name="duplicateComponentsAndUnsafeContextAreUnresolved" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceAssessmentTest" time="0.001"/>
+  <testcase name="wrongCorrelatedBoundsSuggestWithoutAnyMutation" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceAssessmentTest" time="0.0"/>
+  <testcase name="transportUnavailableReleasesAdmission" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceAssessmentTest" time="0.001"/>
+  <testcase name="admissionIsHeldAcrossReadAndManualRepairStillWorksAfterAssessment" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceAssessmentTest" time="0.006"/>
+  <testcase name="missingAmbiguousAndUnidentifiedTasksNeverSuggest" classname="com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceAssessmentTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

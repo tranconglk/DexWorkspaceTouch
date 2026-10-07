@@ -1,0 +1,146 @@
+﻿[
+    {
+        "File":  "app/src/androidTest/java/com/trancong/dexworkspacetouch/feature/car/CarWorkspaceShortcutPreferencesDeviceTest.kt",
+        "SHA256":  "4BBEF0B139D7C6C228D372A616006749BCA54023E8743F90758DABD031444B85"
+    },
+    {
+        "File":  "app/src/main/aidl/com/trancong/dexworkspacetouch/platform/launch/shizuku/IWorkspaceCommandService.aidl",
+        "SHA256":  "B2B493BE7598B5282AEE4ED1336E6F8F9E08CB368BBA818520223A3B70D26F9F"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/DexWorkspaceTouchApplication.kt",
+        "SHA256":  "2921CD1EE0888D0421B83C9AFDF2C1A4E293E1505A003B22A276942E77B0E624"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/CarScreen.kt",
+        "SHA256":  "713E7A58099B6EA191AF25427F4660E7D29D421B80B38975E0C1390A9001E8A2"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/CarWorkspaceShortcut.kt",
+        "SHA256":  "5BF64887EAC92FFCD34128420E864538C9AACA120AD19ED979BDABBB68F76B50"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/CarWorkspaceShortcutPreferences.kt",
+        "SHA256":  "1F8ED0ADF12AA00A6348E27A95A52A4447C3FA2A2A29BA2361AFDBAF2965FB2D"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/overlay/AndroidCarOverlayPlatform.kt",
+        "SHA256":  "492F7FBD63775648FAAD758AAE1CC110A3FAD9C40318F4F931A030BEA39DA787"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/overlay/CarDockRepairControl.kt",
+        "SHA256":  "5EB2AE50400EC942CE20B048CE31E41D6328AEAC24C920E5CA2EAEF2EE097167"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/overlay/CarFloatingDockCoordinator.kt",
+        "SHA256":  "42BA789E61969E7D4207116CBD8E13AEBFA90A8A9E217E55CA305BD17BBDD484"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/overlay/CarOverlaySession.kt",
+        "SHA256":  "8DE2184F438B731ACF66BF1B84730380DB8CA595D37A4AD1C328A326088E8C9E"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/overlay/WorkspaceRepairSession.kt",
+        "SHA256":  "823C126A8BAFC767228BF94E331EAEA3C0530BE0368D22F67312F1FB548D8039"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/platform/CarWorkspaceLaunchPlatform.kt",
+        "SHA256":  "6ECAFE3B1B87F18874CA3488ACE25945776AEB7128212A249B3CCBD5F17B3573"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/WorkspaceRepairMode.kt",
+        "SHA256":  "559B68C6B963F6D69A31869253B153AB49231FF8207F4B6A2D67158370E6911A"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/navigation/TouchNavigation.kt",
+        "SHA256":  "003E884C4EBCC726D71885A735012FF391DA2233A218FA08CA7062A54712339D"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/AndroidExistingWorkspaceRepair.kt",
+        "SHA256":  "7732A85FF57896C24307F198E67B72E2C89CF0D84D138DBC19E0AE182521756B"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/AndroidShizukuCommandTransport.kt",
+        "SHA256":  "7C0AD6072D0767CF8E53186499250B6C23BE8DCAC997AD8B0E96E83C8B9AC56D"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ExistingWorkspaceRepair.kt",
+        "SHA256":  "95793510E94C158F499491C83DE83B9D5E33FEA0877F1ED856A7D89443CED0D2"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ShizukuCommandTransport.kt",
+        "SHA256":  "C4D824C30713A72C112A9DCAC5B73C16C4A2B6FAC156401D3174B68A62B9FF3C"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceCommandDeadline.kt",
+        "SHA256":  "CF79CC9F0E4519E4D9524A2F708098F23E85B79C6921FB0F89E80A104DE578D8"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceCommandDispatcher.kt",
+        "SHA256":  "C384D19D4746FC64C77091DFEC89EE8291F114643151C1A7485007FF821733A0"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceCommandProcess.kt",
+        "SHA256":  "F9CF1EB8683C909937DDD1F90187958B3E9C904A53EBD164243C5EBC6D0D3D83"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceCommandUserService.kt",
+        "SHA256":  "AF84BE1DAF89BEC7BBD7AB2591D8D85CE3A5131ABB8777AFE9F1944867783E10"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceTaskCorrelation.kt",
+        "SHA256":  "47DC29859B917199CCD344815724BF1000C9650D5FCD1EB9578F2EF1FC9A7B08"
+    },
+    {
+        "File":  "app/src/main/java/com/trancong/dexworkspacetouch/workspace/launcher/presentation/WorkspaceLaunchViewModel.kt",
+        "SHA256":  "6667BA475638BC65712C5C310833C4D011D5CB3A8588D328F6B5F7BD1EF0993F"
+    },
+    {
+        "File":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/car/overlay/CarFloatingDockCoordinatorTest.kt",
+        "SHA256":  "FEEEAC11C81264EE04F07F98D6DCBE98563F8C9C488D2AD7BE0F61F43355A8B3"
+    },
+    {
+        "File":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/car/overlay/WorkspaceRepairPolicyTest.kt",
+        "SHA256":  "88B468197E26BA226B7B9F0AAC6C4DC1A9562DFD03C7426E83DE367F2564262A"
+    },
+    {
+        "File":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/car/overlay/WorkspaceRepairSessionTest.kt",
+        "SHA256":  "092909DB703C612307ABD89C66D2608A335899809B537FE70EFAD20D38B40080"
+    },
+    {
+        "File":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/car/platform/CarWorkspaceLaunchPlatformTest.kt",
+        "SHA256":  "DD46E1DC3A621390C5B59C117948BDBF7D753BF5FB1D33C031087DAC22904A66"
+    },
+    {
+        "File":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/car/WorkspaceRepairModePreferencesTest.kt",
+        "SHA256":  "F57F0FFAB2312E2F0D9839C2ACDD3E578DE927CB97A1A85D9A3293D4A7E931BD"
+    },
+    {
+        "File":  "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ExistingWorkspaceAssessmentTest.kt",
+        "SHA256":  "9749EAEFE9859ABB041F10650226B1588BEFEFAB595743D6DF516550C2DA5CAC"
+    },
+    {
+        "File":  "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ExistingWorkspaceRepairTest.kt",
+        "SHA256":  "02F28CA754EFBC1DAF477DB43E94B8C92CBC460A7D9064A5CABCA2319FD382B6"
+    },
+    {
+        "File":  "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ProductionShizukuCommandTransportTest.kt",
+        "SHA256":  "81D16FA1A8F36FE5494D1B2C7F36328032B1A386D453F145B70D37DF87A6D916"
+    },
+    {
+        "File":  "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceCommandDeadlineTest.kt",
+        "SHA256":  "64FB0112A0B2EDE392E20DDF2DE4F11626D55B15C120A32006B38E8AC86C84AA"
+    },
+    {
+        "File":  "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceCommandDispatcherTest.kt",
+        "SHA256":  "8CA192C4E9BFF9AA9EF75917AF3AE678493DA11961FB722AFC38A9335E9EDB28"
+    },
+    {
+        "File":  "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceCommandProcessTest.kt",
+        "SHA256":  "DFA982898E3D3C0886ED2B58135C3B74591D4799D6D10BBA404DADF3250329FE"
+    },
+    {
+        "File":  "app/src/test/java/com/trancong/dexworkspacetouch/workspace/launcher/presentation/WorkspaceLaunchViewModelTest.kt",
+        "SHA256":  "931B347CB2D1AD3D0601AD3CBAA108855E23232D9979351B9F19135E3888B7F7"
+    }
+]

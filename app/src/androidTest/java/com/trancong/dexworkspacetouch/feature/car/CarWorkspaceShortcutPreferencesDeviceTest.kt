@@ -8,6 +8,22 @@ import org.junit.Test
 
 class CarWorkspaceShortcutPreferencesDeviceTest {
     @Test
+    fun repairModeDefaultsToSuggestAndSurvivesSharedPreferencesRecreation() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val prefs = context.getSharedPreferences("swc003_mode_roundtrip_test", Context.MODE_PRIVATE)
+        prefs.edit().clear().commit()
+        try {
+            val first = StoredCarWorkspaceShortcutPreferences(SharedPreferencesCarWorkspaceShortcutStorage(prefs))
+            assertEquals(WorkspaceRepairMode.SUGGEST, first.workspaceRepairMode.value)
+            for (mode in WorkspaceRepairMode.entries) {
+                first.setWorkspaceRepairMode(mode)
+                val reopened = StoredCarWorkspaceShortcutPreferences(SharedPreferencesCarWorkspaceShortcutStorage(
+                    context.getSharedPreferences("swc003_mode_roundtrip_test", Context.MODE_PRIVATE)))
+                assertEquals(mode, reopened.workspaceRepairMode.value)
+            }
+        } finally { prefs.edit().clear().commit() }
+    }
+    @Test
     fun sharedPreferencesAdapterSurvivesRecreationAndClearsIndependently() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val fileName = "car_workspace_shortcuts_device_test"
