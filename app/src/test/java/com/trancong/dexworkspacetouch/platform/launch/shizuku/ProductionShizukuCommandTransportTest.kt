@@ -155,6 +155,9 @@ class ProductionShizukuCommandTransportTest {
             return ByteArrayInputStream(output.toByteArray())
         }
         override fun isAlive() = alive
-        override fun invalidate(requestId: String?) { invalidations.incrementAndGet() }
+        override fun invalidate(requestId: String?): java.util.concurrent.Future<Boolean> {
+            invalidations.incrementAndGet()
+            return java.util.concurrent.CompletableFuture.completedFuture(true)
+        }
     }
 }

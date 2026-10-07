@@ -196,16 +196,29 @@ class EmbeddedProductRunGate {
     private var generationSequence = 0L
     private var operationSequence = 0L
     private var classicDispatching = false
+    private var classicMutationUncertain = false
 
     // Factory đồng bộ thuộc route; gate không lưu factory hoặc graph trả về.
     // Kiểm tra trước cả controller/renderer/Surface allocation, không acquire token cũ.
-    internal fun <T : Any> createExecutionIfIdle(create: () -> T): T? = lock.withGate {
-        if (mutableStatus.value.token != null || mutableStatus.value.phase != ProductRunPhase.IDLE || classicDispatching) null
-        else create()
+    internal fun <T : Any> createExecutionIfIdle(create: () -> T): T? {
+        if (!lock.tryLock()) return null
+        return try {
+            if (mutableStatus.value.token != null || mutableStatus.value.phase != ProductRunPhase.IDLE || classicDispatching) null
+            else create()
+        } finally { lock.unlock() }
     }
 
-    fun canEnterEmbedded(): Boolean = lock.withGate {
-        mutableStatus.value.token == null && mutableStatus.value.phase == ProductRunPhase.IDLE && !classicDispatching
+    fun canEnterEmbedded(): Boolean {
+        if (!lock.tryLock()) return false
+        return try {
+            mutableStatus.value.token == null && mutableStatus.value.phase == ProductRunPhase.IDLE && !classicDispatching
+        } finally { lock.unlock() }
+    }
+
+    /** Retains this process's Classic admission only; never changes Embedded ownership or results. */
+    internal fun retainClassicAdmissionForUncertainMutation() {
+        check(lock.isHeldByCurrentThread && classicDispatching)
+        classicMutationUncertain = true
     }
 
     fun tryAcquireEmbedded(workspaceId: String): RunToken? {
@@ -228,7 +241,7 @@ class EmbeddedProductRunGate {
             if (mutableStatus.value.token != null || mutableStatus.value.phase != ProductRunPhase.IDLE || classicDispatching) false
             else {
                 classicDispatching = true
-                try { dispatch() } finally { classicDispatching = false }
+                try { dispatch() } finally { classicDispatching = classicMutationUncertain }
                 true
             }
         } finally { lock.unlock() }

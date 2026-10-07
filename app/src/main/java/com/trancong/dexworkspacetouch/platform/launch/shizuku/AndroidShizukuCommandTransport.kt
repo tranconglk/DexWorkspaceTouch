@@ -136,7 +136,8 @@ internal class AndroidWorkspaceServiceBinding(context: Context, tag: String) : W
         if (slot === current) { current.failure = reason; current.connected.countDown() }
     }
     private fun markDead(reason: CommandTransportFailure) { synchronized(lock) { slot }?.let { fail(it, reason) } }
-    override fun invalidate(requestId: String?) {
+    override fun invalidate(requestId: String?): Future<Boolean> {
+        val acknowledgement = CompletableFuture<Boolean>()
         synchronized(lock) {
             if (requestId == null) {
                 closed = true
@@ -152,15 +153,18 @@ internal class AndroidWorkspaceServiceBinding(context: Context, tag: String) : W
                     // Never unbind before that RPC finishes and then allow a late bind to resurrect the slot.
                     old.bindFinished.await()
                     val service = old.service
+                    // The reply, not queuing cleanup or unbinding, proves cancellation.
+                    acknowledgement.complete(requestId != null && service != null &&
+                        runCatching { service.cancel(requestId) }.isSuccess)
                     if (service != null) {
                         runCatching { service.asBinder().unlinkToDeath(old.death, 0) }
-                        if (requestId != null) runCatching { service.cancel(requestId) }
                     }
                     runCatching { Shizuku.unbindUserService(args, old.connection, true) }
                     runCatching { Shizuku.unbindUserService(args, old.connection, false) }
                 }
-            }
+            } else acknowledgement.complete(false)
             if (closed) cleanup.shutdown()
         }
+        return acknowledgement
     }
 }

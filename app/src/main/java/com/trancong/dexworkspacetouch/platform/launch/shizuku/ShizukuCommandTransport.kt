@@ -3,32 +3,41 @@ package com.trancong.dexworkspacetouch.platform.launch.shizuku
 import java.io.*
 import java.util.UUID
 import java.util.concurrent.*
-import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 
 internal enum class CommandTransportFailure {
     SHIZUKU_UNAVAILABLE, PERMISSION_DENIED, UID_UNSUPPORTED, BIND_FAILED, DISCONNECTED,
     SERVICE_DIED, TIMEOUT, CANCELLED, INVALID_COMMAND, MALFORMED_RESULT, OUTPUT_LIMIT,
     EXECUTION_FAILED, BUSY, CLOSED
 }
-internal class CommandTransportException(val failure: CommandTransportFailure, cause: Throwable? = null) :
+internal open class CommandTransportException(val failure: CommandTransportFailure, cause: Throwable? = null) :
     IllegalStateException(failure.name, cause)
+
+/** Local admission signal; never encoded as a new wire-protocol result. */
+internal class UncertainWorkspaceMutation(cause: CommandTransportException) :
+    CommandTransportException(cause.failure, cause)
 
 internal data class ShizukuCommandResult(val exitCode: Int, val stdout: String, val stderr: String)
 internal interface WorkspaceCommandService {
     fun open(arguments: List<String>, timeoutMs: Long, requestId: String): InputStream
     fun isAlive(): Boolean
 }
-/** invalidate must clear local state immediately and schedule IPC cleanup without blocking the caller. */
+/** Invalidation is immediate; true completes only after a synchronous service cancellation acknowledgement. */
 internal interface WorkspaceServiceBinding {
     fun availability(): CommandTransportFailure?
     fun connect(timeoutMs: Long): WorkspaceCommandService
-    fun invalidate(requestId: String?)
+    fun invalidate(requestId: String?): Future<Boolean>
 }
 
 internal class ProductionShizukuCommandTransport(private val binding: WorkspaceServiceBinding) : WorkspaceCommandShell, AutoCloseable {
     private val worker = ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS, ArrayBlockingQueue(1),
         ThreadFactory { Thread(it, "DWT.WorkspaceCommand").apply { isDaemon = true } })
-    private val active = AtomicBoolean(false)
+    private class Attempt {
+        var cancelled = false
+        var crossed = false
+        var knownTerminal = false
+    }
+    private val active = AtomicReference<Attempt?>()
     @Volatile private var closed = false
 
     fun executeCommand(arguments: List<String>, timeoutMs: Long = 3000): ShizukuCommandResult {
@@ -36,7 +45,9 @@ internal class ProductionShizukuCommandTransport(private val binding: WorkspaceS
         WorkspaceCommandWhitelist.validate(arguments)
         require(timeoutMs in 1..8000)
         if (Thread.currentThread().isInterrupted) throw CommandTransportException(CommandTransportFailure.CANCELLED)
-        if (!active.compareAndSet(false, true)) throw CommandTransportException(CommandTransportFailure.BUSY)
+        val attempt = Attempt()
+        if (!active.compareAndSet(null, attempt)) throw CommandTransportException(CommandTransportFailure.BUSY)
+        val mutating = arguments.first() == "am"
         val requestId = UUID.randomUUID().toString()
         val deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeoutMs)
         fun remaining(): Long {
@@ -51,7 +62,14 @@ internal class ProductionShizukuCommandTransport(private val binding: WorkspaceS
                     binding.availability()?.let { throw CommandTransportException(it) }
                     val service = binding.connect(remaining())
                     val result = try {
-                        service.open(arguments.toList(), remaining(), requestId).use(WorkspaceCommandFrame::read)
+                        val budget = remaining()
+                        synchronized(attempt) {
+                            if (attempt.cancelled || closed) throw CommandTransportException(CommandTransportFailure.CANCELLED)
+                            attempt.crossed = true
+                        }
+                        service.open(arguments.toList(), budget, requestId).use(WorkspaceCommandFrame::read).also {
+                            synchronized(attempt) { attempt.knownTerminal = true }
+                        }
                     } catch (e: Exception) {
                         if (!service.isAlive()) throw CommandTransportException(CommandTransportFailure.SERVICE_DIED, e)
                         throw e
@@ -59,30 +77,40 @@ internal class ProductionShizukuCommandTransport(private val binding: WorkspaceS
                     remaining()
                     if (!service.isAlive()) throw CommandTransportException(CommandTransportFailure.SERVICE_DIED)
                     result
-                } finally { active.set(false) }
+                } finally { active.compareAndSet(attempt, null) }
             })
         } catch (e: RejectedExecutionException) {
-            active.set(false)
+            active.compareAndSet(attempt, null)
             throw CommandTransportException(CommandTransportFailure.CLOSED, e)
+        }
+        fun abort(reason: CommandTransportException, interrupted: Boolean = false): Nothing {
+            val needsAcknowledgement = synchronized(attempt) {
+                attempt.cancelled = true
+                mutating && attempt.crossed && !attempt.knownTerminal
+            }
+            future.cancel(true)
+            val acknowledgement = try { binding.invalidate(requestId) }
+                catch (_: Exception) { CompletableFuture.completedFuture(false) }
+            try {
+                if (needsAcknowledgement && !awaitMutationAcknowledgement(acknowledgement))
+                    throw UncertainWorkspaceMutation(reason)
+                throw reason
+            } finally {
+                // A cancelled task may never enter the worker's finally.
+                active.compareAndSet(attempt, null)
+                if (interrupted) Thread.currentThread().interrupt()
+            }
         }
         try {
             return future.get(remaining(), TimeUnit.MILLISECONDS)
         } catch (e: InterruptedException) {
-            future.cancel(true)
-            binding.invalidate(requestId)
-            Thread.currentThread().interrupt()
-            throw CommandTransportException(CommandTransportFailure.CANCELLED, e)
+            abort(CommandTransportException(CommandTransportFailure.CANCELLED, e), interrupted = true)
         } catch (e: TimeoutException) {
-            future.cancel(true)
-            binding.invalidate(requestId)
-            throw CommandTransportException(CommandTransportFailure.TIMEOUT, e)
+            abort(CommandTransportException(CommandTransportFailure.TIMEOUT, e))
         } catch (e: ExecutionException) {
-            binding.invalidate(requestId)
-            throw (e.cause as? CommandTransportException ?: CommandTransportException(CommandTransportFailure.EXECUTION_FAILED, e.cause))
+            abort(e.cause as? CommandTransportException ?: CommandTransportException(CommandTransportFailure.EXECUTION_FAILED, e.cause))
         } catch (e: CommandTransportException) {
-            future.cancel(true)
-            binding.invalidate(requestId)
-            throw e
+            abort(e)
         }
     }
     override fun execute(arguments: List<String>): WorkspaceCommandResult {
@@ -91,9 +119,24 @@ internal class ProductionShizukuCommandTransport(private val binding: WorkspaceS
     }
     override fun close() {
         closed = true
+        active.get()?.let { synchronized(it) { it.cancelled = true } }
         worker.shutdownNow()
         binding.invalidate(null)
     }
+}
+
+private fun awaitMutationAcknowledgement(acknowledgement: Future<Boolean>): Boolean {
+    val deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(3)
+    var interrupted = Thread.interrupted()
+    try {
+        while (true) {
+            val remaining = deadline - System.nanoTime()
+            if (remaining <= 0) return false
+            try { return acknowledgement.get(remaining, TimeUnit.NANOSECONDS) }
+            catch (_: InterruptedException) { interrupted = true }
+            catch (_: Exception) { return false }
+        }
+    } finally { if (interrupted) Thread.currentThread().interrupt() }
 }
 internal object WorkspaceCommandWhitelist {
     fun validate(arguments: List<String>) {

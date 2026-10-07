@@ -117,8 +117,9 @@ class ExistingWorkspaceRepair(private val gate: EmbeddedProductRunGate,
             RepairCellEvidence(it.sourceCellId,null,null,null,null,RepairCellStatus.UNRESOLVED,"ADMISSION_BLOCKED")
         })
         if (!arbiter.tryAcquire()) return blocked()
+        val cells = mutableListOf<RepairCellEvidence>()
+        var retainAdmission = false
         try {
-            val cells = mutableListOf<RepairCellEvidence>()
             val admitted = gate.tryDispatchClassic {
                 val initial = runCatching { readTasks() }
                 // Automatic evidence is only an identity precondition. Bounds and tasks are always read anew.
@@ -156,7 +157,14 @@ class ExistingWorkspaceRepair(private val gate: EmbeddedProductRunGate,
                 }
             }
             return if (admitted) ExistingWorkspaceRepairReport(true,cells) else blocked()
-        } finally { arbiter.release() }
+        } catch (uncertain: UncertainWorkspaceMutation) {
+            retainAdmission = true
+            request.targets.sortedBy(AppLaunchTarget::order).filter { target ->
+                cells.none { it.cellId == target.sourceCellId }
+            }.forEach { target -> cells += RepairCellEvidence(target.sourceCellId,component(target),null,null,null,
+                RepairCellStatus.UNRESOLVED,"Mutation outcome UNCERTAIN; workspace admission remains blocked") }
+            return ExistingWorkspaceRepairReport(true,cells)
+        } finally { if (!retainAdmission) arbiter.release() }
     }
     private fun readTasks(): List<RepairTaskObservation> {
         if (Thread.currentThread().isInterrupted) throw InterruptedException("Repair interrupted")
@@ -213,6 +221,9 @@ class ExistingWorkspaceRepair(private val gate: EmbeddedProductRunGate,
                 if (attempt < pollAttempts-1) pause()
             }
             return result(RepairCellStatus.READBACK_FAILED,"Bounds failed three stable observations within 2px")
+        } catch (uncertain: UncertainWorkspaceMutation) {
+            gate.retainClassicAdmissionForUncertainMutation()
+            throw uncertain
         } catch (interrupted: InterruptedException) {
             Thread.currentThread().interrupt()
             throw interrupted

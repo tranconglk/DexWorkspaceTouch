@@ -15,7 +15,7 @@ class WorkspaceCommandDispatcherTest {
             val output = Capture()
             dispatcher.execute(dump, 3000, "first", output::stream)
             assertTrue(process.entered.await(1, TimeUnit.SECONDS))
-            dispatcher.cancel("first")
+            cancelExecuting(dispatcher, "first", process)
             assertTrue(output.closed.await(1, TimeUnit.SECONDS))
             failure(CommandTransportFailure.CANCELLED) { WorkspaceCommandFrame.read(output.input()) }
             assertTrue(process.destroyed)
@@ -31,7 +31,7 @@ class WorkspaceCommandDispatcherTest {
             dispatcher.execute(resize, 3000, "mutation", output::stream)
             assertTrue(process.entered.await(1, TimeUnit.SECONDS))
             failure(CommandTransportFailure.BUSY) { dispatcher.execute(resize, 3000, "second", Capture()::stream) }
-            dispatcher.cancel("mutation")
+            cancelExecuting(dispatcher, "mutation", process)
             assertTrue(output.closed.await(1, TimeUnit.SECONDS))
             // Completion may close the pipe just before releasing admission; wait only for this bounded cleanup.
             val deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(1)
@@ -96,8 +96,83 @@ class WorkspaceCommandDispatcherTest {
         }
         assertEquals(0, starts.get())
     }
+    @Test fun executingCancellationAcknowledgesOnlyAfterKnownProcessCompletion() {
+        val process = TestProcess()
+        val cancelling = CountDownLatch(1)
+        val acknowledged = CountDownLatch(1)
+        WorkspaceCommandDispatcher { process }.use { dispatcher ->
+            val output = Capture()
+            dispatcher.execute(listOf("am", "task", "resize", "42", "8", "8", "472", "1016"),
+                3000, "executing", output::stream)
+            assertTrue(process.entered.await(1, TimeUnit.SECONDS))
+            val cancellation = Thread {
+                cancelling.countDown()
+                dispatcher.cancel("executing")
+                acknowledged.countDown()
+            }
+            try {
+                cancellation.start()
+                assertTrue(cancelling.await(1, TimeUnit.SECONDS))
+                assertFalse("A cancellation reply must prove quiescence", acknowledged.await(300, TimeUnit.MILLISECONDS))
+                assertFalse("Killing a shell process is not a known terminal command result", process.destroyed)
+                process.complete()
+                assertTrue(acknowledged.await(1, TimeUnit.SECONDS))
+                assertTrue(output.closed.await(1, TimeUnit.SECONDS))
+                failure(CommandTransportFailure.CANCELLED) { WorkspaceCommandFrame.read(output.input()) }
+            } finally { process.complete(); cancellation.join(2000) }
+        }
+    }
+
+    @Test fun acknowledgedPendingCancellationCannotDispatchAfterAdmissionRelease() {
+        val closing = CountDownLatch(1)
+        val allowWorker = CountDownLatch(1)
+        val resizes = AtomicInteger()
+        WorkspaceCommandDispatcher { arguments ->
+            if (arguments.first() == "am") resizes.incrementAndGet()
+            TestProcess(blocked = false)
+        }.use { dispatcher ->
+            try {
+                dispatcher.execute(dump, 3000, "hold-worker") {
+                    object : ByteArrayOutputStream() {
+                        override fun close() { closing.countDown(); allowWorker.await(); super.close() }
+                    }
+                }
+                assertTrue(closing.await(1, TimeUnit.SECONDS))
+                val result = Capture()
+                dispatcher.execute(listOf("am", "task", "resize", "42", "8", "8", "472", "1016"),
+                    3000, "pending", result::stream)
+                dispatcher.cancel("pending") // Successful synchronous reply permits admission release.
+                allowWorker.countDown()
+                assertTrue(result.closed.await(1, TimeUnit.SECONDS))
+                failure(CommandTransportFailure.CANCELLED) { WorkspaceCommandFrame.read(result.input()) }
+                assertEquals(0, resizes.get())
+            } finally { allowWorker.countDown() }
+        }
+    }
+    @Test fun killedShellExitCannotProveMutationCompletion() {
+        WorkspaceCommandDispatcher { TestProcess(blocked = false, code = 137) }.use { dispatcher ->
+            val result = Capture()
+            dispatcher.execute(listOf("am", "task", "resize", "42", "8", "8", "472", "1016"),
+                1000, "killed", result::stream)
+            assertTrue(result.closed.await(1, TimeUnit.SECONDS))
+            failure(CommandTransportFailure.EXECUTION_FAILED) { WorkspaceCommandFrame.read(result.input()) }
+            failure(CommandTransportFailure.EXECUTION_FAILED) { dispatcher.cancel("killed") }
+        }
+    }
     private fun failure(reason: CommandTransportFailure, action: () -> Unit) {
         try { action(); fail("Expected $reason") } catch(e: CommandTransportException) { assertEquals(reason, e.failure) }
+    }
+    private fun cancelExecuting(dispatcher: WorkspaceCommandDispatcher, requestId: String, process: TestProcess) {
+        val requested = CountDownLatch(1)
+        val acknowledged = CountDownLatch(1)
+        val caller = Thread { requested.countDown(); dispatcher.cancel(requestId); acknowledged.countDown() }
+        try {
+            caller.start()
+            assertTrue(requested.await(1, TimeUnit.SECONDS))
+            assertFalse(acknowledged.await(300, TimeUnit.MILLISECONDS))
+            process.complete()
+            assertTrue(acknowledged.await(1, TimeUnit.SECONDS))
+        } finally { process.complete(); caller.join(2000) }
     }
     private class Capture {
         private val bytes = ByteArrayOutputStream()
@@ -105,15 +180,16 @@ class WorkspaceCommandDispatcherTest {
         fun stream(): OutputStream = object : FilterOutputStream(bytes) { override fun close() { super.close(); closed.countDown() } }
         fun input() = ByteArrayInputStream(bytes.toByteArray())
     }
-    private class TestProcess(private val blocked: Boolean = true) : Process() {
+    private class TestProcess(private val blocked: Boolean = true, private val code: Int = 0) : Process() {
         val entered = CountDownLatch(1)
         private val stopped = CountDownLatch(1)
         @Volatile var destroyed = false
         override fun getInputStream() = ByteArrayInputStream("".toByteArray())
         override fun getErrorStream() = ByteArrayInputStream("".toByteArray())
         override fun getOutputStream() = ByteArrayOutputStream()
-        override fun waitFor(): Int { entered.countDown(); if (blocked) stopped.await(); return 0 }
-        override fun exitValue() = 0
+        override fun waitFor(): Int { entered.countDown(); if (blocked) stopped.await(); return code }
+        override fun exitValue() = code
         override fun destroy() { destroyed = true; stopped.countDown() }
+        fun complete() { stopped.countDown() }
     }
 }

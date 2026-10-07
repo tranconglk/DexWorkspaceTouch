@@ -4,7 +4,8 @@ import java.io.InputStream
 import java.util.concurrent.*
 
 /** Runs in the shell UserService, never against Shizuku's deprecated remote Process API. */
-internal fun awaitWorkspaceCommandProcess(process: Process, timeoutMs: Long): ShizukuCommandResult {
+internal fun awaitWorkspaceCommandProcess(process: Process, timeoutMs: Long,
+    onKnownExit: (Int) -> Unit = {}): ShizukuCommandResult {
     val deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeoutMs)
     val readers = Executors.newFixedThreadPool(3) { Thread(it, "DWT.CommandDrain").apply { isDaemon = true } }
     fun <T> await(future: Future<T>): T {
@@ -18,6 +19,7 @@ internal fun awaitWorkspaceCommandProcess(process: Process, timeoutMs: Long): Sh
         val stdout = readers.submit(Callable { readWorkspaceOutput(process.inputStream, WorkspaceCommandFrame.STDOUT_LIMIT) })
         val stderr = readers.submit(Callable { readWorkspaceOutput(process.errorStream, WorkspaceCommandFrame.STDERR_LIMIT) })
         val exit = await(readers.submit(Callable { process.waitFor() }))
+        onKnownExit(exit)
         return ShizukuCommandResult(exit, await(stdout), await(stderr))
     } catch (e: InterruptedException) {
         Thread.currentThread().interrupt()
