@@ -56,7 +56,6 @@ fun WorkspaceLibraryCard(
     selected: Boolean,
     onSelect: () -> Unit,
     onOpen: () -> Unit,
-    onOpenEmbedded: () -> Unit = {},
     onEdit: () -> Unit,
     onDuplicate: () -> Unit,
     onPinToggle: () -> Unit,
@@ -66,7 +65,6 @@ fun WorkspaceLibraryCard(
     canDelete: Boolean,
     modifier: Modifier = Modifier,
     openEnabled: Boolean = true,
-    embeddedOpenEnabled: Boolean = true,
     duplicateEnabled: Boolean = true,
     pinEnabled: Boolean = true,
     onExport: () -> Unit = {},
@@ -173,13 +171,6 @@ fun WorkspaceLibraryCard(
                                 enabled = editEnabled,
                                 modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton),
                             ) { Text("Sửa") }
-                        }
-                        if (selected) {
-                            OutlinedButton(
-                                onClick = onOpenEmbedded,
-                                enabled = embeddedOpenEnabled,
-                                modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
-                            ) { Text("Mở Embedded (Experimental/Frozen)") }
                         }
                         if (selected) {
                             if (showDirectManagementActions) {

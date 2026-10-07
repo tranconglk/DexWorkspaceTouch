@@ -183,16 +183,6 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
         }
     }
     val productNavigationScope = rememberCoroutineScope()
-    fun openProof(route: EmbeddedProofRoute, workspaceId: String? = null) {
-        val destination = if (route == EmbeddedProofRoute.WORKSPACE_LAYOUT) {
-            workspaceId?.let { "${Routes.EmbeddedWorkspaceLayout}/${Uri.encode(it)}" } ?: return
-        } else route.pattern
-        if (!enterEmbeddedProofRoute(application.embeddedProductRunGate, route) {
-                navController.navigate(destination)
-            }) {
-            Toast.makeText(activity, "Proof Embedded đang bị chặn bởi trạng thái phiên hiện tại.", Toast.LENGTH_SHORT).show()
-        }
-    }
     val viewProofProductStatus: (String) -> Unit = { id ->
         navController.navigate("${Routes.EmbeddedWorkspaceProduct}/${Uri.encode(id)}")
     }
@@ -631,25 +621,12 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
                         launchViewModel.launchWorkspace(workspace, launchRuntime, launchHostToken)
                     }
                 },
-                onOpenEmbeddedWorkspace = { id -> productRouting.openEmbedded(id) },
                 workspaceRunActionsEnabled = productGateState == ProductRunPhase.IDLE,
                 productRunStatus = productGateStatus,
-                onViewEmbeddedStatus = { id ->
-                    val current = application.embeddedProductRunGate.status.value
-                    if (current.phase == ProductRunPhase.CLEANUP_BLOCKED && current.token?.workspaceId == id) {
-                        // Điều hướng xem status, không admission Start hoặc nhả gate.
-                        navController.navigate("${Routes.EmbeddedWorkspaceProduct}/${Uri.encode(id)}")
-                    }
-                },
                 onCancelLaunch = launchViewModel::cancelLaunch,
                 onDismissLaunchResult = launchViewModel::dismissResult,
                 onOpenCar = { navController.navigate(Routes.Car) },
                 onOpenUpdates = { navController.navigate(Routes.Updates) },
-                onOpenEmbeddedWaze = { openProof(EmbeddedProofRoute.WAZE) },
-                onOpenEmbeddedCalculator = { openProof(EmbeddedProofRoute.CALCULATOR) },
-                onOpenEmbeddedDualApp = { openProof(EmbeddedProofRoute.DUAL_APP) },
-                onOpenEmbeddedWorkspaceRunner = { openProof(EmbeddedProofRoute.RUNNER) },
-                onOpenEmbeddedWorkspaceLayout = { id -> openProof(EmbeddedProofRoute.WORKSPACE_LAYOUT, id) },
                 onShareWorkspace = { id -> exportMode = "share"; transferViewModel.prepareExport(id) },
                 onSaveWorkspaceToFile = { id -> exportMode = "save"; transferViewModel.prepareExport(id) },
                 onImportWorkspace = { importLauncher.launch("*/*") },

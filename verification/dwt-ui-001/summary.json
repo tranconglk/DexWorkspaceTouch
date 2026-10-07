@@ -1,0 +1,14 @@
+﻿{
+    "task":  "DWT-UI-001",
+    "baseline":  "b26b5228b6d203982c0c25361e104b086a9842d0",
+    "release":  "b26b5228b6d203982c0c25361e104b086a9842d0",
+    "branch":  "ui/dwt-ui-001-hide-embedded",
+    "unitSuites":  38,
+    "unitTests":  467,
+    "unitFailures":  0,
+    "unitErrors":  0,
+    "uiSmokePass":  true,
+    "safetyUiPass":  true,
+    "device":  "SM-S908E / Android SDK 36 / DeX display 17",
+    "isolatedApplicationId":  "com.trancong.dexworkspacetouch.ui001"
+}

@@ -81,6 +81,7 @@ import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductR
 import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.cleanupBlockedUi
 import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedStatus
 
+// Mô hình proof nội bộ được giữ cho kiểm thử lịch sử; product UI không render hoặc mở menu này.
 internal enum class HomeEmbeddedProofControl(val label: String) {
     WAZE("Embedded Waze (Experimental/Frozen)"),
     CALCULATOR("Embedded Calculator (Experimental/Frozen)"),
@@ -143,19 +144,12 @@ fun HomeScreen(
     onDismissBatchFeedback: () -> Unit = {},
     launchState: WorkspaceLaunchUiState,
     onLaunchWorkspace: (WorkspaceLibraryItem) -> Unit,
-    onOpenEmbeddedWorkspace: (String) -> Unit = {},
     workspaceRunActionsEnabled: Boolean = true,
     productRunStatus: ProductRunStatus? = null,
-    onViewEmbeddedStatus: (String) -> Unit = {},
     onCancelLaunch: () -> Unit,
     onDismissLaunchResult: () -> Unit,
     onOpenCar: () -> Unit = {},
     onOpenUpdates: () -> Unit = {},
-    onOpenEmbeddedWaze: () -> Unit = {},
-    onOpenEmbeddedCalculator: () -> Unit = {},
-    onOpenEmbeddedDualApp: () -> Unit = {},
-    onOpenEmbeddedWorkspaceRunner: () -> Unit = {},
-    onOpenEmbeddedWorkspaceLayout: (String) -> Unit = {},
     onShareWorkspace: (String) -> Unit = {},
     onSaveWorkspaceToFile: (String) -> Unit = {},
     onImportWorkspace: () -> Unit = {},
@@ -179,7 +173,6 @@ fun HomeScreen(
     var showFileSheet by rememberSaveable { mutableStateOf(false) }
     var showAboutDialog by rememberSaveable { mutableStateOf(false) }
     var showAboutCopySuccess by rememberSaveable { mutableStateOf(false) }
-    var proofMenu by remember { mutableStateOf(HomeEmbeddedProofMenu()) }
     var exportWorkspaceId by rememberSaveable { mutableStateOf<String?>(null) }
     var showBatchDeleteConfirmation by rememberSaveable { mutableStateOf(false) }
     val templateCatalog = remember { WorkspaceTemplateCatalog.default() }
@@ -219,7 +212,6 @@ fun HomeScreen(
             showFileSheet = false
             showAboutDialog = false
             showAboutCopySuccess = false
-            proofMenu = proofMenu.close()
             showTemplatePicker = false
         } else {
             showBatchDeleteConfirmation = false
@@ -450,39 +442,6 @@ fun HomeScreen(
         }
     }
 
-    if (proofMenu.isOpen) {
-        ModalBottomSheet(onDismissRequest = { proofMenu = proofMenu.close() }) {
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(Spacing.L),
-                verticalArrangement = Arrangement.spacedBy(Spacing.S),
-            ) {
-                Text("Nhà phát triển (Experimental/Frozen)", style = MaterialTheme.typography.titleLarge)
-                Text("Embedded là thử nghiệm đã đóng băng phát triển, chỉ mở thủ công để nghiên cứu.")
-                if (!workspaceRunActionsEnabled) {
-                    Text("Proof Embedded đang bị chặn bởi trạng thái phiên hiện tại. Có thể xem trạng thái từ Workspace Library.")
-                }
-                proofMenu.controls.forEach { control ->
-                    OutlinedButton(
-                        onClick = {
-                            proofMenu = proofMenu.close()
-                            when (control) {
-                                HomeEmbeddedProofControl.WAZE -> onOpenEmbeddedWaze()
-                                HomeEmbeddedProofControl.CALCULATOR -> onOpenEmbeddedCalculator()
-                                HomeEmbeddedProofControl.DUAL_APP -> onOpenEmbeddedDualApp()
-                                HomeEmbeddedProofControl.RUNNER -> onOpenEmbeddedWorkspaceRunner()
-                                HomeEmbeddedProofControl.WORKSPACE_LAYOUT -> selectedWorkspaceId?.let(onOpenEmbeddedWorkspaceLayout)
-                            }
-                        },
-                        enabled = workspaceRunActionsEnabled &&
-                            (control != HomeEmbeddedProofControl.WORKSPACE_LAYOUT || selectedWorkspaceId != null),
-                        modifier = Modifier.fillMaxWidth().heightIn(min = TouchTargets.SecondaryButton),
-                    ) { Text(control.label) }
-                }
-                if (selectedWorkspaceId == null) Text("Chọn workspace trong Library để kiểm thử Workspace Layout.")
-            }
-        }
-    }
-
     if (showAboutDialog) {
         AboutDialog(
             info = diagnosticInfo,
@@ -647,10 +606,6 @@ fun HomeScreen(
                                         modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton),
                                     ) { Text("Giới thiệu") }
                                 }
-                                if (!isMultiSelectMode) OutlinedButton(
-                                    onClick = { proofMenu = proofMenu.open() },
-                                    modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
-                                ) { Text("Nhà phát triển (Experimental/Frozen)") }
                             }
                         } else {
                             Column(verticalArrangement = Arrangement.spacedBy(Spacing.M)) {
@@ -663,10 +618,6 @@ fun HomeScreen(
                                     OutlinedButton(onClick = onOpenUpdates, modifier = Modifier.weight(1f).height(TouchTargets.SecondaryButton)) { Text("Cập nhật") }
                                     TextButton(onClick = { dispatchAboutEvent(AboutDialogEvent.Open) }, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Info") }
                                 }
-                                if (!isMultiSelectMode) OutlinedButton(
-                                    onClick = { proofMenu = proofMenu.open() },
-                                    modifier = Modifier.fillMaxWidth().height(TouchTargets.SecondaryButton),
-                                ) { Text("Nhà phát triển (Experimental/Frozen)") }
                             }
                         }
                     }
@@ -750,7 +701,7 @@ fun HomeScreen(
                 }
             if (blockedUi != null) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    EmbeddedCleanupBlockedStatus(blockedUi, onViewStatus = onViewEmbeddedStatus)
+                    EmbeddedCleanupBlockedStatus(blockedUi)
                 }
             }
             if (!libraryIsLoading && hasCorruptedWorkspaces) {
@@ -810,7 +761,6 @@ fun HomeScreen(
                         selected = workspace.id == selectedWorkspaceId,
                         onSelect = { onWorkspaceSelected(workspace.id) },
                         onOpen = { onLaunchWorkspace(workspace) },
-                        onOpenEmbedded = { onOpenEmbeddedWorkspace(workspace.id) },
                         onEdit = { onEditWorkspace(workspace.id) },
                         onDuplicate = { onDuplicateWorkspace(workspace.id) },
                         onPinToggle = { onSetWorkspacePinned(workspace.id, !workspace.isPinned) },
@@ -819,7 +769,6 @@ fun HomeScreen(
                         onManage = { managedWorkspaceId = workspace.id },
                         canDelete = editingWorkspaceId != workspace.id && interactionPolicy.managementEnabled,
                         openEnabled = workspaceRunActionsEnabled && launchState !is WorkspaceLaunchUiState.Checking && launchState !is WorkspaceLaunchUiState.Launching,
-                        embeddedOpenEnabled = workspaceRunActionsEnabled,
                         editEnabled = interactionPolicy.editEnabled,
                         duplicateEnabled = !libraryWriteInProgress,
                         pinEnabled = !libraryWriteInProgress,
@@ -846,7 +795,6 @@ fun HomeScreen(
                         selected = workspace.id == selectedWorkspaceId,
                         onSelect = { onWorkspaceSelected(workspace.id) },
                         onOpen = { onLaunchWorkspace(workspace) },
-                        onOpenEmbedded = { onOpenEmbeddedWorkspace(workspace.id) },
                         onEdit = { onEditWorkspace(workspace.id) },
                         onDuplicate = { onDuplicateWorkspace(workspace.id) },
                         onPinToggle = { onSetWorkspacePinned(workspace.id, !workspace.isPinned) },
@@ -857,7 +805,6 @@ fun HomeScreen(
                             interactionPolicy.managementEnabled,
                         openEnabled = workspaceRunActionsEnabled && launchState !is WorkspaceLaunchUiState.Checking &&
                             launchState !is WorkspaceLaunchUiState.Launching,
-                        embeddedOpenEnabled = workspaceRunActionsEnabled,
                         editEnabled = interactionPolicy.editEnabled,
                         duplicateEnabled = !libraryWriteInProgress,
                         pinEnabled = !libraryWriteInProgress,

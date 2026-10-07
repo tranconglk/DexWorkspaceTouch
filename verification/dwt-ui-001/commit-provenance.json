@@ -1,0 +1,272 @@
+{
+    "task":  "DWT-UI-001",
+    "kind":  "Pre-commit verification and accepted evidence provenance",
+    "baseline":  "b26b5228b6d203982c0c25361e104b086a9842d0",
+    "branch":  "ui/dwt-ui-001-hide-embedded",
+    "releaseBranchHead":  "b26b5228b6d203982c0c25361e104b086a9842d0",
+    "authorizedCommitMessage":  "DWT-UI-001: remove Embedded from product UI",
+    "reviewAcceptedByUser":  {
+                                 "critical":  0,
+                                 "important":  0,
+                                 "minor":  0
+                             },
+    "checks":  {
+                   "visibleEmbeddedProductEntries":  "Absent",
+                   "internalEmbeddedRouteCount":  6,
+                   "internalEmbeddedDestinationSource":  "Unchanged",
+                   "embeddedRuntime":  "Unchanged",
+                   "embeddedProductRunGate":  "Unchanged",
+                   "cleanupBlockedSafety":  "Retained, fail-closed; Home status-entry callback removed as accepted",
+                   "classicLaunch":  "Unchanged",
+                   "shizukuBehavior":  "Unchanged",
+                   "workspaceRepairDefault":  "SUGGEST, unchanged",
+                   "releaseVersionSigningLicenseRoom":  "Unchanged",
+                   "gitDiffCheck":  "PASS",
+                   "productDiff":  "3 files; +2/-87 lines"
+               },
+    "acceptedTestEvidence":  {
+                                 "unitSuites":  38,
+                                 "unitTests":  467,
+                                 "unitFailures":  0,
+                                 "unitErrors":  0,
+                                 "uiSmoke":  "PASS",
+                                 "safetyUi":  "PASS",
+                                 "reused":  true,
+                                 "reason":  "Product/test source remains as reviewed; only commit provenance was added. Successful checks are reused under AGENTS.md.",
+                                 "unitXmlSourcesLocalOnly":  true,
+                                 "unitXmlHashes":  [
+                                                       {
+                                                           "file":  "TEST-co-3FELOOUQH37QI.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.EmbeddedWorkspacePreflightTest.xml",
+                                                           "sha256":  "93b38856d8b3d513e663609b55d3beb0b8ad15cc400d5d211612825c9a581080"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.tranc-3JH4UG7SE314S.workspace.execution.embedded.runtime.EmbeddedWorkspaceConnectionBoundaryIntegrationTest.xml",
+                                                           "sha256":  "6bb86849277f2bf85fe0b83e57c8f89906e0314f86a4c79414fe9e80cc640b1d"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.tranc-9E5MMSLPOVUAG.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductRoutingTest.xml",
+                                                           "sha256":  "3bd04ae07315325843f02eee5b0fe93ef3847833550ac899859f955052b369c8"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexw-4L6QP71RJPE14.feature.embeddedworkspace.product.EmbeddedStartFailureEvidenceQualificationTest.xml",
+                                                           "sha256":  "3b7cd6b5a35cdfa4fe20d9cd242c55e688f8b1e11aef7ef5faaa2291dbb70da8"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexw-MGBHQEAH3N1CE.workspace.execution.embedded.runtime.AndroidEmbeddedWorkspaceSessionAdapterTest.xml",
+                                                           "sha256":  "6aacc90ba6d9a3819a4c7ba1b919dc15d0d35dcd33eca917aa8e7e929ee73e65"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexwo-2QDICF7LLQCOK.workspace.execution.embedded.runtime.EmbeddedWorkspaceHungStartIntegrationTest.xml",
+                                                           "sha256":  "6abdf9d1e4a15edc43f7f745acc2756e66f5ce2f21a93897a960406a5d4e0304"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairPolicyTest.xml",
+                                                           "sha256":  "45a1bbd6dc2617f045f6ef6c813ec0a4e5d6a6d35ef89dbde6a494e71aa99f2f"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairSessionTest.xml",
+                                                           "sha256":  "50aa4243c2c8267e3a7c7a025c50507bb45e1c15b62398e42362c3dac4bbe2b7"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.feature.car.WorkspaceRepairModePreferencesTest.xml",
+                                                           "sha256":  "970460f257ca8d7b561978e87f65340e167e127cd1ecd598fae7a74ae2a37af6"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ClassicWorkspaceAdmissionTest.xml",
+                                                           "sha256":  "36fcd39bdb5b70c2a7c770c19f09bc04b8e410c022e70f06b6de81e58b9f0eb9"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedCleanupBlockedUxTest.xml",
+                                                           "sha256":  "db725eada439446610aa98cbacfc8d196ee6ec1d82be27571c51c7ee33d47cd3"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductIssueTest.xml",
+                                                           "sha256":  "c883f8b91c402064ad4eee8c6ba632f2c1ccd6ea95973cbb22b1ef6c037bc5c9"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductLifecycleTest.xml",
+                                                           "sha256":  "1b8d8202f84ea1be4911698b805f0e69c4660ea61c8b65fca1ab6f2690f58448"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGateTest.xml",
+                                                           "sha256":  "16a48d850442e86ffb21e2fb5f3aa3bbeb51372c8c050785ed52bb962df29ed4"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProofAccessTest.xml",
+                                                           "sha256":  "6e603475c93615e214f4345423b3e44abe59ae19df5923ca03a77bd04e563afb"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedShizukuRefreshTest.xml",
+                                                           "sha256":  "81d2fc04e7ec2abfc5d8c15f8a092cc33b3dcbd2bd2da1ecb75d91ec541ec77b"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceEligibilityTest.xml",
+                                                           "sha256":  "6ba5c3a1507757b6717222266fa8e502af6f367fbe98e9bc2357ca8344199e82"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceReadinessTest.xml",
+                                                           "sha256":  "83162440e3a642e3173890ab71a9783fae36e7c1e6e4bc90eaba56c4f08ea1ed"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductAdmissionUiQueryTest.xml",
+                                                           "sha256":  "e7d1f91ce3418b7309fbf2c5b1126bf1ea67f65042f51eddb7cac12c715bdf95"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceAssessmentTest.xml",
+                                                           "sha256":  "2c41516c106ca75cc7e50e40ad5cc22e286b28510924e61f4d8820212fc7a077"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceRepairTest.xml",
+                                                           "sha256":  "bd6fdad482c280c99d2e6cd57acc5b36791eb73dcbcf011df9deef4a62d94eb1"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.platform.launch.shizuku.ProductionShizukuCommandTransportTest.xml",
+                                                           "sha256":  "fb566410d45236886a154165c29200fa0f6beaa843670363d0ccc3a800ac2f31"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDeadlineTest.xml",
+                                                           "sha256":  "ee0a3d8575e7b9edf8e4450e5534dba795bf633332672af7b352a7738ee7e4d6"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandDispatcherTest.xml",
+                                                           "sha256":  "0fbd3a9dbe360799bc605bb68022eab21244bc25611ae9a9a27746ea6d5a5eff"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceCommandProcessTest.xml",
+                                                           "sha256":  "ac93bf10c05a267aaadb04047296c8b0e4c36e870067f64d42937b4a56d83c77"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceMutationAdmissionTest.xml",
+                                                           "sha256":  "ea1afda7f7c29d2a964028a8ee69271a151088813f7b19a74724a355b8ceef86"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.workspace.execution.embedded.runtime.EmbeddedWorkspaceRunnerTest.xml",
+                                                           "sha256":  "edd3adacbbef92e746c05ca191af589616d2dd1f16aa92db63a1de766ac83428"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.workspace.library.model.WorkspaceLibraryMapperTest.xml",
+                                                           "sha256":  "6846cb6fd096ac173df665d695734067aceccb4e97a3efd9602e0a1a75e8be62"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceDuplicateNamePolicyTest.xml",
+                                                           "sha256":  "c6984ea04c83d52d9e5a2f9755c4e4005175510e4743dbe1729eef69b34ae255"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryProjectionTest.xml",
+                                                           "sha256":  "9f0629e0820538befa70bc34dc5d98427ec6cb7362058e58939ef23c19835efc"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.workspace.library.state.WorkspaceLibraryViewModelTest.xml",
+                                                           "sha256":  "d64e0bba409fc7e9e9a34958830a04be60a20015e8fd26f742d0ec40e7090aeb"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.workspace.library.ui.CenteredGridRowLayoutTest.xml",
+                                                           "sha256":  "127da14ef99db44d9d9783d9397f4a9017956f0979d35cdab94b30538b22b5f0"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceCardMetadataTest.xml",
+                                                           "sha256":  "5556bf656bacfa7b9b291296a28087fa8446c71c78ea5dc4ccc563be9188b6db"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.trancong.dexworkspacetouch.workspace.library.ui.WorkspaceLibraryInteractionPolicyTest.xml",
+                                                           "sha256":  "429690a0065ae0c62094acc23cc54e6631a210a2e4e8e0c7e2e1fa346c683e82"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.tran-KFG33OALCNMQK.dexworkspacetouch.feature.embeddedworkspace.product.ClassicWorkspaceRuntimeIsolationTest.xml",
+                                                           "sha256":  "7ab6f0e5a8e5ff3faee45fa282f19d99b89980e61572aed77e6b18c4db216494"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.tr-HU4702K3GV12I.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductDiagnosticFormatterTest.xml",
+                                                           "sha256":  "889748ec6f285a139f9c08369541b89c6adba72094b4086248c96400331c54be"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.tr-MDT2MILG5Q83M.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedWorkspaceProductControllerTest.xml",
+                                                           "sha256":  "a4a7db5f74883dfe0db59380599fae72b0bfdb8eca0e8bb5bc8ae7c332a99f2c"
+                                                       },
+                                                       {
+                                                           "file":  "TEST-com.tr-PRK88QA6C67U6.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedHostLifecycleQualificationTest.xml",
+                                                           "sha256":  "8f8a7b2131635600ce167bd49015b66e17629111d93c2edf3a297e7017fac5b5"
+                                                       }
+                                                   ],
+                                 "localLogEvidence":  [
+                                                          {
+                                                              "path":  "verification/dwt-ui-001/ui-red.log",
+                                                              "sha256":  "3a6d74456749ff4b7e983595f7d59875f741318ac20de7c7d4a7c4b84213c7ea",
+                                                              "result":  "Expected behavioral RED: developer entry and Embedded status button visible on baseline",
+                                                              "localOnly":  true
+                                                          },
+                                                          {
+                                                              "path":  "verification/dwt-ui-001/verification-build.log",
+                                                              "sha256":  "8944c82fc12b30d6a9b41d9be6acb9a4cc60ee7081dc210435e6122a8db4f310",
+                                                              "result":  "Accepted affected regression/debug app/instrumentation build PASS",
+                                                              "localOnly":  true
+                                                          },
+                                                          {
+                                                              "path":  "verification/dwt-ui-001/ui-test-build.log",
+                                                              "sha256":  "f019386fff138f914c5a14e2ec8e0029a9774a9fc02f9503cc7b339cd7161689",
+                                                              "result":  "Accepted final instrumentation source build PASS",
+                                                              "localOnly":  true
+                                                          },
+                                                          {
+                                                              "path":  "verification/dwt-ui-001/ui-smoke.log",
+                                                              "sha256":  "7b20731a02515a957e51176b579e7b8fb5841154205662cfa0dc080cbec5ee7d",
+                                                              "result":  "Accepted product UI/navigation and Classic/Repair smoke PASS",
+                                                              "localOnly":  true
+                                                          },
+                                                          {
+                                                              "path":  "verification/dwt-ui-001/ui-safety-green.log",
+                                                              "sha256":  "90bccd7f15c20412c45061543ca2df81b1a7c5ecf80d54a2c90149eb7215dd76",
+                                                              "result":  "Accepted CLEANUP_BLOCKED safety UI PASS",
+                                                              "localOnly":  true
+                                                          }
+                                                      ]
+                             },
+    "acceptedFiles":  [
+                          {
+                              "path":  "app/src/main/java/com/trancong/dexworkspacetouch/navigation/TouchNavigation.kt",
+                              "sha256":  "d42b78faf209c3f47312c45bb1665381a98aa9b895be94d2b085fe25f730593a"
+                          },
+                          {
+                              "path":  "app/src/main/java/com/trancong/dexworkspacetouch/ui/screens/HomeScreen.kt",
+                              "sha256":  "5394c25b815ab6e6160d69fbc7f2193df5c9eb5e0e549782e54e1a02fe8b3748"
+                          },
+                          {
+                              "path":  "app/src/main/java/com/trancong/dexworkspacetouch/workspace/library/ui/WorkspaceLibraryCard.kt",
+                              "sha256":  "ca1cafa05b38b312a3cb8d2905f492093348cbbdaec96803cb382feaf7977f74"
+                          },
+                          {
+                              "path":  "app/src/androidTest/java/com/trancong/dexworkspacetouch/ui/ProductUiWithoutEmbeddedTest.kt",
+                              "sha256":  "53507485854a7e344b7db1d006772dfa580fec63926fa5ed9934c11c7b84d9ff"
+                          },
+                          {
+                              "path":  "docs/verification/DWT-UI-001.md",
+                              "sha256":  "23c4b47762dad3d078e9857d72263a11e8b9bf2da953e0c98e92a336839d05bd"
+                          },
+                          {
+                              "path":  "verification/dwt-ui-001/summary.json",
+                              "sha256":  "4704d55deb4ae59c23f030dbeb2fdacf2ce0deda872c92879798267400c2570e"
+                          },
+                          {
+                              "path":  "verification/dwt-ui-001/isolated-app.init.gradle",
+                              "sha256":  "a9eb31414f2a188a287d681c79af866c29dbdc8c7f22586b997b4a6479846306"
+                          }
+                      ],
+    "evidencePolicy":  {
+                           "historicalReport":  "DWT-UI-001.md records the pre-review checkpoint and is preserved verbatim.",
+                           "rawEvidence":  "Log references in the report identify local-only evidence; hashes and verified results are recorded here.",
+                           "excludedFromCommit":  [
+                                                      "APK/build artifacts",
+                                                      "raw build/instrumentation/helper logs",
+                                                      "device snapshots and task dumps",
+                                                      "screenshots",
+                                                      "local device-private data",
+                                                      "secrets",
+                                                      "unrelated files"
+                                                  ],
+                           "notVerified":  [
+                                               "Full project suite",
+                                               "Signed release APK"
+                                           ],
+                           "publication":  "No push, tag or release integration authorized"
+                       }
+}
