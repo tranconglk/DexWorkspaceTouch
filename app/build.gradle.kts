@@ -72,8 +72,8 @@ android {
         applicationId = "com.trancong.dexworkspacetouch"
         minSdk = 28
         targetSdk = 37
-        versionCode = 11
-        versionName = "1.0.0-beta.10"
+        versionCode = 12
+        versionName = "1.0.0-beta.11"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "BUILD_COMMIT", buildConfigString(buildCommit))
         buildConfigField("String", "BUILD_DATE_UTC", buildConfigString(buildDateUtc))
