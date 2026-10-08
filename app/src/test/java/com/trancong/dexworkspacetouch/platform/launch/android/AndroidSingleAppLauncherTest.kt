@@ -183,7 +183,7 @@ class AndroidSingleAppLauncherTest {
 
         AndroidSingleAppLauncher(
             platform,
-            boundsConfig = LaunchBoundsConfig(marginDp = 0f),
+            boundsConfig = LaunchBoundsConfig(outerMarginPx = 0),
         ).launch(target)
 
         assertEquals(PixelBounds(0, 0, 1920, 1200), platform.startedBounds)

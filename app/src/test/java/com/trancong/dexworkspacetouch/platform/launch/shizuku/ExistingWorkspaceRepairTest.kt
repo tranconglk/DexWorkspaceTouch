@@ -22,7 +22,7 @@ class ExistingWorkspaceRepairTest {
         assertEquals(RepairCellStatus.REPAIRED, report.cells.single().status)
         assertEquals(77, report.cells.single().after!!.id)
         assertEquals(expected, report.cells.single().after!!.bounds)
-        assertEquals(listOf("am","task","resize","77","8","33","952","1128"),
+        assertEquals(listOf("am","task","resize","77","8","33","958","1128"),
             commands.single { it.first() == "am" })
         assertFalse(commands.any { it.getOrNull(1) == "start" })
     }
@@ -170,7 +170,7 @@ class ExistingWorkspaceRepairTest {
     private fun ok(text: String) = WorkspaceCommandResult(0,text)
     private companion object {
         const val COMPONENT = "com.example.calc/com.example.calc.Main"
-        val expected = PixelBounds(8,33,952,1128)
+        val expected = PixelBounds(8,33,958,1128)
         val wrong = PixelBounds(100,100,800,800)
         val snapshot = DisplayWorkAreaSnapshot(204,DisplayWorkArea(1920,1200,insetTopPx=25,insetBottomPx=64),
             DiagnosticPixelBounds(0,0,1920,1200),DiagnosticPixelBounds(0,0,1920,1200),1f,HostWindowMode.MAXIMIZED)

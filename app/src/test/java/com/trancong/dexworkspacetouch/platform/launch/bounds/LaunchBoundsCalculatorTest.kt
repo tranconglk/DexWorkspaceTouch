@@ -165,7 +165,7 @@ class LaunchBoundsCalculatorTest {
         area: DisplayWorkArea,
         marginPx: Int = 0,
     ): PixelBounds {
-        val result = LaunchBoundsCalculator(marginPx).calculate(bounds, area)
+        val result = LaunchBoundsCalculator(marginPx, internalGutterPx = 0).calculate(bounds, area)
         return (result as BoundsCalculationResult.Success).bounds
     }
 

@@ -1,13 +1,14 @@
 package com.trancong.dexworkspacetouch.platform.launch.bounds
 
-data class LaunchBoundsConfig(val marginDp: Float = DEFAULT_MARGIN_DP) {
+data class LaunchBoundsConfig(val outerMarginPx: Int = OUTER_MARGIN_PX) {
     init {
-        require(marginDp.isFinite() && marginDp >= 0f) {
-            "marginDp must be finite and non-negative"
+        require(outerMarginPx >= 0) {
+            "outerMarginPx must not be negative"
         }
     }
 
     companion object {
-        const val DEFAULT_MARGIN_DP: Float = 8f
+        const val OUTER_MARGIN_PX: Int = 8
+        const val INTERNAL_GUTTER_PX: Int = 4
     }
 }

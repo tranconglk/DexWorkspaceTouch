@@ -105,7 +105,7 @@ class ExistingWorkspaceAssessmentTest {
         "      Intent { cmp=com.example.calc/com.example.calc.Main }"
     private val request=WorkspaceLaunchRequest("swc","SWC",listOf(AppLaunchTarget("left",
         AppIdentity("com.example.calc","com.example.calc.Main"),NormalizedBounds(0f,0f,0.5f,1f),0)))
-    private val expected=PixelBounds(8,33,952,1128)
+    private val expected=PixelBounds(8,33,958,1128)
     private val wrong=PixelBounds(100,100,800,800)
     private val snapshot=DisplayWorkAreaSnapshot(204,DisplayWorkArea(1920,1200,insetTopPx=25,insetBottomPx=64),
         DiagnosticPixelBounds(0,0,1920,1200),DiagnosticPixelBounds(0,0,1920,1200),1f,HostWindowMode.MAXIMIZED)

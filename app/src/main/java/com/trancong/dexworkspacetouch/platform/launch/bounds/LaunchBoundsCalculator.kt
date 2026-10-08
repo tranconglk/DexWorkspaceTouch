@@ -3,14 +3,21 @@ package com.trancong.dexworkspacetouch.platform.launch.bounds
 import com.trancong.dexworkspacetouch.workspace.designer.model.NormalizedBounds
 import kotlin.math.roundToInt
 
-class LaunchBoundsCalculator(private val marginPx: Int) {
+class LaunchBoundsCalculator(
+    private val marginPx: Int,
+    private val internalGutterPx: Int = LaunchBoundsConfig.INTERNAL_GUTTER_PX,
+) {
     init {
         require(marginPx >= 0) { "marginPx must not be negative" }
+        require(internalGutterPx >= 0) { "internalGutterPx must not be negative" }
     }
 
     /**
      * Maps normalized edges into the usable display rectangle using [Float.roundToInt],
-     * applies [marginPx] inward on every edge, then clamps to that rectangle.
+     * retains [marginPx] at normalized canvas edges and splits [internalGutterPx]
+     * across interior edges, then clamps to that rectangle. Shared dividers use
+     * the same rounded coordinate; an odd gutter assigns its extra pixel to the
+     * leading edge deterministically.
      */
     fun calculate(
         normalizedBounds: NormalizedBounds,
@@ -21,18 +28,20 @@ class LaunchBoundsCalculator(private val marginPx: Int) {
         normalizedBounds: NormalizedBounds,
         workArea: DisplayWorkArea,
     ): LaunchBoundsTrace {
+        val leadingInset = internalGutterPx - internalGutterPx / 2
+        val trailingInset = internalGutterPx / 2
         val left = (
             workArea.originX + normalizedBounds.left * workArea.usableWidth
-            ).roundToInt() + marginPx
+            ).roundToInt() + if (normalizedBounds.left == 0f) marginPx else leadingInset
         val top = (
             workArea.originY + normalizedBounds.top * workArea.usableHeight
-            ).roundToInt() + marginPx
+            ).roundToInt() + if (normalizedBounds.top == 0f) marginPx else leadingInset
         val right = (
             workArea.originX + normalizedBounds.right * workArea.usableWidth
-            ).roundToInt() - marginPx
+            ).roundToInt() - if (normalizedBounds.right == 1f) marginPx else trailingInset
         val bottom = (
             workArea.originY + normalizedBounds.bottom * workArea.usableHeight
-            ).roundToInt() - marginPx
+            ).roundToInt() - if (normalizedBounds.bottom == 1f) marginPx else trailingInset
 
         val clampedLeft = left.coerceIn(workArea.originX, workArea.usableRight)
         val clampedTop = top.coerceIn(workArea.originY, workArea.usableBottom)

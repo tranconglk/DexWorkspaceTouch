@@ -25,34 +25,12 @@ data class ExistingWorkspaceRepairReport(val admitted: Boolean, val cells: List<
 internal data class RepairTaskObservation(val task: WorkspaceTask, val identity: String?, val activities: Set<String>)
 internal object ExistingTaskCorrelation {
     fun parse(dump: String): List<RepairTaskObservation> {
-        val identities = mutableMapOf<Int, Pair<String, MutableList<String>>>()
-        val components = mutableMapOf<Int, MutableSet<String>>()
-        var current: Int? = null
-        val taskPattern = Regex("^\\s*\\* Task\\{([^ ]+) #(\\d+)\\b.*")
-        val activityPattern = Regex("^\\s*\\* Hist\\s+#\\d+: ActivityRecord\\{([^ ]+) u(\\d+) ([^ ]+) t(\\d+)[ }].*")
-        dump.lineSequence().takeWhile { !it.startsWith("ActivityTaskSupervisor state:") }.forEach { line ->
-            taskPattern.matchEntire(line)?.let {
-                current = it.groupValues[2].toInt()
-                identities[current!!] = it.groupValues[1] to mutableListOf()
-                components[current!!] = mutableSetOf()
-            }
-            activityPattern.matchEntire(line)?.let {
-                val id = current
-                if (id != null && it.groupValues[4].toInt() == id) {
-                    val component = runCatching { WorkspaceTaskCorrelation.canonicalComponent(it.groupValues[3]) }.getOrNull()
-                    if (component != null) {
-                        identities[id]?.second?.add("${it.groupValues[1]}:${it.groupValues[2]}:$component")
-                        components[id]?.add(component)
-                    }
-                }
-            }
-        }
-        return WorkspaceTaskCorrelation.parse(dump).map { task ->
-            val records = identities[task.id]
-            val identity = records?.takeIf { pair -> pair.second.isNotEmpty() && pair.second.any {
-                it.substringAfter(':') == "${task.userId}:${task.component}"
-            } }?.let { it.first + ":" + it.second.sorted().joinToString("|") }
-            RepairTaskObservation(task, identity, components[task.id].orEmpty())
+        return WorkspaceTaskCorrelation.observe(dump).map { record ->
+            val task = record.task
+            val matching = record.activities.filter { it.taskId == task.id && it.userId == task.userId && it.component == task.component }
+            val identity = if (record.valid && record.token != null && matching.size == 1)
+                record.token + ":" + record.activities.map { "${it.token}:${it.userId}:${it.component}" }.sorted().joinToString("|") else null
+            RepairTaskObservation(task, identity, record.activities.map { it.component }.toSet())
         }
     }
     fun select(tasks: List<RepairTaskObservation>, component: String, displayId: Int): RepairTaskObservation? {

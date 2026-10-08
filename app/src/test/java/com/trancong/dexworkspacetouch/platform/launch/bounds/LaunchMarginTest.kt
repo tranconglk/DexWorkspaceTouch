@@ -10,13 +10,13 @@ class LaunchMarginTest {
     }
 
     @Test
-    fun `default margin at density two is sixteen pixels`() {
-        assertEquals(16, launchMarginPx(density = 2f))
+    fun `default margin at density two stays eight pixels`() {
+        assertEquals(8, launchMarginPx(density = 2f))
     }
 
     @Test
-    fun `fractional display density uses deterministic roundToInt`() {
-        assertEquals(21, launchMarginPx(density = 2.625f))
+    fun `fractional display density retains physical pixel frame`() {
+        assertEquals(8, launchMarginPx(density = 2.625f))
     }
 
     @Test
@@ -25,7 +25,7 @@ class LaunchMarginTest {
             0,
             launchMarginPx(
                 density = 2.625f,
-                config = LaunchBoundsConfig(marginDp = 0f),
+                config = LaunchBoundsConfig(outerMarginPx = 0),
             ),
         )
     }
@@ -42,6 +42,6 @@ class LaunchMarginTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun `negative configured margin is rejected`() {
-        LaunchBoundsConfig(marginDp = -1f)
+        LaunchBoundsConfig(outerMarginPx = -1)
     }
 }

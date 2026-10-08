@@ -1,0 +1,520 @@
+{
+  "head": "1d7cf5eb7b6ed2741d92eb7f22882e82e1d86b68",
+  "releaseHead": "1d7cf5eb7b6ed2741d92eb7f22882e82e1d86b68",
+  "releaseStatus": "",
+  "frozen": [
+    {
+      "path": "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/bounds/LaunchBoundsCalculator.kt",
+      "sha256": "9634cd88fbf4947d4c476e490b2ca11a0dafb582fd1a590fb80f1cddfee4686c",
+      "currentSha256": "9634cd88fbf4947d4c476e490b2ca11a0dafb582fd1a590fb80f1cddfee4686c"
+    },
+    {
+      "path": "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/bounds/LaunchBoundsConfig.kt",
+      "sha256": "72dfba2cbae24594aff7d8f0003a2b2240df1e8fa65845c0515c2c280553b872",
+      "currentSha256": "72dfba2cbae24594aff7d8f0003a2b2240df1e8fa65845c0515c2c280553b872"
+    },
+    {
+      "path": "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/bounds/LaunchMargin.kt",
+      "sha256": "53e5795c45726276669087fb4f95fd486474d36040bc655e92038845263781b3",
+      "currentSha256": "53e5795c45726276669087fb4f95fd486474d36040bc655e92038845263781b3"
+    },
+    {
+      "path": "app/src/test/java/com/trancong/dexworkspacetouch/feature/car/overlay/WorkspaceRepairPolicyTest.kt",
+      "sha256": "c1b0eefd63d18b76f1bfc52829e1cd36902e471e8c040ed3cb3af8d77a37ebd5",
+      "currentSha256": "c1b0eefd63d18b76f1bfc52829e1cd36902e471e8c040ed3cb3af8d77a37ebd5"
+    },
+    {
+      "path": "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/android/AndroidSingleAppLauncherTest.kt",
+      "sha256": "8f1a9d37a0dc92cb6bdc40dc69babc2320d40b883ddbff3e70980bd12f147096",
+      "currentSha256": "8f1a9d37a0dc92cb6bdc40dc69babc2320d40b883ddbff3e70980bd12f147096"
+    },
+    {
+      "path": "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/bounds/LaunchBoundsCalculatorTest.kt",
+      "sha256": "f547dc6afde3362bb2265de0c60549180452398e69173b6c7251de84e5b888c7",
+      "currentSha256": "f547dc6afde3362bb2265de0c60549180452398e69173b6c7251de84e5b888c7"
+    },
+    {
+      "path": "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/bounds/LaunchMarginTest.kt",
+      "sha256": "28ca69ab22547ec30077c4ef68ef64ec505544f494a94dec16c034c244c0eec0",
+      "currentSha256": "28ca69ab22547ec30077c4ef68ef64ec505544f494a94dec16c034c244c0eec0"
+    },
+    {
+      "path": "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ExistingWorkspaceAssessmentTest.kt",
+      "sha256": "402b10011287310c08e3f6453c754b2884efe0fc6b263c71792e384d8ee3aa0c",
+      "currentSha256": "402b10011287310c08e3f6453c754b2884efe0fc6b263c71792e384d8ee3aa0c"
+    },
+    {
+      "path": "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ExistingWorkspaceRepairTest.kt",
+      "sha256": "cfa5f1959c41bb729b753227f6fe4eefc19b1ba6245877d3fa11d057ab464ae7",
+      "currentSha256": "cfa5f1959c41bb729b753227f6fe4eefc19b1ba6245877d3fa11d057ab464ae7"
+    },
+    {
+      "path": "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/bounds/WorkspaceGutterGeometryTest.kt",
+      "sha256": "9dec1f7bb81a0afe644887d8e7114f506ce5e9a016e556bedea4272a36ee87df",
+      "currentSha256": "9dec1f7bb81a0afe644887d8e7114f506ce5e9a016e556bedea4272a36ee87df"
+    },
+    {
+      "path": "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceGutterConsumerTest.kt",
+      "sha256": "7b46ce60c3e405c8312d2e70240d7e4ecbc4513ff95a5bee869171d51dad9347",
+      "currentSha256": "7b46ce60c3e405c8312d2e70240d7e4ecbc4513ff95a5bee869171d51dad9347"
+    }
+  ],
+  "compatibilityTestUnchanged": true,
+  "diffCheck": "PASS",
+  "sourceHashes": [
+    {
+      "path": "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceTaskCorrelation.kt",
+      "sha256": "2304bcc062b8d941237f4d5c3c212d7d90e11343e054990f9917be3531e1a1e0"
+    },
+    {
+      "path": "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ExistingWorkspaceRepair.kt",
+      "sha256": "998ca54a925b93001e392842db064a4cb430d14c4ce23fff8f6ba6e229edf6cb"
+    },
+    {
+      "path": "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/Android10ParserSafetyTest.kt",
+      "sha256": "0f42a5fe06bee07a1573eb659d965828ddf495c863ea41b7f038ec5e07af0360"
+    }
+  ],
+  "apkSha256": "51c6f996f7063e14f5b159c4da00c853959c4393e4c93eadf6b92457750a4a56",
+  "parserTests": 48,
+  "red": {
+    "tests": 37,
+    "failures": 23,
+    "errors": 0,
+    "skipped": 0
+  },
+  "unsafeProbes": [
+    {
+      "name": "reviewProbeConflictingBoundsCannotUseLastValue",
+      "before": "UNSAFE resize / RED",
+      "after": "UNRESOLVED, zero resize / GREEN"
+    },
+    {
+      "name": "reviewProbeDuplicateActivityIdentityIsUnresolved",
+      "before": "UNSAFE resize / RED",
+      "after": "UNRESOLVED, zero resize / GREEN"
+    },
+    {
+      "name": "reviewProbeMalformedTaskBoundaryCannotReusePreamble",
+      "before": "UNSAFE resize / RED",
+      "after": "UNRESOLVED, zero resize / GREEN"
+    },
+    {
+      "name": "reviewProbeMalformedOtherActivityCannotUpgradeVisibility",
+      "before": "UNSAFE resize / RED",
+      "after": "UNRESOLVED, zero resize / GREEN"
+    },
+    {
+      "name": "reviewProbeConflictingVisibilityIsUnresolved",
+      "before": "UNSAFE resize / RED",
+      "after": "UNRESOLVED, zero resize / GREEN"
+    },
+    {
+      "name": "reviewProbeIndentedDisplayCannotInheritExternalDisplay",
+      "before": "UNSAFE resize / RED",
+      "after": "UNRESOLVED, zero resize / GREEN"
+    },
+    {
+      "name": "reviewProbeStackIdMismatchCannotBorrowFreeformMode",
+      "before": "UNSAFE resize / RED",
+      "after": "UNRESOLVED, zero resize / GREEN"
+    }
+  ],
+  "shizukuRepair": {
+    "tests": 137,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "affected": {
+    "tests": 245,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "geometry": {
+    "tests": 101,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "full": {
+    "tests": 1368,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": 167
+  },
+  "devices": {
+    "s22-auto-dock": {
+      "displayId": 24,
+      "samples": 52,
+      "cells": [
+        {
+          "component": "com.android.chrome/com.google.android.apps.chrome.Main",
+          "taskId": 11461,
+          "taskIdentity": "61623cd",
+          "activityIdentities": [
+            "188085604:0:com.android.chrome/com.google.android.apps.chrome.Main"
+          ],
+          "firstBounds": [
+            725,
+            6,
+            1195,
+            1014
+          ],
+          "finalBounds": [
+            8,
+            8,
+            478,
+            1016
+          ],
+          "expected": [
+            8,
+            8,
+            478,
+            1016
+          ],
+          "boundsChanges": 1,
+          "identityVariants": 1,
+          "stableMs": 16885,
+          "pass_": true
+        },
+        {
+          "component": "com.sec.android.app.sbrowser/com.sec.android.app.sbrowser.SBrowserMainActivity",
+          "taskId": 11462,
+          "taskIdentity": "3f066fb",
+          "activityIdentities": [
+            "17060921:0:com.sec.android.app.sbrowser/com.sec.android.app.sbrowser.SBrowserMainActivity"
+          ],
+          "firstBounds": [
+            1444,
+            16,
+            1920,
+            1024
+          ],
+          "finalBounds": [
+            482,
+            8,
+            958,
+            1016
+          ],
+          "expected": [
+            482,
+            8,
+            958,
+            1016
+          ],
+          "boundsChanges": 1,
+          "identityVariants": 1,
+          "stableMs": 15775,
+          "pass_": true
+        },
+        {
+          "component": "com.samsung.android.app.tips/com.samsung.android.app.tips.TipsMainActivity",
+          "taskId": 11463,
+          "taskIdentity": "3f4742b",
+          "activityIdentities": [
+            "26890094:0:com.samsung.android.app.tips/com.samsung.android.app.tips.TipsMainActivity"
+          ],
+          "firstBounds": [
+            0,
+            0,
+            950,
+            1008
+          ],
+          "finalBounds": [
+            962,
+            8,
+            1912,
+            1016
+          ],
+          "expected": [
+            962,
+            8,
+            1912,
+            1016
+          ],
+          "boundsChanges": 1,
+          "identityVariants": 1,
+          "stableMs": 15258,
+          "pass_": true
+        }
+      ],
+      "unrelatedComparisons": 1020,
+      "unrelatedChanges": [],
+      "pass_": true
+    },
+    "s23-clean-final": {
+      "displayId": 6,
+      "samples": 66,
+      "cells": [
+        {
+          "component": "com.sec.android.app.popupcalculator/com.sec.android.app.popupcalculator.Calculator",
+          "taskId": 5654,
+          "taskIdentity": "f2b54bb",
+          "activityIdentities": [
+            "75152714:0:com.sec.android.app.popupcalculator/com.sec.android.app.popupcalculator.Calculator"
+          ],
+          "firstBounds": [
+            8,
+            8,
+            958,
+            1136
+          ],
+          "finalBounds": [
+            8,
+            8,
+            958,
+            1136
+          ],
+          "expected": [
+            8,
+            8,
+            958,
+            1136
+          ],
+          "boundsChanges": 0,
+          "identityVariants": 1,
+          "stableMs": 20072,
+          "pass_": true
+        },
+        {
+          "component": "com.sec.android.app.clockpackage/com.sec.android.app.clockpackage.ClockPackage",
+          "taskId": 5655,
+          "taskIdentity": "bf0e71d",
+          "activityIdentities": [
+            "10449908:0:com.sec.android.app.clockpackage/com.sec.android.app.clockpackage.ClockPackage"
+          ],
+          "firstBounds": [
+            962,
+            8,
+            1912,
+            1136
+          ],
+          "finalBounds": [
+            962,
+            8,
+            1912,
+            1136
+          ],
+          "expected": [
+            962,
+            8,
+            1912,
+            1136
+          ],
+          "boundsChanges": 0,
+          "identityVariants": 1,
+          "stableMs": 19601,
+          "pass_": true
+        }
+      ],
+      "unrelatedComparisons": 715,
+      "unrelatedChanges": [],
+      "pass_": true
+    },
+    "note9-auto": {
+      "displayId": 2,
+      "samples": 41,
+      "cells": [
+        {
+          "component": "com.android.chrome/com.google.android.apps.chrome.Main",
+          "taskId": 3355,
+          "taskIdentity": "ac4a107",
+          "activityIdentities": [
+            "f117004:0:com.android.chrome/com.google.android.apps.chrome.Main"
+          ],
+          "firstBounds": [
+            8,
+            8,
+            958,
+            1020
+          ],
+          "finalBounds": [
+            8,
+            8,
+            638,
+            1020
+          ],
+          "expected": [
+            8,
+            8,
+            638,
+            1020
+          ],
+          "boundsChanges": 1,
+          "identityVariants": 1,
+          "stableMs": 17160,
+          "pass_": true
+        },
+        {
+          "component": "com.sec.android.app.popupcalculator/com.sec.android.app.popupcalculator.Calculator",
+          "taskId": 3358,
+          "taskIdentity": "62a10d6",
+          "activityIdentities": [
+            "64f3e67:0:com.sec.android.app.popupcalculator/com.sec.android.app.popupcalculator.Calculator"
+          ],
+          "firstBounds": [
+            642,
+            8,
+            1278,
+            1020
+          ],
+          "finalBounds": [
+            642,
+            8,
+            1278,
+            1020
+          ],
+          "expected": [
+            642,
+            8,
+            1278,
+            1020
+          ],
+          "boundsChanges": 0,
+          "identityVariants": 1,
+          "stableMs": 19009,
+          "pass_": true
+        },
+        {
+          "component": "com.ss.android.ugc.trill/com.ss.android.ugc.aweme.splash.SplashActivity",
+          "taskId": 3359,
+          "taskIdentity": "42ac807",
+          "activityIdentities": [
+            "4478396:0:com.ss.android.ugc.trill/com.ss.android.ugc.aweme.splash.SplashActivity"
+          ],
+          "firstBounds": [
+            1282,
+            8,
+            1912,
+            1020
+          ],
+          "finalBounds": [
+            1282,
+            8,
+            1912,
+            1020
+          ],
+          "expected": [
+            1282,
+            8,
+            1912,
+            1020
+          ],
+          "boundsChanges": 0,
+          "identityVariants": 1,
+          "stableMs": 18683,
+          "pass_": true
+        }
+      ],
+      "unrelatedComparisons": 200,
+      "unrelatedChanges": [],
+      "pass_": true
+    },
+    "note9-manual": {
+      "displayId": 2,
+      "samples": 47,
+      "cells": [
+        {
+          "component": "com.android.chrome/com.google.android.apps.chrome.Main",
+          "taskId": 3355,
+          "taskIdentity": "ac4a107",
+          "activityIdentities": [
+            "f117004:0:com.android.chrome/com.google.android.apps.chrome.Main"
+          ],
+          "firstBounds": [
+            8,
+            8,
+            638,
+            1020
+          ],
+          "finalBounds": [
+            8,
+            8,
+            638,
+            1020
+          ],
+          "expected": [
+            8,
+            8,
+            638,
+            1020
+          ],
+          "boundsChanges": 0,
+          "identityVariants": 1,
+          "stableMs": 20341,
+          "pass_": true
+        },
+        {
+          "component": "com.sec.android.app.popupcalculator/com.sec.android.app.popupcalculator.Calculator",
+          "taskId": 3358,
+          "taskIdentity": "62a10d6",
+          "activityIdentities": [
+            "64f3e67:0:com.sec.android.app.popupcalculator/com.sec.android.app.popupcalculator.Calculator"
+          ],
+          "firstBounds": [
+            963,
+            8,
+            1278,
+            1020
+          ],
+          "finalBounds": [
+            642,
+            8,
+            1278,
+            1020
+          ],
+          "expected": [
+            642,
+            8,
+            1278,
+            1020
+          ],
+          "boundsChanges": 1,
+          "identityVariants": 1,
+          "stableMs": 19730,
+          "pass_": true
+        },
+        {
+          "component": "com.ss.android.ugc.trill/com.ss.android.ugc.aweme.splash.SplashActivity",
+          "taskId": 3359,
+          "taskIdentity": "42ac807",
+          "activityIdentities": [
+            "4478396:0:com.ss.android.ugc.trill/com.ss.android.ugc.aweme.splash.SplashActivity"
+          ],
+          "firstBounds": [
+            1282,
+            8,
+            1912,
+            1020
+          ],
+          "finalBounds": [
+            1282,
+            8,
+            1912,
+            1020
+          ],
+          "expected": [
+            1282,
+            8,
+            1912,
+            1020
+          ],
+          "boundsChanges": 0,
+          "identityVariants": 1,
+          "stableMs": 20341,
+          "pass_": true
+        }
+      ],
+      "unrelatedComparisons": 230,
+      "unrelatedChanges": [],
+      "pass_": true
+    }
+  },
+  "deviceAuditComparisons": 2165,
+  "note9IdentityRetainedAcrossAutomaticManual": true,
+  "restored": "SUGGEST / Dock OFF; S23 slot 8 Workspace 8",
+  "correctivePatchCheck": "PASS"
+}

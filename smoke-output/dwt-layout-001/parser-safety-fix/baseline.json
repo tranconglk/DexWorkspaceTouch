@@ -1,0 +1,67 @@
+﻿{
+    "head":  "1d7cf5eb7b6ed2741d92eb7f22882e82e1d86b68",
+    "releaseHead":  "1d7cf5eb7b6ed2741d92eb7f22882e82e1d86b68",
+    "frozen":  [
+                   {
+                       "path":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/bounds/LaunchBoundsCalculator.kt",
+                       "sha256":  "9634cd88fbf4947d4c476e490b2ca11a0dafb582fd1a590fb80f1cddfee4686c"
+                   },
+                   {
+                       "path":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/bounds/LaunchBoundsConfig.kt",
+                       "sha256":  "72dfba2cbae24594aff7d8f0003a2b2240df1e8fa65845c0515c2c280553b872"
+                   },
+                   {
+                       "path":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/bounds/LaunchMargin.kt",
+                       "sha256":  "53e5795c45726276669087fb4f95fd486474d36040bc655e92038845263781b3"
+                   },
+                   {
+                       "path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/car/overlay/WorkspaceRepairPolicyTest.kt",
+                       "sha256":  "c1b0eefd63d18b76f1bfc52829e1cd36902e471e8c040ed3cb3af8d77a37ebd5"
+                   },
+                   {
+                       "path":  "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/android/AndroidSingleAppLauncherTest.kt",
+                       "sha256":  "8f1a9d37a0dc92cb6bdc40dc69babc2320d40b883ddbff3e70980bd12f147096"
+                   },
+                   {
+                       "path":  "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/bounds/LaunchBoundsCalculatorTest.kt",
+                       "sha256":  "f547dc6afde3362bb2265de0c60549180452398e69173b6c7251de84e5b888c7"
+                   },
+                   {
+                       "path":  "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/bounds/LaunchMarginTest.kt",
+                       "sha256":  "28ca69ab22547ec30077c4ef68ef64ec505544f494a94dec16c034c244c0eec0"
+                   },
+                   {
+                       "path":  "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ExistingWorkspaceAssessmentTest.kt",
+                       "sha256":  "402b10011287310c08e3f6453c754b2884efe0fc6b263c71792e384d8ee3aa0c"
+                   },
+                   {
+                       "path":  "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ExistingWorkspaceRepairTest.kt",
+                       "sha256":  "cfa5f1959c41bb729b753227f6fe4eefc19b1ba6245877d3fa11d057ab464ae7"
+                   },
+                   {
+                       "path":  "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/bounds/WorkspaceGutterGeometryTest.kt",
+                       "sha256":  "9dec1f7bb81a0afe644887d8e7114f506ce5e9a016e556bedea4272a36ee87df"
+                   },
+                   {
+                       "path":  "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceGutterConsumerTest.kt",
+                       "sha256":  "7b46ce60c3e405c8312d2e70240d7e4ecbc4513ff95a5bee869171d51dad9347"
+                   }
+               ],
+    "before":  [
+                   {
+                       "path":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/WorkspaceTaskCorrelation.kt",
+                       "sha256":  "fdc61afc052da2765175d85f4aac6215fe0465b8722bcd1af81144a394fe65dd"
+                   },
+                   {
+                       "path":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ExistingWorkspaceRepair.kt",
+                       "sha256":  "d3920c9589db1af2628d38e6436ec1bc92fcd995ee06d19147ff8511e158c211"
+                   },
+                   {
+                       "path":  "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/Android10TaskCorrelationTest.kt",
+                       "sha256":  "f80e68d84d0541702bf8ea6ed3442d57446859681cd5601f06af8a86ce564a73"
+                   }
+               ],
+    "releaseStatus":  [
+
+                      ]
+}
