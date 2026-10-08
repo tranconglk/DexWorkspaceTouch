@@ -15,6 +15,74 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class WorkspaceRepairPolicyTest {
+    @Test fun changingAutoPreferenceDuringManualRepairPreservesManualResult() = runTest {
+        for (initial in listOf(false,true)) {
+            val enabled=MutableStateFlow(initial)
+            var mutations=0
+            val session=WorkspaceRepairSession(this,MutableStateFlow(false),{ error("No auto launch") },
+                { delay(1000); mutations++; CarDockRepairState("Manual completed",true) },autoRepairEnabled=enabled)
+            session.selectWorkspace(request.workspaceId)
+            session.repair(); runCurrent()
+            enabled.value=!initial; runCurrent(); advanceUntilIdle()
+            assertEquals(1,mutations)
+            assertEquals("Manual completed",session.state.value.label)
+            assertTrue(session.state.value.enabled)
+            session.dispose()
+        }
+    }
+
+    @Test fun preferenceAtAcceptedSuccessControlsAutoEvenWhenChangedDuringClassicLaunch() = runTest {
+        val enabled=MutableStateFlow(false)
+        var assessments=0; var repairs=0
+        val session=WorkspaceRepairSession(this,MutableStateFlow(false),
+            { assessments++; ExistingWorkspaceAssessmentReport(WorkspaceAssessmentStatus.REPAIR_AVAILABLE) },
+            { error("No click") },autoRepairEnabled=enabled,
+            automaticRepair={ _, _ -> repairs++; CarDockRepairState("Repaired",true) })
+        session.classicLaunchStarted(request.workspaceId)
+        enabled.value=true; runCurrent()
+        session.classicLaunchCompleted(request); advanceUntilIdle()
+        assertEquals(1,assessments); assertEquals(1,repairs)
+        session.dispose()
+    }
+    @Test fun unavailableAtTriggerSkipsTransportAndLaterReadyDoesNotRepair() = runTest {
+        for (unavailable in listOf(ShizukuRuntimeState.PERMISSION_MISSING, ShizukuRuntimeState.NOT_RUNNING,
+            ShizukuRuntimeState.UNAVAILABLE)) {
+            val enabled = MutableStateFlow(true)
+            var capability = unavailable
+            var assessments = 0
+            var repairs = 0
+            val session = WorkspaceRepairSession(this, MutableStateFlow(false),
+                { assessments++; error("Unavailable transport must not be touched") },
+                { repairs++; error("Unavailable manual transport must not be touched") },
+                autoRepairEnabled=enabled, capability={ capability },
+                automaticRepair={ _, _ -> repairs++; CarDockRepairState() })
+            launch(session); advanceUntilIdle()
+            assertTrue(enabled.value)
+            assertEquals(unavailable, session.state.value.shizukuState)
+            session.repair(); advanceUntilIdle()
+            assertEquals(unavailable, session.state.value.shizukuState)
+            capability = ShizukuRuntimeState.READY
+            advanceTimeBy(30000); runCurrent()
+            // Re-delivered Success, UI refresh/resume and readiness changes cannot resurrect this launch.
+            session.classicLaunchCompleted(request); advanceUntilIdle()
+            assertEquals(0, assessments); assertEquals(0, repairs)
+            session.dispose()
+        }
+    }
+
+    @Test fun permissionLostDuringStabilizationSkipsAssessmentWithoutRetry() = runTest {
+        var ready = ShizukuRuntimeState.READY
+        var assessments = 0
+        val session = WorkspaceRepairSession(this, MutableStateFlow(false), { assessments++; error("No read") },
+            { error("No manual click") }, autoRepairEnabled=MutableStateFlow(true), capability={ ready })
+        launch(session); runCurrent()
+        ready = ShizukuRuntimeState.PERMISSION_MISSING
+        advanceUntilIdle()
+        ready = ShizukuRuntimeState.READY
+        advanceTimeBy(30000); runCurrent()
+        assertEquals(0, assessments)
+        session.dispose()
+    }
     @Test fun offDoesNotAssessAndManualRepairStillUsesExistingEngine() = runTest {
         val f = Fixture(WorkspaceRepairMode.OFF)
         val session = f.session(this)
@@ -27,12 +95,12 @@ class WorkspaceRepairPolicyTest {
         session.dispose()
     }
 
-    @Test fun suggestAndDefaultWaitForClickWithZeroMutation() = runTest {
+    @Test fun legacySuggestDoesNotAssessOrMutateAndManualStillWorks() = runTest {
         val f = Fixture()
         val session = f.session(this)
         launch(session); advanceUntilIdle()
-        assertEquals("Repair available", session.state.value.label)
-        assertEquals(listOf(WorkspaceTaskCorrelation.DUMP_COMMAND), f.commands)
+        assertEquals("Repair", session.state.value.label)
+        assertTrue(f.commands.isEmpty())
         session.repair(); advanceUntilIdle()
         assertEquals(1, f.resizes)
         session.dispose()
@@ -106,7 +174,7 @@ class WorkspaceRepairPolicyTest {
         for (status in listOf(WorkspaceAssessmentStatus.PARTIAL_OR_UNRESOLVED, WorkspaceAssessmentStatus.UNAVAILABLE)) {
             var attempts = 0
             val session = WorkspaceRepairSession(this, MutableStateFlow(false), { ExistingWorkspaceAssessmentReport(status) },
-                { error("Manual not requested") }, mode = MutableStateFlow(WorkspaceRepairMode.AUTOMATIC),
+                { error("Manual not requested") }, autoRepairEnabled = MutableStateFlow(true),
                 automaticRepair = { _, _ -> attempts++; error("Unsafe trigger") })
             launch(session); advanceUntilIdle()
             assertEquals(status, session.state.value.assessment!!.status)
@@ -117,7 +185,7 @@ class WorkspaceRepairPolicyTest {
 
     @Test fun shizukuUnavailableDoesNotPropagateFailureFromClassicCompletion() = runTest {
         val session = WorkspaceRepairSession(this, MutableStateFlow(false), { error("Shizuku unavailable") },
-            { error("Must not repair") }, mode = MutableStateFlow(WorkspaceRepairMode.AUTOMATIC))
+            { error("Must not repair") }, autoRepairEnabled = MutableStateFlow(true))
         launch(session); advanceUntilIdle()
         assertEquals(WorkspaceAssessmentStatus.UNAVAILABLE, session.state.value.assessment!!.status)
         session.dispose()
@@ -129,7 +197,7 @@ class WorkspaceRepairPolicyTest {
             val late = CompletableDeferred<ExistingWorkspaceAssessmentReport>()
             var attempts = 0
             val session = WorkspaceRepairSession(this, MutableStateFlow(false), { withContext(NonCancellable) { late.await() } },
-                { error("No click") }, mode = MutableStateFlow(WorkspaceRepairMode.AUTOMATIC),
+                { error("No click") }, autoRepairEnabled = MutableStateFlow(true),
                 automaticRepair = { _, _ -> attempts++; CarDockRepairState() })
             launch(session); advanceTimeBy(1000); runCurrent()
             change(session)
@@ -161,7 +229,7 @@ class WorkspaceRepairPolicyTest {
         var mutations = 0
         val session = WorkspaceRepairSession(this, MutableStateFlow(false),
             { ExistingWorkspaceAssessmentReport(WorkspaceAssessmentStatus.REPAIR_AVAILABLE) }, { error("No click") },
-            mode = MutableStateFlow(WorkspaceRepairMode.AUTOMATIC), automaticRepair = { _, _ ->
+            autoRepairEnabled = MutableStateFlow(true), automaticRepair = { _, _ ->
                 entered.complete(Unit); delay(1000); mutations++; CarDockRepairState()
             })
         launch(session); advanceTimeBy(1000); runCurrent()
@@ -175,14 +243,14 @@ class WorkspaceRepairPolicyTest {
 
     @Test fun modeChangedToOffCancelsPendingAssessmentAndAutoRepair() = runTest {
         for (duringRepair in listOf(false, true)) {
-            val mode = MutableStateFlow(WorkspaceRepairMode.AUTOMATIC)
+            val mode = MutableStateFlow(true)
             var mutations = 0
             val session = WorkspaceRepairSession(this, MutableStateFlow(false),
                 { ExistingWorkspaceAssessmentReport(WorkspaceAssessmentStatus.REPAIR_AVAILABLE) }, { error("No click") },
-                mode = mode, automaticRepair = { _, _ -> delay(1000); mutations++; CarDockRepairState() })
+                autoRepairEnabled = mode, automaticRepair = { _, _ -> delay(1000); mutations++; CarDockRepairState() })
             launch(session)
             if (duringRepair) { advanceTimeBy(1000); runCurrent() } else runCurrent()
-            mode.value = WorkspaceRepairMode.OFF
+            mode.value = false
             runCurrent(); advanceUntilIdle()
             assertEquals(0, mutations)
             assertEquals("Repair", session.state.value.label)
@@ -217,7 +285,7 @@ class WorkspaceRepairPolicyTest {
     }
 
     private class Fixture(initialMode: WorkspaceRepairMode = WorkspaceRepairMode.SUGGEST) {
-        val mode = MutableStateFlow(initialMode)
+        val mode = MutableStateFlow(initialMode == WorkspaceRepairMode.AUTOMATIC)
         val busy = MutableStateFlow(false)
         val gate = EmbeddedProductRunGate()
         val commands = mutableListOf<List<String>>()
@@ -244,7 +312,7 @@ class WorkspaceRepairPolicyTest {
         }, pause = {}, pollAttempts = 3)
 
         fun session(scope: CoroutineScope, assess: suspend (WorkspaceLaunchRequest) -> ExistingWorkspaceAssessmentReport = { engine.assess(it, snapshot) }) =
-            WorkspaceRepairSession(scope, busy, assess, { engine.run(request, snapshot).toDockState() }, mode = mode,
+            WorkspaceRepairSession(scope, busy, assess, { engine.run(request, snapshot).toDockState() }, autoRepairEnabled = mode,
                 automaticRepair = { current, assessment ->
                     autoAttempts++; beforeAuto(); engine.run(current, snapshot, assessment).toDockState()
                 })

@@ -68,8 +68,10 @@ fun CarScreen(
         CarWorkflowExecutionState.Idle,
     workspaceActionsEnabled: Boolean = true,
     appIconLoader: AppIconLoader? = null,
-    workspaceRepairMode: WorkspaceRepairMode? = null,
-    onWorkspaceRepairModeChanged: (WorkspaceRepairMode) -> Unit = {},
+    autoRepairEnabled: Boolean? = null,
+    onAutoRepairEnabledChanged: (Boolean) -> Unit = {},
+    shizukuState: com.trancong.dexworkspacetouch.platform.launch.shizuku.ShizukuRuntimeState =
+        com.trancong.dexworkspacetouch.platform.launch.shizuku.ShizukuRuntimeState.UNAVAILABLE,
 ) {
     var selectingShortcutSlot by rememberSaveable {
         mutableStateOf<CarWorkspaceShortcutSlot?>(null)
@@ -194,29 +196,19 @@ fun CarScreen(
                     onSlotSelected = { selectingShortcutSlot = it },
                 )
             }
-            workspaceRepairMode?.let { mode ->
+            autoRepairEnabled?.let { enabled ->
                 CarConfigurationSection(
-                    title = "Workspace Repair",
-                    supportingText = "Kiểm tra và sửa vị trí cửa sổ sau khi mở workspace. Repair cần Shizuku đang chạy và được cấp quyền; Classic vẫn dùng bình thường.",
+                    title = "Tự động sửa bố cục Workspace",
+                    supportingText = "Tự động căn lại vị trí cửa sổ sau khi mở Workspace khi Shizuku sẵn sàng.",
                     modifier = Modifier.widthIn(max = Dimensions.CarConfigurationMaxWidth)
                         .fillMaxWidth().align(Alignment.CenterHorizontally),
                 ) {
-                    WorkspaceRepairMode.entries.forEach { option ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth().heightIn(min = TouchTargets.SecondaryButton)
-                                .selectable(selected = mode == option, role = Role.RadioButton,
-                                    onClick = { onWorkspaceRepairModeChanged(option) }),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(Spacing.S),
-                        ) {
-                            RadioButton(selected = mode == option, onClick = null)
-                            Text(when (option) {
-                                WorkspaceRepairMode.OFF -> "Off — chỉ sửa khi bấm Repair"
-                                WorkspaceRepairMode.SUGGEST -> "Suggest — gợi ý sửa layout"
-                                WorkspaceRepairMode.AUTOMATIC -> "Automatic — tự sửa layout khi an toàn"
-                            })
-                        }
+                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(if (enabled) "Bật" else "Tắt")
+                        androidx.compose.material3.Switch(checked = enabled, onCheckedChange = onAutoRepairEnabledChanged)
                     }
+                    Text(shizukuState.userMessage())
                 }
             }
             when (workspaceWorkflowState) {

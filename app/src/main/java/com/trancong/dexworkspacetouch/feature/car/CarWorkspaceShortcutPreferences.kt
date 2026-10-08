@@ -18,8 +18,8 @@ class StoredCarWorkspaceShortcutPreferences(
     override val shortcuts: StateFlow<CarWorkspaceShortcuts> = mutableShortcuts.asStateFlow()
     private val mutableVisibleSlotCount = MutableStateFlow(readVisibleSlotCount())
     override val visibleSlotCount: StateFlow<Int> = mutableVisibleSlotCount.asStateFlow()
-    private val mutableWorkspaceRepairMode = MutableStateFlow(readWorkspaceRepairMode())
-    override val workspaceRepairMode: StateFlow<WorkspaceRepairMode> = mutableWorkspaceRepairMode.asStateFlow()
+    private val mutableAutoRepairEnabled = MutableStateFlow(readAutoRepairEnabled())
+    override val autoRepairEnabled: StateFlow<Boolean> = mutableAutoRepairEnabled.asStateFlow()
 
     @Synchronized
     override fun setWorkspace(slot: CarWorkspaceShortcutSlot, workspaceId: String) {
@@ -42,16 +42,16 @@ class StoredCarWorkspaceShortcutPreferences(
     }
 
     @Synchronized
-    override fun setWorkspaceRepairMode(mode: WorkspaceRepairMode) {
-        storage.write(WorkspaceRepairModeKey, mode.name)
-        mutableWorkspaceRepairMode.value = mode
+    override fun setAutoRepairEnabled(enabled: Boolean) {
+        storage.write(AutoRepairEnabledKey, enabled.toString())
+        mutableAutoRepairEnabled.value = enabled
     }
 
     @Synchronized
     override fun refresh() {
         mutableShortcuts.value = readSnapshot()
         mutableVisibleSlotCount.value = readVisibleSlotCount()
-        mutableWorkspaceRepairMode.value = readWorkspaceRepairMode()
+        mutableAutoRepairEnabled.value = readAutoRepairEnabled()
     }
 
     private fun readSnapshot(): CarWorkspaceShortcuts = CarWorkspaceShortcuts.from { slot ->
@@ -66,20 +66,24 @@ class StoredCarWorkspaceShortcutPreferences(
         return CarWorkspaceShortcutCapacity.normalizeVisibleCount(parsed)
     }
 
-    private fun readWorkspaceRepairMode(): WorkspaceRepairMode =
-        WorkspaceRepairMode.entries.firstOrNull { it.name == storage.read(WorkspaceRepairModeKey) }
-            ?: WorkspaceRepairMode.SUGGEST
+    private fun readAutoRepairEnabled(): Boolean {
+        storage.read(AutoRepairEnabledKey)?.let { return it == "true" }
+        val enabled = storage.read(WorkspaceRepairModeKey) == WorkspaceRepairMode.AUTOMATIC.name
+        storage.write(AutoRepairEnabledKey, enabled.toString())
+        return enabled
+    }
 
     private companion object {
         const val VisibleSlotCountKey = "visibleSlotCount"
         const val WorkspaceRepairModeKey = "workspaceRepairMode"
+        const val AutoRepairEnabledKey = "autoRepairEnabled"
     }
 }
 
 class SharedPreferencesCarWorkspaceShortcutStorage(
     private val preferences: SharedPreferences,
 ) : CarWorkspaceShortcutStorage {
-    override fun read(key: String): String? = preferences.all[key] as? String
+    override fun read(key: String): String? = preferences.all[key]?.let { it as? String ?: "" }
 
     override fun write(key: String, value: String?) {
         preferences.edit().apply {

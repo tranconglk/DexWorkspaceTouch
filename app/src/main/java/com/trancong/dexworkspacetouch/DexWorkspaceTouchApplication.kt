@@ -39,6 +39,8 @@ class DexWorkspaceTouchApplication : Application() {
         private set
     lateinit var carFloatingDockCoordinator: CarFloatingDockCoordinator
         private set
+    lateinit var workspaceRepairController: com.trancong.dexworkspacetouch.platform.launch.shizuku.AndroidExistingWorkspaceRepair
+        private set
     lateinit var carWorkspaceShortcutPreferences: CarWorkspaceShortcutPreferences
         private set
     lateinit var licenseRepository: LicenseRepository
@@ -72,6 +74,14 @@ class DexWorkspaceTouchApplication : Application() {
         )
         workspaceLaunchDiagnostics = AndroidWorkspaceLaunchDiagnostics.create(applicationContext)
         carWorkspaceShortcutPreferences = createCarWorkspaceShortcutPreferences(applicationContext)
+        workspaceRepairController = com.trancong.dexworkspacetouch.platform.launch.shizuku.AndroidExistingWorkspaceRepair(
+            applicationContext, processScope, workspaceRepository,
+            com.trancong.dexworkspacetouch.workspace.launcher.WorkspaceLaunchRequestFactory(
+                com.trancong.dexworkspacetouch.workspace.apppicker.model.DefaultInstalledAppCatalog(
+                    com.trancong.dexworkspacetouch.workspace.apppicker.infrastructure.AndroidInstalledAppDataSource.create(applicationContext))),
+            embeddedProductRunGate, carWorkflowExecutionArbiter,
+            autoRepairEnabled = carWorkspaceShortcutPreferences.autoRepairEnabled,
+        )
         carFloatingDockCoordinator = CarFloatingDockCoordinator.create(
             applicationContext,
             processScope,
@@ -79,7 +89,7 @@ class DexWorkspaceTouchApplication : Application() {
             carWorkspaceShortcutPreferences,
             carWorkflowExecutionArbiter,
             workspaceLaunchDiagnostics,
-            repairGate = embeddedProductRunGate,
+            repairController = workspaceRepairController,
         )
         val trustedKeys = if (BuildConfig.DEBUG && BuildConfig.LICENSE_TRUSTED_PUBLIC_KEYS_JSON == "[]") {
             TrustedLicenseSigningKeys.emptyForDebug()

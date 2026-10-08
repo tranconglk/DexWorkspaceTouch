@@ -8,7 +8,8 @@ import kotlinx.coroutines.flow.StateFlow
 
 data class CarDockRepairState(val label: String = "Repair unavailable", val enabled: Boolean = false,
     val detail: String = "Open a workspace first", val report: ExistingWorkspaceRepairReport? = null,
-    val assessment: ExistingWorkspaceAssessmentReport? = null, val workspaceId: String? = null) {
+    val assessment: ExistingWorkspaceAssessmentReport? = null, val workspaceId: String? = null,
+    val shizukuState: com.trancong.dexworkspacetouch.platform.launch.shizuku.ShizukuRuntimeState? = null) {
     fun control(onRepair: () -> Unit) = CarDockRepairControl(label,enabled,detail,onRepair)
 }
 data class CarDockRepairControl(val label: String, val enabled: Boolean, val detail: String, val onRepair: () -> Unit)

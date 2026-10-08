@@ -1,0 +1,7 @@
+allprojects { project ->
+    project.plugins.withId('com.android.application') {
+        project.androidComponents.finalizeDsl { androidDsl ->
+            androidDsl.defaultConfig.applicationId = 'com.trancong.dexworkspacetouch.swc004'
+        }
+    }
+}

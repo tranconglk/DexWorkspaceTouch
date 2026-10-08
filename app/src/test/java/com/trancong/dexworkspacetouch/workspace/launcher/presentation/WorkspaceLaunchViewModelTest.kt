@@ -172,7 +172,7 @@ class WorkspaceLaunchViewModelTest {
     }
     @Test fun unavailableSuggestionDoesNotChangeClassicSuccess() = kotlinx.coroutines.test.runTest {
         val session=com.trancong.dexworkspacetouch.feature.car.overlay.WorkspaceRepairSession(this,
-            kotlinx.coroutines.flow.MutableStateFlow(false),{ error("Shizuku unavailable") },{ error("No manual click") })
+            kotlinx.coroutines.flow.MutableStateFlow(false),{ error("Shizuku unavailable") },{ error("No manual click") }, autoRepairEnabled=kotlinx.coroutines.flow.MutableStateFlow(true))
         val vm=WorkspaceLaunchViewModel({ready},this,onClassicLaunchStarted=session::classicLaunchStarted,
             onClassicLaunchCompleted=session::classicLaunchCompleted)
         vm.launchWorkspace(item,FakeRuntime(),hostToken)

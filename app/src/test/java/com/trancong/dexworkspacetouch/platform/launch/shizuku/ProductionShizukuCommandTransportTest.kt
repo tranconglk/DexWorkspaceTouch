@@ -7,6 +7,18 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class ProductionShizukuCommandTransportTest {
+    @Test fun runtimeCapabilityReusesAdmissionAvailabilityWithoutBindingOrCommands() {
+        for ((failure,state) in listOf(null to ShizukuRuntimeState.READY,
+            CommandTransportFailure.PERMISSION_DENIED to ShizukuRuntimeState.PERMISSION_MISSING,
+            CommandTransportFailure.SHIZUKU_UNAVAILABLE to ShizukuRuntimeState.NOT_RUNNING,
+            CommandTransportFailure.UID_UNSUPPORTED to ShizukuRuntimeState.UNAVAILABLE)) {
+            val binding=Binding().apply { unavailable=failure }
+            ProductionShizukuCommandTransport(binding).use {
+                assertEquals(state,it.runtimeState())
+                assertEquals(0,binding.connects); assertTrue(binding.commands.isEmpty())
+            }
+        }
+    }
     private val dump = listOf("dumpsys", "activity", "activities")
     private val resize = listOf("am", "task", "resize", "42", "8", "8", "472", "1016")
 

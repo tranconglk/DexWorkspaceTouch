@@ -40,6 +40,9 @@ internal class ProductionShizukuCommandTransport(private val binding: WorkspaceS
     private val active = AtomicReference<Attempt?>()
     @Volatile private var closed = false
 
+    fun runtimeState(): ShizukuRuntimeState =
+        (if (closed) CommandTransportFailure.CLOSED else binding.availability()).toShizukuRuntimeState()
+
     fun executeCommand(arguments: List<String>, timeoutMs: Long = 3000): ShizukuCommandResult {
         if (closed) throw CommandTransportException(CommandTransportFailure.CLOSED)
         WorkspaceCommandWhitelist.validate(arguments)

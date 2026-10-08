@@ -14,7 +14,7 @@ import org.junit.Test
 class WorkspaceRepairSessionTest {
     @Test fun classicSuccessStabilizesThenAssessesOnceWithoutManualMutation() = runTest {
         var reads=0; var repairs=0
-        val session=WorkspaceRepairSession(this,MutableStateFlow(false),{ reads++; available },{ repairs++; CarDockRepairState("Repaired") })
+        val session=WorkspaceRepairSession(this,MutableStateFlow(false),{ reads++; available },{ repairs++; CarDockRepairState("Repaired") }, autoRepairEnabled=MutableStateFlow(true), automaticRepair={ _, _ -> CarDockRepairState("Repair available",true) })
         session.classicLaunchStarted("one")
         session.classicLaunchCompleted(request("one"))
         runCurrent()
@@ -31,7 +31,7 @@ class WorkspaceRepairSessionTest {
     }
     @Test fun correctPartialAndUnavailableNeverShowRepairAvailable() = runTest {
         for(status in listOf(WorkspaceAssessmentStatus.LAYOUT_CORRECT,WorkspaceAssessmentStatus.PARTIAL_OR_UNRESOLVED,WorkspaceAssessmentStatus.UNAVAILABLE)) {
-            val session=WorkspaceRepairSession(this,MutableStateFlow(false),{ ExistingWorkspaceAssessmentReport(status) },{ error("No manual action") })
+            val session=WorkspaceRepairSession(this,MutableStateFlow(false),{ ExistingWorkspaceAssessmentReport(status) },{ error("No manual action") }, autoRepairEnabled=MutableStateFlow(true))
             session.classicLaunchStarted("one");session.classicLaunchCompleted(request("one"))
             advanceUntilIdle()
             assertEquals(status,session.state.value.assessment!!.status)
@@ -42,7 +42,7 @@ class WorkspaceRepairSessionTest {
     }
     @Test fun workspaceChangesDiscardInFlightResultEvenIfTransportFinishesLate() = runTest {
         val late=CompletableDeferred<ExistingWorkspaceAssessmentReport>()
-        val session=WorkspaceRepairSession(this,MutableStateFlow(false),{ withContext(NonCancellable) { late.await() } },{ error("No click") })
+        val session=WorkspaceRepairSession(this,MutableStateFlow(false),{ withContext(NonCancellable) { late.await() } },{ error("No click") }, autoRepairEnabled=MutableStateFlow(true), automaticRepair={ _, _ -> CarDockRepairState("Repair available",true) })
         session.classicLaunchStarted("one");session.classicLaunchCompleted(request("one"))
         advanceTimeBy(1000);runCurrent()
         session.selectWorkspace("two")
@@ -55,7 +55,7 @@ class WorkspaceRepairSessionTest {
     @Test fun secondClassicLaunchSameWorkspaceInvalidatesFirstGeneration() = runTest {
         val late=CompletableDeferred<ExistingWorkspaceAssessmentReport>();var reads=0
         val session=WorkspaceRepairSession(this,MutableStateFlow(false),{ reads++; if(reads==1) withContext(NonCancellable) { late.await() }
-            else ExistingWorkspaceAssessmentReport(WorkspaceAssessmentStatus.LAYOUT_CORRECT) },{ error("No click") })
+            else ExistingWorkspaceAssessmentReport(WorkspaceAssessmentStatus.LAYOUT_CORRECT) },{ error("No click") }, autoRepairEnabled=MutableStateFlow(true), automaticRepair={ _, _ -> CarDockRepairState("Repair available",true) })
         session.classicLaunchStarted("one");session.classicLaunchCompleted(request("one"))
         advanceTimeBy(1000);runCurrent()
         session.classicLaunchStarted("one");session.classicLaunchCompleted(request("one"))
@@ -67,7 +67,7 @@ class WorkspaceRepairSessionTest {
     }
     @Test fun conflictCancelsCheckingAndClearsAlreadyPublishedSuggestion() = runTest {
         var reads=0
-        val session=WorkspaceRepairSession(this,MutableStateFlow(false),{ reads++;available },{ error("No click") })
+        val session=WorkspaceRepairSession(this,MutableStateFlow(false),{ reads++;available },{ error("No click") }, autoRepairEnabled=MutableStateFlow(true), automaticRepair={ _, _ -> CarDockRepairState("Repair available",true) })
         session.classicLaunchStarted("one");session.classicLaunchCompleted(request("one"))
         runCurrent();session.controlActionStarted();advanceUntilIdle()
         assertEquals(0,reads);assertEquals("Repair",session.state.value.label)
@@ -79,7 +79,7 @@ class WorkspaceRepairSessionTest {
     }
     @Test fun manualClickCancelsAssessmentAndDelegatesExactlyOnce() = runTest {
         var reads=0;val repairs=mutableListOf<String>()
-        val session=WorkspaceRepairSession(this,MutableStateFlow(false),{ reads++;available },{ repairs+=it;delay(10);CarDockRepairState("\u2713 Repaired",true) })
+        val session=WorkspaceRepairSession(this,MutableStateFlow(false),{ reads++;available },{ repairs+=it;delay(10);CarDockRepairState("\u2713 Repaired",true) }, autoRepairEnabled=MutableStateFlow(true))
         session.classicLaunchStarted("one");session.classicLaunchCompleted(request("one"));runCurrent()
         session.repair();session.repair();runCurrent()
         assertEquals("Repairing\u2026",session.state.value.label)
@@ -90,7 +90,7 @@ class WorkspaceRepairSessionTest {
     }
     @Test fun deadlineBoundsStabilizationAdmissionAndHungAssessment() = runTest {
         for(busy in listOf(false,true)) {
-            val session=WorkspaceRepairSession(this,MutableStateFlow(busy),{ awaitCancellation() },{ error("No click") })
+            val session=WorkspaceRepairSession(this,MutableStateFlow(busy),{ awaitCancellation() },{ error("No click") }, autoRepairEnabled=MutableStateFlow(true), automaticRepair={ _, _ -> CarDockRepairState("Repair available",true) })
             session.classicLaunchStarted("one");session.classicLaunchCompleted(request("one"))
             advanceTimeBy(5000);runCurrent()
             assertEquals(WorkspaceAssessmentStatus.UNAVAILABLE,session.state.value.assessment!!.status)
@@ -100,7 +100,7 @@ class WorkspaceRepairSessionTest {
     }
     @Test fun classicReservationIsReleasedBeforeStabilizationAndRead() = runTest {
         val busy=MutableStateFlow(true);var reads=0
-        val session=WorkspaceRepairSession(this,busy,{ reads++;available },{ error("No click") })
+        val session=WorkspaceRepairSession(this,busy,{ reads++;available },{ error("No click") }, autoRepairEnabled=MutableStateFlow(true), automaticRepair={ _, _ -> CarDockRepairState("Repair available",true) })
         session.classicLaunchStarted("one");session.classicLaunchCompleted(request("one"));runCurrent()
         advanceTimeBy(1000);runCurrent();assertEquals(0,reads)
         busy.value=false;runCurrent();advanceTimeBy(1000);runCurrent()
@@ -108,7 +108,7 @@ class WorkspaceRepairSessionTest {
     }
     @Test fun contextInvalidationDiscardsReadAndDisposeLeavesNoWatcher() = runTest {
         var reads=0
-        val session=WorkspaceRepairSession(this,MutableStateFlow(false),{ reads++;available },{ error("No click") })
+        val session=WorkspaceRepairSession(this,MutableStateFlow(false),{ reads++;available },{ error("No click") }, autoRepairEnabled=MutableStateFlow(true), automaticRepair={ _, _ -> CarDockRepairState("Repair available",true) })
         session.classicLaunchStarted("one");session.classicLaunchCompleted(request("one"));runCurrent()
         session.invalidateSuggestion();advanceUntilIdle()
         assertEquals(0,reads)
@@ -124,7 +124,7 @@ class WorkspaceRepairSessionTest {
             session.assessmentReservationChanged(false)
             session.controlActionStarted()
             available
-        },{ error("No click") })
+        },{ error("No click") }, autoRepairEnabled=MutableStateFlow(true), automaticRepair={ _, _ -> CarDockRepairState("Repair available",true) })
         session.classicLaunchStarted("one");session.classicLaunchCompleted(request("one"));advanceUntilIdle()
         assertEquals("Repair",session.state.value.label)
         assertNull(session.state.value.assessment)

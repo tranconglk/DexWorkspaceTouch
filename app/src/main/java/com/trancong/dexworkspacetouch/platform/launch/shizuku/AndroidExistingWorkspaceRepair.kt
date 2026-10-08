@@ -1,11 +1,11 @@
 package com.trancong.dexworkspacetouch.platform.launch.shizuku
 
 import android.content.Context
-import android.content.pm.PackageManager
+import android.hardware.display.DisplayManager
 import android.view.Display
+import com.trancong.dexworkspacetouch.workspace.launcher.sameRepairGeometry
 import android.widget.Toast
 import com.trancong.dexworkspacetouch.feature.car.CarWorkflowExecutionArbiter
-import com.trancong.dexworkspacetouch.feature.car.WorkspaceRepairMode
 import com.trancong.dexworkspacetouch.feature.car.overlay.*
 import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGate
 import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.ProductRunPhase
@@ -17,8 +17,9 @@ import com.trancong.dexworkspacetouch.workspace.launcher.model.WorkspaceLaunchRe
 import com.trancong.dexworkspacetouch.workspace.persistence.repository.WorkspaceRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
-import rikka.shizuku.Shizuku
 
 /** Bounded product repair policy. Classic launch remains independent of Shizuku availability. */
 class AndroidExistingWorkspaceRepair(
@@ -28,13 +29,20 @@ class AndroidExistingWorkspaceRepair(
     private val requestFactory: WorkspaceLaunchRequestFactory,
     private val gate: EmbeddedProductRunGate,
     private val arbiter: CarWorkflowExecutionArbiter,
-    displayProvider: () -> Display?,
-    private val shell: WorkspaceCommandShell = AndroidShizukuCommandTransport(context),
-    private val repairMode: StateFlow<WorkspaceRepairMode>,
+    private val shell: AndroidShizukuCommandTransport = AndroidShizukuCommandTransport(context),
+    private val autoRepairEnabled: StateFlow<Boolean>,
 ) : ManualWorkspaceRepairController {
-    private val platform = DisplayTargetSingleAppLaunchPlatform(context, displayProvider)
+    private var launchSnapshot: DisplayWorkAreaSnapshot? = null
+    private var targetDisplayId: Int? = null
+    private val platform = DisplayTargetSingleAppLaunchPlatform(context) {
+        targetDisplayId?.let { context.getSystemService(DisplayManager::class.java).getDisplay(it) }
+    }
+    private val mutableShizukuState = MutableStateFlow(shell.runtimeState())
+    val shizukuState: StateFlow<ShizukuRuntimeState> = mutableShizukuState.asStateFlow()
+    fun refreshShizukuState(): ShizukuRuntimeState = shell.runtimeState().also { mutableShizukuState.value = it }
     private val session = WorkspaceRepairSession(scope, arbiter.isRunning, ::assess, ::runManualRepair,
-        { showResult(it.detail) }, mode = repairMode, automaticRepair = { request, assessment ->
+        { showResult(it.detail) }, autoRepairEnabled = autoRepairEnabled, capability = ::refreshShizukuState,
+        automaticRepair = { request, assessment ->
             runRepair(request.workspaceId, request, assessment)
         })
     override val state: StateFlow<CarDockRepairState> = session.state
@@ -42,6 +50,9 @@ class AndroidExistingWorkspaceRepair(
     @Volatile private var launchedRequest: WorkspaceLaunchRequest? = null
     private var assessedSnapshot: DisplayWorkAreaSnapshot? = null
     private var resultToast: Toast? = null
+    private val controlJob = scope.launch {
+        arbiter.isRunning.collect { if (it) session.controlActionStarted() }
+    }
     private val gateJob = scope.launch {
         gate.status.collect { if (it.phase != ProductRunPhase.IDLE) invalidateSuggestion() }
     }
@@ -59,11 +70,15 @@ class AndroidExistingWorkspaceRepair(
         if (this.workspaceId == workspaceId) return
         this.workspaceId = workspaceId
         launchedRequest = null
+        launchSnapshot = null
+        targetDisplayId = null
         session.selectWorkspace(workspaceId)
     }
     override fun classicLaunchStarted(workspaceId: String) {
         this.workspaceId = workspaceId
         launchedRequest = null
+        launchSnapshot = null
+        targetDisplayId = null
         resultToast?.cancel()
         session.classicLaunchStarted(workspaceId)
     }
@@ -71,6 +86,17 @@ class AndroidExistingWorkspaceRepair(
         if (workspaceId != request.workspaceId) return
         launchedRequest = request
         session.classicLaunchCompleted(request)
+    }
+    fun classicLaunchCompleted(request: WorkspaceLaunchRequest, snapshot: DisplayWorkAreaSnapshot) {
+        if (workspaceId != request.workspaceId) return
+        launchSnapshot = snapshot
+        targetDisplayId = snapshot.displayId
+        classicLaunchCompleted(request)
+    }
+    fun prepareClassicDisplay(snapshot: DisplayWorkAreaSnapshot?) { targetDisplayId = snapshot?.displayId }
+    fun repairOnDisplay(display: Display?) {
+        targetDisplayId = display?.takeIf { it.displayId > 0 && it.state == Display.STATE_ON }?.displayId
+        repair()
     }
     override fun controlActionStarted() = session.controlActionStarted()
     override fun invalidateSuggestion() {
@@ -83,16 +109,9 @@ class AndroidExistingWorkspaceRepair(
         launchedRequest = null
         session.repair()
     }
-    private fun requireShizuku(requestPermission: Boolean = false) {
-        check(Shizuku.pingBinder()) { "Repair không khả dụng: hãy khởi động Shizuku. Classic vẫn dùng bình thường." }
-        if (requestPermission && Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED &&
-            !Shizuku.shouldShowRequestPermissionRationale()) {
-            Shizuku.requestPermission(41009)
-        }
-        check(Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
-            "Repair không khả dụng: cấp quyền trong Shizuku rồi bấm Repair lại."
-        }
-        check(Shizuku.getUid() == 2000) { "Repair cần Shizuku chạy với quyền shell." }
+    private fun requireShizuku() {
+        val state = refreshShizukuState()
+        check(state == ShizukuRuntimeState.READY) { state.userMessage() }
     }
     private suspend fun assess(request: WorkspaceLaunchRequest): ExistingWorkspaceAssessmentReport {
         requireShizuku()
@@ -105,6 +124,11 @@ class AndroidExistingWorkspaceRepair(
             return ExistingWorkspaceAssessmentReport(WorkspaceAssessmentStatus.UNAVAILABLE, detail = "Workspace context changed")
         }
         val snapshot = platform.currentSnapshot() ?: error("External display unavailable")
+        val launched = launchSnapshot
+        if (launched == null || !snapshot.sameRepairGeometry(launched)) {
+            invalidateSuggestion()
+            return ExistingWorkspaceAssessmentReport(WorkspaceAssessmentStatus.UNAVAILABLE, detail = "Display context changed")
+        }
         val readOnly = WorkspaceCommandShell { command ->
             check(command == WorkspaceTaskCorrelation.DUMP_COMMAND) { "Assessment must be read-only" }
             shell.execute(command)
@@ -117,7 +141,7 @@ class AndroidExistingWorkspaceRepair(
         return report
     }
     private suspend fun runManualRepair(selectedId: String): CarDockRepairState {
-        requireShizuku(requestPermission = true)
+        requireShizuku()
         return runRepair(selectedId)
     }
     private suspend fun runRepair(selectedId: String, expectedRequest: WorkspaceLaunchRequest? = null,
@@ -132,7 +156,7 @@ class AndroidExistingWorkspaceRepair(
         check(workspaceId == selectedId) { "Workspace selection changed" }
         if (expectedRequest != null) {
             check(request == expectedRequest && launchedRequest == expectedRequest &&
-                snapshot == assessedSnapshot && repairMode.value == WorkspaceRepairMode.AUTOMATIC) {
+                snapshot == assessedSnapshot && autoRepairEnabled.value) {
                 "Automatic workspace/display/policy context changed"
             }
         }
@@ -140,7 +164,7 @@ class AndroidExistingWorkspaceRepair(
         val guardedShell = WorkspaceCommandShell { command ->
             if (expectedRequest != null) {
                 check(!Thread.currentThread().isInterrupted && workspaceId == selectedId &&
-                    launchedRequest == expectedRequest && repairMode.value == WorkspaceRepairMode.AUTOMATIC &&
+                    launchedRequest == expectedRequest && autoRepairEnabled.value &&
                     platform.currentSnapshot() == snapshot) { "Automatic context changed before command" }
             }
             shell.execute(command)
@@ -159,6 +183,7 @@ class AndroidExistingWorkspaceRepair(
     override fun dispose() {
         session.dispose()
         gateJob.cancel()
+        controlJob.cancel()
         workspaceJob.cancel()
         resultToast?.cancel()
         (shell as? AutoCloseable)?.close()

@@ -15,6 +15,7 @@ class AndroidWorkspaceLaunchRuntime(
     activity: Activity,
     legacyReferenceStore: LegacyDisplayWorkAreaReferenceStore,
     diagnostics: WorkspaceLaunchDiagnostics = WorkspaceLaunchDiagnostics.None,
+    repairController: com.trancong.dexworkspacetouch.platform.launch.shizuku.AndroidExistingWorkspaceRepair? = null,
 ) : WorkspaceLaunchRuntime {
     private val host = ActivityForegroundLaunchHost(activity)
     private val providerFactory = { hostActivity: Activity ->
@@ -51,6 +52,14 @@ class AndroidWorkspaceLaunchRuntime(
         return LaunchEnvironmentCheck.Ready
     }
 
-    override suspend fun launch(request: WorkspaceLaunchRequest): WorkspaceLaunchResult =
-        launcher.launch(request)
+    private val postClassic = com.trancong.dexworkspacetouch.workspace.launcher.PostClassicWorkspaceLaunchRuntime(
+        object : WorkspaceLaunchRuntime {
+            override fun checkEnvironment() = this@AndroidWorkspaceLaunchRuntime.checkEnvironment()
+            override suspend fun launch(request: WorkspaceLaunchRequest) = launcher.launch(request)
+        }, provider::getSnapshot,
+        { repairController?.classicLaunchStarted(it) },
+        { request, snapshot -> repairController?.classicLaunchCompleted(request, snapshot) },
+        { repairController?.prepareClassicDisplay(it) },
+    )
+    override suspend fun launch(request: WorkspaceLaunchRequest): WorkspaceLaunchResult = postClassic.launch(request)
 }

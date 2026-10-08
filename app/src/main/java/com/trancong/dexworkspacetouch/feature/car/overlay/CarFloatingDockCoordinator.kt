@@ -44,6 +44,7 @@ class CarFloatingDockCoordinator(
     workspaceRepository: WorkspaceRepository,
     private val executionArbiter: CarWorkflowExecutionArbiter,
     private val repairController: ManualWorkspaceRepairController? = null,
+    private val onManualRepair: (() -> Unit)? = null,
 ) {
     private val runner = CarWorkflowExecutionRunner<CarWorkspaceShortcutSlot>(
         actionEngine,
@@ -58,7 +59,6 @@ class CarFloatingDockCoordinator(
     private var currentShortcuts: List<CarFloatingWorkspaceShortcut> = emptyList()
     private val runnerStateJob: Job = scope.launch {
         executionArbiter.isRunning.collect { isRunning ->
-            if (isRunning) repairController?.controlActionStarted()
             session.setActionsEnabled(!isRunning)
         }
     }
@@ -80,13 +80,15 @@ class CarFloatingDockCoordinator(
     }
     private val sessionStateJob: Job = scope.launch {
         session.stateChanges.collect {
-            if (session.state !is CarOverlaySessionState.Shown) repairController?.invalidateSuggestion()
             synchronizeState()
         }
     }
 
     private val repairStateJob: Job? = repairController?.let { controller ->
-        scope.launch { controller.state.collect { session.updateRepair(it.control(controller::repair)) } }
+        scope.launch { controller.state.collect { session.updateRepair(it.control(::requestManualRepair)) } }
+    }
+    private fun requestManualRepair() {
+        if (onManualRepair != null) onManualRepair.invoke() else repairController?.repair()
     }
     val repairState: StateFlow<CarDockRepairState>? get() = repairController?.state
     fun rememberRepairWorkspace(workspaceId: String) { repairController?.selectWorkspace(workspaceId) }
@@ -118,7 +120,7 @@ class CarFloatingDockCoordinator(
             )
         }
         session.updateShortcuts(currentShortcuts)
-        repairController?.let { session.updateRepair(it.state.value.control(it::repair)) }
+        repairController?.let { session.updateRepair(it.state.value.control(::requestManualRepair)) }
         session.setActionsEnabled(!executionArbiter.isRunning.value)
     }
 
@@ -127,7 +129,6 @@ class CarFloatingDockCoordinator(
     }
 
     fun hide() {
-        repairController?.invalidateSuggestion()
         session.hide()
         mutableDockState.value = CarFloatingDockControlState.Hidden
     }
@@ -145,7 +146,6 @@ class CarFloatingDockCoordinator(
         shortcutStateJob.cancel()
         sessionStateJob.cancel()
         repairStateJob?.cancel()
-        repairController?.dispose()
         session.dispose()
         mutableDockState.value = CarFloatingDockControlState.Hidden
     }
@@ -156,8 +156,6 @@ class CarFloatingDockCoordinator(
             runner.reject(slot, "Workspace shortcut is unavailable.")
         } else {
             runner.acceptAndRun(slot, workflow) {
-                (currentShortcuts.firstOrNull { it.slot == slot }?.state as? CarFloatingWorkspaceShortcutState.Configured)
-                    ?.workspaceId?.let(::classicLaunchStarted)
                 session.collapse()
             }
         }
@@ -185,7 +183,7 @@ class CarFloatingDockCoordinator(
             shortcutPreferences: CarWorkspaceShortcutPreferences,
             executionArbiter: CarWorkflowExecutionArbiter,
             diagnostics: WorkspaceLaunchDiagnostics = WorkspaceLaunchDiagnostics.None,
-            repairGate: EmbeddedProductRunGate? = null,
+            repairController: AndroidExistingWorkspaceRepair? = null,
         ): CarFloatingDockCoordinator {
             val applicationContext = context.applicationContext
             val session = CarOverlaySession(
@@ -201,10 +199,6 @@ class CarFloatingDockCoordinator(
                     AndroidInstalledAppDataSource.create(applicationContext),
                 ),
             )
-            val repairController = if (repairGate != null) AndroidExistingWorkspaceRepair(
-                applicationContext,scope,workspaceRepository,requestFactory,repairGate,executionArbiter,displayProvider,
-                repairMode=shortcutPreferences.workspaceRepairMode,
-            ) else null
             val workspacePlatform = RepositoryCarWorkspaceLaunchPlatform(
                 repository = workspaceRepository,
                 requestFactory = requestFactory,
@@ -212,8 +206,8 @@ class CarFloatingDockCoordinator(
                     context = applicationContext,
                     diagnostics = diagnostics,
                     displayProvider = displayProvider,
+                    repairController = repairController,
                 ),
-                onClassicLaunchCompleted = { repairController?.classicLaunchCompleted(it) },
             )
             val executor = AndroidCarActionExecutor.createForOverlay(
                 context = applicationContext,
@@ -231,6 +225,7 @@ class CarFloatingDockCoordinator(
                 workspaceRepository = workspaceRepository,
                 executionArbiter = executionArbiter,
                 repairController = repairController,
+                onManualRepair = { repairController?.repairOnDisplay(displayProvider()) },
             )
         }
     }

@@ -16,6 +16,7 @@ class AndroidShizukuCommandTransport(context: Context, serviceTag: String = "dwt
     // Each owner gets its own service. Async disposal can never remove a newer owner's binding.
     private val transport = ProductionShizukuCommandTransport(AndroidWorkspaceServiceBinding(context.applicationContext,
         "$serviceTag-${UUID.randomUUID()}"))
+    fun runtimeState(): ShizukuRuntimeState = transport.runtimeState()
     internal fun executeCommand(arguments: List<String>, timeoutMs: Long = 3000): ShizukuCommandResult {
         check(Looper.myLooper() != Looper.getMainLooper()) { "Workspace commands must run off the UI thread" }
         return transport.executeCommand(arguments, timeoutMs)

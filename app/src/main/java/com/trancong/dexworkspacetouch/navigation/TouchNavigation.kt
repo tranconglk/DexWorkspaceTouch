@@ -479,8 +479,6 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
         factory = WorkspaceLaunchViewModel.factory(
             workspaceLaunchRequestFactory,
             executionArbiter = application.carWorkflowExecutionArbiter,
-            onClassicLaunchStarted = application.carFloatingDockCoordinator::classicLaunchStarted,
-            onClassicLaunchCompleted = application.carFloatingDockCoordinator::classicLaunchCompleted,
         ),
     )
     val launchHostToken = remember(activity) { Any() }
@@ -489,6 +487,7 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
             activity,
             launchViewModel.legacyReferenceStore,
             application.workspaceLaunchDiagnostics,
+            repairController = application.workspaceRepairController,
         )
     }
     DisposableEffect(launchRuntime) {
@@ -754,7 +753,10 @@ private fun CarRoute(
     }
     val shortcuts by shortcutPreferences.shortcuts.collectAsState()
     val visibleSlotCount by shortcutPreferences.visibleSlotCount.collectAsState()
-    val workspaceRepairMode by shortcutPreferences.workspaceRepairMode.collectAsState()
+    val autoRepairEnabled by shortcutPreferences.autoRepairEnabled.collectAsState()
+    val repairController = (activity.application as DexWorkspaceTouchApplication).workspaceRepairController
+    val shizukuState by repairController.shizukuState.collectAsState()
+    androidx.compose.runtime.LaunchedEffect(repairController) { repairController.refreshShizukuState() }
     val workspaceFlow = remember(repository) { repository.observeAll() }
     val shortcutWorkspaces by workspaceFlow.collectAsState(initial = emptyList())
     val workspaceOptions = remember(shortcutWorkspaces) {
@@ -781,6 +783,7 @@ private fun CarRoute(
             if (event == Lifecycle.Event.ON_RESUME) {
                 floatingDockCoordinator.refresh()
                 shortcutPreferences.refresh()
+                repairController.refreshShizukuState()
             }
         }
         lifecycle.addObserver(observer)
@@ -848,8 +851,9 @@ private fun CarRoute(
         workspaceShortcutRows = shortcutRows,
         visibleSlotCount = visibleSlotCount,
         onVisibleSlotCountChanged = shortcutPreferences::setVisibleSlotCount,
-        workspaceRepairMode = workspaceRepairMode,
-        onWorkspaceRepairModeChanged = shortcutPreferences::setWorkspaceRepairMode,
+        autoRepairEnabled = autoRepairEnabled,
+        onAutoRepairEnabledChanged = shortcutPreferences::setAutoRepairEnabled,
+        shizukuState = shizukuState,
         workspaceOptions = workspaceOptions,
         onSetWorkspaceShortcut = shortcutPreferences::setWorkspace,
         onClearWorkspaceShortcut = shortcutPreferences::clear,

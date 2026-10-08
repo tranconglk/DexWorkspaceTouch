@@ -1,7 +1,6 @@
 package com.trancong.dexworkspacetouch.feature.car.overlay
 
 import com.trancong.dexworkspacetouch.platform.launch.shizuku.*
-import com.trancong.dexworkspacetouch.feature.car.WorkspaceRepairMode
 import com.trancong.dexworkspacetouch.workspace.launcher.model.WorkspaceLaunchRequest
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -12,7 +11,8 @@ class WorkspaceRepairSession(private val scope: CoroutineScope, private val cont
     private val manualRepair: suspend (String) -> CarDockRepairState,
     private val onManualResult: (CarDockRepairState) -> Unit = {},
     private val stabilizationMs: Long = 1000, private val deadlineMs: Long = 5000,
-    private val mode: StateFlow<WorkspaceRepairMode> = MutableStateFlow(WorkspaceRepairMode.SUGGEST),
+    private val autoRepairEnabled: StateFlow<Boolean> = MutableStateFlow(false),
+    private val capability: () -> ShizukuRuntimeState = { ShizukuRuntimeState.READY },
     private val automaticRepair: suspend (WorkspaceLaunchRequest, ExistingWorkspaceAssessmentReport) -> CarDockRepairState =
         { request, _ -> manualRepair(request.workspaceId) }) : ManualWorkspaceRepairController {
     private val mutableState = MutableStateFlow(CarDockRepairState())
@@ -25,11 +25,20 @@ class WorkspaceRepairSession(private val scope: CoroutineScope, private val cont
     @Volatile private var repairOwnsControl = false
     private var automaticAttempt = false
     private var completedGeneration: Long? = null
+    private var startedGeneration: Long? = null
     init { require(stabilizationMs >= 0 && deadlineMs > stabilizationMs) }
-    private val modeJob = scope.launch(start=CoroutineStart.UNDISPATCHED) {
-        var previous = mode.value
-        mode.collect { current ->
-            if (current != previous) { previous = current; invalidateSuggestion() }
+    private val preferenceJob = scope.launch(start=CoroutineStart.UNDISPATCHED) {
+        var previous = autoRepairEnabled.value
+        autoRepairEnabled.collect { current ->
+            if (current != previous) {
+                previous = current
+                // Manual work is independent of the preference. A launch in progress retains its identity.
+                if (repairJob?.isActive != true || automaticAttempt) {
+                    val classicPending = startedGeneration == generation && completedGeneration != generation
+                    invalidateSuggestion()
+                    if (classicPending) startedGeneration = generation
+                }
+            }
         }
     }
     override fun selectWorkspace(workspaceId: String) {
@@ -42,19 +51,28 @@ class WorkspaceRepairSession(private val scope: CoroutineScope, private val cont
         repairJob?.cancel()
         selectWorkspace(workspaceId)
         invalidateSuggestion() // A second launch of the same workspace is a new identity.
+        startedGeneration = generation
     }
     override fun classicLaunchCompleted(request: WorkspaceLaunchRequest) {
-        if (selectedId != request.workspaceId || completedGeneration == generation) return
+        if (selectedId != request.workspaceId || startedGeneration != generation || completedGeneration == generation) return
         val ticket = generation
         completedGeneration = ticket
-        val launchMode = mode.value
-        if (launchMode == WorkspaceRepairMode.OFF) return
+        if (!autoRepairEnabled.value) return
+        val ready = capability()
+        if (ready != ShizukuRuntimeState.READY) {
+            mutableState.value = CarDockRepairState("Repair unavailable", true, ready.userMessage(),
+                workspaceId=selectedId, shizukuState=ready)
+            return
+        }
         mutableState.value = CarDockRepairState("Checking layout\u2026",true,workspaceId=selectedId)
         suggestionJob = scope.launch {
             val report = try {
                 withTimeout(deadlineMs) {
                     controlBusy.first { !it }
                     delay(stabilizationMs)
+                    if (!autoRepairEnabled.value || capability() != ShizukuRuntimeState.READY) {
+                        return@withTimeout ExistingWorkspaceAssessmentReport(WorkspaceAssessmentStatus.UNAVAILABLE)
+                    }
                     assess(request)
                 }
             } catch (timeout: TimeoutCancellationException) {
@@ -73,7 +91,7 @@ class WorkspaceRepairSession(private val scope: CoroutineScope, private val cont
                 WorkspaceAssessmentStatus.PARTIAL_OR_UNRESOLVED -> "Layout partially observed or unresolved"
                 else -> report.detail
             },assessment=report,workspaceId=selectedId)
-            if (launchMode == WorkspaceRepairMode.AUTOMATIC && mode.value == launchMode &&
+            if (autoRepairEnabled.value && capability() == ShizukuRuntimeState.READY &&
                 report.status == WorkspaceAssessmentStatus.REPAIR_AVAILABLE && !controlBusy.value) {
                 startRepair(request.workspaceId, ticket, report, automatic=true) { automaticRepair(request, report) }
             }
@@ -104,6 +122,13 @@ class WorkspaceRepairSession(private val scope: CoroutineScope, private val cont
         val id = selectedId ?: return
         invalidateSuggestion()
         val ticket = generation
+        val ready = capability()
+        if (ready != ShizukuRuntimeState.READY) {
+            mutableState.value = CarDockRepairState("Repair unavailable", true, ready.userMessage(),
+                workspaceId=id, shizukuState=ready)
+            onManualResult(mutableState.value)
+            return
+        }
         startRepair(id, ticket, automatic=false) { manualRepair(id) }
     }
     private fun startRepair(id: String, ticket: Long, assessment: ExistingWorkspaceAssessmentReport? = null,
@@ -122,5 +147,5 @@ class WorkspaceRepairSession(private val scope: CoroutineScope, private val cont
         }
         repairJob?.start()
     }
-    override fun dispose() { invalidateSuggestion(); repairJob?.cancel(); modeJob.cancel() }
+    override fun dispose() { invalidateSuggestion(); repairJob?.cancel(); preferenceJob.cancel() }
 }

@@ -23,11 +23,60 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.yield
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class CarFloatingDockCoordinatorTest {
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    @Test fun automaticLaunchRepairsEquallyWithDockNeverShownShownHiddenOrDisposed() = kotlinx.coroutines.test.runTest {
+        for (lifecycle in listOf("never", "shown", "hidden", "disposed")) {
+            var assessments=0; var mutations=0
+            val repair=WorkspaceRepairSession(this,MutableStateFlow(false),
+                { assessments++; com.trancong.dexworkspacetouch.platform.launch.shizuku.ExistingWorkspaceAssessmentReport(
+                    com.trancong.dexworkspacetouch.platform.launch.shizuku.WorkspaceAssessmentStatus.REPAIR_AVAILABLE) },
+                { error("No manual click") },autoRepairEnabled=MutableStateFlow(true),
+                automaticRepair={ _, _ -> mutations++; CarDockRepairState("Repaired",true) })
+            val dock=FakeSession()
+            val coordinator=CarFloatingDockCoordinator(dock,CarWorkspaceShortcutWorkflowProvider { null },
+                CarActionEngine(RecordingExecutor()),this,FakePreferences(),FakeRepository(),
+                com.trancong.dexworkspacetouch.feature.car.CarWorkflowExecutionArbiter(),repair)
+            if(lifecycle!="never") coordinator.show(fakeHost(21))
+            val request=com.trancong.dexworkspacetouch.workspace.launcher.model.WorkspaceLaunchRequest("one","Workspace",listOf(
+                com.trancong.dexworkspacetouch.workspace.launcher.model.AppLaunchTarget("cell",
+                    com.trancong.dexworkspacetouch.workspace.apppicker.model.AppIdentity("com.example.app","com.example.app.Main"),
+                    NormalizedBounds.FullCanvas,0)))
+            repair.classicLaunchStarted("one"); repair.classicLaunchCompleted(request)
+            if(lifecycle=="hidden") coordinator.hide()
+            if(lifecycle=="disposed") coordinator.dispose()
+            advanceUntilIdle()
+            assertEquals(lifecycle,1,assessments); assertEquals(lifecycle,1,mutations)
+            if(lifecycle!="disposed") coordinator.dispose()
+            repair.dispose()
+        }
+    }
+    @Test fun dockLifecycleDoesNotInvalidateOrDisposeProcessRepairController() = runBlocking {
+        var invalidations = 0
+        var disposals = 0
+        val repair = object : ManualWorkspaceRepairController {
+            override val state = MutableStateFlow(CarDockRepairState())
+            override fun selectWorkspace(workspaceId: String) = Unit
+            override fun repair() = Unit
+            override fun invalidateSuggestion() { invalidations++ }
+            override fun dispose() { disposals++ }
+        }
+        val dock = FakeSession()
+        val coordinator = CarFloatingDockCoordinator(dock, CarWorkspaceShortcutWorkflowProvider { null },
+            CarActionEngine(RecordingExecutor()), this, FakePreferences(), FakeRepository(),
+            com.trancong.dexworkspacetouch.feature.car.CarWorkflowExecutionArbiter(), repair)
+        yield()
+        coordinator.show(fakeHost(21)); yield()
+        coordinator.hide(); yield()
+        coordinator.dispose()
+        assertEquals(0, invalidations)
+        assertEquals(0, disposals)
+    }
     @Test
     fun permissionRefreshAndInvalidHostShowUseRealSessionResults() = runBlocking {
         val session = FakeSession(permissionGranted = false)
@@ -303,8 +352,8 @@ class CarFloatingDockCoordinatorTest {
     }
 
     private class FakePreferences : CarWorkspaceShortcutPreferences {
-        override val workspaceRepairMode = MutableStateFlow(com.trancong.dexworkspacetouch.feature.car.WorkspaceRepairMode.SUGGEST)
-        override fun setWorkspaceRepairMode(mode: com.trancong.dexworkspacetouch.feature.car.WorkspaceRepairMode) { workspaceRepairMode.value = mode }
+        override val autoRepairEnabled = MutableStateFlow(false)
+        override fun setAutoRepairEnabled(enabled: Boolean) { autoRepairEnabled.value = enabled }
         override val shortcuts = MutableStateFlow(CarWorkspaceShortcuts.defaults())
         override val visibleSlotCount = MutableStateFlow(6)
         override fun setWorkspace(slot: CarWorkspaceShortcutSlot, workspaceId: String) = Unit

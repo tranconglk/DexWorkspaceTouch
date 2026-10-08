@@ -1,0 +1,318 @@
+{
+    "task":  "DWT-SWC-004",
+    "checkpoint":  "AUTHORIZED FOR ONE COMMIT; PRE-COMMIT VERIFIED",
+    "baseline":  "766c8e013306c34f53b22ad1b4e51ce11602c91a",
+    "branch":  "feature/dwt-swc-004-auto-repair-orchestration",
+    "commitMessage":  "DWT-SWC-004: decouple automatic repair from dock lifecycle",
+    "counts":  {
+                   "total":  30,
+                   "production":  16,
+                   "tests":  10,
+                   "testHarness":  1,
+                   "docsEvidence":  3
+               },
+    "bytePolicy":  "Payload SHA-256 uses original file bytes; gitBlob records the actual staged Git blob after verifying staged/source equivalence. Git may preserve mixed EOL or normalize CRLF. Manifest excludes its own digest.",
+    "review":  {
+                   "critical":  0,
+                   "important":  0,
+                   "minor":  0,
+                   "decision":  "PASS FOR COMMIT (user accepted)"
+               },
+    "verification":  {
+                         "reuseAcceptedResults":  true,
+                         "fullUnit":  {
+                                          "tests":  1384,
+                                          "suites":  168,
+                                          "failures":  0,
+                                          "errors":  0,
+                                          "skipped":  0,
+                                          "xmlInventorySha256":  "000320826b9b15dc406e2bb40c17c8aba4ad9fe94f37e7e021aa0f5fd5dda379"
+                                      },
+                         "targeted":  {
+                                          "tests":  64,
+                                          "failures":  0,
+                                          "errors":  0,
+                                          "skipped":  0
+                                      },
+                         "devices":  {
+                                         "S22":  "PASS: Auto with Dock hidden; OFF then Manual repairs",
+                                         "S23":  "PASS: LAYOUT_CORRECT; no mutation",
+                                         "Note9":  "PASS: correct layout plus wrong-layout Auto, one repaired/two correct"
+                                     },
+                         "productionProvenance":  {
+                                                      "matchesReported16Files":  true,
+                                                      "latestSourceWriteUtc":  "2026-10-08T13:19:27.1495041Z",
+                                                      "regressionCompleteUtc":  "2026-10-08T13:21:40.4609293Z",
+                                                      "apkDigestsMatchAcceptedIndex":  true,
+                                                      "compileInputCheck":  "BUILD SUCCESSFUL; :app:compileDebugKotlin UP-TO-DATE with isolated-app init script"
+                                                  },
+                         "notVerified":  [
+                                             "Shizuku-unavailable on real devices (unit tests prove safe skip)",
+                                             "Full entry-point UI end-to-end and ProductUiWithoutEmbeddedTest execution",
+                                             "Signed release APK"
+                                         ]
+                     },
+    "acceptedBehavior":  [
+                             "Auto Repair Boolean ON/OFF; default/new install OFF",
+                             "Only legacy AUTOMATIC migrates ON; SUGGEST/OFF/absent/corrupt migrate OFF",
+                             "Preference independent of Shizuku capability",
+                             "Auto independent of Dock lifecycle",
+                             "Auto only after accepted DWT Classic Success",
+                             "Unavailable Shizuku safe skip; no permission request/UI launch/readiness watcher/polling/retry",
+                             "Manual Dock Repair available with Auto OFF",
+                             "ExistingWorkspaceRepair remains sole mutation authority"
+                         ],
+    "unchangedInvariants":  [
+                                "8 px outer / 4 px internal geometry",
+                                "Android 10 parser hardening; exact task/activity correlation",
+                                "Classic launch semantics",
+                                "ProductRunGate / CLEANUP_BLOCKED",
+                                "Uncertain mutation policy",
+                                "Shizuku command whitelist; UserService protocol",
+                                "Embedded UI/runtime decisions",
+                                "Room/schema",
+                                "Licensing/signing/backend",
+                                "versionName 1.0.0-beta.10 / versionCode 11"
+                            ],
+    "releaseRefBefore":  "766c8e013306c34f53b22ad1b4e51ce11602c91a",
+    "publication":  "HOLD",
+    "tag":  "NOT AUTHORIZED",
+    "excluded":  [
+                     "APK/build outputs",
+                     "Raw device dumps/log bundles",
+                     "Private data",
+                     "Secrets/tokens",
+                     "Unrelated harness artifacts"
+                 ],
+    "files":  [
+                  {
+                      "path":  "app/src/androidTest/java/com/trancong/dexworkspacetouch/feature/car/CarWorkspaceShortcutPreferencesDeviceTest.kt",
+                      "category":  "test",
+                      "sha256":  "3e14a89704817ae2a34684e79bd5d80cf782a98f08c4a24c6a2725eecd74dbd8",
+                      "gitBlob":  "bdaeb80e5bde51a0f882e17e6b477b9a0d4f0309"
+                  },
+                  {
+                      "path":  "app/src/androidTest/java/com/trancong/dexworkspacetouch/qualification/AutoRepairOrchestrationDeviceTest.kt",
+                      "category":  "test",
+                      "sha256":  "ce79e3d8108737cc28ce780892685331fce1b2cb84dc6e5df013cd4c6d46651a",
+                      "gitBlob":  "3b51b3710c708d9738c7c3f4297bf596cc4d5ad0"
+                  },
+                  {
+                      "path":  "app/src/androidTest/java/com/trancong/dexworkspacetouch/ui/ProductUiWithoutEmbeddedTest.kt",
+                      "category":  "test",
+                      "sha256":  "bdde3457f8c3a979c609548755d473ba7e41b82d6aaf1e21665d95573990696d",
+                      "gitBlob":  "ad94de9b555b94db541ab18629392a93b6d9e1e7"
+                  },
+                  {
+                      "path":  "app/src/main/java/com/trancong/dexworkspacetouch/DexWorkspaceTouchApplication.kt",
+                      "category":  "production",
+                      "sha256":  "aafcde75f6bb1ed63de68ca9ad9d166193cfb7b670993a410644640403502eac",
+                      "gitBlob":  "ca9764aaadbbac9a9a54fa861f1c17120b287cf6"
+                  },
+                  {
+                      "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/CarScreen.kt",
+                      "category":  "production",
+                      "sha256":  "9a0c96fcdfdfbfcc8c19e6b38b532aef3b93ea7e3ccdfd2b089fac639c39075b",
+                      "gitBlob":  "4a275f18bfb561f037935c58a98f004e063788f9"
+                  },
+                  {
+                      "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/CarWorkspaceShortcut.kt",
+                      "category":  "production",
+                      "sha256":  "b637e06a6956d067c1645ef433c73c1cf75dacf4461e9efcfa1b031be3b8bf9b",
+                      "gitBlob":  "69185247654b7e92291679c46b4f92b2e131f554"
+                  },
+                  {
+                      "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/CarWorkspaceShortcutPreferences.kt",
+                      "category":  "production",
+                      "sha256":  "53e8c111aeaca699c0f944b33f6e56842767f6ad6f0c51d199caa3959a122532",
+                      "gitBlob":  "aaabf3fa5aa1616293ca749c1944c4ec82d2e5f1"
+                  },
+                  {
+                      "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/overlay/CarDockRepairControl.kt",
+                      "category":  "production",
+                      "sha256":  "6fd5f8f73eb8ea3ae6da83914033982677feea3b9c1297e1f40976d54bafa30d",
+                      "gitBlob":  "e33c4ebf7d0c6f4d39dcecf3c7472990f873f43c"
+                  },
+                  {
+                      "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/overlay/CarFloatingDockCoordinator.kt",
+                      "category":  "production",
+                      "sha256":  "47d1fc8daacab982e3afdbb71072e131a434b6862a119670f865414c396b0f7f",
+                      "gitBlob":  "80de250371618f7ba31ac12da6f6eebefd57fb5d"
+                  },
+                  {
+                      "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/overlay/WorkspaceRepairSession.kt",
+                      "category":  "production",
+                      "sha256":  "1021e1a7659e9798f9a9eb7e8e6be71b95eb923aa61d3ed2fd4dabd553dff56a",
+                      "gitBlob":  "df57a23ab0f401219305b0979e71a955c3eafdc0"
+                  },
+                  {
+                      "path":  "app/src/main/java/com/trancong/dexworkspacetouch/feature/car/WorkspaceRepairMode.kt",
+                      "category":  "production",
+                      "sha256":  "c58d0310d104d307c82dac84a4cb31d65d66fab77aad30cf8adb12d6c461601a",
+                      "gitBlob":  "391675c6fc2ea6dafc4700a0137990673b5116ce"
+                  },
+                  {
+                      "path":  "app/src/main/java/com/trancong/dexworkspacetouch/navigation/TouchNavigation.kt",
+                      "category":  "production",
+                      "sha256":  "ca2d7f7f5da24f20246e754e22d91365e2ea2c7372a2e9e779faabcbc50183f1",
+                      "gitBlob":  "5ccc40134e29e333f74fa6a7f8fda4e90ed6cad5"
+                  },
+                  {
+                      "path":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/android/AndroidWorkspaceLaunchRuntime.kt",
+                      "category":  "production",
+                      "sha256":  "72c8d170ea88d1a9ad69a3b46285a3b6b99142961fba803451c7c93b6a14ad49",
+                      "gitBlob":  "7a889b87f89060110da5ab4648ceffbe4a7260d2"
+                  },
+                  {
+                      "path":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/android/DisplayTargetWorkspaceLaunchRuntime.kt",
+                      "category":  "production",
+                      "sha256":  "11ede7f88c568d00c8ef4b05d8a32dcf3c5809e08cc58d269c4e05ccf364ded3",
+                      "gitBlob":  "9d7dacad26ffa1f43b74c3c4dbc61ee09f8def38"
+                  },
+                  {
+                      "path":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/AndroidExistingWorkspaceRepair.kt",
+                      "category":  "production",
+                      "sha256":  "c801798d04daa0f7b44aee92d4be67d447863fb2488a9498a19dd9b96425a205",
+                      "gitBlob":  "76abb4b99e87553672d29ffbd69922f21dae07d2"
+                  },
+                  {
+                      "path":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/AndroidShizukuCommandTransport.kt",
+                      "category":  "production",
+                      "sha256":  "a80b095e47be9e8716f54bf9ce8c6669e2dabb0f4017275a966ac2348c487821",
+                      "gitBlob":  "c3e1a32c1ade2354ca414784fedb9953e2842834"
+                  },
+                  {
+                      "path":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ShizukuCommandTransport.kt",
+                      "category":  "production",
+                      "sha256":  "375c91beade66e2c4f3344cfca99b35157850a48e826eefaa62eca2f8911a271",
+                      "gitBlob":  "dfc62efd85dd8d9d1813a28c7c583948b36f12fc"
+                  },
+                  {
+                      "path":  "app/src/main/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ShizukuRuntimeState.kt",
+                      "category":  "production",
+                      "sha256":  "bc90e6180901a67e792bec7d13633118fb81274a40158a88db002a582735f86e",
+                      "gitBlob":  "f3c14f1136be7afb140e995945984057492e75a2"
+                  },
+                  {
+                      "path":  "app/src/main/java/com/trancong/dexworkspacetouch/workspace/launcher/PostClassicWorkspaceLaunchRuntime.kt",
+                      "category":  "production",
+                      "sha256":  "7cd98dc1ab13f96fee46dd1cc0ca519f8c1a813dfab51c34629ca8de935e3dd3",
+                      "gitBlob":  "0ee4bc3f86bbd6a7f4b07e542da229849cb2287e"
+                  },
+                  {
+                      "path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/car/overlay/CarFloatingDockCoordinatorTest.kt",
+                      "category":  "test",
+                      "sha256":  "1dedd8e8370c5a2d1cd2df36382d454e20bd0c465028bddde0fb6fa8dfa42f25",
+                      "gitBlob":  "eaed3f221364552bf7267c324d0597423e845037"
+                  },
+                  {
+                      "path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/car/overlay/WorkspaceRepairPolicyTest.kt",
+                      "category":  "test",
+                      "sha256":  "1ddbae0b316ebbe8d96beb6da16a74b92222906379bd04497c6b8af2132c0c8b",
+                      "gitBlob":  "ab79cf4d983f92a047da56373e1eedf0d42d98db"
+                  },
+                  {
+                      "path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/car/overlay/WorkspaceRepairSessionTest.kt",
+                      "category":  "test",
+                      "sha256":  "e1a74f611e0df5b8203889a8529c0ecec2adae892125984189b6a13c3a57669c",
+                      "gitBlob":  "10738f29267a8aa2ae83dfddc9343e167cec3bea"
+                  },
+                  {
+                      "path":  "app/src/test/java/com/trancong/dexworkspacetouch/feature/car/WorkspaceRepairModePreferencesTest.kt",
+                      "category":  "test",
+                      "sha256":  "d8e3a25d473ecd8c1ec546e3afaefe03cdf52c170260d685add04c369525e0c3",
+                      "gitBlob":  "8eee9882ff1aa0458770015c8e9ee96b84ef6550"
+                  },
+                  {
+                      "path":  "app/src/test/java/com/trancong/dexworkspacetouch/platform/launch/shizuku/ProductionShizukuCommandTransportTest.kt",
+                      "category":  "test",
+                      "sha256":  "58fe8cb20803bfd72dea7e28d60005954d1839c28f1a80428fa7d66c34f3a158",
+                      "gitBlob":  "2352926451d1847a3b18dd33f2316a0e7616e11f"
+                  },
+                  {
+                      "path":  "app/src/test/java/com/trancong/dexworkspacetouch/workspace/launcher/PostClassicWorkspaceLaunchRuntimeTest.kt",
+                      "category":  "test",
+                      "sha256":  "df72142496944701d333ed17e931f3b2f0f077f665fb2ecb4a12b40d94019b1f",
+                      "gitBlob":  "fec47b97213103e650ae5be4bde8a4d25038e99e"
+                  },
+                  {
+                      "path":  "app/src/test/java/com/trancong/dexworkspacetouch/workspace/launcher/presentation/WorkspaceLaunchViewModelTest.kt",
+                      "category":  "test",
+                      "sha256":  "db6544c06cbf3abbd39b41263de116340d5b7b1c20143f0acb0a36a4f511e858",
+                      "gitBlob":  "b69ab09449d3960bb07a1f99be47f710cd148472"
+                  },
+                  {
+                      "path":  "docs/codex/DWT-SWC-004_REPORT.md",
+                      "category":  "docs",
+                      "sha256":  "097f6ca76c64c2cf8ad421ba40623efd088181fc353d3565b87034dadc20be32",
+                      "gitBlob":  "e1588087ca474bbd237ca7f120ac7d0f158d1cc6"
+                  },
+                  {
+                      "path":  "docs/superpowers/plans/2026-10-08-dwt-swc-004.md",
+                      "category":  "docs",
+                      "sha256":  "008c59213d4e7ac8720bd9ed47e0559ccfec0cfe11a0c4c1ca09bd462d3991fa",
+                      "gitBlob":  "97bdcc33486ea4b88f05b7795034565bee41cd72"
+                  },
+                  {
+                      "path":  "verification/dwt-swc-004/isolated-app.init.gradle",
+                      "category":  "test-harness",
+                      "sha256":  "f1105fa11c0a8dd210818aca4843ff86f6f0ea23b8b65953d3ee2fa1ad07fdf7",
+                      "gitBlob":  "ba9ea5b8fe5fbbb344805a527509624b3c5eaad5"
+                  }
+              ],
+    "evidenceDigestsOnly":  [
+                                {
+                                    "path":  "release-output/swc004/evidence-index.json",
+                                    "sha256":  "0f96f41c8a9fe29cf3e7ba317c025fd4a9fc19c66fddd8d84ae055e9f52d8247"
+                                },
+                                {
+                                    "path":  "release-output/swc004/swc004-regression.log",
+                                    "sha256":  "8e944811f4118fdf9a0ed5503ac6ba1806e8d91c5752af456b7e1d0f0919b67b"
+                                },
+                                {
+                                    "path":  "release-output/swc004/swc004-review-green.log",
+                                    "sha256":  "5065e9b85ba2c32d29c7ea53e6179c3c63faf53ddb330ba80f962a6c200816b4"
+                                },
+                                {
+                                    "path":  "release-output/swc004/swc004-s22-preferences.log",
+                                    "sha256":  "57ec6fac58d521805441f992bfc8072bce29ce0edc6ea70db45d64a4408937a0"
+                                },
+                                {
+                                    "path":  "release-output/swc004/swc004-s23.log",
+                                    "sha256":  "fb52eb53874b5263f9c204a7cc0dd47f16aead6dff07d7384f9b9a03e0973f87"
+                                },
+                                {
+                                    "path":  "release-output/swc004/swc004-note9.log",
+                                    "sha256":  "d151bbc6306935d06e8d39f874cb9f9e8ebb9674a7fe2dc1c83378e63c47df8b"
+                                },
+                                {
+                                    "path":  "release-output/swc004/s22/files/swc004-evidence/auto-state.txt",
+                                    "sha256":  "9bcb656e0f272f4a48b4b860d6ae23f398cf4d0b9ab218cf6a1608f111b3b14a"
+                                },
+                                {
+                                    "path":  "release-output/swc004/s22/files/swc004-evidence/manual-state.txt",
+                                    "sha256":  "c4499013cde7294c0e59294b0553c1ef64b49f77fd1902e51766be80825cdc8e"
+                                },
+                                {
+                                    "path":  "release-output/swc004/s23/files/swc004-evidence/auto-state.txt",
+                                    "sha256":  "4915c8172252967d54b224629902864c21693f6ae0d854ddcdbb48e051b2d9a3"
+                                },
+                                {
+                                    "path":  "release-output/swc004/note9/files/swc004-evidence/auto-state.txt",
+                                    "sha256":  "e706faae36725ea08b96e2828db25ff95d71a03baff212d05e721d83f958fb17"
+                                },
+                                {
+                                    "path":  "release-output/swc004/note9-correct/files/swc004-evidence/auto-state.txt",
+                                    "sha256":  "7c4c4512d3f9eca97a261c7c667b134a6a6453534a7e3d9c442bcd629f602849"
+                                },
+                                {
+                                    "path":  "release-output/swc004/precommit-input-check.log",
+                                    "sha256":  "7879b111eee0e2d281752a03455ba1b2e49424b9c8e41f69d9abadad22dfe174"
+                                }
+                            ],
+    "stagingByteVerification":  {
+                                    "all29OriginalPayloadDigestsUnchanged":  true,
+                                    "all29IndexContentsMatchSourceIgnoringEol":  true,
+                                    "mixedEolNote":  "TouchNavigation.kt staged bytes exactly equal source; hash-object clean filtering differed from git add preservation of existing mixed EOL."
+                                }
+}

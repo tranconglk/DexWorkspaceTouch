@@ -33,6 +33,7 @@ import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.WorkspaceLa
 class DisplayTargetWorkspaceLaunchRuntime(
     context: Context,
     diagnostics: WorkspaceLaunchDiagnostics = WorkspaceLaunchDiagnostics.None,
+    repairController: com.trancong.dexworkspacetouch.platform.launch.shizuku.AndroidExistingWorkspaceRepair? = null,
     displayProvider: () -> Display?,
 ) : WorkspaceLaunchRuntime {
     private val applicationContext = context.applicationContext
@@ -52,8 +53,16 @@ class DisplayTargetWorkspaceLaunchRuntime(
             LaunchEnvironmentCheck.Unavailable(LaunchEnvironmentFailure.WORK_AREA_UNAVAILABLE)
         }
 
-    override suspend fun launch(request: WorkspaceLaunchRequest): WorkspaceLaunchResult =
-        launcher.launch(request)
+    private val postClassic = com.trancong.dexworkspacetouch.workspace.launcher.PostClassicWorkspaceLaunchRuntime(
+        object : WorkspaceLaunchRuntime {
+            override fun checkEnvironment() = this@DisplayTargetWorkspaceLaunchRuntime.checkEnvironment()
+            override suspend fun launch(request: WorkspaceLaunchRequest) = launcher.launch(request)
+        }, platform::currentSnapshot,
+        { repairController?.classicLaunchStarted(it) },
+        { request, snapshot -> repairController?.classicLaunchCompleted(request, snapshot) },
+        { repairController?.prepareClassicDisplay(it) },
+    )
+    override suspend fun launch(request: WorkspaceLaunchRequest): WorkspaceLaunchResult = postClassic.launch(request)
 }
 
 internal class DisplayTargetSingleAppLaunchPlatform(

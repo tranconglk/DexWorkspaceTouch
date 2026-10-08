@@ -65,15 +65,11 @@ class ProductUiWithoutEmbeddedTest {
         scrollUntil("Car Mode", backwards = true)
         click("Car Mode")
         await { find("Workspaces") != null }
-        scrollUntil("Workspace Repair")
-        scrollUntil("Automatic — tự sửa layout khi an toàn")
+        scrollUntil("Tự động sửa bố cục Workspace")
         assertNoEmbeddedEntry("car-repair-settings")
-        assertNotNull(find("Off — chỉ sửa khi bấm Repair"))
-        assertNotNull(find("Suggest — gợi ý sửa layout"))
-        assertNotNull(find("Automatic — tự sửa layout khi an toàn"))
-        assertTrue("SUGGEST remains selected by default", checkNotNull(find("Suggest — gợi ý sửa layout")).let { node ->
-            generateSequence(node) { it.parent }.any { it.isSelected || it.isChecked }
-        })
+        assertNotNull(find("Tắt"))
+        assertFalse("New install defaults Auto OFF", app.carWorkspaceShortcutPreferences.autoRepairEnabled.value)
+        assertNull(find("Suggest — gợi ý sửa layout"))
         scrollUntil("Workspaces", backwards = true)
         click("Workspaces")
         await { find("Mở") != null }
