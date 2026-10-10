@@ -96,17 +96,26 @@ class PhysicalButtonAccessibilityService : AccessibilityService() {
                 repeatCount = event.repeatCount,
                 deviceId = event.deviceId,
                 downTime = event.downTime,
-                isExternal = device?.isExternal == true && !device.isVirtual,
+                isExternal = device?.isExternal == true,
                 deviceDescriptor = device?.descriptor,
+                isVirtual = device?.isVirtual != false,
             ),
             enabled = configuration.enabled && !configuration.workspaceId.isNullOrBlank(),
+            configuredDeviceDescriptor = configuration.deviceDescriptor,
+            bindingRequested = preferences.bindingRequested.value,
         )
         if (decision == PhysicalButtonKeyDecision.PASS_THROUGH) return false
+        if (decision == PhysicalButtonKeyDecision.BIND_REMOTE) {
+            if (preferences.captureRemote(device?.descriptor, device?.name)) {
+                Log.i(LOG_TAG, "Remote linked device=${device?.name} deviceId=${event.deviceId} descriptor=${device?.descriptor}")
+            }
+            return true
+        }
         if (decision == PhysicalButtonKeyDecision.TRIGGER_WORKSPACE) {
             Log.i(LOG_TAG, "Trigger device=${device?.name} deviceId=${event.deviceId}")
             if (dispatchJob?.isActive != true && !isLaunching()) {
                 dispatchJob = serviceScope.launch {
-                    Log.i(LOG_TAG, "Workspace action=${dispatcher.dispatch()}")
+                    Log.i(LOG_TAG, "Workspace action=${dispatcher.dispatch(configuration.deviceDescriptor)}")
                 }
             }
         }
@@ -129,9 +138,10 @@ class PhysicalButtonAccessibilityService : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) = Unit
-    override fun onInterrupt() = Unit
+    override fun onInterrupt() { preferences.cancelBinding() }
 
     override fun onDestroy() {
+        preferences.cancelBinding()
         launchViewModel.onHostDisposed(hostToken)
         serviceScope.cancel()
         viewModelStore.clear()

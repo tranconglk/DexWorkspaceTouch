@@ -11,6 +11,8 @@ class AndroidPhysicalButtonStorage(context: Context) : PhysicalButtonStorage {
     override fun read(): PhysicalButtonConfiguration = PhysicalButtonConfiguration(
         enabled = preferences.all["enabled"] as? Boolean ?: false,
         workspaceId = (preferences.all["workspaceId"] as? String)?.takeIf(String::isNotBlank),
+        deviceDescriptor = (preferences.all["deviceDescriptor"] as? String)?.takeIf(String::isNotBlank),
+        deviceName = (preferences.all["deviceName"] as? String)?.takeIf(String::isNotBlank),
     )
 
     override fun write(configuration: PhysicalButtonConfiguration) {
@@ -18,6 +20,10 @@ class AndroidPhysicalButtonStorage(context: Context) : PhysicalButtonStorage {
             putBoolean("enabled", configuration.enabled)
             if (configuration.workspaceId == null) remove("workspaceId")
             else putString("workspaceId", configuration.workspaceId)
+            if (configuration.deviceDescriptor == null) remove("deviceDescriptor")
+            else putString("deviceDescriptor", configuration.deviceDescriptor)
+            if (configuration.deviceName == null) remove("deviceName")
+            else putString("deviceName", configuration.deviceName)
         }.apply()
     }
 }

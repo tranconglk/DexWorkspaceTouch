@@ -12,14 +12,18 @@ class PhysicalButtonActionDispatcher(
     private val canLaunch: suspend () -> Boolean,
     private val launchWorkspace: (Workspace) -> Boolean,
 ) {
-    suspend fun dispatch(): PhysicalButtonActionResult {
+    suspend fun dispatch(
+        expectedDeviceDescriptor: String? = preferences.configuration.value.deviceDescriptor,
+    ): PhysicalButtonActionResult {
         val configuration = preferences.configuration.value
         val workspaceId = configuration.workspaceId?.takeIf(String::isNotBlank)
-        if (!configuration.enabled || workspaceId == null) return PhysicalButtonActionResult.NOT_CONFIGURED
+        if (!configuration.enabled || workspaceId == null || configuration.deviceDescriptor.isNullOrBlank() ||
+            preferences.bindingRequested.value) return PhysicalButtonActionResult.NOT_CONFIGURED
+        if (configuration.deviceDescriptor != expectedDeviceDescriptor) return PhysicalButtonActionResult.BLOCKED
         return try {
             val workspace = repository.getById(workspaceId)?.takeIf { it.id == workspaceId }
                 ?: return PhysicalButtonActionResult.WORKSPACE_UNAVAILABLE
-            if (!canLaunch() || preferences.configuration.value != configuration) {
+            if (!canLaunch() || preferences.configuration.value != configuration || preferences.bindingRequested.value) {
                 return PhysicalButtonActionResult.BLOCKED
             }
             if (launchWorkspace(workspace)) PhysicalButtonActionResult.DISPATCHED

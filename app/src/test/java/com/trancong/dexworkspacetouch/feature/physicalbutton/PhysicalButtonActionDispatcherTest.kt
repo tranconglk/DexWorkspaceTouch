@@ -14,7 +14,7 @@ import org.junit.Test
 class PhysicalButtonActionDispatcherTest {
     private val workspace = Workspace("chosen-id", "Chosen", WorkspaceCanvas(emptyList()), 0, 1, 0, 0)
     private val storage = object : PhysicalButtonStorage {
-        var value = PhysicalButtonConfiguration(true, workspace.id)
+        var value = PhysicalButtonConfiguration(true, workspace.id, "remote-descriptor")
         override fun read() = value
         override fun write(configuration: PhysicalButtonConfiguration) { value = configuration }
     }
@@ -75,7 +75,49 @@ class PhysicalButtonActionDispatcherTest {
         repository.beforeRead = { throw CancellationException("service stopped") }
         assertThrows(CancellationException::class.java) { runBlocking { dispatcher().dispatch() } }
     }
-    private fun dispatcher(canLaunch: suspend () -> Boolean = { true }) =
+
+    @Test fun missingBinding_doesNotLoadOrLaunch() = runBlocking {
+        storage.value = PhysicalButtonConfiguration(true, workspace.id)
+        assertEquals(PhysicalButtonActionResult.NOT_CONFIGURED,
+            dispatcher(PhysicalButtonPreferences(storage)).dispatch())
+        assertTrue(repository.requestedIds.isEmpty())
+        assertTrue(launched.isEmpty())
+    }
+
+    @Test fun bindingMode_doesNotLoadOrLaunch() = runBlocking {
+        preferences.beginBinding()
+        assertEquals(PhysicalButtonActionResult.NOT_CONFIGURED, dispatcher().dispatch())
+        assertTrue(repository.requestedIds.isEmpty())
+        assertTrue(launched.isEmpty())
+    }
+
+    @Test fun bindingStartedWhileCheckingGate_blocksQueuedAction() = runBlocking {
+        assertEquals(PhysicalButtonActionResult.BLOCKED, dispatcher {
+            preferences.beginBinding()
+            true
+        }.dispatch())
+        assertTrue(launched.isEmpty())
+    }
+
+    @Test fun bindingChangedWhileCheckingGate_blocksOldRemoteAction() = runBlocking {
+        assertEquals(PhysicalButtonActionResult.BLOCKED, dispatcher {
+            preferences.beginBinding()
+            preferences.captureRemote("other-remote", "Another remote")
+            true
+        }.dispatch())
+        assertTrue(launched.isEmpty())
+    }
+
+    @Test fun rebindBeforeQueuedActionStarts_blocksOriginalRemoteAction() = runBlocking {
+        val triggeringDescriptor = preferences.configuration.value.deviceDescriptor
+        preferences.beginBinding()
+        preferences.captureRemote("other-remote", "Another remote")
+        assertEquals(PhysicalButtonActionResult.BLOCKED, dispatcher().dispatch(triggeringDescriptor))
+        assertTrue(repository.requestedIds.isEmpty())
+        assertTrue(launched.isEmpty())
+    }
+
+    private fun dispatcher(preferences: PhysicalButtonPreferences = this.preferences, canLaunch: suspend () -> Boolean = { true }) =
         PhysicalButtonActionDispatcher(preferences, repository, canLaunch) {
             launched += it
             true

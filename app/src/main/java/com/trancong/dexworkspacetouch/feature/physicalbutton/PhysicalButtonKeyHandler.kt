@@ -8,22 +8,30 @@ data class PhysicalButtonKeyEvent(
     val downTime: Long,
     val isExternal: Boolean,
     val deviceDescriptor: String? = null,
+    val isVirtual: Boolean = false,
 )
 
-enum class PhysicalButtonKeyDecision { PASS_THROUGH, CONSUME, TRIGGER_WORKSPACE }
+enum class PhysicalButtonKeyDecision { PASS_THROUGH, CONSUME, BIND_REMOTE, TRIGGER_WORKSPACE }
 
 class PhysicalButtonKeyHandler {
-    private val consumedPresses = mutableMapOf<Int, Long>()
+    private data class ConsumedPress(val downTime: Long, val descriptor: String)
+    // deviceId chỉ ghép DOWN/UP của lần nhấn hiện tại, không dùng làm binding identity.
+    private val consumedPresses = mutableMapOf<Int, ConsumedPress>()
 
     fun handle(
         event: PhysicalButtonKeyEvent,
         enabled: Boolean,
         configuredDeviceDescriptor: String? = null,
+        bindingRequested: Boolean = false,
     ): PhysicalButtonKeyDecision {
-        if (event.keyCode != VOLUME_UP) return PhysicalButtonKeyDecision.PASS_THROUGH
+        if (event.keyCode != VOLUME_UP || !event.isExternal || event.isVirtual) {
+            return PhysicalButtonKeyDecision.PASS_THROUGH
+        }
+        val descriptor = event.deviceDescriptor?.takeIf(String::isNotBlank)
+            ?: return PhysicalButtonKeyDecision.PASS_THROUGH
 
         // Kết thúc cả chuỗi đã nhận, kể cả khi cấu hình đổi trong lúc giữ nút.
-        if (consumedPresses[event.deviceId] == event.downTime) {
+        if (consumedPresses[event.deviceId] == ConsumedPress(event.downTime, descriptor)) {
             when (event.action) {
                 ACTION_DOWN -> return PhysicalButtonKeyDecision.CONSUME
                 ACTION_UP -> {
@@ -32,13 +40,17 @@ class PhysicalButtonKeyHandler {
                 }
             }
         }
-        if (!enabled || !event.isExternal || event.action != ACTION_DOWN || event.repeatCount != 0) {
+        if (event.action != ACTION_DOWN || event.repeatCount != 0) {
             return PhysicalButtonKeyDecision.PASS_THROUGH
         }
-        if (configuredDeviceDescriptor != null && event.deviceDescriptor != configuredDeviceDescriptor) {
+        if (bindingRequested) {
+            consumedPresses[event.deviceId] = ConsumedPress(event.downTime, descriptor)
+            return PhysicalButtonKeyDecision.BIND_REMOTE
+        }
+        if (!enabled || configuredDeviceDescriptor.isNullOrBlank() || descriptor != configuredDeviceDescriptor) {
             return PhysicalButtonKeyDecision.PASS_THROUGH
         }
-        consumedPresses[event.deviceId] = event.downTime
+        consumedPresses[event.deviceId] = ConsumedPress(event.downTime, descriptor)
         return PhysicalButtonKeyDecision.TRIGGER_WORKSPACE
     }
 
