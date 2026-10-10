@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">DexWorkspaceTouch</string>
+    <string name="physical_button_accessibility_label">DWT Physical Button</string>
+    <string name="physical_button_accessibility_description">Nhận phím Volume Up từ nút Bluetooth/USB để mở Workspace bạn đã chọn trên DeX. Dịch vụ không đọc nội dung màn hình hoặc thao tác giao diện.</string>
 </resources>

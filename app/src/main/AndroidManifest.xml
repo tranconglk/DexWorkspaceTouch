@@ -102,5 +102,17 @@
             android:launchMode="singleTop"
             android:noHistory="true"
             android:theme="@style/Theme.DexWorkspaceTouch.CarDockShortcut" />
+        <service
+            android:name=".feature.physicalbutton.PhysicalButtonAccessibilityService"
+            android:exported="true"
+            android:label="@string/physical_button_accessibility_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/physical_button_accessibility_service" />
+        </service>
     </application>
 </manifest>

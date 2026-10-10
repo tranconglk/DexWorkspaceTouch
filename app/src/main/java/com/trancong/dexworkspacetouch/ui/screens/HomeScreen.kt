@@ -150,6 +150,7 @@ fun HomeScreen(
     onDismissLaunchResult: () -> Unit,
     onOpenCar: () -> Unit = {},
     onOpenUpdates: () -> Unit = {},
+    onOpenPhysicalButton: () -> Unit = {},
     onShareWorkspace: (String) -> Unit = {},
     onSaveWorkspaceToFile: (String) -> Unit = {},
     onImportWorkspace: () -> Unit = {},
@@ -621,6 +622,12 @@ fun HomeScreen(
                             }
                         }
                     }
+                }
+                if (!isMultiSelectMode) item(span = { GridItemSpan(maxLineSpan) }) {
+                    OutlinedButton(
+                        onClick = onOpenPhysicalButton,
+                        modifier = Modifier.fillMaxWidth().heightIn(min = TouchTargets.SecondaryButton),
+                    ) { Text("Physical button (Thử nghiệm)") }
                 }
                 if (!isMultiSelectMode) item(span = { GridItemSpan(maxLineSpan) }) {
                     Surface(

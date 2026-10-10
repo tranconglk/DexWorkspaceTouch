@@ -104,11 +104,13 @@ import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.prepareLate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import android.widget.Toast
+import com.trancong.dexworkspacetouch.feature.physicalbutton.PhysicalButtonSettingsScreen
 
 internal object Routes {
     const val Home = "home"
     const val Car = "car"
     const val Updates = "updates"
+    const val PhysicalButton = "physical-button"
     const val EmbeddedWaze = "embedded-waze"
     const val EmbeddedCalculator = "embedded-calculator"
     const val EmbeddedDualApp = "embedded-dual-app"
@@ -626,6 +628,7 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
                 onDismissLaunchResult = launchViewModel::dismissResult,
                 onOpenCar = { navController.navigate(Routes.Car) },
                 onOpenUpdates = { navController.navigate(Routes.Updates) },
+                onOpenPhysicalButton = { navController.navigate(Routes.PhysicalButton) },
                 onShareWorkspace = { id -> exportMode = "share"; transferViewModel.prepareExport(id) },
                 onSaveWorkspaceToFile = { id -> exportMode = "save"; transferViewModel.prepareExport(id) },
                 onImportWorkspace = { importLauncher.launch("*/*") },
@@ -674,6 +677,9 @@ fun TouchNavigation(activity: Activity, externalTransferViewModel: ExternalTrans
                 },
                 onBack = navController::navigateUp,
             )
+        }
+        composable(Routes.PhysicalButton) {
+            PhysicalButtonSettingsScreen(activity = activity, onBack = { navController.popBackStack() })
         }
         composable(Routes.LayoutDesigner) {
             LayoutDesignerScreen(

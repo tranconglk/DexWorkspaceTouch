@@ -31,8 +31,12 @@ import okhttp3.OkHttpClient
 import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.AndroidWorkspaceLaunchDiagnostics
 import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGate
 import kotlinx.coroutines.Job
+import com.trancong.dexworkspacetouch.feature.physicalbutton.AndroidPhysicalButtonStorage
+import com.trancong.dexworkspacetouch.feature.physicalbutton.PhysicalButtonPreferences
 
 class DexWorkspaceTouchApplication : Application() {
+    lateinit var physicalButtonPreferences: PhysicalButtonPreferences
+        private set
     lateinit var workspaceRepository: WorkspaceRepository
         private set
     lateinit var appIconLoader: AppIconLoader
@@ -60,6 +64,7 @@ class DexWorkspaceTouchApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        physicalButtonPreferences = PhysicalButtonPreferences(AndroidPhysicalButtonStorage(applicationContext))
         com.trancong.dexworkspacetouch.diagnostics.embedded.EmbeddedEvidence.initializeApp(
             java.io.File(filesDir, "dwt-vdm-012-evidence"))
         appIconLoader = PackageManagerAppIconLoader.create(applicationContext)
