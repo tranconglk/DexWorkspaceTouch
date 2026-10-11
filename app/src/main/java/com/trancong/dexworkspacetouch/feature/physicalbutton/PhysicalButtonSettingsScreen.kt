@@ -37,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.trancong.dexworkspacetouch.DexWorkspaceTouchApplication
 import com.trancong.dexworkspacetouch.ui.design.Spacing
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
@@ -53,10 +54,26 @@ fun PhysicalButtonSettingsScreen(activity: Activity, onBack: () -> Unit) {
     val workspaces by workspaceFlow.collectAsState(initial = emptyList())
     val accessibilityManager = remember(activity) { activity.getSystemService(AccessibilityManager::class.java) }
     val serviceComponent = remember(activity) { ComponentName(activity, PhysicalButtonAccessibilityService::class.java) }
-    fun serviceEnabled(): Boolean = accessibilityManager
-        .getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
-        .any { ComponentName(it.resolveInfo.serviceInfo.packageName, it.resolveInfo.serviceInfo.name) == serviceComponent }
-    var accessibilityEnabled by remember { mutableStateOf(serviceEnabled()) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val accessibilityReader = remember(activity, serviceComponent) {
+        PhysicalButtonAccessibilityStateReader(
+            readGrantEnabled = {
+                resolvePhysicalButtonAccessibilityGrant(
+                    Settings.Secure.getString(activity.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES),
+                    Settings.Secure.getInt(activity.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED, 0),
+                    serviceComponent,
+                )
+            },
+            readRuntimeReady = {
+                accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
+                    .any { ComponentName(it.resolveInfo.serviceInfo.packageName, it.resolveInfo.serviceInfo.name) == serviceComponent }
+            },
+        )
+    }
+    var accessibilityState by remember(accessibilityReader) { mutableStateOf(accessibilityReader.read()) }
+    val accessibilityObserver = remember(accessibilityReader) {
+        PhysicalButtonAccessibilityStateObserver(accessibilityReader::read) { accessibilityState = it }
+    }
 
     DisposableEffect(preferences) {
         onDispose { preferences.cancelBinding() }
@@ -68,14 +85,18 @@ fun PhysicalButtonSettingsScreen(activity: Activity, onBack: () -> Unit) {
         }
     }
 
-    DisposableEffect(activity) {
+    DisposableEffect(activity, lifecycleOwner, accessibilityObserver) {
         val observer = object : ContentObserver(Handler(Looper.getMainLooper())) {
-            override fun onChange(selfChange: Boolean) { accessibilityEnabled = serviceEnabled() }
+            override fun onChange(selfChange: Boolean) { accessibilityObserver.refresh() }
         }
         val resolver = activity.contentResolver
         resolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), false, observer)
         resolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ACCESSIBILITY_ENABLED), false, observer)
-        onDispose { resolver.unregisterContentObserver(observer) }
+        lifecycleOwner.lifecycle.addObserver(accessibilityObserver)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(accessibilityObserver)
+            resolver.unregisterContentObserver(observer)
+        }
     }
 
     Scaffold { padding ->
@@ -101,7 +122,7 @@ fun PhysicalButtonSettingsScreen(activity: Activity, onBack: () -> Unit) {
                 OutlinedButton(onClick = preferences::cancelBinding,
                     modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Hủy chờ") }
             } else {
-                Button(onClick = preferences::beginBinding, enabled = accessibilityEnabled,
+                Button(onClick = preferences::beginBinding, enabled = accessibilityState.grantEnabled,
                     modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) {
                     Text(if (configuration.deviceDescriptor.isNullOrBlank()) "Liên kết remote" else "Liên kết remote khác")
                 }
@@ -112,7 +133,9 @@ fun PhysicalButtonSettingsScreen(activity: Activity, onBack: () -> Unit) {
             }
             PhysicalButtonWorkspacePicker("Volume Up", configuration.volumeUpWorkspaceId, workspaces, preferences::setVolumeUpWorkspace)
             PhysicalButtonWorkspacePicker("Volume Down", configuration.volumeDownWorkspaceId, workspaces, preferences::setVolumeDownWorkspace)
-            Text(if (accessibilityEnabled) "Accessibility service: Đã bật" else "Accessibility service: Đã tắt")
+            Text(if (accessibilityState.grantEnabled) "Quyền Trợ năng: Đã bật" else "Quyền Trợ năng: Đã tắt")
+            // An absent API entry cannot distinguish binding from another runtime failure.
+            Text(if (accessibilityState.runtimeReady) "Dịch vụ: Sẵn sàng" else "Dịch vụ: Chưa xác nhận sẵn sàng")
             Button(onClick = {
                 runCatching { activity.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
                     .onFailure { Toast.makeText(activity, "Không thể mở cài đặt Trợ năng.", Toast.LENGTH_SHORT).show() }
