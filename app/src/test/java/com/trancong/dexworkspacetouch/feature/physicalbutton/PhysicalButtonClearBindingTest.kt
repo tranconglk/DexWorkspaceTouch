@@ -38,7 +38,7 @@ class PhysicalButtonClearBindingTest {
             val localPreferences = PhysicalButtonPreferences(MemoryStorage(enabled))
             localPreferences.clearRemoteBinding()
             assertEquals(enabled, localPreferences.configuration.value.enabled)
-            assertEquals("chosen-id", localPreferences.configuration.value.workspaceId)
+            assertEquals("chosen-id", localPreferences.configuration.value.volumeUpWorkspaceId)
             assertNull(localPreferences.configuration.value.deviceDescriptor)
         }
     }
@@ -121,7 +121,7 @@ class PhysicalButtonClearBindingTest {
         }
 
     private class MemoryStorage(enabled: Boolean = true) : PhysicalButtonStorage {
-        private var value = PhysicalButtonConfiguration(enabled, "chosen-id", "old-remote", "AB Shutter3")
+        private var value = PhysicalButtonConfiguration(enabled, "chosen-id", null, "old-remote", "AB Shutter3")
         val writes = mutableListOf<PhysicalButtonConfiguration>()
         override fun read() = value
         override fun write(configuration: PhysicalButtonConfiguration) {

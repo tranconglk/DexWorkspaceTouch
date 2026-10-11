@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import com.trancong.dexworkspacetouch.DexWorkspaceTouchApplication
 import com.trancong.dexworkspacetouch.ui.design.Spacing
 import com.trancong.dexworkspacetouch.ui.design.TouchTargets
+import com.trancong.dexworkspacetouch.workspace.persistence.domain.Workspace
 import kotlinx.coroutines.delay
 
 @Composable
@@ -56,7 +57,6 @@ fun PhysicalButtonSettingsScreen(activity: Activity, onBack: () -> Unit) {
         .getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
         .any { ComponentName(it.resolveInfo.serviceInfo.packageName, it.resolveInfo.serviceInfo.name) == serviceComponent }
     var accessibilityEnabled by remember { mutableStateOf(serviceEnabled()) }
-    var workspaceMenuOpen by remember { mutableStateOf(false) }
 
     DisposableEffect(preferences) {
         onDispose { preferences.cancelBinding() }
@@ -87,40 +87,12 @@ fun PhysicalButtonSettingsScreen(activity: Activity, onBack: () -> Unit) {
                 Text("Quay lại")
             }
             Text("Physical button (Thử nghiệm)", style = MaterialTheme.typography.headlineSmall)
-            Text("Liên kết nút Bluetooth/USB, rồi bấm Volume Up trên nút đã liên kết để mở Workspace trên DeX, kể cả khi DWT ở nền.")
+            Text("Liên kết AB Shutter3, rồi chọn Workspace riêng cho Volume Up và Volume Down để mở trên DeX, kể cả khi DWT ở nền.")
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(if (configuration.enabled) "Physical button: Đã bật" else "Physical button: Đã tắt")
                 Switch(checked = configuration.enabled, onCheckedChange = preferences::setEnabled)
             }
-            Column {
-                val selected = workspaces.firstOrNull { it.id == configuration.workspaceId }
-                OutlinedButton(onClick = { workspaceMenuOpen = true }, modifier = Modifier.fillMaxWidth().heightIn(min = TouchTargets.SecondaryButton)) {
-                    Text(selected?.name ?: if (configuration.workspaceId == null) "Chọn Workspace ▼" else "Workspace đã xóa hoặc không khả dụng ▼")
-                }
-                DropdownMenu(expanded = workspaceMenuOpen, onDismissRequest = { workspaceMenuOpen = false }) {
-                    DropdownMenuItem(text = { Text("Không chọn") }, onClick = {
-                        preferences.setWorkspace(null)
-                        workspaceMenuOpen = false
-                    })
-                    workspaces.forEach { workspace ->
-                        DropdownMenuItem(text = { Text(workspace.name) }, onClick = {
-                            preferences.setWorkspace(workspace.id)
-                            workspaceMenuOpen = false
-                        })
-                    }
-                }
-            }
-            if (configuration.workspaceId == null) Text("Chọn Workspace trước khi dùng nút.")
-            else if (workspaces.none { it.id == configuration.workspaceId }) Text("Workspace đã chọn không khả dụng. DWT sẽ không mở Workspace khác.")
-            Text(if (accessibilityEnabled) "Accessibility service: Đã bật" else "Accessibility service: Đã tắt")
-            Button(onClick = {
-                runCatching { activity.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
-                    .onFailure { Toast.makeText(activity, "Không thể mở cài đặt Trợ năng.", Toast.LENGTH_SHORT).show() }
-            }, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) {
-                Text("Mở cài đặt Trợ năng")
-            }
-            Text("Bật dịch vụ DWT Physical Button trong Trợ năng để nhận phím. Nút Volume Up trên điện thoại vẫn hoạt động bình thường.")
             Text("Remote")
             Text(if (configuration.deviceDescriptor.isNullOrBlank()) "Chưa liên kết"
                 else configuration.deviceName ?: "Đã liên kết")
@@ -138,7 +110,50 @@ fun PhysicalButtonSettingsScreen(activity: Activity, onBack: () -> Unit) {
                 OutlinedButton(onClick = preferences::clearRemoteBinding,
                     modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) { Text("Xóa liên kết") }
             }
-            Text("Chỉ nhận Volume Up từ remote đã liên kết. Khi chưa liên kết hoặc dùng thiết bị khác, Android xử lý phím bình thường. Chỉ mở Workspace khi có đúng một màn hình ngoài đang hoạt động.")
+            PhysicalButtonWorkspacePicker("Volume Up", configuration.volumeUpWorkspaceId, workspaces, preferences::setVolumeUpWorkspace)
+            PhysicalButtonWorkspacePicker("Volume Down", configuration.volumeDownWorkspaceId, workspaces, preferences::setVolumeDownWorkspace)
+            Text(if (accessibilityEnabled) "Accessibility service: Đã bật" else "Accessibility service: Đã tắt")
+            Button(onClick = {
+                runCatching { activity.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
+                    .onFailure { Toast.makeText(activity, "Không thể mở cài đặt Trợ năng.", Toast.LENGTH_SHORT).show() }
+            }, modifier = Modifier.heightIn(min = TouchTargets.SecondaryButton)) {
+                Text("Mở cài đặt Trợ năng")
+            }
+            Text("Bật dịch vụ DWT Physical Button trong Trợ năng để nhận phím. Volume Up và Volume Down trên điện thoại vẫn hoạt động bình thường.")
+            Text("Chỉ nhận phím đã chọn Workspace từ remote đã liên kết. Khi chưa liên kết, dùng thiết bị khác hoặc phím không có Workspace khả dụng, Android xử lý phím bình thường. Chỉ mở Workspace khi có đúng một màn hình ngoài đang hoạt động.")
+        }
+    }
+}
+
+@Composable
+private fun PhysicalButtonWorkspacePicker(
+    label: String,
+    workspaceId: String?,
+    workspaces: List<Workspace>,
+    onWorkspaceChanged: (String?) -> Unit,
+) {
+    var menuOpen by remember { mutableStateOf(false) }
+    val selected = workspaces.firstOrNull { it.id == workspaceId }
+    Column {
+        Text(label, style = MaterialTheme.typography.titleMedium)
+        OutlinedButton(onClick = { menuOpen = true },
+            modifier = Modifier.fillMaxWidth().heightIn(min = TouchTargets.SecondaryButton)) {
+            Text((selected?.name ?: if (workspaceId == null) "Không chọn" else "Workspace đã xóa hoặc không khả dụng") + " ▼")
+        }
+        DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+            DropdownMenuItem(text = { Text("Không chọn") }, onClick = {
+                onWorkspaceChanged(null)
+                menuOpen = false
+            })
+            workspaces.forEach { workspace ->
+                DropdownMenuItem(text = { Text(workspace.name) }, onClick = {
+                    onWorkspaceChanged(workspace.id)
+                    menuOpen = false
+                })
+            }
+        }
+        if (workspaceId != null && selected == null) {
+            Text("Workspace đã chọn không khả dụng. Android xử lý phím này bình thường.")
         }
     }
 }

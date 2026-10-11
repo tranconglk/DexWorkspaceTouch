@@ -1,7 +1,11 @@
 package com.trancong.dexworkspacetouch.feature.physicalbutton
 
 import android.accessibilityservice.AccessibilityService
+import android.app.Activity
+import android.app.Application
 import android.hardware.display.DisplayManager
+import android.os.Build
+import android.os.Bundle
 import android.util.Log
 import android.view.Display
 import android.view.KeyEvent
@@ -9,6 +13,7 @@ import android.view.accessibility.AccessibilityEvent
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import com.trancong.dexworkspacetouch.DexWorkspaceTouchApplication
+import com.trancong.dexworkspacetouch.MainActivity
 import com.trancong.dexworkspacetouch.license.runtime.LicenseGateUiState
 import com.trancong.dexworkspacetouch.license.runtime.LicenseRuntimeCoordinator
 import com.trancong.dexworkspacetouch.platform.launch.android.DisplayTargetWorkspaceLaunchRuntime
@@ -25,9 +30,33 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.util.WeakHashMap
 
 /** Chỉ lọc hardware key; không đọc cây UI, click UI hoặc mô phỏng touch. */
 class PhysicalButtonAccessibilityService : AccessibilityService() {
+    // Chẩn đoán khác biệt giữa context Activity DeX và AccessibilityService.
+    // Chỉ giữ weak key; display được xác thực lại khi launch.
+    private val workspaceHostDisplayIds = WeakHashMap<Activity, Int>()
+    private val displayContextDiagnostics = object : Application.ActivityLifecycleCallbacks {
+        override fun onActivityResumed(activity: Activity) {
+            val activityDisplays = activity.getSystemService(DisplayManager::class.java)
+            val serviceDisplays = getSystemService(DisplayManager::class.java)
+            @Suppress("DEPRECATION")
+            val host = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) activity.display
+                else activity.windowManager.defaultDisplay
+            if (activity is MainActivity && host != null) workspaceHostDisplayIds[activity] = host.displayId
+            val activityHost = host?.let { activityDisplays.getDisplay(it.displayId) }
+            val serviceHost = host?.let { serviceDisplays.getDisplay(it.displayId) }
+            Log.i(LOG_TAG, "DisplayContext activity=${activity.javaClass.simpleName} host=${host?.let { "${it.displayId}:${it.state}:${it.flags}" }} activityHost=${activityHost?.let { "${it.displayId}:${it.state}:${it.flags}" }} serviceHost=${serviceHost?.let { "${it.displayId}:${it.state}:${it.flags}" }}")
+            Log.i(LOG_TAG, "DisplayContext activityDisplays=${activityDisplays.getDisplays().joinToString { "${it.displayId}:${it.state}:${it.flags}" }} serviceDisplays=${serviceDisplays.getDisplays().joinToString { "${it.displayId}:${it.state}:${it.flags}" }}")
+        }
+        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) = Unit
+        override fun onActivityStarted(activity: Activity) = Unit
+        override fun onActivityPaused(activity: Activity) = Unit
+        override fun onActivityStopped(activity: Activity) = Unit
+        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
+        override fun onActivityDestroyed(activity: Activity) { workspaceHostDisplayIds.remove(activity) }
+    }
     private val keyHandler = PhysicalButtonKeyHandler()
     // Post dispatch sau khi onKeyEvent trả về để không giữ callback lọc phím.
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
@@ -38,9 +67,11 @@ class PhysicalButtonAccessibilityService : AccessibilityService() {
     private lateinit var preferences: PhysicalButtonPreferences
     private var dispatchJob: Job? = null
     private var targetDisplayId: Int? = null
+    private var availableWorkspaceIds: Set<String> = emptySet()
 
     override fun onCreate() {
         super.onCreate()
+        application.registerActivityLifecycleCallbacks(displayContextDiagnostics)
         val app = application as DexWorkspaceTouchApplication
         preferences = app.physicalButtonPreferences
         val displayManager = getSystemService(DisplayManager::class.java)
@@ -65,22 +96,45 @@ class PhysicalButtonAccessibilityService : AccessibilityService() {
             canLaunch = {
                 // Dùng nguyên gate hiện có, kể cả sau khi service sống lâu ở background.
                 licenseCoordinator.bootstrap()
-                licenseCoordinator.state.first { it !is LicenseGateUiState.Checking } is LicenseGateUiState.Allowed
+                val gate = licenseCoordinator.state.first { it !is LicenseGateUiState.Checking }
+                val allowed = gate is LicenseGateUiState.Allowed
+                Log.i(LOG_TAG, "Gate licenseAllowed=$allowed state=${gate.javaClass.simpleName}")
+                allowed
             },
             launchWorkspace = { workspace ->
                 // Không tự chọn giữa nhiều màn hình ngoài hoặc chuyển sang màn hình điện thoại.
-                val display = displayManager.getDisplays(DisplayManager.DISPLAY_CATEGORY_PRESENTATION)
-                    .filter {
-                        it.displayId != Display.DEFAULT_DISPLAY && it.state == Display.STATE_ON &&
-                            it.flags and Display.FLAG_PRIVATE == 0
-                    }.singleOrNull()
+                val availableDisplays = displayManager.getDisplays()
+                Log.i(LOG_TAG, "Gate availableDisplays=${availableDisplays.joinToString { "${it.displayId}:${it.state}:${it.flags}" }}")
+                val observedHostDisplays = workspaceHostDisplayIds.values.toSet()
+                    .mapNotNull(displayManager::getDisplay)
+                val requireObservedHost = Build.VERSION.SDK_INT == Build.VERSION_CODES.Q
+                Log.i(LOG_TAG, "Gate observedHostDisplays=${observedHostDisplays.joinToString { "${it.displayId}:${it.state}:${it.flags}" }} requireObservedHost=$requireObservedHost")
+                val selectedId = selectPhysicalButtonDisplayId(
+                    availableDisplays.map { PhysicalButtonDisplaySnapshot(it.displayId, it.state, it.flags) },
+                    observedHostDisplays.map { PhysicalButtonDisplaySnapshot(it.displayId, it.state, it.flags) },
+                    requireObservedHost,
+                )
+                val display = selectedId?.let(displayManager::getDisplay)?.takeIf {
+                    it.displayId == selectedId && it.displayId != Display.DEFAULT_DISPLAY &&
+                        it.state == Display.STATE_ON && it.flags and Display.FLAG_PRIVATE == 0
+                }
+                Log.i(LOG_TAG, "Gate selectedDisplay=${display?.displayId} launching=${isLaunching()} carBusy=${app.carWorkflowExecutionArbiter.isRunning.value} productPhase=${app.embeddedProductRunGate.status.value.phase}")
                 if (display == null || isLaunching() || app.carWorkflowExecutionArbiter.isRunning.value) false
-                else app.embeddedProductRunGate.tryDispatchClassic {
-                    targetDisplayId = display.displayId
-                    launchViewModel.launchWorkspace(workspace.toLibraryItem(), runtime, hostToken)
+                else {
+                    val admitted = app.embeddedProductRunGate.tryDispatchClassic {
+                        targetDisplayId = display.displayId
+                        launchViewModel.launchWorkspace(workspace.toLibraryItem(), runtime, hostToken)
+                    }
+                    Log.i(LOG_TAG, "Gate classicAdmitted=$admitted")
+                    admitted
                 }
             },
         )
+        serviceScope.launch {
+            app.workspaceRepository.observeAll().collect { workspaces ->
+                availableWorkspaceIds = workspaces.mapTo(mutableSetOf()) { it.id }
+            }
+        }
         serviceScope.launch {
             launchViewModelSnapshotLog()
         }
@@ -100,8 +154,8 @@ class PhysicalButtonAccessibilityService : AccessibilityService() {
                 deviceDescriptor = device?.descriptor,
                 isVirtual = device?.isVirtual != false,
             ),
-            enabled = configuration.enabled && !configuration.workspaceId.isNullOrBlank(),
-            configuredDeviceDescriptor = configuration.deviceDescriptor,
+            configuration = configuration,
+            availableWorkspaceIds = availableWorkspaceIds,
             bindingRequested = preferences.bindingRequested.value,
         )
         if (decision == PhysicalButtonKeyDecision.PASS_THROUGH) return false
@@ -112,10 +166,12 @@ class PhysicalButtonAccessibilityService : AccessibilityService() {
             return true
         }
         if (decision == PhysicalButtonKeyDecision.TRIGGER_WORKSPACE) {
-            Log.i(LOG_TAG, "Trigger device=${device?.name} deviceId=${event.deviceId}")
+            val workspaceId = configuration.workspaceForKey(event.keyCode)
+            val keyCode = event.keyCode
+            Log.i(LOG_TAG, "Trigger keyCode=$keyCode workspaceId=$workspaceId device=${device?.name} deviceId=${event.deviceId}")
             if (dispatchJob?.isActive != true && !isLaunching()) {
                 dispatchJob = serviceScope.launch {
-                    Log.i(LOG_TAG, "Workspace action=${dispatcher.dispatch(configuration.deviceDescriptor)}")
+                    Log.i(LOG_TAG, "Workspace action=${dispatcher.dispatch(configuration.deviceDescriptor, keyCode, workspaceId)}")
                 }
             }
         }
@@ -141,6 +197,8 @@ class PhysicalButtonAccessibilityService : AccessibilityService() {
     override fun onInterrupt() { preferences.cancelBinding() }
 
     override fun onDestroy() {
+        application.unregisterActivityLifecycleCallbacks(displayContextDiagnostics)
+        workspaceHostDisplayIds.clear()
         preferences.cancelBinding()
         launchViewModel.onHostDisposed(hostToken)
         serviceScope.cancel()
@@ -149,4 +207,21 @@ class PhysicalButtonAccessibilityService : AccessibilityService() {
     }
 
     private companion object { const val LOG_TAG = "DwtPhysicalButton" }
+}
+
+internal data class PhysicalButtonDisplaySnapshot(val id: Int, val state: Int, val flags: Int)
+
+/** Một màn hình ngoài được liệt kê; legacy chỉ launch vào host DeX đã quan sát. */
+internal fun selectPhysicalButtonDisplayId(
+    availableDisplays: List<PhysicalButtonDisplaySnapshot>,
+    observedHostDisplays: List<PhysicalButtonDisplaySnapshot>,
+    requireObservedHost: Boolean,
+): Int? {
+    fun activeExternal(displays: List<PhysicalButtonDisplaySnapshot>) = displays.filter {
+        it.id != Display.DEFAULT_DISPLAY && it.state == Display.STATE_ON &&
+            it.flags and Display.FLAG_PRIVATE == 0
+    }.distinctBy { it.id }
+    val available = activeExternal(availableDisplays).singleOrNull() ?: return null
+    return if (requireObservedHost) activeExternal(observedHostDisplays).singleOrNull()?.id
+        else available.id
 }

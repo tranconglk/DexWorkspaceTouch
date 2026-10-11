@@ -14,7 +14,7 @@ import org.junit.Test
 class PhysicalButtonActionDispatcherTest {
     private val workspace = Workspace("chosen-id", "Chosen", WorkspaceCanvas(emptyList()), 0, 1, 0, 0)
     private val storage = object : PhysicalButtonStorage {
-        var value = PhysicalButtonConfiguration(true, workspace.id, "remote-descriptor")
+        var value = PhysicalButtonConfiguration(true, workspace.id, null, "remote-descriptor")
         override fun read() = value
         override fun write(configuration: PhysicalButtonConfiguration) { value = configuration }
     }
@@ -27,6 +27,46 @@ class PhysicalButtonActionDispatcherTest {
         assertEquals(listOf("chosen-id"), repository.requestedIds)
         assertEquals(listOf(workspace), launched)
     }
+    @Test fun dualMapping_dispatchesExactWorkspaceForEachKey() = runBlocking {
+        preferences.setVolumeDownWorkspace("down-id")
+        val downWorkspace = workspace.copy(id = "down-id", name = "Down")
+        assertEquals(PhysicalButtonActionResult.DISPATCHED, dispatcher().dispatch(keyCode = 24))
+        repository.stored = downWorkspace
+        assertEquals(PhysicalButtonActionResult.DISPATCHED, dispatcher().dispatch(keyCode = 25))
+        assertEquals(listOf("chosen-id", "down-id"), repository.requestedIds)
+        assertEquals(listOf(workspace, downWorkspace), launched)
+    }
+    @Test fun unconfiguredDown_neverFallsBackToConfiguredUp() = runBlocking {
+        assertEquals(PhysicalButtonActionResult.NOT_CONFIGURED, dispatcher().dispatch(keyCode = 25))
+        assertTrue(repository.requestedIds.isEmpty())
+        assertTrue(launched.isEmpty())
+    }
+    @Test fun deletedDown_neverFallsBackToAvailableUp() = runBlocking {
+        preferences.setVolumeDownWorkspace("deleted-id")
+        assertEquals(PhysicalButtonActionResult.WORKSPACE_UNAVAILABLE, dispatcher().dispatch(keyCode = 25))
+        assertEquals(listOf("deleted-id"), repository.requestedIds)
+        assertTrue(launched.isEmpty())
+    }
+    @Test fun downOnly_dispatchesDownAndLeavesUpUnconfigured() = runBlocking {
+        preferences.setVolumeDownWorkspace(workspace.id)
+        preferences.setVolumeUpWorkspace(null)
+        assertEquals(PhysicalButtonActionResult.NOT_CONFIGURED, dispatcher().dispatch(keyCode = 24))
+        assertEquals(PhysicalButtonActionResult.DISPATCHED, dispatcher().dispatch(keyCode = 25))
+        assertEquals(listOf(workspace), launched)
+    }
+    @Test fun unknownKey_doesNotLoadOrLaunch() = runBlocking {
+        assertEquals(PhysicalButtonActionResult.NOT_CONFIGURED, dispatcher().dispatch(keyCode = 85))
+        assertTrue(repository.requestedIds.isEmpty())
+        assertTrue(launched.isEmpty())
+    }
+    @Test fun mappingChangedBeforeQueuedDispatch_blocksInsteadOfOpeningNewSelection() = runBlocking {
+        preferences.setVolumeDownWorkspace("down-id")
+        preferences.setVolumeDownWorkspace(workspace.id)
+        assertEquals(PhysicalButtonActionResult.BLOCKED,
+            dispatcher().dispatch(keyCode = 25, expectedWorkspaceId = "down-id"))
+        assertTrue(repository.requestedIds.isEmpty())
+        assertTrue(launched.isEmpty())
+    }
     @Test fun disabled_doesNotLoadOrLaunch() = runBlocking {
         preferences.setEnabled(false)
         assertEquals(PhysicalButtonActionResult.NOT_CONFIGURED, dispatcher().dispatch())
@@ -34,7 +74,7 @@ class PhysicalButtonActionDispatcherTest {
         assertTrue(launched.isEmpty())
     }
     @Test fun unconfigured_doesNotLoadOrLaunch() = runBlocking {
-        preferences.setWorkspace(null)
+        preferences.setVolumeUpWorkspace(null)
         assertEquals(PhysicalButtonActionResult.NOT_CONFIGURED, dispatcher().dispatch())
         assertTrue(repository.requestedIds.isEmpty())
         assertTrue(launched.isEmpty())
@@ -57,7 +97,7 @@ class PhysicalButtonActionDispatcherTest {
         assertTrue(launched.isEmpty())
     }
     @Test fun selectionChangedWhileLoading_doesNotLaunchOldWorkspace() = runBlocking {
-        repository.beforeRead = { preferences.setWorkspace("another-id") }
+        repository.beforeRead = { preferences.setVolumeUpWorkspace("another-id") }
         assertEquals(PhysicalButtonActionResult.BLOCKED, dispatcher().dispatch())
         assertTrue(launched.isEmpty())
     }

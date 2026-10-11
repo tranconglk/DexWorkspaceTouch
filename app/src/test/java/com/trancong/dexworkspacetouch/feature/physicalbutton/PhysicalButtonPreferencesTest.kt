@@ -10,14 +10,43 @@ class PhysicalButtonPreferencesTest {
     @Test fun newConfiguration_isDisabledAndUnconfigured() {
         val preferences = PhysicalButtonPreferences(MemoryStorage())
         assertFalse(preferences.configuration.value.enabled)
-        assertNull(preferences.configuration.value.workspaceId)
+        assertNull(preferences.configuration.value.volumeUpWorkspaceId)
+        assertNull(preferences.configuration.value.volumeDownWorkspaceId)
         assertNull(preferences.configuration.value.deviceDescriptor)
         assertFalse(preferences.bindingRequested.value)
+    }
+    @Test fun independentMappings_surviveRecreationAndCanBeClearedSeparately() {
+        val storage = MemoryStorage()
+        val preferences = PhysicalButtonPreferences(storage)
+        preferences.setVolumeUpWorkspace("up-id")
+        preferences.setVolumeDownWorkspace("down-id")
+        preferences.setEnabled(true)
+        preferences.beginBinding()
+        preferences.captureRemote("remote-descriptor", "AB Shutter3")
+        preferences.setEnabled(false)
+        assertEquals(PhysicalButtonConfiguration(false, "up-id", "down-id", "remote-descriptor", "AB Shutter3"),
+            PhysicalButtonPreferences(storage).configuration.value)
+        preferences.setVolumeUpWorkspace(null)
+        assertEquals("down-id", PhysicalButtonPreferences(storage).configuration.value.volumeDownWorkspaceId)
+        preferences.setVolumeUpWorkspace("up-again")
+        preferences.setVolumeDownWorkspace("  ")
+        assertEquals("up-again", PhysicalButtonPreferences(storage).configuration.value.volumeUpWorkspaceId)
+        assertNull(PhysicalButtonPreferences(storage).configuration.value.volumeDownWorkspaceId)
+    }
+
+    @Test fun clearAndRebind_preserveBothMappings() {
+        val storage = MemoryStorage(PhysicalButtonConfiguration(true, "up-id", "down-id", "old-remote", "AB Shutter3"))
+        val preferences = PhysicalButtonPreferences(storage)
+        preferences.clearRemoteBinding()
+        assertEquals(PhysicalButtonConfiguration(true, "up-id", "down-id"), storage.value)
+        preferences.beginBinding()
+        preferences.captureRemote("new-remote", "AB Shutter3")
+        assertEquals(PhysicalButtonConfiguration(true, "up-id", "down-id", "new-remote", "AB Shutter3"), storage.value)
     }
     @Test fun configuration_survivesRecreationAndDisablingKeepsWorkspace() {
         val storage = MemoryStorage()
         val preferences = PhysicalButtonPreferences(storage)
-        preferences.setWorkspace("chosen-workspace")
+        preferences.setVolumeUpWorkspace("chosen-workspace")
         preferences.setEnabled(true)
         assertEquals(PhysicalButtonConfiguration(true, "chosen-workspace"),
             PhysicalButtonPreferences(storage).configuration.value)
@@ -28,13 +57,13 @@ class PhysicalButtonPreferencesTest {
     @Test fun clearingWorkspace_clearsPersistedSelection() {
         val storage = MemoryStorage(PhysicalButtonConfiguration(true, "chosen-workspace"))
         val preferences = PhysicalButtonPreferences(storage)
-        preferences.setWorkspace(null)
-        assertNull(PhysicalButtonPreferences(storage).configuration.value.workspaceId)
+        preferences.setVolumeUpWorkspace(null)
+        assertNull(PhysicalButtonPreferences(storage).configuration.value.volumeUpWorkspaceId)
     }
     @Test fun blankWorkspace_isUnconfigured() {
         val preferences = PhysicalButtonPreferences(MemoryStorage())
-        preferences.setWorkspace("  ")
-        assertNull(preferences.configuration.value.workspaceId)
+        preferences.setVolumeUpWorkspace("  ")
+        assertNull(preferences.configuration.value.volumeUpWorkspaceId)
     }
 
     @Test fun successfulBinding_persistsDescriptorAndDisplayNameWithoutChangingWorkspace() {
@@ -43,7 +72,7 @@ class PhysicalButtonPreferencesTest {
         preferences.beginBinding()
         assertTrue(preferences.captureRemote("remote-descriptor", "AB Shutter3"))
         assertFalse(preferences.bindingRequested.value)
-        assertEquals(PhysicalButtonConfiguration(true, "chosen-workspace", "remote-descriptor", "AB Shutter3"),
+        assertEquals(PhysicalButtonConfiguration(true, "chosen-workspace", null, "remote-descriptor", "AB Shutter3"),
             PhysicalButtonPreferences(storage).configuration.value)
         preferences.setEnabled(false)
         assertEquals("remote-descriptor", PhysicalButtonPreferences(storage).configuration.value.deviceDescriptor)
@@ -79,7 +108,7 @@ class PhysicalButtonPreferencesTest {
     }
 
     @Test fun cancellingRebind_keepsExistingBinding() {
-        val stored = PhysicalButtonConfiguration(true, "chosen-workspace", "old-remote", "Old remote")
+        val stored = PhysicalButtonConfiguration(true, "chosen-workspace", null, "old-remote", "Old remote")
         val storage = MemoryStorage(stored)
         val preferences = PhysicalButtonPreferences(storage)
         preferences.beginBinding()
@@ -88,11 +117,11 @@ class PhysicalButtonPreferencesTest {
     }
 
     @Test fun rebind_replacesDescriptorWithoutUsingDeviceId() {
-        val storage = MemoryStorage(PhysicalButtonConfiguration(true, "chosen-workspace", "old-remote", "Old remote"))
+        val storage = MemoryStorage(PhysicalButtonConfiguration(true, "chosen-workspace", null, "old-remote", "Old remote"))
         val preferences = PhysicalButtonPreferences(storage)
         preferences.beginBinding()
         assertTrue(preferences.captureRemote("new-remote", "AB Shutter3"))
-        assertEquals(PhysicalButtonConfiguration(true, "chosen-workspace", "new-remote", "AB Shutter3"), storage.value)
+        assertEquals(PhysicalButtonConfiguration(true, "chosen-workspace", null, "new-remote", "AB Shutter3"), storage.value)
     }
 
     @Test fun missingDisplayName_doesNotInvalidateDescriptorBinding() {

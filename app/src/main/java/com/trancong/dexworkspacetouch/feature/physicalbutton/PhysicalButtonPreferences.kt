@@ -6,10 +6,17 @@ import kotlinx.coroutines.flow.asStateFlow
 
 data class PhysicalButtonConfiguration(
     val enabled: Boolean = false,
-    val workspaceId: String? = null,
+    val volumeUpWorkspaceId: String? = null,
+    val volumeDownWorkspaceId: String? = null,
     val deviceDescriptor: String? = null,
     val deviceName: String? = null,
-)
+) {
+    fun workspaceForKey(keyCode: Int): String? = when (keyCode) {
+        24 -> volumeUpWorkspaceId
+        25 -> volumeDownWorkspaceId
+        else -> null
+    }?.takeIf(String::isNotBlank)
+}
 
 interface PhysicalButtonStorage {
     fun read(): PhysicalButtonConfiguration
@@ -55,8 +62,13 @@ class PhysicalButtonPreferences(private val storage: PhysicalButtonStorage) {
     }
 
     @Synchronized
-    fun setWorkspace(workspaceId: String?) {
-        update(mutableConfiguration.value.copy(workspaceId = workspaceId?.takeIf(String::isNotBlank)))
+    fun setVolumeUpWorkspace(workspaceId: String?) {
+        update(mutableConfiguration.value.copy(volumeUpWorkspaceId = workspaceId?.takeIf(String::isNotBlank)))
+    }
+
+    @Synchronized
+    fun setVolumeDownWorkspace(workspaceId: String?) {
+        update(mutableConfiguration.value.copy(volumeDownWorkspaceId = workspaceId?.takeIf(String::isNotBlank)))
     }
 
     private fun update(configuration: PhysicalButtonConfiguration) {

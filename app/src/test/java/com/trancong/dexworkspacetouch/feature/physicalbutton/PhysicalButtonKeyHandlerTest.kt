@@ -38,8 +38,23 @@ class PhysicalButtonKeyHandlerTest {
     @Test fun builtInVolumeUp_passesThrough() {
         assertEquals(PhysicalButtonKeyDecision.PASS_THROUGH, handler.handle(down.copy(isExternal = false), true, "remote-descriptor"))
     }
-    @Test fun volumeDown_passesThrough() {
-        assertEquals(PhysicalButtonKeyDecision.PASS_THROUGH, handler.handle(down.copy(keyCode = 25), true, "remote-descriptor"))
+    @Test fun configuredVolumeDown_triggers() {
+        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handler.handle(down.copy(keyCode = 25), true, "remote-descriptor"))
+    }
+    @Test fun overlappingButtons_haveIndependentConsumedPresses() {
+        val volumeDown = down.copy(keyCode = 25)
+        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handler.handle(down, true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handler.handle(volumeDown, true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(down.copy(action = 1), true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(volumeDown.copy(repeatCount = 1), true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(volumeDown.copy(action = 1), true, "remote-descriptor"))
+    }
+    @Test fun volumeDownPress_consumesRepeatAndUpOnlyOnce() {
+        val volumeDown = down.copy(keyCode = 25)
+        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handler.handle(volumeDown, true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(volumeDown, true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(volumeDown.copy(repeatCount = 1), true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(volumeDown.copy(action = 1), true, "remote-descriptor"))
     }
     @Test fun mediaKey_passesThrough() {
         assertEquals(PhysicalButtonKeyDecision.PASS_THROUGH, handler.handle(down.copy(keyCode = 85), true, "remote-descriptor"))
