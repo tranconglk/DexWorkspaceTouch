@@ -1,5 +1,6 @@
 package com.trancong.dexworkspacetouch.workspace.apppicker.presentation
 
+import com.trancong.dexworkspacetouch.BuildConfig
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.DefaultInstalledAppCatalog
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.InstalledApp
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.InstalledAppDataSource
@@ -10,6 +11,85 @@ import org.junit.Test
 import kotlinx.coroutines.runBlocking
 
 class AppPickerViewModelTest {
+    @Test fun pickerExcludesEveryActivityOfOwnPackage() {
+        val viewModel = loadedViewModel(
+            listOf(
+                app(BuildConfig.APPLICATION_ID, "DexWorkspaceTouch"),
+                app(BuildConfig.APPLICATION_ID, "DWT Settings", "SettingsActivity"),
+            ),
+        )
+
+        assertTrue(viewModel.state.apps.isEmpty())
+        assertTrue(viewModel.filteredApps.isEmpty())
+    }
+
+    @Test fun pickerKeepsOtherAppsWithSimilarPackagesOrTheSameLabel() {
+        val apps = listOf(
+            app(BuildConfig.APPLICATION_ID, "DexWorkspaceTouch"),
+            app("${BuildConfig.APPLICATION_ID}.companion", "DexWorkspaceTouch"),
+            app("com.example.maps", "Maps"),
+        )
+        val viewModel = loadedViewModel(apps)
+
+        assertEquals(
+            listOf("${BuildConfig.APPLICATION_ID}.companion", "com.example.maps"),
+            viewModel.filteredApps.map(InstalledApp::packageName),
+        )
+    }
+
+    @Test fun searchingOwnLabelOrPackageNeverRestoresOwnApp() {
+        val viewModel = loadedViewModel(
+            listOf(app(BuildConfig.APPLICATION_ID, "DexWorkspaceTouch")) + sampleApps,
+        )
+
+        for (query in listOf("  dExWoRkSpAcEtOuCh  ", BuildConfig.APPLICATION_ID.uppercase(), "")) {
+            viewModel.updateQuery(query)
+            val expectedPackages = if (query.isEmpty()) {
+                listOf("com.example.maps", "com.example.notes", "com.android.settings")
+            } else {
+                emptyList()
+            }
+            assertEquals(expectedPackages, viewModel.filteredApps.map(InstalledApp::packageName))
+        }
+    }
+
+    @Test fun filtersPreserveExclusionAndCatalogSortOrder() {
+        val viewModel = loadedViewModel(
+            listOf(
+                app("com.z", "beta"),
+                app(BuildConfig.APPLICATION_ID, "Alpha"),
+                app("com.b", "Alpha", isSystemApp = true),
+                app(BuildConfig.APPLICATION_ID, "System", "SettingsActivity", isSystemApp = true),
+                app("com.a", "alpha"),
+            ),
+        )
+
+        val expectedPackagesByFilter = mapOf(
+            AppFilter.ALL to listOf("com.a", "com.b", "com.z"),
+            AppFilter.USER to listOf("com.a", "com.z"),
+            AppFilter.SYSTEM to listOf("com.b"),
+        )
+        for ((filter, expectedPackages) in expectedPackagesByFilter) {
+            viewModel.updateFilter(filter)
+            assertEquals(expectedPackages, viewModel.filteredApps.map(InstalledApp::packageName))
+        }
+    }
+
+    @Test fun ownAppOnlyProducesLoadedEmptyStateForEveryFilterAndQuery() {
+        val viewModel = loadedViewModel(listOf(app(BuildConfig.APPLICATION_ID, "DexWorkspaceTouch")))
+
+        assertTrue(viewModel.state.apps.isEmpty())
+        assertFalse(viewModel.state.isLoading)
+        assertFalse(viewModel.state.loadFailed)
+        for (filter in AppFilter.values()) {
+            viewModel.updateFilter(filter)
+            for (query in listOf("", "DexWorkspaceTouch", BuildConfig.APPLICATION_ID)) {
+                viewModel.updateQuery(query)
+                assertTrue(viewModel.filteredApps.isEmpty())
+            }
+        }
+    }
+
     @Test fun allFilterReturnsEveryApp() {
         val viewModel = loadedViewModel(sampleApps)
         assertEquals(sampleApps.size, viewModel.filteredApps.size)

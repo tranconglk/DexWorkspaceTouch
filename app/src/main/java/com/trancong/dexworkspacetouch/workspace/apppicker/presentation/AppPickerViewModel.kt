@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.trancong.dexworkspacetouch.BuildConfig
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.InstalledApp
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.InstalledAppCatalog
 import com.trancong.dexworkspacetouch.workspace.apppicker.model.AppIdentity
@@ -15,6 +16,7 @@ class AppPickerViewModel(
     private val catalog: InstalledAppCatalog,
     private val iconLoader: AppIconLoader = FallbackAppIconLoader,
     val selectedIdentity: AppIdentity? = null,
+    private val ownPackageName: String = BuildConfig.APPLICATION_ID,
 ) : ViewModel() {
     var query by mutableStateOf("")
         private set
@@ -37,7 +39,7 @@ class AppPickerViewModel(
         state = AppPickerUiState(isLoading = true)
         state = withContext(Dispatchers.IO) {
             try {
-                AppPickerUiState(apps = catalog.getApps())
+                AppPickerUiState(apps = catalog.getApps().filterNot { it.packageName == ownPackageName })
             } catch (_: Exception) {
                 AppPickerUiState(loadFailed = true)
             }
@@ -72,12 +74,13 @@ class AppPickerViewModel(
             catalog: InstalledAppCatalog,
             iconLoader: AppIconLoader,
             selectedIdentity: AppIdentity?,
+            ownPackageName: String = BuildConfig.APPLICATION_ID,
         ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     require(modelClass.isAssignableFrom(AppPickerViewModel::class.java))
-                    return AppPickerViewModel(catalog, iconLoader, selectedIdentity) as T
+                    return AppPickerViewModel(catalog, iconLoader, selectedIdentity, ownPackageName) as T
                 }
             }
     }
