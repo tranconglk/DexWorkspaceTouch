@@ -80,8 +80,8 @@ class PhysicalButtonClearBindingTest {
     @Test fun clearAfterCompletedBoundPress_oldRemoteNextPressPassesThrough() {
         val handler = PhysicalButtonKeyHandler()
         val down = PhysicalButtonKeyEvent(24, 0, 0, 7, 100L, true, "old-remote")
-        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handle(handler, down))
-        assertEquals(PhysicalButtonKeyDecision.CONSUME, handle(handler, down.copy(action = 1)))
+        assertEquals(PhysicalButtonKeyDecision.TRACK_PRESS, handle(handler, down))
+        assertEquals(PhysicalButtonKeyDecision.SHORT_PRESS, handle(handler, down.copy(action = 1)))
         preferences.clearRemoteBinding()
         assertEquals(PhysicalButtonKeyDecision.PASS_THROUGH, handle(handler, down.copy(downTime = 200L)))
         assertEquals(PhysicalButtonKeyDecision.PASS_THROUGH, handle(handler, down.copy(downTime = 200L, action = 1)))
@@ -115,7 +115,7 @@ class PhysicalButtonClearBindingTest {
     )
 
     private fun dispatcher(canLaunch: suspend () -> Boolean = { true }) =
-        PhysicalButtonActionDispatcher(preferences, repository, canLaunch) {
+        PhysicalButtonActionDispatcher(preferences, repository, RecordingPackageCloseBackend(), canLaunch) {
             launched += it
             true
         }

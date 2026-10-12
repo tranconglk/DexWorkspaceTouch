@@ -21,7 +21,7 @@ class PhysicalButtonBindingTest {
         assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(down, true, "remote-descriptor"))
         assertEquals(PhysicalButtonKeyDecision.CONSUME,
             handler.handle(down.copy(action = 1), true, "remote-descriptor"))
-        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE,
+        assertEquals(PhysicalButtonKeyDecision.TRACK_PRESS,
             handler.handle(down.copy(downTime = 200), true, "remote-descriptor"))
     }
 

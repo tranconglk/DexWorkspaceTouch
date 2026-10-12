@@ -36,6 +36,63 @@ class PhysicalButtonActionDispatcherTest {
         assertEquals(listOf("chosen-id", "down-id"), repository.requestedIds)
         assertEquals(listOf(workspace, downWorkspace), launched)
     }
+
+    @Test fun longPressForEitherKey_closesMappedEmptyWorkspaceWithoutCallingLaunchGateOrLauncher() = runBlocking {
+        preferences.setVolumeDownWorkspace("down-id")
+        var gateCalls = 0
+        val actionDispatcher = dispatcher { gateCalls++; true }
+        for (keyCode in listOf(24, 25)) {
+            val id = preferences.configuration.value.workspaceForKey(keyCode)!!
+            repository.stored = workspace.copy(id = id)
+            assertEquals("CLOSE_NO_OP",
+                actionDispatcher.dispatch(keyCode = keyCode, gesture = PhysicalButtonGesture.LONG_PRESS).name)
+        }
+        assertEquals(listOf("chosen-id", "down-id"), repository.requestedIds)
+        assertEquals(0, gateCalls)
+        assertTrue(launched.isEmpty())
+    }
+
+    @Test fun configChangedBeforeQueuedGesture_blocksBothShortAndLong() = runBlocking {
+        val snapshot = preferences.configuration.value
+        preferences.setVolumeDownWorkspace("another-id")
+        for (gesture in PhysicalButtonGesture.entries) {
+            assertEquals(PhysicalButtonActionResult.BLOCKED,
+                dispatcher().dispatch(gesture = gesture, expectedConfiguration = snapshot))
+        }
+        assertTrue(repository.requestedIds.isEmpty())
+        assertTrue(launched.isEmpty())
+    }
+
+    @Test fun longPressRevalidatesConfigurationAfterWorkspaceLookup() = runBlocking {
+        repository.beforeRead = { preferences.setEnabled(false) }
+        assertEquals(PhysicalButtonActionResult.BLOCKED,
+            dispatcher().dispatch(gesture = PhysicalButtonGesture.LONG_PRESS))
+        assertTrue(launched.isEmpty())
+    }
+
+    @Test fun longPressWithMissingWorkspace_doesNotRecordOrLaunch() = runBlocking {
+        repository.stored = null
+        assertEquals(PhysicalButtonActionResult.WORKSPACE_UNAVAILABLE,
+            dispatcher().dispatch(gesture = PhysicalButtonGesture.LONG_PRESS))
+        assertTrue(launched.isEmpty())
+    }
+
+    @Test fun longPressRespectsFeatureBindingAndMappingGates() = runBlocking {
+        preferences.setEnabled(false)
+        assertEquals(PhysicalButtonActionResult.NOT_CONFIGURED,
+            dispatcher().dispatch(gesture = PhysicalButtonGesture.LONG_PRESS))
+        preferences.setEnabled(true)
+        assertEquals(PhysicalButtonActionResult.NOT_CONFIGURED,
+            dispatcher().dispatch(keyCode = 25, gesture = PhysicalButtonGesture.LONG_PRESS))
+        preferences.beginBinding()
+        assertEquals(PhysicalButtonActionResult.NOT_CONFIGURED,
+            dispatcher().dispatch(gesture = PhysicalButtonGesture.LONG_PRESS))
+        preferences.cancelBinding()
+        assertEquals(PhysicalButtonActionResult.BLOCKED,
+            dispatcher().dispatch("other-remote", gesture = PhysicalButtonGesture.LONG_PRESS))
+        assertTrue(repository.requestedIds.isEmpty())
+        assertTrue(launched.isEmpty())
+    }
     @Test fun unconfiguredDown_neverFallsBackToConfiguredUp() = runBlocking {
         assertEquals(PhysicalButtonActionResult.NOT_CONFIGURED, dispatcher().dispatch(keyCode = 25))
         assertTrue(repository.requestedIds.isEmpty())
@@ -107,7 +164,7 @@ class PhysicalButtonActionDispatcherTest {
         assertTrue(launched.isEmpty())
     }
     @Test fun dispatchRejectedByClassicGate_isBlocked() = runBlocking {
-        val dispatcher = PhysicalButtonActionDispatcher(preferences, repository, { true }, { false })
+        val dispatcher = PhysicalButtonActionDispatcher(preferences, repository, RecordingPackageCloseBackend(), { true }, { false })
         assertEquals(PhysicalButtonActionResult.BLOCKED, dispatcher.dispatch())
         assertTrue(launched.isEmpty())
     }
@@ -158,7 +215,7 @@ class PhysicalButtonActionDispatcherTest {
     }
 
     private fun dispatcher(preferences: PhysicalButtonPreferences = this.preferences, canLaunch: suspend () -> Boolean = { true }) =
-        PhysicalButtonActionDispatcher(preferences, repository, canLaunch) {
+        PhysicalButtonActionDispatcher(preferences, repository, RecordingPackageCloseBackend(), canLaunch) {
             launched += it
             true
         }

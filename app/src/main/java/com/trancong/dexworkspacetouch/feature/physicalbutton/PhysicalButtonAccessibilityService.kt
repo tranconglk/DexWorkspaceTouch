@@ -6,6 +6,7 @@ import android.app.Application
 import android.hardware.display.DisplayManager
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.Display
 import android.view.KeyEvent
@@ -29,6 +30,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.util.WeakHashMap
 
@@ -57,7 +59,7 @@ class PhysicalButtonAccessibilityService : AccessibilityService() {
         override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
         override fun onActivityDestroyed(activity: Activity) { workspaceHostDisplayIds.remove(activity) }
     }
-    private val keyHandler = PhysicalButtonKeyHandler()
+    private lateinit var keyHandler: PhysicalButtonGestureController
     // Post dispatch sau khi onKeyEvent trả về để không giữ callback lọc phím.
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val viewModelStore = ViewModelStore()
@@ -93,6 +95,7 @@ class PhysicalButtonAccessibilityService : AccessibilityService() {
         dispatcher = PhysicalButtonActionDispatcher(
             preferences = preferences,
             repository = app.workspaceRepository,
+            packageCloseBackend = app.packageCloseBackend,
             canLaunch = {
                 // Dùng nguyên gate hiện có, kể cả sau khi service sống lâu ở background.
                 licenseCoordinator.bootstrap()
@@ -130,10 +133,23 @@ class PhysicalButtonAccessibilityService : AccessibilityService() {
                 }
             },
         )
+        keyHandler = PhysicalButtonGestureController(
+            scope = serviceScope,
+            configuration = { preferences.configuration.value },
+            availableWorkspaceIds = { availableWorkspaceIds },
+            bindingRequested = { preferences.bindingRequested.value },
+            nowMillis = SystemClock::uptimeMillis,
+            onGesture = ::onGesture,
+        )
         serviceScope.launch {
             app.workspaceRepository.observeAll().collect { workspaces ->
                 availableWorkspaceIds = workspaces.mapTo(mutableSetOf()) { it.id }
+                keyHandler.invalidatePresses()
             }
+        }
+        serviceScope.launch {
+            combine(preferences.configuration, preferences.bindingRequested) { _, _ -> Unit }
+                .collect { keyHandler.invalidatePresses() }
         }
         serviceScope.launch {
             launchViewModelSnapshotLog()
@@ -142,7 +158,6 @@ class PhysicalButtonAccessibilityService : AccessibilityService() {
 
     override fun onKeyEvent(event: KeyEvent): Boolean {
         val device = event.device
-        val configuration = preferences.configuration.value
         val decision = keyHandler.handle(
             event = PhysicalButtonKeyEvent(
                 keyCode = event.keyCode,
@@ -153,10 +168,8 @@ class PhysicalButtonAccessibilityService : AccessibilityService() {
                 isExternal = device?.isExternal == true,
                 deviceDescriptor = device?.descriptor,
                 isVirtual = device?.isVirtual != false,
+                eventTime = event.eventTime,
             ),
-            configuration = configuration,
-            availableWorkspaceIds = availableWorkspaceIds,
-            bindingRequested = preferences.bindingRequested.value,
         )
         if (decision == PhysicalButtonKeyDecision.PASS_THROUGH) return false
         if (decision == PhysicalButtonKeyDecision.BIND_REMOTE) {
@@ -165,17 +178,29 @@ class PhysicalButtonAccessibilityService : AccessibilityService() {
             }
             return true
         }
-        if (decision == PhysicalButtonKeyDecision.TRIGGER_WORKSPACE) {
-            val workspaceId = configuration.workspaceForKey(event.keyCode)
-            val keyCode = event.keyCode
-            Log.i(LOG_TAG, "Trigger keyCode=$keyCode workspaceId=$workspaceId device=${device?.name} deviceId=${event.deviceId}")
-            if (dispatchJob?.isActive != true && !isLaunching()) {
-                dispatchJob = serviceScope.launch {
-                    Log.i(LOG_TAG, "Workspace action=${dispatcher.dispatch(configuration.deviceDescriptor, keyCode, workspaceId)}")
-                }
+        return true
+    }
+
+    private fun onGesture(
+        gesture: PhysicalButtonGesture,
+        event: PhysicalButtonKeyEvent,
+        configuration: PhysicalButtonConfiguration,
+    ) {
+        val workspaceId = configuration.workspaceForKey(event.keyCode)
+        Log.i(LOG_TAG, "Gesture type=$gesture keyCode=${event.keyCode} workspaceId=$workspaceId deviceId=${event.deviceId}")
+        if (gesture == PhysicalButtonGesture.SHORT_PRESS && (dispatchJob?.isActive == true || isLaunching())) return
+        val job = serviceScope.launch {
+            val result = dispatcher.dispatch(configuration.deviceDescriptor, event.keyCode, workspaceId,
+                gesture, expectedConfiguration = configuration)
+            val message = "Workspace gesture=$gesture keyCode=${event.keyCode} workspaceId=$workspaceId action=$result"
+            when (result) {
+                PhysicalButtonActionResult.CLOSE_PARTIAL,
+                PhysicalButtonActionResult.CLOSE_BACKEND_UNAVAILABLE,
+                PhysicalButtonActionResult.CLOSE_UNSUPPORTED -> Log.w(LOG_TAG, message)
+                else -> Log.i(LOG_TAG, message)
             }
         }
-        return true
+        if (gesture == PhysicalButtonGesture.SHORT_PRESS) dispatchJob = job
     }
 
     private fun isLaunching(): Boolean = launchViewModel.state is WorkspaceLaunchUiState.Checking ||
@@ -200,6 +225,7 @@ class PhysicalButtonAccessibilityService : AccessibilityService() {
         application.unregisterActivityLifecycleCallbacks(displayContextDiagnostics)
         workspaceHostDisplayIds.clear()
         preferences.cancelBinding()
+        keyHandler.clear()
         launchViewModel.onHostDisposed(hostToken)
         serviceScope.cancel()
         viewModelStore.clear()

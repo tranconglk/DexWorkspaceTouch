@@ -15,8 +15,8 @@ class PhysicalButtonDualMappingTest {
         assertEquals("up-id", configuration.workspaceForKey(24))
         assertEquals("down-id", configuration.workspaceForKey(25))
         assertNull(configuration.workspaceForKey(85))
-        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handler.handle(up, configuration, existing))
-        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handler.handle(down, configuration, existing))
+        assertEquals(PhysicalButtonKeyDecision.TRACK_PRESS, handler.handle(up, configuration, existing))
+        assertEquals(PhysicalButtonKeyDecision.TRACK_PRESS, handler.handle(down, configuration, existing))
     }
 
     @Test fun unconfiguredButton_passesEntirePressWithoutOtherButtonFallback() {
@@ -28,7 +28,7 @@ class PhysicalButtonDualMappingTest {
             for (part in listOf(event, event.copy(repeatCount = 1), event.copy(action = 1))) {
                 assertEquals(PhysicalButtonKeyDecision.PASS_THROUGH, localHandler.handle(part, local, existing))
             }
-            assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE,
+            assertEquals(PhysicalButtonKeyDecision.TRACK_PRESS,
                 localHandler.handle(up.copy(keyCode = if (keyCode == 24) 25 else 24), local, existing))
         }
     }
@@ -49,7 +49,7 @@ class PhysicalButtonDualMappingTest {
     }
 
     @Test fun removingMappingDuringConsumedPress_finishesPairThenPassesNextPress() {
-        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handler.handle(down, configuration, existing))
+        assertEquals(PhysicalButtonKeyDecision.TRACK_PRESS, handler.handle(down, configuration, existing))
         val cleared = configuration.copy(volumeDownWorkspaceId = null)
         assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(down.copy(repeatCount = 1), cleared, existing))
         assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(down.copy(action = 1), cleared, existing))

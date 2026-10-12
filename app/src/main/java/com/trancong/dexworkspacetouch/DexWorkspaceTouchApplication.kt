@@ -31,10 +31,18 @@ import okhttp3.OkHttpClient
 import com.trancong.dexworkspacetouch.workspace.launcher.diagnostics.AndroidWorkspaceLaunchDiagnostics
 import com.trancong.dexworkspacetouch.feature.embeddedworkspace.product.EmbeddedProductRunGate
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import com.trancong.dexworkspacetouch.feature.physicalbutton.AndroidPhysicalButtonStorage
 import com.trancong.dexworkspacetouch.feature.physicalbutton.PhysicalButtonPreferences
 
 class DexWorkspaceTouchApplication : Application() {
+    val packageCloseBackend: com.trancong.dexworkspacetouch.workspace.close.PackageCloseCoordinator by lazy {
+        com.trancong.dexworkspacetouch.workspace.close.PackageCloseCoordinator(
+            com.trancong.dexworkspacetouch.workspace.close.ShizukuCloseTaskBackend(applicationContext),
+            com.trancong.dexworkspacetouch.workspace.close.createAndroidCloseOperationStore(applicationContext),
+            android.os.SystemClock::elapsedRealtime,
+        )
+    }
     lateinit var physicalButtonPreferences: PhysicalButtonPreferences
         private set
     lateinit var workspaceRepository: WorkspaceRepository
@@ -64,6 +72,10 @@ class DexWorkspaceTouchApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        processScope.launch(Dispatchers.IO) {
+            runCatching { packageCloseBackend.recoverPending() }
+                .onFailure { android.util.Log.e("WSC004A", "Close journal recovery failed; admission closed", it) }
+        }
         physicalButtonPreferences = PhysicalButtonPreferences(AndroidPhysicalButtonStorage(applicationContext))
         com.trancong.dexworkspacetouch.diagnostics.embedded.EmbeddedEvidence.initializeApp(
             java.io.File(filesDir, "dwt-vdm-012-evidence"))

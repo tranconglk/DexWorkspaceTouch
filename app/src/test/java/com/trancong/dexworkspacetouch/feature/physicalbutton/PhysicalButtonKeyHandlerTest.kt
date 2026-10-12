@@ -21,9 +21,9 @@ class PhysicalButtonKeyHandlerTest {
     }
 
     @Test fun reconnectWithNewDeviceId_matchesDescriptor() {
-        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE,
+        assertEquals(PhysicalButtonKeyDecision.TRACK_PRESS,
             handler.handle(down.copy(deviceId = 41), true, "remote-descriptor"))
-        assertEquals(PhysicalButtonKeyDecision.CONSUME,
+        assertEquals(PhysicalButtonKeyDecision.SHORT_PRESS,
             handler.handle(down.copy(deviceId = 41, action = 1), true, "remote-descriptor"))
     }
 
@@ -33,28 +33,28 @@ class PhysicalButtonKeyHandlerTest {
     }
 
     @Test fun externalVolumeUpDown_triggers() {
-        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handler.handle(down, true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.TRACK_PRESS, handler.handle(down, true, "remote-descriptor"))
     }
     @Test fun builtInVolumeUp_passesThrough() {
         assertEquals(PhysicalButtonKeyDecision.PASS_THROUGH, handler.handle(down.copy(isExternal = false), true, "remote-descriptor"))
     }
     @Test fun configuredVolumeDown_triggers() {
-        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handler.handle(down.copy(keyCode = 25), true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.TRACK_PRESS, handler.handle(down.copy(keyCode = 25), true, "remote-descriptor"))
     }
     @Test fun overlappingButtons_haveIndependentConsumedPresses() {
         val volumeDown = down.copy(keyCode = 25)
-        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handler.handle(down, true, "remote-descriptor"))
-        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handler.handle(volumeDown, true, "remote-descriptor"))
-        assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(down.copy(action = 1), true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.TRACK_PRESS, handler.handle(down, true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.TRACK_PRESS, handler.handle(volumeDown, true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.SHORT_PRESS, handler.handle(down.copy(action = 1), true, "remote-descriptor"))
         assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(volumeDown.copy(repeatCount = 1), true, "remote-descriptor"))
-        assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(volumeDown.copy(action = 1), true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.SHORT_PRESS, handler.handle(volumeDown.copy(action = 1), true, "remote-descriptor"))
     }
     @Test fun volumeDownPress_consumesRepeatAndUpOnlyOnce() {
         val volumeDown = down.copy(keyCode = 25)
-        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handler.handle(volumeDown, true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.TRACK_PRESS, handler.handle(volumeDown, true, "remote-descriptor"))
         assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(volumeDown, true, "remote-descriptor"))
         assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(volumeDown.copy(repeatCount = 1), true, "remote-descriptor"))
-        assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(volumeDown.copy(action = 1), true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.SHORT_PRESS, handler.handle(volumeDown.copy(action = 1), true, "remote-descriptor"))
     }
     @Test fun mediaKey_passesThrough() {
         assertEquals(PhysicalButtonKeyDecision.PASS_THROUGH, handler.handle(down.copy(keyCode = 85), true, "remote-descriptor"))
@@ -69,11 +69,11 @@ class PhysicalButtonKeyHandlerTest {
         assertEquals(PhysicalButtonKeyDecision.PASS_THROUGH, handler.handle(down, false, "remote-descriptor"))
     }
     @Test fun consumedPress_consumesRepeatsAndUpWithoutSecondTrigger() {
-        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handler.handle(down, true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.TRACK_PRESS, handler.handle(down, true, "remote-descriptor"))
         assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(down.copy(repeatCount = 1), true, "remote-descriptor"))
         assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(down, true, "remote-descriptor"))
-        assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(down.copy(action = 1), true, "remote-descriptor"))
-        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handler.handle(down.copy(downTime = 200), true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.SHORT_PRESS, handler.handle(down.copy(action = 1), true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.TRACK_PRESS, handler.handle(down.copy(downTime = 200), true, "remote-descriptor"))
     }
     @Test fun phoneVolumeUpDuringRemotePress_stillPassesThrough() {
         handler.handle(down, true, "remote-descriptor")
@@ -84,7 +84,7 @@ class PhysicalButtonKeyHandlerTest {
         assertEquals(PhysicalButtonKeyDecision.PASS_THROUGH, handler.handle(down, true, "other-remote"))
         assertEquals(PhysicalButtonKeyDecision.PASS_THROUGH,
             handler.handle(down.copy(deviceDescriptor = null), true, "remote-descriptor"))
-        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handler.handle(down, true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.TRACK_PRESS, handler.handle(down, true, "remote-descriptor"))
     }
     @Test fun disabledDuringPress_finishesConsumedPairThenPassesNextPress() {
         handler.handle(down, true, "remote-descriptor")
@@ -94,9 +94,9 @@ class PhysicalButtonKeyHandlerTest {
     }
     @Test fun staleRelease_doesNotReleaseNewPress() {
         handler.handle(down, true, "remote-descriptor")
-        assertEquals(PhysicalButtonKeyDecision.TRIGGER_WORKSPACE, handler.handle(down.copy(downTime = 200), true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.TRACK_PRESS, handler.handle(down.copy(downTime = 200), true, "remote-descriptor"))
         assertEquals(PhysicalButtonKeyDecision.PASS_THROUGH, handler.handle(down.copy(action = 1), true, "remote-descriptor"))
-        assertEquals(PhysicalButtonKeyDecision.CONSUME, handler.handle(down.copy(downTime = 200, action = 1), true, "remote-descriptor"))
+        assertEquals(PhysicalButtonKeyDecision.SHORT_PRESS, handler.handle(down.copy(downTime = 200, action = 1), true, "remote-descriptor"))
     }
 
     @Test fun virtualVolumeUp_passesThroughEvenWithMatchingDescriptor() {
@@ -112,7 +112,7 @@ class PhysicalButtonKeyHandlerTest {
         handler.handle(down, true, "remote-descriptor")
         assertEquals(PhysicalButtonKeyDecision.PASS_THROUGH,
             handler.handle(down.copy(action = 1, deviceDescriptor = "other-remote"), true, "remote-descriptor"))
-        assertEquals(PhysicalButtonKeyDecision.CONSUME,
+        assertEquals(PhysicalButtonKeyDecision.SHORT_PRESS,
             handler.handle(down.copy(action = 1), true, "remote-descriptor"))
     }
 }
